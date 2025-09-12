@@ -17,6 +17,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
+// Trust Render's proxy (CRITICAL for secure cookies)
+app.set('trust proxy', 1);
+
 // Use environment secret or generate one
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex');
 
@@ -90,12 +93,27 @@ async function initializeDB() {
   }
 }
 
-// CORS configuration for Render - ALLOW ALL ORIGINS FOR NOW
+// CORS configuration for Render
 app.use(cors({
-    origin: true, // Allow all origins temporarily
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        const allowedOrigins = [
+            'https://ajk-cleaning.onrender.com',
+            'http://localhost:3000',
+            'http://127.0.0.1:3000'
+        ];
+        
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Set-Cookie']
 }));
 
 // Handle preflight requests
@@ -113,7 +131,7 @@ app.use((req, res, next) => {
     "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://gc.kis.v2.scr.kaspersky.com; " +
     "img-src 'self' data: https: blob: https://images.unsplash.com https://randomuser.me https://gc.kis.v2.scr.kaspersky.com; " +
     "font-src 'self' https://cdnjs.cloudflare.com; " +
-    "connect-src 'self' ws://gc.kis.v2.scr.kaspersky.com; " + // REMOVED localhost:3000
+    "connect-src 'self' ws://gc.kis.v2.scr.kaspersky.com; " +
     "frame-src 'self' https://gc.kis.v2.scr.kaspersky.com;"
   );
   next();
@@ -129,9 +147,9 @@ app.use(session({
         ttl: 86400 // 24 hours
     }),
     cookie: { 
-        secure: isProduction,
+        secure: isProduction, // true in production
         httpOnly: true,
-        sameSite: isProduction ? 'none' : 'lax',
+        sameSite: isProduction ? 'none' : 'lax', // CRITICAL: 'none' for cross-site
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
@@ -142,7 +160,8 @@ app.get('/api/test', (req, res) => {
         authenticated: !!req.session.authenticated,
         sessionId: req.sessionID,
         environment: NODE_ENV,
-        port: PORT
+        port: PORT,
+        secureCookie: req.session.cookie.secure
     });
 });
 
@@ -353,6 +372,8 @@ initializeDB().then(() => {
         console.log(`Server running on port ${PORT}`);
         console.log(`Environment: ${NODE_ENV}`);
         console.log(`Database path: ${dbPath}`);
+        console.log(`Trust proxy: ${app.get('trust proxy')}`);
+        console.log(`Secure cookies: ${isProduction}`);
         console.log(`Server ready for form submissions`);
     });
 }).catch(err => {
