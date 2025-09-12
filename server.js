@@ -57,6 +57,26 @@ async function initializeDB() {
   console.log('Database ready at:', dbPath);
 }
 
+const session = require('express-session');
+const FileStore = require('session-file-store')(session);
+
+// Update your session configuration:
+app.use(session({
+    secret: SESSION_SECRET,
+    resave: true,
+    saveUninitialized: false,
+    store: new FileStore({
+        path: path.join(__dirname, 'sessions'),
+        ttl: 24 * 60 * 60 // 24 hours
+    }),
+    cookie: { 
+        secure: NODE_ENV === 'production',
+        httpOnly: true,
+        sameSite: NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 24 * 60 * 60 * 1000
+    }
+}));
+
 // Middleware
 app.use(cors({
     origin: true,
