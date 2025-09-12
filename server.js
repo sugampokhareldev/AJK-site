@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
+const session = require('express-session'); // ONLY ONE session require
 const crypto = require('crypto');
 const fs = require('fs');
 const { Low } = require('lowdb');
@@ -31,15 +32,47 @@ if (!fs.existsSync(dbDir)) {
 const adapter = new JSONFile(dbPath);
 const db = new Low(adapter, { submissions: [], admin_users: [] });
 
-// Initialize database
+// Initialize database with error handling
 async function initializeDB() {
-  await db.read();
-  db.data = db.data || { submissions: [], admin_users: [] };
-  
-  // Create admin user if it doesn't exist
-  const adminUser = db.data.admin_users.find(user => user.username === 'Sanud119@gmail.com');
-  if (!adminUser) {
-    console.log('Creating admin user...');
+  try {
+    await db.read();
+    
+    // Check if data is corrupted
+    if (typeof db.data !== 'object' || db.data === null) {
+      console.log('Database corrupted, resetting to default...');
+      db.data = { submissions: [], admin_users: [] };
+      await db.write();
+    }
+    
+    db.data = db.data || { submissions: [], admin_users: [] };
+    
+    // Create admin user if it doesn't exist
+    const adminUser = db.data.admin_users.find(user => user.username === 'Sanud119@gmail.com');
+    if (!adminUser) {
+      console.log('Creating admin user...');
+      const hash = await bcrypt.hash('Sugam@2008', 12);
+      db.data.admin_users.push({
+        id: Date.now(),
+        username: 'Sanud119@gmail.com',
+        password_hash: hash,
+        created_at: new Date().toISOString()
+      });
+      await db.write();
+      console.log('Admin user created successfully');
+    } else {
+      console.log('Admin user already exists');
+    }
+    
+    console.log('Database ready at:', dbPath);
+    
+  } catch (error) {
+    console.error('Database initialization error:', error);
+    console.log('Creating fresh database...');
+    
+    // Create fresh database
+    db.data = { submissions: [], admin_users: [] };
+    
+    // Create admin user
     const hash = await bcrypt.hash('Sugam@2008', 12);
     db.data.admin_users.push({
       id: Date.now(),
@@ -47,27 +80,41 @@ async function initializeDB() {
       password_hash: hash,
       created_at: new Date().toISOString()
     });
+    
     await db.write();
-    console.log('Admin user created successfully');
-  } else {
-    console.log('Admin user already exists');
+    console.log('Fresh database created successfully');
   }
-  
-  console.log('Database ready at:', dbPath);
 }
 
-const session = require('express-session');
-const FileStore = require('session-file-store')(session);
+// Middleware
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
 
-// Update your session configuration:
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// Updated CSP middleware to allow external resources
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://gc.kis.v2.scr.kaspersky.com; " +
+    "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://gc.kis.v2.scr.kaspersky.com; " +
+    "img-src 'self' data: https: blob: https://images.unsplash.com https://randomuser.me https://gc.kis.v2.scr.kaspersky.com; " +
+    "font-src 'self' https://cdnjs.cloudflare.com; " +
+    "connect-src 'self' http://localhost:3000 ws://gc.kis.v2.scr.kaspersky.com; " +
+    "frame-src 'self' https://gc.kis.v2.scr.kaspersky.com;"
+  );
+  next();
+});
+
+// Session configuration - ONLY ONE SESSION CONFIG
 app.use(session({
     secret: SESSION_SECRET,
     resave: true,
     saveUninitialized: false,
-    store: new FileStore({
-        path: path.join(__dirname, 'sessions'),
-        ttl: 24 * 60 * 60 // 24 hours
-    }),
     cookie: { 
         secure: NODE_ENV === 'production',
         httpOnly: true,
@@ -75,6 +122,8 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
+
+// ... rest of your code (authentication middleware, routes, etc.) ...
 
 // Middleware
 app.use(cors({
