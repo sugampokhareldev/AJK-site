@@ -483,13 +483,14 @@
                             <th data-sort="id">ID ↗</th>
                             <th data-sort="name">Name ↗</th>
                             <th data-sort="email">Email ↗</th>
+                            <th data-sort="phone">Phone ↗</th>
                             <th data-sort="date">Date ↗</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="5">
+                            <td colspan="6">
                                 <div class="empty-state">
                                     <i>📝</i>
                                     <p>No submissions yet. Form data will appear here.</p>
@@ -502,6 +503,8 @@
             
             <div id="detailView" class="submission-details">
                 <h3>Submission Details</h3>
+                <button id="close-details" style="position: absolute; top: 20px; right: 20px; background: #e53e3e; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">× Close</button>
+                
                 <div class="detail-row">
                     <div class="detail-label">ID:</div>
                     <div class="detail-content" id="detail-id"></div>
@@ -513,6 +516,10 @@
                 <div class="detail-row">
                     <div class="detail-label">Email:</div>
                     <div class="detail-content" id="detail-email"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Phone:</div>
+                    <div class="detail-content" id="detail-phone"></div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Message:</div>
@@ -534,417 +541,11 @@
             </div>
             
             <footer>
-                <p>Admin Panel • Form submissions are stored in submissions.db SQLite database</p>
+                <p>Admin Panel • Form submissions are stored in database</p>
             </footer>
         </div>
     </div>
 
-    <script>
-        // Global variables
-        let autoRefreshInterval = null;
-        let isAutoRefreshEnabled = false;
-        let currentSortField = 'id';
-        let currentSortDirection = 'asc';
-        let currentSubmissionId = null;
-        
-        // Check authentication status on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAuthStatus();
-            setupEventListeners();
-        });
-        
-        // Check if user is authenticated
-        async function checkAuthStatus() {
-            try {
-                const response = await fetch('/api/admin/status', {
-                    credentials: 'include'
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.authenticated) {
-                        showAdminPanel();
-                        loadSubmissions();
-                    } else {
-                        showLoginForm();
-                    }
-                } else {
-                    showLoginForm();
-                }
-            } catch (error) {
-                console.error('Auth check error:', error);
-                showLoginForm();
-            }
-        }
-        
-        // Set up event listeners
-        function setupEventListeners() {
-            // Login form
-            document.getElementById('login-btn').addEventListener('click', handleLogin);
-            document.getElementById('password').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') handleLogin();
-            });
-            
-            // Admin panel buttons
-            document.getElementById('refresh-btn').addEventListener('click', loadSubmissions);
-            document.getElementById('autoRefreshBtn').addEventListener('click', toggleAutoRefresh);
-            document.getElementById('export-btn').addEventListener('click', exportData);
-            document.getElementById('logout-btn').addEventListener('click', handleLogout);
-            document.getElementById('detail-delete-btn').addEventListener('click', function() {
-                if (currentSubmissionId) deleteSubmission(currentSubmissionId);
-            });
-            
-            // Sortable table headers
-            const headers = document.querySelectorAll('th[data-sort]');
-            headers.forEach(header => {
-                header.addEventListener('click', function() {
-                    const field = this.getAttribute('data-sort');
-                    sortTable(field);
-                });
-            });
-            
-            // Refresh interval change
-            document.getElementById('refreshInterval').addEventListener('change', updateRefreshInterval);
-        }
-        
-        // Handle login
-        async function handleLogin() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const messageEl = document.getElementById('login-message');
-            
-            if (!username || !password) {
-                showLoginMessage('Please enter both username and password', 'error');
-                return;
-            }
-            
-            try {
-                const response = await fetch('/api/admin/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username, password }),
-                    credentials: 'include'
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showAdminPanel();
-                    loadSubmissions();
-                } else {
-                    showLoginMessage(data.error || 'Login failed', 'error');
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                showLoginMessage('Login error: ' + error.message, 'error');
-            }
-        }
-        
-        // Handle logout
-        async function handleLogout() {
-            try {
-                const response = await fetch('/api/admin/logout', {
-                    method: 'POST',
-                    credentials: 'include'
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showLoginForm();
-                    showNotification('Logged out successfully');
-                } else {
-                    showNotification('Logout failed: ' + data.error, 'error');
-                }
-            } catch (error) {
-                console.error('Logout error:', error);
-                showNotification('Logout error: ' + error.message, 'error');
-            }
-        }
-        
-        // Show login form
-        function showLoginForm() {
-            document.getElementById('login-section').style.display = 'block';
-            document.getElementById('admin-panel').style.display = 'none';
-        }
-        
-        // Show admin panel
-        function showAdminPanel() {
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('admin-panel').style.display = 'block';
-        }
-        
-        // Show login message
-        function showLoginMessage(message, type) {
-            const messageEl = document.getElementById('login-message');
-            messageEl.textContent = message;
-            messageEl.className = `login-message ${type === 'error' ? 'login-error' : ''}`;
-            messageEl.style.display = 'block';
-            
-            setTimeout(() => {
-                messageEl.style.display = 'none';
-            }, 5000);
-        }
-        
-        // The rest of your functions (loadSubmissions, showNotification, etc.)
-        // ... will be the same as in your original code but using fetch with credentials
-        
-        // Function to show notification
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Load submissions from server
-        async function loadSubmissions() {
-            try {
-                const response = await fetch('/api/submissions', {
-                    credentials: 'include'
-                });
-                
-                if (response.status === 401) {
-                    showLoginForm();
-                    return;
-                }
-                
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                
-                const data = await response.json();
-                displaySubmissions(data);
-                updateLastRefreshed();
-                
-            } catch (error) {
-                console.error('Error loading submissions:', error);
-                showNotification('Error loading submissions: ' + error.message, 'error');
-                updateLastRefreshed(true);
-            }
-        }
-        
-        // Display submissions in table
-        function displaySubmissions(data) {
-            const tableBody = document.querySelector('#submissionsTable tbody');
-            
-            if (data.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="5">
-                            <div class="empty-state">
-                                <i>📝</i>
-                                <p>No submissions yet. Form data will appear here.</p>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                updateStats(0);
-                return;
-            }
-            
-            tableBody.innerHTML = '';
-            
-            data.forEach(submission => {
-                const row = document.createElement('tr');
-                const date = new Date(submission.submitted_at);
-                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-                
-                row.innerHTML = `
-                    <td>${submission.id}</td>
-                    <td>${submission.name}</td>
-                    <td>${submission.email}</td>
-                    <td>${formattedDate}</td>
-                    <td>
-                        <button class="view-btn" data-id="${submission.id}">View</button>
-                        <button class="delete-btn" data-id="${submission.id}">Delete</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-            
-            // Add event listeners to the new buttons
-            document.querySelectorAll('.view-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-                    viewDetails(id);
-                });
-            });
-            
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-                    deleteSubmission(id);
-                });
-            });
-            
-            updateStats(data.length);
-        }
-        
-        // Update statistics
-        function updateStats(total) {
-            document.getElementById('totalSubmissions').textContent = total;
-            // For demo purposes, setting fixed values
-            document.getElementById('todaySubmissions').textContent = Math.min(total, 5);
-            document.getElementById('weekSubmissions').textContent = Math.min(total, 12);
-        }
-        
-        // Update last refreshed timestamp
-        function updateLastRefreshed(isError = false) {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            const dateString = now.toLocaleDateString();
-            
-            if (isError) {
-                document.getElementById('lastRefreshed').innerHTML = 
-                    `Last refresh attempt: <span style="color: #e53e3e;">${dateString} ${timeString} (Failed)</span>`;
-            } else {
-                document.getElementById('lastRefreshed').innerHTML = 
-                    `Last refreshed: ${dateString} ${timeString}`;
-            }
-        }
-        
-        // View submission details
-        async function viewDetails(id) {
-            try {
-                const response = await fetch(`/api/submissions/${id}`, {
-                    credentials: 'include'
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Submission not found');
-                }
-                
-                const data = await response.json();
-                
-                if (data) {
-                    const date = new Date(data.submitted_at);
-                    document.getElementById('detail-id').textContent = data.id;
-                    document.getElementById('detail-name').textContent = data.name;
-                    document.getElementById('detail-email').textContent = data.email;
-                    document.getElementById('detail-message').textContent = data.message;
-                    document.getElementById('detail-date').textContent = date.toLocaleString();
-                    
-                    document.getElementById('detailView').style.display = 'block';
-                    currentSubmissionId = data.id;
-                }
-            } catch (error) {
-                console.error('Error loading submission details:', error);
-                showNotification('Error loading submission details: ' + error.message, 'error');
-            }
-        }
-        
-        // Delete a submission
-        async function deleteSubmission(id) {
-            if (!confirm('Are you sure you want to delete this submission? This action cannot be undone.')) {
-                return;
-            }
-            
-            try {
-                const response = await fetch(`/api/submissions/${id}`, {
-                    method: 'DELETE',
-                    credentials: 'include'
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    showNotification('Submission deleted successfully!');
-                    loadSubmissions();
-                    document.getElementById('detailView').style.display = 'none';
-                } else {
-                    showNotification('Error: ' + data.error, 'error');
-                }
-            } catch (error) {
-                console.error('Error deleting submission:', error);
-                showNotification('Error deleting submission: ' + error.message, 'error');
-            }
-        }
-        
-        // Export data as CSV
-        async function exportData() {
-            try {
-                const response = await fetch('/api/submissions', {
-                    credentials: 'include'
-                });
-                
-                const data = await response.json();
-                
-                if (data.length === 0) {
-                    showNotification('No data to export', 'error');
-                    return;
-                }
-                
-                let csvContent = "ID,Name,Email,Message,Date\n";
-                
-                data.forEach(submission => {
-                    csvContent += `"${submission.id}","${submission.name}","${submission.email}","${submission.message.replace(/"/g, '""')}","${submission.submitted_at}"\n`;
-                });
-                
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement("a");
-                link.setAttribute("href", url);
-                link.setAttribute("download", "form_submissions.csv");
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                showNotification('Data exported successfully!');
-            } catch (error) {
-                console.error('Error exporting data:', error);
-                showNotification('Error exporting data', 'error');
-            }
-        }
-        
-        // Toggle auto-refresh
-        function toggleAutoRefresh() {
-            if (isAutoRefreshEnabled) {
-                // Turn off auto-refresh
-                clearInterval(autoRefreshInterval);
-                autoRefreshInterval = null;
-                isAutoRefreshEnabled = false;
-                document.getElementById('autoRefreshBtn').innerHTML = '<i>⏱️</i> Auto-Refresh: OFF';
-                document.getElementById('autoRefreshBtn').classList.remove('active');
-                document.getElementById('statusText').textContent = 'Auto-Refresh Paused';
-                document.querySelector('.status-indicator').className = 'status-indicator status-paused';
-            } else {
-                // Turn on auto-refresh
-                const interval = parseInt(document.getElementById('refreshInterval').value) * 1000;
-                autoRefreshInterval = setInterval(loadSubmissions, interval);
-                isAutoRefreshEnabled = true;
-                document.getElementById('autoRefreshBtn').innerHTML = '<i>⏱️</i> Auto-Refresh: ON';
-                document.getElementById('autoRefreshBtn').classList.add('active');
-                document.getElementById('statusText').textContent = 'Auto-Refresh Active';
-                document.querySelector('.status-indicator').className = 'status-indicator status-live';
-                
-                // Immediately load new data when enabling
-                loadSubmissions();
-            }
-        }
-        
-        // Update refresh interval
-        function updateRefreshInterval() {
-            if (isAutoRefreshEnabled) {
-                // Restart the interval with the new value
-                clearInterval(autoRefreshInterval);
-                const interval = parseInt(document.getElementById('refreshInterval').value) * 1000;
-                autoRefreshInterval = setInterval(loadSubmissions, interval);
-            }
-        }
-        
-        // Sort table
-        function sortTable(field) {
-            // Implementation for sorting would go here
-            showNotification('Sorting by ' + field);
-        }
-    </script>
+    <script src="/admin.js"></script>
 </body>
 </html>

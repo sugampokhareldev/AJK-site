@@ -147,12 +147,12 @@ app.get('/api/admin/status', (req, res) => {
     });
 });
 
-// Form submission endpoint
+// Form submission endpoint - UPDATED WITH PHONE NUMBER
 app.post('/api/form/submit', async (req, res) => {
-    const { name, email, message } = req.body;
+    const { name, email, phone, message } = req.body;
     
     if (!name || !email || !message) {
-        return res.status(400).json({ success: false, error: 'All fields required' });
+        return res.status(400).json({ success: false, error: 'Name, email, and message are required' });
     }
     
     await db.read();
@@ -160,6 +160,7 @@ app.post('/api/form/submit', async (req, res) => {
         id: Date.now(),
         name,
         email,
+        phone: phone || '', // Add phone field (optional)
         message,
         submitted_at: new Date().toISOString()
     };

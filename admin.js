@@ -1,4 +1,4 @@
-// admin.js - Fixed version with proper authentication handling
+// admin.js - Fixed version with phone number support
 console.log('Admin JS loaded successfully!');
 
 let autoRefreshInterval = null;
@@ -44,6 +44,11 @@ function setupEventListeners() {
         // Handle logout button
         if (event.target.id === 'logout-btn' || event.target.closest('#logout-btn')) {
             handleLogout();
+        }
+        
+        // Handle close detail view
+        if (event.target.id === 'close-details' || event.target.closest('#close-details')) {
+            document.getElementById('detailView').style.display = 'none';
         }
     });
 
@@ -232,7 +237,7 @@ async function loadSubmissions() {
     }
 }
 
-// Display submissions in the table
+// Display submissions in the table - UPDATED WITH PHONE NUMBER
 function displaySubmissions(data) {
     const tableBody = document.querySelector('#submissionsTable tbody');
     if (!tableBody) {
@@ -244,7 +249,7 @@ function displaySubmissions(data) {
     if (data.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="5">
+                <td colspan="6">
                     <div class="empty-state">
                         <i>📝</i>
                         <p>No submissions yet. Form data will appear here.</p>
@@ -267,6 +272,7 @@ function displaySubmissions(data) {
             <td>${submission.id}</td>
             <td>${submission.name}</td>
             <td>${submission.email}</td>
+            <td>${submission.phone || 'N/A'}</td>
             <td>${formattedDate}</td>
             <td>
                 <button class="view-btn" data-id="${submission.id}">View</button>
@@ -308,8 +314,7 @@ function updateLastRefreshed(isError = false) {
     }
 }
 
-// View submission details
-// View submission details - FIXED VERSION
+// View submission details - UPDATED WITH PHONE NUMBER
 async function viewDetails(id) {
     console.log('Viewing details for submission:', id, typeof id);
     
@@ -336,6 +341,7 @@ async function viewDetails(id) {
             document.getElementById('detail-id').textContent = data.id;
             document.getElementById('detail-name').textContent = data.name;
             document.getElementById('detail-email').textContent = data.email;
+            document.getElementById('detail-phone').textContent = data.phone || 'Not provided';
             document.getElementById('detail-message').textContent = data.message;
             document.getElementById('detail-date').textContent = date.toLocaleString();
             
@@ -349,7 +355,7 @@ async function viewDetails(id) {
     }
 }
 
-// Delete a submission - FIXED VERSION
+// Delete a submission
 async function deleteSubmission(id) {
     console.log('Deleting submission:', id, typeof id);
     
@@ -381,7 +387,7 @@ async function deleteSubmission(id) {
     }
 }
 
-// Export data as CSV
+// Export data as CSV - UPDATED WITH PHONE NUMBER
 async function exportData() {
     try {
         const response = await fetch('/api/submissions', {
@@ -395,10 +401,10 @@ async function exportData() {
             return;
         }
         
-        let csvContent = "ID,Name,Email,Message,Date\n";
+        let csvContent = "ID,Name,Email,Phone,Message,Date\n";
         
         data.forEach(submission => {
-            csvContent += `"${submission.id}","${submission.name}","${submission.email}","${submission.message.replace(/"/g, '""')}","${submission.submitted_at}"\n`;
+            csvContent += `"${submission.id}","${submission.name}","${submission.email}","${submission.phone || ''}","${submission.message.replace(/"/g, '""')}","${submission.submitted_at}"\n`;
         });
         
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -452,37 +458,6 @@ function updateRefreshInterval() {
         autoRefreshInterval = setInterval(loadSubmissions, interval);
     }
 }
-
-// Add this debug function
-async function debugAPI() {
-    console.log('Debugging API endpoints...');
-    
-    try {
-        // Test authentication status
-        const authResponse = await fetch('/api/admin/status', { credentials: 'include' });
-        console.log('Auth status:', authResponse.status, await authResponse.json());
-        
-        // Test submissions endpoint
-        const submissionsResponse = await fetch('/api/submissions', { credentials: 'include' });
-        console.log('Submissions status:', submissionsResponse.status);
-        const submissions = await submissionsResponse.json();
-        console.log('Submissions data:', submissions);
-        
-        if (submissions.length > 0) {
-            // Test single submission endpoint
-            const singleResponse = await fetch(`/api/submissions/${submissions[0].id}`, { 
-                credentials: 'include' 
-            });
-            console.log('Single submission status:', singleResponse.status);
-            console.log('Single submission data:', await singleResponse.json());
-        }
-    } catch (error) {
-        console.error('Debug error:', error);
-    }
-}
-
-// Call it when needed for debugging
-// debugAPI();
 
 // Make functions available globally for HTML onclick attributes if needed
 window.loadSubmissions = loadSubmissions;
