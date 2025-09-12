@@ -4,7 +4,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
+const Database = require('better-sqlite3');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
@@ -27,14 +27,15 @@ if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true });
 }
 
-// Database setup
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error('Error opening database:', err);
-  } else {
-    console.log('Connected to SQLite database at:', dbPath);
-  }
-});
+// Database setup with better-sqlite3
+let db;
+try {
+  db = new Database(dbPath);
+  console.log('Connected to SQLite database at:', dbPath);
+} catch (err) {
+  console.error('Error opening database:', err);
+  process.exit(1);
+}
 
 // Middleware
 app.use(cors({
@@ -74,73 +75,53 @@ app.use(session({
 }));
 
 // Create tables
-db.serialize(() => {
-    // Create admin users table first
-    db.run(`
-        CREATE TABLE IF NOT EXISTS admin_users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE,
-            password_hash TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    `, (err) => {
-        if (err) {
-            console.error('Error creating admin_users table:', err);
-        } else {
-            console.log('Admin users table ready');
-            
-            // Create admin user
-            const username = 'Sanud119@gmail.com';
-            const password = 'Sugam@2008';
-            
-            // Check if user already exists
-            db.get('SELECT * FROM admin_users WHERE username = ?', [username], (err, user) => {
-                if (err) {
-                    console.error('Error checking admin user:', err);
-                    return;
-                }
-                
-                if (!user) {
-                    console.log('Creating admin user...');
-                    bcrypt.hash(password, 12, (err, hash) => {
-                        if (err) {
-                            console.error('Error hashing password:', err);
-                            return;
-                        }
-                        
-                        db.run('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)', 
-                            [username, hash], function(err) {
-                            if (err) {
-                                console.error('Error creating admin user:', err);
-                            } else {
-                                console.log('Admin user created successfully with ID:', this.lastID);
-                            }
-                        });
-                    });
-                } else {
-                    console.log('Admin user already exists');
-                }
-            });
-        }
-    });
+db.exec(`
+    CREATE TABLE IF NOT EXISTS admin_users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE,
+        password_hash TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+`);
+console.log('Admin users table ready');
 
-    // Create submissions table
-    db.run(`
-        CREATE TABLE IF NOT EXISTS submissions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            email TEXT,
-            message TEXT,
-            submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    `, (err) => {
+db.exec(`
+    CREATE TABLE IF NOT EXISTS submissions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        email TEXT,
+        message TEXT,
+        submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+`);
+console.log('Submissions table ready');
+
+// Create admin user
+const username = 'Sanud119@gmail.com';
+const password = 'Sugam@2008';
+
+// Check if user already exists
+const userCheck = db.prepare('SELECT * FROM admin_users WHERE username = ?').get(username);
+
+if (!userCheck) {
+    console.log('Creating admin user...');
+    bcrypt.hash(password, 12, (err, hash) => {
         if (err) {
-            console.error('Error creating submissions table:', err);
-        } else {
-            console.log('Submissions table ready');
+            console.error('Error hashing password:', err);
+            return;
+        }
+        
+        try {
+            const insert = db.prepare('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)');
+            const result = insert.run(username, hash);
+            console.log('Admin user created successfully with ID:', result.lastInsertRowid);
+        } catch (err) {
+            console.error('Error creating admin user:', err);
         }
     });
-});
+} else {
+    console.log('Admin user already exists');
+}
 
 // Authentication middleware
 function requireAuth(req, res, next) {
@@ -159,11 +140,8 @@ app.post('/api/admin/login', (req, res) => {
         return res.status(400).json({ success: false, error: 'Username and password required' });
     }
     
-    db.get('SELECT * FROM admin_users WHERE username = ?', [username], (err, user) => {
-        if (err) {
-            console.error('Database error:', err);
-            return res.status(500).json({ success: false, error: 'Database error' });
-        }
+    try {
+        const user = db.prepare('SELECT * FROM admin_users WHERE username = ?').get(username);
         
         if (!user) {
             return res.status(401).json({ success: false, error: 'Invalid credentials' });
@@ -189,7 +167,10 @@ app.post('/api/admin/login', (req, res) => {
                 res.status(401).json({ success: false, error: 'Invalid credentials' });
             }
         });
-    });
+    } catch (err) {
+        console.error('Database error:', err);
+        return res.status(500).json({ success: false, error: 'Database error' });
+    }
 });
 
 // Logout endpoint
@@ -218,24 +199,25 @@ app.post('/api/form/submit', (req, res) => {
         return res.status(400).json({ success: false, error: 'All fields required' });
     }
     
-    const stmt = db.prepare('INSERT INTO submissions (name, email, message) VALUES (?, ?, ?)');
-    stmt.run(name, email, message, function(err) {
-        if (err) {
-            return res.status(500).json({ success: false, error: 'Database error' });
-        }
-        res.json({ success: true, id: this.lastID });
-    });
-    stmt.finalize();
+    try {
+        const stmt = db.prepare('INSERT INTO submissions (name, email, message) VALUES (?, ?, ?)');
+        const result = stmt.run(name, email, message);
+        res.json({ success: true, id: result.lastInsertRowid });
+    } catch (err) {
+        console.error('Database error:', err);
+        res.status(500).json({ success: false, error: 'Database error' });
+    }
 });
 
 // Protected API endpoints
 app.get('/api/submissions', requireAuth, (req, res) => {
-    db.all('SELECT * FROM submissions ORDER BY submitted_at DESC', (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database error' });
-        }
+    try {
+        const rows = db.prepare('SELECT * FROM submissions ORDER BY submitted_at DESC').all();
         res.json(rows);
-    });
+    } catch (err) {
+        console.error('Database error:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
 });
 
 // Get a specific submission (protected)
@@ -247,15 +229,17 @@ app.get('/api/submissions/:id', requireAuth, (req, res) => {
         return res.status(400).json({ error: 'Invalid submission ID' });
     }
     
-    db.get('SELECT * FROM submissions WHERE id = ?', [id], (err, row) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database error' });
-        }
+    try {
+        const row = db.prepare('SELECT * FROM submissions WHERE id = ?').get(id);
+        
         if (!row) {
             return res.status(404).json({ error: 'Submission not found' });
         }
         res.json(row);
-    });
+    } catch (err) {
+        console.error('Database error:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
 });
 
 // Delete a submission (protected)
@@ -267,44 +251,36 @@ app.delete('/api/submissions/:id', requireAuth, (req, res) => {
         return res.status(400).json({ error: 'Invalid submission ID' });
     }
     
-    db.run('DELETE FROM submissions WHERE id = ?', [id], function(err) {
-        if (err) {
-            return res.status(500).json({ error: 'Database error' });
-        }
-        if (this.changes === 0) {
+    try {
+        const stmt = db.prepare('DELETE FROM submissions WHERE id = ?');
+        const result = stmt.run(id);
+        
+        if (result.changes === 0) {
             return res.status(404).json({ error: 'Submission not found' });
         }
         res.json({ success: true, message: 'Submission deleted successfully' });
-    });
+    } catch (err) {
+        console.error('Database error:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
 });
 
 // Get statistics (protected)
 app.get('/api/statistics', requireAuth, (req, res) => {
-    const queries = [
-        'SELECT COUNT(*) as total FROM submissions',
-        'SELECT COUNT(*) as today FROM submissions WHERE DATE(submitted_at) = DATE("now")',
-        'SELECT COUNT(*) as week FROM submissions WHERE submitted_at >= DATE("now", "-7 days")'
-    ];
-    
-    db.serialize(() => {
-        db.get(queries[0], (err, totalResult) => {
-            if (err) return res.status(500).json({ error: 'Database error' });
-            
-            db.get(queries[1], (err, todayResult) => {
-                if (err) return res.status(500).json({ error: 'Database error' });
-                
-                db.get(queries[2], (err, weekResult) => {
-                    if (err) return res.status(500).json({ error: 'Database error' });
-                    
-                    res.json({
-                        total: totalResult.total,
-                        today: todayResult.today,
-                        week: weekResult.week
-                    });
-                });
-            });
+    try {
+        const totalResult = db.prepare('SELECT COUNT(*) as total FROM submissions').get();
+        const todayResult = db.prepare('SELECT COUNT(*) as today FROM submissions WHERE DATE(submitted_at) = DATE("now")').get();
+        const weekResult = db.prepare('SELECT COUNT(*) as week FROM submissions WHERE submitted_at >= DATE("now", "-7 days")').get();
+        
+        res.json({
+            total: totalResult.total,
+            today: todayResult.today,
+            week: weekResult.week
         });
-    });
+    } catch (err) {
+        console.error('Database error:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
 });
 
 // Serve JavaScript files
@@ -348,14 +324,9 @@ app.use((err, req, res, next) => {
 // Graceful shutdown
 process.on('SIGINT', () => {
   console.log('\nShutting down gracefully...');
-  db.close((err) => {
-    if (err) {
-      console.error('Error closing database:', err);
-    } else {
-      console.log('Database connection closed.');
-    }
-    process.exit(0);
-  });
+  db.close();
+  console.log('Database connection closed.');
+  process.exit(0);
 });
 
 app.listen(PORT, () => {
