@@ -6,7 +6,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
-const session = require('express-session'); // ONLY ONE session require
+const session = require('express-session');
+const FileStore = require('session-file-store')(session);
 const crypto = require('crypto');
 const fs = require('fs');
 const { Low } = require('lowdb');
@@ -18,6 +19,10 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Use environment secret or generate one
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex');
+
+// Environment-specific settings
+const isProduction = NODE_ENV === 'production';
+const frontendUrl = isProduction ? 'https://ajk-cleaning.onrender.com' : 'http://localhost:3000';
 
 // Database setup with lowdb
 const dbPath = process.env.DB_PATH || path.join(__dirname, 'db.json');
@@ -86,11 +91,16 @@ async function initializeDB() {
   }
 }
 
-// Middleware
+// CORS configuration for Render
 app.use(cors({
-    origin: true,
-    credentials: true
+    origin: frontendUrl,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Handle preflight requests
+app.options('*', cors());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -110,57 +120,32 @@ app.use((req, res, next) => {
   next();
 });
 
-// Session configuration - ONLY ONE SESSION CONFIG
+// Session configuration for Render production
 app.use(session({
     secret: SESSION_SECRET,
     resave: true,
     saveUninitialized: false,
+    store: new FileStore({
+        path: path.join(__dirname, 'sessions'),
+        ttl: 86400 // 24 hours
+    }),
     cookie: { 
-        secure: NODE_ENV === 'production',
+        secure: isProduction,
         httpOnly: true,
-        sameSite: NODE_ENV === 'production' ? 'none' : 'lax',
+        sameSite: isProduction ? 'none' : 'lax',
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
 
-// ... rest of your code (authentication middleware, routes, etc.) ...
-
-// Middleware
-app.use(cors({
-    origin: true,
-    credentials: true
-}));
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-// Updated CSP middleware to allow external resources
-app.use((req, res, next) => {
-  res.setHeader(
-    'Content-Security-Policy',
-    "default-src 'self'; " +
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://gc.kis.v2.scr.kaspersky.com; " +
-    "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://gc.kis.v2.scr.kaspersky.com; " +
-    "img-src 'self' data: https: blob: https://images.unsplash.com https://randomuser.me https://gc.kis.v2.scr.kaspersky.com; " +
-    "font-src 'self' https://cdnjs.cloudflare.com; " +
-    "connect-src 'self' http://localhost:3000 ws://gc.kis.v2.scr.kaspersky.com; " +
-    "frame-src 'self' https://gc.kis.v2.scr.kaspersky.com;"
-  );
-  next();
+// Test endpoint to check session
+app.get('/api/test', (req, res) => {
+    res.json({
+        authenticated: !!req.session.authenticated,
+        sessionId: req.sessionID,
+        environment: NODE_ENV,
+        frontendUrl: frontendUrl
+    });
 });
-
-// Session configuration - production ready
-app.use(session({
-    secret: SESSION_SECRET,
-    resave: true,
-    saveUninitialized: false,
-    cookie: { 
-        secure: NODE_ENV === 'production',
-        httpOnly: true,
-        sameSite: NODE_ENV === 'production' ? 'none' : 'lax',
-        maxAge: 24 * 60 * 60 * 1000
-    }
-}));
 
 // Authentication middleware
 function requireAuth(req, res, next) {
@@ -207,7 +192,7 @@ app.post('/api/admin/logout', (req, res) => {
     });
 });
 
-// Check authentication status - FIXED ROUTE
+// Check authentication status
 app.get('/api/admin/status', (req, res) => {
     res.json({ 
         authenticated: !!(req.session && req.session.authenticated),
@@ -215,7 +200,7 @@ app.get('/api/admin/status', (req, res) => {
     });
 });
 
-// Form submission endpoint - UPDATED WITH PHONE NUMBER
+// Form submission endpoint
 app.post('/api/form/submit', async (req, res) => {
     const { name, email, phone, message } = req.body;
     
@@ -228,7 +213,7 @@ app.post('/api/form/submit', async (req, res) => {
         id: Date.now(),
         name,
         email,
-        phone: phone || '', // Add phone field (optional)
+        phone: phone || '',
         message,
         submitted_at: new Date().toISOString()
     };
@@ -250,11 +235,10 @@ app.get('/api/submissions', requireAuth, async (req, res) => {
     }
 });
 
-// Get a specific submission (protected) - FIXED ROUTE
+// Get a specific submission
 app.get('/api/submissions/:id', requireAuth, async (req, res) => {
     const id = parseInt(req.params.id);
     
-    // Validate ID
     if (!id || isNaN(id)) {
         return res.status(400).json({ error: 'Invalid submission ID' });
     }
@@ -273,11 +257,10 @@ app.get('/api/submissions/:id', requireAuth, async (req, res) => {
     }
 });
 
-// Delete a submission (protected) - FIXED ROUTE
+// Delete a submission
 app.delete('/api/submissions/:id', requireAuth, async (req, res) => {
     const id = parseInt(req.params.id);
     
-    // Validate ID
     if (!id || isNaN(id)) {
         return res.status(400).json({ error: 'Invalid submission ID' });
     }
@@ -299,7 +282,7 @@ app.delete('/api/submissions/:id', requireAuth, async (req, res) => {
     }
 });
 
-// Get statistics (protected)
+// Get statistics
 app.get('/api/statistics', requireAuth, async (req, res) => {
     try {
         await db.read();
@@ -370,9 +353,10 @@ initializeDB().then(() => {
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
         console.log(`Environment: ${NODE_ENV}`);
+        console.log(`Frontend URL: ${frontendUrl}`);
         console.log(`Database path: ${dbPath}`);
-        console.log(`Main site: http://localhost:${PORT}/`);
-        console.log(`Admin login: http://localhost:${PORT}/admin/login`);
+        console.log(`Main site: ${frontendUrl}/`);
+        console.log(`Admin login: ${frontendUrl}/admin/login`);
     });
 }).catch(err => {
     console.error('Failed to initialize database:', err);
