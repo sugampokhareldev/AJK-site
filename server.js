@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
-const session = require('express-session');
 const crypto = require('crypto');
 const fs = require('fs');
 const { Low } = require('lowdb');
