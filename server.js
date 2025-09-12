@@ -22,7 +22,6 @@ const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(64).toSt
 
 // Environment-specific settings
 const isProduction = NODE_ENV === 'production';
-const frontendUrl = isProduction ? 'https://ajk-cleaning.onrender.com' : 'http://localhost:3000';
 
 // Database setup with lowdb
 const dbPath = process.env.DB_PATH || path.join(__dirname, 'db.json');
@@ -91,9 +90,9 @@ async function initializeDB() {
   }
 }
 
-// CORS configuration for Render
+// CORS configuration for Render - ALLOW ALL ORIGINS FOR NOW
 app.use(cors({
-    origin: frontendUrl,
+    origin: true, // Allow all origins temporarily
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -114,7 +113,7 @@ app.use((req, res, next) => {
     "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://gc.kis.v2.scr.kaspersky.com; " +
     "img-src 'self' data: https: blob: https://images.unsplash.com https://randomuser.me https://gc.kis.v2.scr.kaspersky.com; " +
     "font-src 'self' https://cdnjs.cloudflare.com; " +
-    "connect-src 'self' http://localhost:3000 ws://gc.kis.v2.scr.kaspersky.com; " +
+    "connect-src 'self' ws://gc.kis.v2.scr.kaspersky.com; " + // REMOVED localhost:3000
     "frame-src 'self' https://gc.kis.v2.scr.kaspersky.com;"
   );
   next();
@@ -143,7 +142,7 @@ app.get('/api/test', (req, res) => {
         authenticated: !!req.session.authenticated,
         sessionId: req.sessionID,
         environment: NODE_ENV,
-        frontendUrl: frontendUrl
+        port: PORT
     });
 });
 
@@ -350,13 +349,11 @@ app.use((err, req, res, next) => {
 
 // Initialize and start server
 initializeDB().then(() => {
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
         console.log(`Server running on port ${PORT}`);
         console.log(`Environment: ${NODE_ENV}`);
-        console.log(`Frontend URL: ${frontendUrl}`);
         console.log(`Database path: ${dbPath}`);
-        console.log(`Main site: ${frontendUrl}/`);
-        console.log(`Admin login: ${frontendUrl}/admin/login`);
+        console.log(`Server ready for form submissions`);
     });
 }).catch(err => {
     console.error('Failed to initialize database:', err);
