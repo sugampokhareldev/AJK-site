@@ -309,20 +309,29 @@ function updateLastRefreshed(isError = false) {
 }
 
 // View submission details
+// View submission details - FIXED VERSION
 async function viewDetails(id) {
-    console.log('Viewing details for submission:', id);
+    console.log('Viewing details for submission:', id, typeof id);
+    
     try {
         const response = await fetch(`/api/submissions/${id}`, {
             credentials: 'include'
         });
+        
+        console.log('Detail response status:', response.status);
+        
+        if (response.status === 404) {
+            throw new Error('Submission not found');
+        }
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const data = await response.json();
+        console.log('Detail data received:', data);
         
-        if (data) {
+        if (data && data.id) {
             const date = new Date(data.submitted_at);
             document.getElementById('detail-id').textContent = data.id;
             document.getElementById('detail-name').textContent = data.name;
@@ -331,15 +340,19 @@ async function viewDetails(id) {
             document.getElementById('detail-date').textContent = date.toLocaleString();
             
             document.getElementById('detailView').style.display = 'block';
+        } else {
+            throw new Error('Invalid response data');
         }
     } catch (error) {
         console.error('Error loading submission details:', error);
-        showNotification('Error loading submission details: ' + error.message, 'error');
+        showNotification('Error: ' + error.message, 'error');
     }
 }
 
-// Delete a submission
+// Delete a submission - FIXED VERSION
 async function deleteSubmission(id) {
+    console.log('Deleting submission:', id, typeof id);
+    
     if (!confirm('Are you sure you want to delete this submission? This action cannot be undone.')) {
         return;
     }
@@ -350,18 +363,21 @@ async function deleteSubmission(id) {
             credentials: 'include'
         });
         
-        const data = await response.json();
+        console.log('Delete response status:', response.status);
         
-        if (data.success) {
+        const data = await response.json();
+        console.log('Delete response data:', data);
+        
+        if (response.ok && data.success) {
             showNotification('Submission deleted successfully!');
             loadSubmissions();
             document.getElementById('detailView').style.display = 'none';
         } else {
-            showNotification('Error: ' + data.error, 'error');
+            throw new Error(data.error || 'Delete failed');
         }
     } catch (error) {
         console.error('Error deleting submission:', error);
-        showNotification('Error deleting submission: ' + error.message, 'error');
+        showNotification('Error: ' + error.message, 'error');
     }
 }
 
@@ -436,6 +452,37 @@ function updateRefreshInterval() {
         autoRefreshInterval = setInterval(loadSubmissions, interval);
     }
 }
+
+// Add this debug function
+async function debugAPI() {
+    console.log('Debugging API endpoints...');
+    
+    try {
+        // Test authentication status
+        const authResponse = await fetch('/api/admin/status', { credentials: 'include' });
+        console.log('Auth status:', authResponse.status, await authResponse.json());
+        
+        // Test submissions endpoint
+        const submissionsResponse = await fetch('/api/submissions', { credentials: 'include' });
+        console.log('Submissions status:', submissionsResponse.status);
+        const submissions = await submissionsResponse.json();
+        console.log('Submissions data:', submissions);
+        
+        if (submissions.length > 0) {
+            // Test single submission endpoint
+            const singleResponse = await fetch(`/api/submissions/${submissions[0].id}`, { 
+                credentials: 'include' 
+            });
+            console.log('Single submission status:', singleResponse.status);
+            console.log('Single submission data:', await singleResponse.json());
+        }
+    } catch (error) {
+        console.error('Debug error:', error);
+    }
+}
+
+// Call it when needed for debugging
+// debugAPI();
 
 // Make functions available globally for HTML onclick attributes if needed
 window.loadSubmissions = loadSubmissions;

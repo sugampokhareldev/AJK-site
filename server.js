@@ -4,12 +4,13 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const Database = require('better-sqlite3');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const crypto = require('crypto');
 const fs = require('fs');
+const { Low } = require('lowdb');
+const { JSONFile } = require('lowdb/node');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,8 +19,8 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 // Use environment secret or generate one
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex');
 
-// Database path configuration for Render
-const dbPath = process.env.DB_PATH || path.join(__dirname, 'submissions.db');
+// Database setup with lowdb
+const dbPath = process.env.DB_PATH || path.join(__dirname, 'db.json');
 const dbDir = path.dirname(dbPath);
 
 // Ensure the directory exists
@@ -27,14 +28,33 @@ if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true });
 }
 
-// Database setup with better-sqlite3
-let db;
-try {
-  db = new Database(dbPath);
-  console.log('Connected to SQLite database at:', dbPath);
-} catch (err) {
-  console.error('Error opening database:', err);
-  process.exit(1);
+// Initialize database
+const adapter = new JSONFile(dbPath);
+const db = new Low(adapter, { submissions: [], admin_users: [] });
+
+// Initialize database
+async function initializeDB() {
+  await db.read();
+  db.data = db.data || { submissions: [], admin_users: [] };
+  
+  // Create admin user if it doesn't exist
+  const adminUser = db.data.admin_users.find(user => user.username === 'Sanud119@gmail.com');
+  if (!adminUser) {
+    console.log('Creating admin user...');
+    const hash = await bcrypt.hash('Sugam@2008', 12);
+    db.data.admin_users.push({
+      id: Date.now(),
+      username: 'Sanud119@gmail.com',
+      password_hash: hash,
+      created_at: new Date().toISOString()
+    });
+    await db.write();
+    console.log('Admin user created successfully');
+  } else {
+    console.log('Admin user already exists');
+  }
+  
+  console.log('Database ready at:', dbPath);
 }
 
 // Middleware
@@ -74,55 +94,6 @@ app.use(session({
     }
 }));
 
-// Create tables
-db.exec(`
-    CREATE TABLE IF NOT EXISTS admin_users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE,
-        password_hash TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-`);
-console.log('Admin users table ready');
-
-db.exec(`
-    CREATE TABLE IF NOT EXISTS submissions (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        email TEXT,
-        message TEXT,
-        submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-`);
-console.log('Submissions table ready');
-
-// Create admin user
-const username = 'Sanud119@gmail.com';
-const password = 'Sugam@2008';
-
-// Check if user already exists
-const userCheck = db.prepare('SELECT * FROM admin_users WHERE username = ?').get(username);
-
-if (!userCheck) {
-    console.log('Creating admin user...');
-    bcrypt.hash(password, 12, (err, hash) => {
-        if (err) {
-            console.error('Error hashing password:', err);
-            return;
-        }
-        
-        try {
-            const insert = db.prepare('INSERT INTO admin_users (username, password_hash) VALUES (?, ?)');
-            const result = insert.run(username, hash);
-            console.log('Admin user created successfully with ID:', result.lastInsertRowid);
-        } catch (err) {
-            console.error('Error creating admin user:', err);
-        }
-    });
-} else {
-    console.log('Admin user already exists');
-}
-
 // Authentication middleware
 function requireAuth(req, res, next) {
     if (req.session && req.session.authenticated) {
@@ -133,43 +104,28 @@ function requireAuth(req, res, next) {
 }
 
 // Login endpoint
-app.post('/api/admin/login', (req, res) => {
+app.post('/api/admin/login', async (req, res) => {
     const { username, password } = req.body;
     
     if (!username || !password) {
         return res.status(400).json({ success: false, error: 'Username and password required' });
     }
     
-    try {
-        const user = db.prepare('SELECT * FROM admin_users WHERE username = ?').get(username);
-        
-        if (!user) {
-            return res.status(401).json({ success: false, error: 'Invalid credentials' });
-        }
-        
-        bcrypt.compare(password, user.password_hash, (err, result) => {
-            if (err) {
-                console.error('Error comparing passwords:', err);
-                return res.status(500).json({ success: false, error: 'Server error' });
-            }
-            
-            if (result) {
-                req.session.authenticated = true;
-                req.session.user = { id: user.id, username: user.username };
-                
-                req.session.save((err) => {
-                    if (err) {
-                        return res.status(500).json({ success: false, error: 'Session error' });
-                    }
-                    res.json({ success: true, message: 'Login successful' });
-                });
-            } else {
-                res.status(401).json({ success: false, error: 'Invalid credentials' });
-            }
-        });
-    } catch (err) {
-        console.error('Database error:', err);
-        return res.status(500).json({ success: false, error: 'Database error' });
+    await db.read();
+    const user = db.data.admin_users.find(u => u.username === username);
+    
+    if (!user) {
+        return res.status(401).json({ success: false, error: 'Invalid credentials' });
+    }
+    
+    const result = await bcrypt.compare(password, user.password_hash);
+    
+    if (result) {
+        req.session.authenticated = true;
+        req.session.user = { id: user.id, username: user.username };
+        res.json({ success: true, message: 'Login successful' });
+    } else {
+        res.status(401).json({ success: false, error: 'Invalid credentials' });
     }
 });
 
@@ -183,7 +139,7 @@ app.post('/api/admin/logout', (req, res) => {
     });
 });
 
-// Check authentication status
+// Check authentication status - FIXED ROUTE
 app.get('/api/admin/status', (req, res) => {
     res.json({ 
         authenticated: !!(req.session && req.session.authenticated),
@@ -192,37 +148,42 @@ app.get('/api/admin/status', (req, res) => {
 });
 
 // Form submission endpoint
-app.post('/api/form/submit', (req, res) => {
+app.post('/api/form/submit', async (req, res) => {
     const { name, email, message } = req.body;
     
     if (!name || !email || !message) {
         return res.status(400).json({ success: false, error: 'All fields required' });
     }
     
-    try {
-        const stmt = db.prepare('INSERT INTO submissions (name, email, message) VALUES (?, ?, ?)');
-        const result = stmt.run(name, email, message);
-        res.json({ success: true, id: result.lastInsertRowid });
-    } catch (err) {
-        console.error('Database error:', err);
-        res.status(500).json({ success: false, error: 'Database error' });
-    }
+    await db.read();
+    const submission = {
+        id: Date.now(),
+        name,
+        email,
+        message,
+        submitted_at: new Date().toISOString()
+    };
+    
+    db.data.submissions.push(submission);
+    await db.write();
+    
+    res.json({ success: true, id: submission.id });
 });
 
-// Protected API endpoints
-app.get('/api/submissions', requireAuth, (req, res) => {
+// Protected API endpoints - GET ALL SUBMISSIONS
+app.get('/api/submissions', requireAuth, async (req, res) => {
     try {
-        const rows = db.prepare('SELECT * FROM submissions ORDER BY submitted_at DESC').all();
-        res.json(rows);
+        await db.read();
+        res.json(db.data.submissions.reverse());
     } catch (err) {
         console.error('Database error:', err);
         res.status(500).json({ error: 'Database error' });
     }
 });
 
-// Get a specific submission (protected)
-app.get('/api/submissions/:id', requireAuth, (req, res) => {
-    const id = req.params.id;
+// Get a specific submission (protected) - FIXED ROUTE
+app.get('/api/submissions/:id', requireAuth, async (req, res) => {
+    const id = parseInt(req.params.id);
     
     // Validate ID
     if (!id || isNaN(id)) {
@@ -230,21 +191,22 @@ app.get('/api/submissions/:id', requireAuth, (req, res) => {
     }
     
     try {
-        const row = db.prepare('SELECT * FROM submissions WHERE id = ?').get(id);
+        await db.read();
+        const submission = db.data.submissions.find(s => s.id === id);
         
-        if (!row) {
+        if (!submission) {
             return res.status(404).json({ error: 'Submission not found' });
         }
-        res.json(row);
+        res.json(submission);
     } catch (err) {
         console.error('Database error:', err);
         res.status(500).json({ error: 'Database error' });
     }
 });
 
-// Delete a submission (protected)
-app.delete('/api/submissions/:id', requireAuth, (req, res) => {
-    const id = req.params.id;
+// Delete a submission (protected) - FIXED ROUTE
+app.delete('/api/submissions/:id', requireAuth, async (req, res) => {
+    const id = parseInt(req.params.id);
     
     // Validate ID
     if (!id || isNaN(id)) {
@@ -252,12 +214,15 @@ app.delete('/api/submissions/:id', requireAuth, (req, res) => {
     }
     
     try {
-        const stmt = db.prepare('DELETE FROM submissions WHERE id = ?');
-        const result = stmt.run(id);
+        await db.read();
+        const initialLength = db.data.submissions.length;
+        db.data.submissions = db.data.submissions.filter(s => s.id !== id);
         
-        if (result.changes === 0) {
+        if (db.data.submissions.length === initialLength) {
             return res.status(404).json({ error: 'Submission not found' });
         }
+        
+        await db.write();
         res.json({ success: true, message: 'Submission deleted successfully' });
     } catch (err) {
         console.error('Database error:', err);
@@ -266,16 +231,26 @@ app.delete('/api/submissions/:id', requireAuth, (req, res) => {
 });
 
 // Get statistics (protected)
-app.get('/api/statistics', requireAuth, (req, res) => {
+app.get('/api/statistics', requireAuth, async (req, res) => {
     try {
-        const totalResult = db.prepare('SELECT COUNT(*) as total FROM submissions').get();
-        const todayResult = db.prepare('SELECT COUNT(*) as today FROM submissions WHERE DATE(submitted_at) = DATE("now")').get();
-        const weekResult = db.prepare('SELECT COUNT(*) as week FROM submissions WHERE submitted_at >= DATE("now", "-7 days")').get();
+        await db.read();
+        const submissions = db.data.submissions;
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        
+        const todaySubmissions = submissions.filter(s => 
+            new Date(s.submitted_at) >= today
+        );
+        
+        const weekSubmissions = submissions.filter(s => 
+            new Date(s.submitted_at) >= weekAgo
+        );
         
         res.json({
-            total: totalResult.total,
-            today: todayResult.today,
-            week: weekResult.week
+            total: submissions.length,
+            today: todaySubmissions.length,
+            week: weekSubmissions.length
         });
     } catch (err) {
         console.error('Database error:', err);
@@ -310,8 +285,8 @@ app.get('/admin', requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-// 404 handler for API routes - Use regex pattern to avoid path-to-regexp error
-app.all(/\/api\/.+/, (req, res) => {
+// 404 handler for API routes
+app.all('/api/*', (req, res) => {
     res.status(404).json({ error: 'API endpoint not found' });
 });
 
@@ -321,18 +296,16 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Internal server error' });
 });
 
-// Graceful shutdown
-process.on('SIGINT', () => {
-  console.log('\nShutting down gracefully...');
-  db.close();
-  console.log('Database connection closed.');
-  process.exit(0);
-});
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Environment: ${NODE_ENV}`);
-    console.log(`Database path: ${dbPath}`);
-    console.log(`Main site: http://localhost:${PORT}/`);
-    console.log(`Admin login: http://localhost:${PORT}/admin/login`);
+// Initialize and start server
+initializeDB().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+        console.log(`Environment: ${NODE_ENV}`);
+        console.log(`Database path: ${dbPath}`);
+        console.log(`Main site: http://localhost:${PORT}/`);
+        console.log(`Admin login: http://localhost:${PORT}/admin/login`);
+    });
+}).catch(err => {
+    console.error('Failed to initialize database:', err);
+    process.exit(1);
 });
