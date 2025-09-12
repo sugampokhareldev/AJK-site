@@ -1,4 +1,7 @@
-﻿const express = require('express');
+// Load environment variables
+require('dotenv').config();
+
+const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
@@ -10,8 +13,9 @@ const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
-// Auto-generate secure session secret
+// Use environment secret or generate one
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex');
 
 // Middleware
@@ -23,15 +27,15 @@ app.use(cors({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Session configuration - IMPROVED
+// Session configuration - production ready
 app.use(session({
     secret: SESSION_SECRET,
-    resave: true, // Changed to true for better session persistence
+    resave: true,
     saveUninitialized: false,
     cookie: { 
-        secure: false,
+        secure: NODE_ENV === 'production',
         httpOnly: true,
-        sameSite: 'lax', // Changed to lax for better compatibility
+        sameSite: NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
@@ -110,7 +114,6 @@ db.serialize(() => {
 
 // Authentication middleware
 function requireAuth(req, res, next) {
-    console.log('Auth check - Session authenticated:', req.session.authenticated);
     if (req.session && req.session.authenticated) {
         next();
     } else {
@@ -120,8 +123,6 @@ function requireAuth(req, res, next) {
 
 // Login endpoint
 app.post('/api/admin/login', (req, res) => {
-    console.log('Login attempt received:', req.body);
-    
     const { username, password } = req.body;
     
     if (!username || !password) {
@@ -135,7 +136,6 @@ app.post('/api/admin/login', (req, res) => {
         }
         
         if (!user) {
-            console.log('User not found:', username);
             return res.status(401).json({ success: false, error: 'Invalid credentials' });
         }
         
@@ -146,21 +146,16 @@ app.post('/api/admin/login', (req, res) => {
             }
             
             if (result) {
-                console.log('Login successful for user:', username);
                 req.session.authenticated = true;
                 req.session.user = { id: user.id, username: user.username };
                 
-                // Save session explicitly to ensure persistence
                 req.session.save((err) => {
                     if (err) {
-                        console.error('Error saving session:', err);
                         return res.status(500).json({ success: false, error: 'Session error' });
                     }
-                    console.log('Session saved successfully');
                     res.json({ success: true, message: 'Login successful' });
                 });
             } else {
-                console.log('Login failed: Invalid password for user:', username);
                 res.status(401).json({ success: false, error: 'Invalid credentials' });
             }
         });
@@ -171,17 +166,14 @@ app.post('/api/admin/login', (req, res) => {
 app.post('/api/admin/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
-            console.error('Error destroying session:', err);
             return res.status(500).json({ success: false, error: 'Logout failed' });
         }
-        console.log('Session destroyed successfully');
         res.json({ success: true, message: 'Logout successful' });
     });
 });
 
 // Check authentication status
 app.get('/api/admin/status', (req, res) => {
-    console.log('Status check - Session authenticated:', req.session.authenticated);
     res.json({ 
         authenticated: !!(req.session && req.session.authenticated),
         user: req.session ? req.session.user : null
@@ -208,7 +200,6 @@ app.post('/api/form/submit', (req, res) => {
 
 // Protected API endpoints
 app.get('/api/submissions', requireAuth, (req, res) => {
-    console.log('Fetching submissions for user:', req.session.user.username);
     db.all('SELECT * FROM submissions ORDER BY submitted_at DESC', (err, rows) => {
         if (err) {
             return res.status(500).json({ error: 'Database error' });
@@ -217,39 +208,7 @@ app.get('/api/submissions', requireAuth, (req, res) => {
     });
 });
 
-app.get('/api/submissions/:id', requireAuth, (req, res) => {
-    const id = req.params.id;
-    
-    db.get('SELECT * FROM submissions WHERE id = ?', id, (err, row) => {
-        if (err) {
-            return res.status(500).json({ error: 'Database error' });
-        }
-        
-        if (!row) {
-            return res.status(404).json({ error: 'Submission not found' });
-        }
-        
-        res.json(row);
-    });
-});
-
-app.delete('/api/submissions/:id', requireAuth, (req, res) => {
-    const id = req.params.id;
-    
-    db.run('DELETE FROM submissions WHERE id = ?', id, function(err) {
-        if (err) {
-            return res.status(500).json({ success: false, error: 'Database error' });
-        }
-        
-        if (this.changes === 0) {
-            return res.status(404).json({ success: false, error: 'Submission not found' });
-        }
-        
-        res.json({ success: true });
-    });
-});
-
-// Serve JavaScript files with proper headers
+// Serve JavaScript files
 app.get('/admin.js', (req, res) => {
     res.setHeader('Content-Type', 'application/javascript');
     res.sendFile(path.join(__dirname, 'admin.js'));
@@ -260,34 +219,19 @@ app.get('/admin-login.js', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin-login.js'));
 });
 
-// Static files with proper CSP headers
-app.use(express.static(path.join(__dirname), {
-    setHeaders: (res, filePath) => {
-        if (filePath.endsWith('.html')) {
-            res.setHeader('Content-Security-Policy', 
-                "default-src 'self'; " +
-                "script-src 'self' 'unsafe-hashes'; " +
-                "style-src 'self' 'unsafe-inline'; " +
-                "img-src 'self' data:; " +
-                "connect-src 'self'"
-            );
-        }
-    }
-}));
+// Static files
+app.use(express.static(path.join(__dirname)));
 
-// Serve main page
+// Routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Serve admin login page
 app.get('/admin/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin-login.html'));
 });
 
-// Serve admin panel (protected)
 app.get('/admin', requireAuth, (req, res) => {
-    console.log('Serving admin panel to authenticated user:', req.session.user.username);
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
@@ -297,26 +241,9 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Internal server error' });
 });
 
-// 404 handler
-app.use((req, res) => {
-    res.status(404).json({ error: 'Endpoint not found' });
-});
-
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`Environment: ${NODE_ENV}`);
     console.log(`Main site: http://localhost:${PORT}/`);
     console.log(`Admin login: http://localhost:${PORT}/admin/login`);
-    console.log(`Admin panel: http://localhost:${PORT}/admin`);
-    console.log(`Admin credentials: Sanud119@gmail.com / Sugam@2008`);
-    console.log('Session configuration:');
-    console.log('- resave: true');
-    console.log('- saveUninitialized: false');
-    console.log('- sameSite: lax');
-    
-    // Check if admin.js file exists
-    if (fs.existsSync(path.join(__dirname, 'admin.js'))) {
-        console.log('✓ admin.js file found');
-    } else {
-        console.log('✗ admin.js file not found - please create it');
-    }
 });
