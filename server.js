@@ -18,6 +18,24 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 // Use environment secret or generate one
 const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex');
 
+// Database path configuration for Render
+const dbPath = process.env.DB_PATH || path.join(__dirname, 'submissions.db');
+const dbDir = path.dirname(dbPath);
+
+// Ensure the directory exists
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
+
+// Database setup
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error('Error opening database:', err);
+  } else {
+    console.log('Connected to SQLite database at:', dbPath);
+  }
+});
+
 // Middleware
 app.use(cors({
     origin: true,
@@ -26,6 +44,21 @@ app.use(cors({
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// Updated CSP middleware to allow external resources
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://gc.kis.v2.scr.kaspersky.com; " +
+    "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://gc.kis.v2.scr.kaspersky.com; " +
+    "img-src 'self' data: https: blob: https://images.unsplash.com https://randomuser.me https://gc.kis.v2.scr.kaspersky.com; " +
+    "font-src 'self' https://cdnjs.cloudflare.com; " +
+    "connect-src 'self' http://localhost:3000 ws://gc.kis.v2.scr.kaspersky.com; " +
+    "frame-src 'self' https://gc.kis.v2.scr.kaspersky.com;"
+  );
+  next();
+});
 
 // Session configuration - production ready
 app.use(session({
@@ -39,9 +72,6 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
-
-// Database setup
-const db = new sqlite3.Database('submissions.db');
 
 // Create tables
 db.serialize(() => {
@@ -208,6 +238,75 @@ app.get('/api/submissions', requireAuth, (req, res) => {
     });
 });
 
+// Get a specific submission (protected)
+app.get('/api/submissions/:id', requireAuth, (req, res) => {
+    const id = req.params.id;
+    
+    // Validate ID
+    if (!id || isNaN(id)) {
+        return res.status(400).json({ error: 'Invalid submission ID' });
+    }
+    
+    db.get('SELECT * FROM submissions WHERE id = ?', [id], (err, row) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        if (!row) {
+            return res.status(404).json({ error: 'Submission not found' });
+        }
+        res.json(row);
+    });
+});
+
+// Delete a submission (protected)
+app.delete('/api/submissions/:id', requireAuth, (req, res) => {
+    const id = req.params.id;
+    
+    // Validate ID
+    if (!id || isNaN(id)) {
+        return res.status(400).json({ error: 'Invalid submission ID' });
+    }
+    
+    db.run('DELETE FROM submissions WHERE id = ?', [id], function(err) {
+        if (err) {
+            return res.status(500).json({ error: 'Database error' });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ error: 'Submission not found' });
+        }
+        res.json({ success: true, message: 'Submission deleted successfully' });
+    });
+});
+
+// Get statistics (protected)
+app.get('/api/statistics', requireAuth, (req, res) => {
+    const queries = [
+        'SELECT COUNT(*) as total FROM submissions',
+        'SELECT COUNT(*) as today FROM submissions WHERE DATE(submitted_at) = DATE("now")',
+        'SELECT COUNT(*) as week FROM submissions WHERE submitted_at >= DATE("now", "-7 days")'
+    ];
+    
+    db.serialize(() => {
+        db.get(queries[0], (err, totalResult) => {
+            if (err) return res.status(500).json({ error: 'Database error' });
+            
+            db.get(queries[1], (err, todayResult) => {
+                if (err) return res.status(500).json({ error: 'Database error' });
+                
+                db.get(queries[2], (err, weekResult) => {
+                    if (err) return res.status(500).json({ error: 'Database error' });
+                    
+                    res.json({
+                        total: totalResult.total,
+                        today: todayResult.today,
+                        week: weekResult.week
+                    });
+                });
+            });
+        });
+    });
+});
+
 // Serve JavaScript files
 app.get('/admin.js', (req, res) => {
     res.setHeader('Content-Type', 'application/javascript');
@@ -235,15 +334,34 @@ app.get('/admin', requireAuth, (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
+// 404 handler for API routes - Use regex pattern to avoid path-to-regexp error
+app.all(/\/api\/.+/, (req, res) => {
+    res.status(404).json({ error: 'API endpoint not found' });
+});
+
 // Error handling
 app.use((err, req, res, next) => {
     console.error('Server error:', err);
     res.status(500).json({ error: 'Internal server error' });
 });
 
+// Graceful shutdown
+process.on('SIGINT', () => {
+  console.log('\nShutting down gracefully...');
+  db.close((err) => {
+    if (err) {
+      console.error('Error closing database:', err);
+    } else {
+      console.log('Database connection closed.');
+    }
+    process.exit(0);
+  });
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`Environment: ${NODE_ENV}`);
+    console.log(`Database path: ${dbPath}`);
     console.log(`Main site: http://localhost:${PORT}/`);
     console.log(`Admin login: http://localhost:${PORT}/admin/login`);
 });

@@ -1,4 +1,4 @@
-// admin.js - Fixed version with event delegation
+// admin.js - Fixed version with proper authentication handling
 console.log('Admin JS loaded successfully!');
 
 let autoRefreshInterval = null;
@@ -7,10 +7,11 @@ let isAutoRefreshEnabled = false;
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing admin panel...');
-    initializeAdminPanel();
+    checkAuthStatus();
+    setupEventListeners();
 });
 
-function initializeAdminPanel() {
+function setupEventListeners() {
     // Set up event listeners using event delegation
     document.addEventListener('click', function(event) {
         // Handle view buttons
@@ -39,6 +40,11 @@ function initializeAdminPanel() {
         if (event.target.id === 'export-btn' || event.target.closest('#export-btn')) {
             exportData();
         }
+        
+        // Handle logout button
+        if (event.target.id === 'logout-btn' || event.target.closest('#logout-btn')) {
+            handleLogout();
+        }
     });
 
     // Set up interval input change listener
@@ -47,8 +53,14 @@ function initializeAdminPanel() {
         refreshIntervalInput.addEventListener('change', updateRefreshInterval);
     }
 
-    // Check authentication status
-    checkAuthStatus();
+    // Set up login form submission
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleLogin();
+        });
+    }
 }
 
 // Check authentication status
@@ -65,15 +77,92 @@ async function checkAuthStatus() {
         
         if (data.authenticated) {
             console.log('User is authenticated, loading submissions...');
+            showAdminPanel();
             loadSubmissions();
         } else {
-            console.log('User not authenticated, redirecting to login...');
-            window.location.href = '/admin/login';
+            console.log('User not authenticated, showing login form...');
+            showLoginForm();
         }
     } catch (error) {
         console.error('Auth check error:', error);
+        showLoginForm();
         showNotification('Authentication check failed: ' + error.message, 'error');
     }
+}
+
+// Handle login
+async function handleLogin() {
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+    
+    if (!username || !password) {
+        showNotification('Please enter both username and password', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password }),
+            credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('Login successful!');
+            showAdminPanel();
+            loadSubmissions();
+        } else {
+            showNotification('Login failed: ' + data.error, 'error');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        showNotification('Login error: ' + error.message, 'error');
+    }
+}
+
+// Handle logout
+async function handleLogout() {
+    try {
+        const response = await fetch('/api/admin/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('Logged out successfully');
+            showLoginForm();
+        } else {
+            showNotification('Logout failed: ' + data.error, 'error');
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+        showNotification('Logout error: ' + error.message, 'error');
+    }
+}
+
+// Show login form
+function showLoginForm() {
+    const loginSection = document.getElementById('login-section');
+    const adminPanel = document.getElementById('admin-panel');
+    
+    if (loginSection) loginSection.style.display = 'block';
+    if (adminPanel) adminPanel.style.display = 'none';
+}
+
+// Show admin panel
+function showAdminPanel() {
+    const loginSection = document.getElementById('login-section');
+    const adminPanel = document.getElementById('admin-panel');
+    
+    if (loginSection) loginSection.style.display = 'none';
+    if (adminPanel) adminPanel.style.display = 'block';
 }
 
 // Function to show notification
@@ -121,8 +210,8 @@ async function loadSubmissions() {
         console.log('Submissions response status:', response.status);
         
         if (response.status === 401) {
-            console.log('Not authorized, redirecting to login...');
-            window.location.href = '/admin/login';
+            console.log('Not authorized, showing login form...');
+            showLoginForm();
             return;
         }
         
@@ -354,4 +443,3 @@ window.viewDetails = viewDetails;
 window.deleteSubmission = deleteSubmission;
 window.exportData = exportData;
 window.toggleAutoRefresh = toggleAutoRefresh;
-
