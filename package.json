@@ -17,7 +17,7 @@
   "author": "Sugam Pokharel",
   "license": "MIT",
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
     "better-sqlite3": "^9.6.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
