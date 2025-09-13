@@ -266,7 +266,7 @@
       }
     }
     
-    /* Live chat styles */
+    /* Live chat styles - Fixed for mobile */
     #chat-box {
       transition: all 0.3s ease;
     }
@@ -340,6 +340,40 @@
     .sticky-cta {
       padding-bottom: constant(safe-area-inset-bottom);
       padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    /* Chat widget mobile fixes */
+    @media (max-width: 768px) {
+      #chat-widget {
+        bottom: 80px; /* Position above the sticky CTA */
+        right: 16px;
+        z-index: 40;
+      }
+      
+      #chat-widget > div:first-child {
+        width: 50px;
+        height: 50px;
+        min-width: 44px;
+        min-height: 44px;
+      }
+      
+      #chat-box {
+        width: 90vw;
+        max-width: 320px;
+        right: -10px;
+        bottom: calc(100% + 10px);
+      }
+      
+      #chat-box .h-64 {
+        height: 200px;
+      }
+    }
+    
+    /* Ensure chat widget doesn't interfere with sticky CTA on mobile */
+    @media (max-width: 768px) {
+      .sticky-cta {
+        z-index: 50;
+      }
     }
   </style>
   <script>
@@ -761,8 +795,8 @@
     </a>
   </div>
 
-  <!-- Live Chat Widget -->
-  <div id="chat-widget" class="fixed bottom-6 right-6 z-50">
+  <!-- Live Chat Widget - Fixed for mobile -->
+  <div id="chat-widget" class="fixed bottom-6 right-6 z-40">
     <div class="bg-primary text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:bg-primary-dark transition-colors" aria-label="Open chat" role="button" tabindex="0">
       <i class="fas fa-comment-alt text-xl"></i>
     </div>
