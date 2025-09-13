@@ -7,7 +7,7 @@ const path = require('path');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
-const FileStore = require('session-file-store')(session);
+const MemoryStore = require('memorystore')(session);
 const crypto = require('crypto');
 const fs = require('fs');
 const { Low } = require('lowdb');
@@ -189,14 +189,13 @@ app.use(session({
     secret: SESSION_SECRET,
     resave: true,
     saveUninitialized: false,
-    store: new FileStore({
-        path: path.join(__dirname, 'sessions'),
-        ttl: 86400 // 24 hours
+    store: new MemoryStore({
+        checkPeriod: 86400000 // prune expired entries every 24h
     }),
     cookie: { 
-        secure: isProduction, // true in production
+        secure: isProduction,
         httpOnly: true,
-        sameSite: isProduction ? 'none' : 'lax', // CRITICAL: 'none' for cross-site
+        sameSite: isProduction ? 'none' : 'lax',
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
