@@ -107,11 +107,13 @@
         <form id="loginForm">
             <div class="form-group">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required value="Sanud119@gmail.com">
+                <!-- REMOVE THE value ATTRIBUTE -->
+                <input type="text" id="username" name="username" required>
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required value="Sugam@2008">
+                <!-- REMOVE THE value ATTRIBUTE -->
+                <input type="password" id="password" name="password" required>
             </div>
             <button type="submit">Login</button>
         </form>
@@ -121,11 +123,10 @@
         <div id="successMessage" class="success"></div>
         
         <div class="info">
-            <!-- Default credentials: Sanud119@gmail.com / Sugam@2008 -->
+            Contact administrator for access
         </div>
     </div>
 
-    <!-- External JavaScript file -->
     <script src="/admin-login.js"></script>
 </body>
 </html>
