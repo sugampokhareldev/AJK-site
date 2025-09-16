@@ -82,6 +82,80 @@ function isIpLocked(ip) {
 }
 // ==================== END BRUTE FORCE PROTECTION ====================
 
+// Database setup with lowdb
+const dbPath = process.env.DB_PATH || path.join(__dirname, 'db.json');
+const dbDir = path.dirname(dbPath);
+
+// Ensure the directory exists
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
+
+// Initialize database
+const adapter = new JSONFile(dbPath);
+const db = new Low(adapter, { submissions: [], admin_users: [] });
+
+// Initialize database with error handling
+async function initializeDB() {
+  try {
+    // Ensure the directory exists
+    if (!fs.existsSync(dbDir)) {
+      fs.mkdirSync(dbDir, { recursive: true });
+      console.log('Created database directory:', dbDir);
+    }
+    
+    await db.read();
+    
+    // Initialize if database is empty or corrupted
+    if (!db.data || typeof db.data !== 'object') {
+      console.log('Initializing new database...');
+      db.data = { submissions: [], admin_users: [] };
+    }
+    
+    // Ensure arrays exist
+    db.data.submissions = db.data.submissions || [];
+    db.data.admin_users = db.data.admin_users || [];
+    
+    // Create admin user if it doesn't exist
+    const adminUser = db.data.admin_users.find(user => user.username === 'Sanud119@gmail.com');
+    if (!adminUser) {
+      console.log('Creating admin user...');
+      const hash = await bcrypt.hash('Sugam@2008', 12);
+      db.data.admin_users.push({
+        id: Date.now(),
+        username: 'Sanud119@gmail.com',
+        password_hash: hash,
+        created_at: new Date().toISOString()
+      });
+      await db.write();
+      console.log('Admin user created successfully');
+    }
+    
+    console.log('Database ready at:', dbPath);
+    
+  } catch (error) {
+    console.error('Database initialization error:', error);
+    // Try to create fresh database
+    try {
+      db.data = { submissions: [], admin_users: [] };
+      
+      const hash = await bcrypt.hash('Sugam@2008', 12);
+      db.data.admin_users.push({
+        id: Date.now(),
+        username: 'Sanud119@gmail.com',
+        password_hash: hash,
+        created_at: new Date().toISOString()
+      });
+      
+      await db.write();
+      console.log('Fresh database created successfully');
+    } catch (writeError) {
+      console.error('Failed to create fresh database:', writeError);
+      throw writeError;
+    }
+  }
+}
+
 // ==================== WEBSOCKET CHAT SERVER ====================
 const clients = new Map(); // Using Map for better client management
 const chatHistory = [];
@@ -142,153 +216,159 @@ wss.on('connection', (ws, request) => {
     // Notify admin about new connection
     notifyAdmin(`New client connected: ${clientIp} (${clientId})`);
     
-// In your WebSocket message handler in server.js
-ws.on('message', (data) => {
-    try {
-        const message = JSON.parse(data);
-        
-        // Basic message validation
-        if (!message || typeof message !== 'object') {
-            console.log('Invalid message format from:', clientIp);
-            return;
-        }
-        
-        switch (message.type) {
-            case 'chat':
-                // Validate and sanitize message - handle both 'message' and 'text' fields
-                const messageText = message.message || message.text;
-                if (typeof messageText !== 'string' || messageText.trim().length === 0) {
-                    console.log('Invalid chat message from:', clientIp);
-                    return;
-                }
-                
-                const sanitizedText = validator.escape(messageText.trim()).substring(0, 500);
-                
-                // Store and broadcast chat message
-                const chatMessage = {
-                    id: Date.now(),
-                    type: 'chat',
-                    name: client.name,
-                    message: sanitizedText, // Use 'message' field consistently
-                    timestamp: new Date().toISOString(),
-                    isAdmin: client.isAdmin,
-                    clientId: clientId
-                };
-                
-                chatHistory.push(chatMessage);
-                
-                // Broadcast to ALL clients (including admins)
-                broadcastToAll(chatMessage);
-                
-                // Notify admin about new message
-                if (!client.isAdmin) {
-                    notifyAdmin(`New message from ${client.name}: ${sanitizedText.substring(0, 50)}${sanitizedText.length > 50 ? '...' : ''}`);
-                }
-                break;
-                
-            case 'typing':
-                // Validate typing message
-                if (typeof message.isTyping !== 'boolean') {
-                    return;
-                }
-                
-                // Broadcast typing indicator to admins only
-                clients.forEach(c => {
-                    if (c.isAdmin && c.ws.readyState === WebSocket.OPEN) {
-                        c.ws.send(JSON.stringify({
-                            type: 'typing',
-                            isTyping: message.isTyping,
-                            name: client.name,
-                            clientId: clientId
+    // WebSocket message handler - PROPERLY NESTED INSIDE CONNECTION HANDLER
+    ws.on('message', (data) => {
+        try {
+            const message = JSON.parse(data.toString()); // Convert buffer to string
+            
+            // Basic message validation
+            if (!message || typeof message !== 'object') {
+                console.log('Invalid message format from:', clientIp);
+                return;
+            }
+            
+            // Add message type validation
+            if (!message.type || typeof message.type !== 'string') {
+                console.log('Missing message type from:', clientIp);
+                return;
+            }
+            
+            switch (message.type) {
+                case 'chat':
+                    // Validate and sanitize message - handle both 'message' and 'text' fields
+                    const messageText = message.message || message.text;
+                    if (typeof messageText !== 'string' || messageText.trim().length === 0) {
+                        console.log('Invalid chat message from:', clientIp);
+                        return;
+                    }
+                    
+                    const sanitizedText = validator.escape(messageText.trim()).substring(0, 500);
+                    
+                    // Store and broadcast chat message
+                    const chatMessage = {
+                        id: Date.now(),
+                        type: 'chat',
+                        name: client.name,
+                        message: sanitizedText, // Use 'message' field consistently
+                        timestamp: new Date().toISOString(),
+                        isAdmin: client.isAdmin,
+                        clientId: clientId
+                    };
+                    
+                    chatHistory.push(chatMessage);
+                    
+                    // Broadcast to ALL clients (including admins)
+                    broadcastToAll(chatMessage);
+                    
+                    // Notify admin about new message
+                    if (!client.isAdmin) {
+                        notifyAdmin(`New message from ${client.name}: ${sanitizedText.substring(0, 50)}${sanitizedText.length > 50 ? '...' : ''}`);
+                    }
+                    break;
+                    
+                case 'typing':
+                    // Validate typing message
+                    if (typeof message.isTyping !== 'boolean') {
+                        return;
+                    }
+                    
+                    // Broadcast typing indicator to admins only
+                    clients.forEach(c => {
+                        if (c.isAdmin && c.ws.readyState === WebSocket.OPEN) {
+                            c.ws.send(JSON.stringify({
+                                type: 'typing',
+                                isTyping: message.isTyping,
+                                name: client.name,
+                                clientId: clientId
+                            }));
+                        }
+                    });
+                    break;
+                    
+                case 'identify':
+                    // Client identification with validation
+                    if (message.name && typeof message.name === 'string') {
+                        client.name = validator.escape(message.name.substring(0, 50)) || 'Guest';
+                    }
+                    if (message.email && typeof message.email === 'string' && validator.isEmail(message.email)) {
+                        client.email = message.email;
+                    }
+                    client.isAdmin = message.isAdmin || false;
+                    
+                    console.log('Client identified:', client.name, client.email, client.isAdmin ? '(Admin)' : '');
+                    
+                    // Notify admin about client identification
+                    if (!client.isAdmin) {
+                        notifyAdmin(`Client ${clientId} identified as: ${client.name} (${client.email || 'no email'})`);
+                    }
+                    break;
+                    
+                case 'get_history':
+                    // Send chat history for specific client (admin request)
+                    if (client.isAdmin && message.clientId) {
+                        const targetClientId = message.clientId;
+                        const clientMessages = chatHistory.filter(msg => msg.clientId === targetClientId);
+                        
+                        ws.send(JSON.stringify({
+                            type: 'history',
+                            messages: clientMessages,
+                            clientId: targetClientId
                         }));
                     }
-                });
-                break;
-                
-            case 'identify':
-                // Client identification with validation
-                if (message.name && typeof message.name === 'string') {
-                    client.name = validator.escape(message.name.substring(0, 50)) || 'Guest';
-                }
-                if (message.email && typeof message.email === 'string' && validator.isEmail(message.email)) {
-                    client.email = message.email;
-                }
-                client.isAdmin = message.isAdmin || false;
-                
-                console.log('Client identified:', client.name, client.email, client.isAdmin ? '(Admin)' : '');
-                
-                // Notify admin about client identification
-                if (!client.isAdmin) {
-                    notifyAdmin(`Client ${clientId} identified as: ${client.name} (${client.email || 'no email'})`);
-                }
-                break;
-                
-            case 'get_history':
-                // Send chat history for specific client (admin request)
-                if (client.isAdmin && message.clientId) {
-                    const targetClientId = message.clientId;
-                    const clientMessages = chatHistory.filter(msg => msg.clientId === targetClientId);
+                    break;
                     
-                    ws.send(JSON.stringify({
-                        type: 'history',
-                        messages: clientMessages,
-                        clientId: targetClientId
-                    }));
-                }
-                break;
-                
-            case 'admin_message':
-                // Add the admin_message handler here
-                if (client.isAdmin && message.targetClientId && message.message) {
-                    const targetClient = clients.get(message.targetClientId);
-                    if (targetClient && targetClient.ws.readyState === WebSocket.OPEN) {
-                        const adminMessage = {
-                            type: 'chat',
-                            message: message.message,
-                            name: 'Support',
-                            timestamp: new Date().toISOString(),
-                            isAdmin: true,
-                            clientId: message.targetClientId
-                        };
-                        
-                        // Store in history
-                        chatHistory.push({
-                            ...adminMessage,
-                            id: Date.now()
-                        });
-                        
-                        // Send to target client
-                        targetClient.ws.send(JSON.stringify(adminMessage));
-                        
-                        // Also send to all admins (including the sender)
-                        clients.forEach(c => {
-                            if (c.isAdmin && c.ws.readyState === WebSocket.OPEN) {
-                                c.ws.send(JSON.stringify(adminMessage));
-                            }
-                        });
+                case 'admin_message':
+                    // Admin message to specific client
+                    if (client.isAdmin && message.targetClientId && message.message) {
+                        const targetClient = clients.get(message.targetClientId);
+                        if (targetClient && targetClient.ws.readyState === WebSocket.OPEN) {
+                            const adminMessage = {
+                                type: 'chat',
+                                message: message.message,
+                                name: 'Support',
+                                timestamp: new Date().toISOString(),
+                                isAdmin: true,
+                                clientId: message.targetClientId
+                            };
+                            
+                            // Store in history
+                            chatHistory.push({
+                                ...adminMessage,
+                                id: Date.now()
+                            });
+                            
+                            // Send to target client
+                            targetClient.ws.send(JSON.stringify(adminMessage));
+                            
+                            // Also send to all admins (including the sender)
+                            clients.forEach(c => {
+                                if (c.isAdmin && c.ws.readyState === WebSocket.OPEN) {
+                                    c.ws.send(JSON.stringify(adminMessage));
+                                }
+                            });
+                        }
                     }
-                }
-                break;
-                
-            case 'broadcast':
-                // Add the broadcast handler here
-                if (client.isAdmin && message.message) {
-                    const broadcastCount = broadcastToClients(message.message);
-                    // Notify admin about broadcast result
-                    client.ws.send(JSON.stringify({
-                        type: 'system',
-                        message: `Broadcast sent to ${broadcastCount} clients`
-                    }));
-                }
-                break;
-                
-            default:
-                console.log('Unknown message type from:', clientIp, message.type);
+                    break;
+                    
+                case 'broadcast':
+                    // Broadcast to all clients
+                    if (client.isAdmin && message.message) {
+                        const broadcastCount = broadcastToClients(message.message);
+                        // Notify admin about broadcast result
+                        client.ws.send(JSON.stringify({
+                            type: 'system',
+                            message: `Broadcast sent to ${broadcastCount} clients`
+                        }));
+                    }
+                    break;
+                    
+                default:
+                    console.log('Unknown message type from:', clientIp, message.type);
+            }
+        } catch (error) {
+            console.error('Error processing message:', error);
         }
-    } catch (error) {
-        console.error('Error processing message:', error);
-    }
-});
+    });
     
     ws.on('close', () => {
         console.log('Client disconnected:', clientIp, clientId);
@@ -399,73 +479,6 @@ function broadcastToClients(messageText) {
 }
 // ==================== END WEBSOCKET CHAT SERVER ====================
 
-// Database setup with lowdb
-const dbPath = process.env.DB_PATH || path.join(__dirname, 'db.json');
-const dbDir = path.dirname(dbPath);
-
-// Ensure the directory exists
-if (!fs.existsSync(dbDir)) {
-  fs.mkdirSync(dbDir, { recursive: true });
-}
-
-// Initialize database
-const adapter = new JSONFile(dbPath);
-const db = new Low(adapter, { submissions: [], admin_users: [] });
-
-// Initialize database with error handling
-async function initializeDB() {
-  try {
-    await db.read();
-    
-    // Check if data is corrupted
-    if (typeof db.data !== 'object' || db.data === null) {
-      console.log('Database corrupted, resetting to default...');
-      db.data = { submissions: [], admin_users: [] };
-      await db.write();
-    }
-    
-    db.data = db.data || { submissions: [], admin_users: [] };
-    
-    // Create admin user if it doesn't exist
-    const adminUser = db.data.admin_users.find(user => user.username === 'Sanud119@gmail.com');
-    if (!adminUser) {
-      console.log('Creating admin user...');
-      const hash = await bcrypt.hash('Sugam@2008', 12);
-      db.data.admin_users.push({
-        id: Date.now(),
-        username: 'Sanud119@gmail.com',
-        password_hash: hash,
-        created_at: new Date().toISOString()
-      });
-      await db.write();
-      console.log('Admin user created successfully');
-    } else {
-      console.log('Admin user already exists');
-    }
-    
-    console.log('Database ready at:', dbPath);
-    
-  } catch (error) {
-    console.error('Database initialization error:', error);
-    console.log('Creating fresh database...');
-    
-    // Create fresh database
-    db.data = { submissions: [], admin_users: [] };
-    
-    // Create admin user
-    const hash = await bcrypt.hash('Sugam@2008', 12);
-    db.data.admin_users.push({
-      id: Date.now(),
-      username: 'Sanud119@gmail.com',
-      password_hash: hash,
-      created_at: new Date().toISOString()
-    });
-    
-    await db.write();
-    console.log('Fresh database created successfully');
-  }
-}
-
 // CORS configuration for Render
 app.use(cors({
     origin: function (origin, callback) {
@@ -503,20 +516,20 @@ app.use((req, res, next) => {
   res.setHeader(
     'Content-Security-Policy',
     "default-src 'self'; " +
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://gc.kis.v2.scr.kaspersky.com; " +
-    "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com https://gc.kis.v2.scr.kaspersky.com; " +
-    "img-src 'self' data: https: blob: https://images.unsplash.com https://randomuser.me https://gc.kis.v2.scr.kaspersky.com; " +
-    "font-src 'self' https://cdnjs.cloudflare.com; " +
-    "connect-src 'self' ws://" + req.headers.host + " wss://" + req.headers.host + " ws://gc.kis.v2.scr.kaspersky.com; " +
-    "frame-src 'self' https://gc.kis.v2.scr.kaspersky.com;"
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com; " +
+    "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; " +
+    "img-src 'self' data: https:; " +
+    "font-src 'self'; " +
+    "connect-src 'self' ws://" + req.headers.host + " wss://" + req.headers.host + "; " +
+    "frame-src 'self';"
   );
   next();
 });
 
-// Session configuration for Render production
+// Session configuration for Render production - FIXED
 app.use(session({
     secret: SESSION_SECRET,
-    resave: false, // Changed to false for better performance
+    resave: false,
     saveUninitialized: false,
     store: new MemoryStore({
         checkPeriod: 86400000 // prune expired entries every 24h
@@ -525,8 +538,8 @@ app.use(session({
         secure: isProduction,
         httpOnly: true,
         sameSite: isProduction ? 'none' : 'lax',
-        maxAge: 24 * 60 * 60 * 1000,
-        domain: isProduction ? '.onrender.com' : undefined
+        maxAge: 24 * 60 * 60 * 1000
+        // Remove domain setting - let browser handle it
     }
 }));
 
@@ -619,7 +632,7 @@ app.post('/api/admin/login', async (req, res) => {
 });
 
 // Check login attempt status
-app.get('/api/admin/login-attempts', (req, res) => {
+app.get('/api/admin/login-attempts', (req, res) => {   
     const ip = req.ip || req.connection.remoteAddress;
     const attemptData = loginAttempts.get(ip);
     const remainingAttempts = getRemainingAttempts(ip);
