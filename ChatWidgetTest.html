@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fixed Chat Widget - AJK Cleaning</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* Fixed Chat Widget Styles */
+    .chat-widget-enhanced {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    .chat-toggle {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        background: #1e40af;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+        color: white;
+        border: none;
+    }
+    
+    .chat-toggle:hover {
+        background: #1e3a8a;
+        transform: scale(1.05);
+    }
+    
+    .connection-indicator {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #ef4444;
+        border: 2px solid white;
+        transition: all 0.3s ease;
+    }
+    
+    .connection-indicator.connected {
+        background: #10b981;
+    }
+    
+    .unread-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: #ef4444;
+        color: white;
+        border-radius: 50%;
+        min-width: 20px;
+        height: 20px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+        border: 2px solid white;
+    }
+    
+    .chat-window {
+        position: absolute;
+        bottom: 75px;
+        right: 0;
+        width: 350px;
+        height: 450px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: none;
+        flex-direction: column;
+        transform: translateY(20px) scale(0.9);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    .chat-window.open {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+        display: flex;
+    }
+    
+    .chat-header {
+        background: #1e40af;
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .chat-header h3 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    
+    .chat-status {
+        font-size: 12px;
+        opacity: 0.9;
+    }
+    
+    .chat-header-actions {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .minimize-btn, .close-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 28px;
+        height: 28px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+    }
+    
+    .minimize-btn:hover, .close-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .chat-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        background: #f8fafc;
+        max-height: 300px;
+    }
+    
+    .message {
+        margin-bottom: 15px;
+        animation: messageSlide 0.3s ease-out;
+    }
+    
+    @keyframes messageSlide {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .message-content {
+        max-width: 85%;
+        padding: 10px 15px;
+        border-radius: 18px;
+        word-wrap: break-word;
+        line-height: 1.4;
+    }
+    
+    .user-message .message-content {
+        background: #1e40af;
+        color: white;
+        margin-left: auto;
+        border-bottom-right-radius: 4px;
+    }
+    
+    .admin-message .message-content {
+        background: white;
+        color: #374151;
+        border: 1px solid #e5e7eb;
+        border-bottom-left-radius: 4px;
+    }
+    
+    .system-message .message-content {
+        background: #f3f4f6;
+        color: #6b7280;
+        margin: 0 auto;
+        text-align: center;
+        border-radius: 12px;
+        font-size: 14px;
+    }
+    
+    .message-time {
+        font-size: 11px;
+        color: #9ca3af;
+        margin-top: 5px;
+        text-align: right;
+    }
+    
+    .user-message .message-time {
+        text-align: right;
+    }
+    
+    .admin-message .message-time {
+        text-align: left;
+    }
+    
+    .typing-indicator {
+        padding: 15px;
+        background: white;
+        border-top: 1px solid #e5e7eb;
+        display: none;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .typing-dots {
+        display: flex;
+        gap: 3px;
+    }
+    
+    .typing-dots span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #9ca3af;
+        animation: typingDot 1.4s infinite ease-in-out;
+    }
+    
+    .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes typingDot {
+        0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+        40% { transform: scale(1); opacity: 1; }
+    }
+    
+    .typing-text {
+        font-size: 12px;
+        color: #6b7280;
+    }
+    
+    .chat-input-container {
+        background: white;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .user-info {
+        padding: 15px;
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .user-info input {
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    
+    .user-info input:focus {
+        outline: none;
+        border-color: #1e40af;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    }
+    
+    .user-info button {
+        background: #1e40af;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s;
+    }
+    
+    .user-info button:hover {
+        background: #1e3a8a;
+    }
+    
+    .chat-input-area {
+        display: flex;
+        padding: 15px;
+        gap: 10px;
+        align-items: flex-end;
+    }
+    
+    #chat-input-enhanced {
+        flex: 1;
+        border: 1px solid #d1d5db;
+        border-radius: 20px;
+        padding: 10px 15px;
+        font-size: 14px;
+        resize: none;
+        max-height: 100px;
+        min-height: 40px;
+    }
+    
+    #chat-input-enhanced:focus {
+        outline: none;
+        border-color: #1e40af;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    }
+    
+    #chat-send-enhanced {
+        background: #1e40af;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+    
+    #chat-send-enhanced:hover:not(:disabled) {
+        background: #1e3a8a;
+        transform: scale(1.05);
+    }
+    
+    #chat-send-enhanced:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    @media (max-width: 768px) {
+        .chat-widget-enhanced {
+            bottom: 15px;
+            right: 15px;
+        }
+        
+        .chat-window {
+            width: calc(100vw - 30px);
+            right: -15px;
+            height: 400px;
+        }
+        
+        .chat-toggle {
+            width: 55px;
+            height: 55px;
+        }
+    }
+    
+    /* Scrollbar styling */
+    .chat-messages::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-track {
+        background: #f1f5f9;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-100 p-8">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold text-center mb-8">Fixed Chat Widget Demo</h1>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-semibold mb-4">Issues Found & Fixed:</h2>
+      <ul class="list-disc pl-6 space-y-2 text-gray-700">
+        <li><strong>WebSocket Connection:</strong> Added proper error handling and fallback mechanism</li>
+        <li><strong>Message Display:</strong> Fixed double message issue by proper client ID checking</li>
+        <li><strong>UI State Management:</strong> Improved show/hide logic for user info and chat areas</li>
+        <li><strong>Input Validation:</strong> Added proper form validation and sanitization</li>
+        <li><strong>Mobile Responsiveness:</strong> Fixed positioning and sizing for mobile devices</li>
+        <li><strong>Event Handling:</strong> Improved click outside detection and state management</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Fixed Chat Widget -->
+  <div id="chat-widget-enhanced" class="chat-widget-enhanced">
+    <button class="chat-toggle" id="chat-toggle-enhanced" aria-label="Toggle chat">
+        <div class="chat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+            </svg>
+        </div>
+        <div class="connection-indicator" id="connection-indicator"></div>
+        <div class="unread-badge" id="unread-badge">0</div>
+    </button>
+    
+    <div class="chat-window" id="chat-window-enhanced">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <h3>AJK Cleaning Support</h3>
+                <div class="chat-status" id="chat-status">Connecting...</div>
+            </div>
+            <div class="chat-header-actions">
+                <button class="minimize-btn" id="minimize-chat" aria-label="Minimize chat">−</button>
+                <button class="close-btn" id="close-chat" aria-label="Close chat">×</button>
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will be added here -->
+        </div>
+        
+        <div class="typing-indicator" id="typing-indicator">
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <span class="typing-text">Support is typing...</span>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="user-info" id="user-info">
+                <input type="text" id="user-name" placeholder="Your name" maxlength="50" required>
+                <input type="email" id="user-email" placeholder="Your email (optional)" maxlength="100">
+                <button id="save-user-info">Start Chat</button>
+            </div>
+            <div class="chat-input-area" id="chat-input-area" style="display: none;">
+                <input type="text" id="chat-input-enhanced" placeholder="Type your message..." maxlength="500">
+                <button id="chat-send-enhanced" aria-label="Send message">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    // Fixed Enhanced Chat Widget System
+    class FixedChatWidget {
+      constructor() {
+        this.ws = null;
+        this.isConnected = false;
+        this.isTyping = false;
+        this.typingTimeout = null;
+        this.reconnectInterval = null;
+        this.reconnectAttempts = 0;
+        this.maxReconnectAttempts = 3;
+        this.unreadCount = 0;
+        this.clientId = this.generateClientId();
+        this.userName = '';
+        this.userEmail = '';
+        this.isOpen = false;
+        
+        this.init();
+      }
+      
+      generateClientId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2);
+      }
+      
+      init() {
+        console.log('Initializing Fixed Chat Widget...');
+        this.attachEventListeners();
+        this.showWelcomeMessage();
+        
+        // Try to connect WebSocket, but don't block the UI
+        setTimeout(() => {
+          this.connectWebSocket();
+        }, 500);
+      }
+      
+      showWelcomeMessage() {
+        this.displayMessage("Welcome to AJK Cleaning! 👋 How can we help you today?", 'system', 'System');
+      }
+      
+      attachEventListeners() {
+        const chatToggle = document.getElementById('chat-toggle-enhanced');
+        const closeChat = document.getElementById('close-chat');
+        const minimizeChat = document.getElementById('minimize-chat');
+        const chatInput = document.getElementById('chat-input-enhanced');
+        const chatSend = document.getElementById('chat-send-enhanced');
+        const saveUserInfo = document.getElementById('save-user-info');
+        
+        if (!chatToggle) {
+          console.error('Chat toggle element not found');
+          return;
+        }
+        
+        chatToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.toggleChat();
+        });
+        
+        if (closeChat) closeChat.addEventListener('click', () => this.closeChat());
+        if (minimizeChat) minimizeChat.addEventListener('click', () => this.closeChat());
+        if (chatSend) chatSend.addEventListener('click', () => this.sendMessage());
+        if (saveUserInfo) saveUserInfo.addEventListener('click', () => this.saveUserInfo());
+        
+        // Handle Enter key for sending messages
+        if (chatInput) {
+          chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              this.sendMessage();
+            }
+          });
+          
+          chatInput.addEventListener('input', () => this.handleTyping());
+        }
+        
+        // Handle Enter key in name input
+        const userNameInput = document.getElementById('user-name');
+        if (userNameInput) {
+          userNameInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              this.saveUserInfo();
+            }
+          });
+        }
+        
+        // Click outside to close
+        document.addEventListener('click', (e) => {
+          const chatWidget = document.getElementById('chat-widget-enhanced');
+          if (this.isOpen && chatWidget && !chatWidget.contains(e.target)) {
+            this.closeChat();
+          }
+        });
+      }
+      
+      connectWebSocket() {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          return; // Already connected
+        }
+        
+        try {
+          const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+          const wsUrl = `${protocol}//${window.location.host}`;
+          
+          console.log('Attempting WebSocket connection to:', wsUrl);
+          this.ws = new WebSocket(wsUrl);
+          
+          this.ws.onopen = () => {
+            console.log('WebSocket connected successfully');
+            this.isConnected = true;
+            this.reconnectAttempts = 0;
+            this.updateConnectionStatus();
+            
+            // Send identification to server
+            this.sendToServer({
+              type: 'identify',
+              name: this.userName || 'Guest',
+              email: this.userEmail,
+              isAdmin: false
+            });
+          };
+          
+          this.ws.onmessage = (event) => {
+            try {
+              const data = JSON.parse(event.data);
+              this.handleServerMessage(data);
+            } catch (error) {
+              console.error('Error parsing WebSocket message:', error);
+            }
+          };
+          
+          this.ws.onclose = (event) => {
+            console.log('WebSocket connection closed:', event.code, event.reason);
+            this.isConnected = false;
+            this.updateConnectionStatus();
+            
+            if (event.code !== 1000) { // Not a normal closure
+              this.attemptReconnect();
+            }
+          };
+          
+          this.ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+            this.isConnected = false;
+            this.updateConnectionStatus();
+          };
+          
+        } catch (error) {
+          console.error('Failed to create WebSocket connection:', error);
+          this.isConnected = false;
+          this.updateConnectionStatus();
+        }
+      }
+      
+      sendToServer(data) {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          this.ws.send(JSON.stringify(data));
+          return true;
+        }
+        return false;
+      }
+      
+      attemptReconnect() {
+        if (this.reconnectAttempts < this.maxReconnectAttempts) {
+          this.reconnectAttempts++;
+          const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 10000);
+          
+          console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts}) in ${delay/1000}s...`);
+          
+          setTimeout(() => {
+            if (!this.isConnected) {
+              this.connectWebSocket();
+            }
+          }, delay);
+        } else {
+          console.log('Max reconnection attempts reached. Running in offline mode.');
+        }
+      }
+      
+      updateConnectionStatus() {
+        const indicator = document.getElementById('connection-indicator');
+        const status = document.getElementById('chat-status');
+        
+        if (!indicator || !status) return;
+        
+        if (this.isConnected) {
+          status.textContent = 'Online';
+          indicator.classList.add('connected');
+        } else {
+          status.textContent = 'Offline';
+          indicator.classList.remove('connected');
+        }
+      }
+      
+      handleServerMessage(data) {
+        console.log('Received server message:', data);
+        
+        switch (data.type) {
+          case 'chat':
+            // Only display messages from other users or admins
+            if (data.clientId !== this.clientId || data.isAdmin) {
+              this.displayMessage(
+                data.message, 
+                data.isAdmin ? 'admin' : 'user', 
+                data.name || (data.isAdmin ? 'Support' : 'Guest'),
+                data.timestamp
+              );
+              
+              if (data.isAdmin && !this.isOpen) {
+                this.incrementUnreadCount();
+              }
+            }
+            break;
+            
+          case 'system':
+            this.displayMessage(data.message, 'system', 'System', data.timestamp);
+            break;
+            
+          case 'history':
+            if (data.messages && Array.isArray(data.messages)) {
+              // Clear existing messages except welcome
+              const messagesContainer = document.getElementById('chat-messages');
+              if (messagesContainer) {
+                messagesContainer.innerHTML = '';
+                this.showWelcomeMessage();
+                
+                data.messages.forEach(msg => {
+                  this.displayMessage(
+                    msg.message,
+                    msg.isAdmin ? 'admin' : 'user',
+                    msg.name || (msg.isAdmin ? 'Support' : 'Guest'),
+                    msg.timestamp
+                  );
+                });
+              }
+            }
+            break;
+            
+          case 'typing':
+            if (data.clientId !== this.clientId) {
+              this.showTypingIndicator(data.isTyping, data.name);
+            }
+            break;
+            
+          case 'client_id':
+            this.clientId = data.clientId;
+            console.log('Received client ID:', this.clientId);
+            break;
+            
+          default:
+            console.log('Unknown message type:', data.type);
+        }
+      }
+      
+      displayMessage(message, type, sender = '', timestamp = null) {
+        const messagesContainer = document.getElementById('chat-messages');
+        if (!messagesContainer) return;
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}-message`;
+        
+        const time = timestamp ? new Date(timestamp) : new Date();
+        const timeStr = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        messageContent.textContent = message;
+        
+        const messageTime = document.createElement('div');
+        messageTime.className = 'message-time';
+        messageTime.textContent = `${timeStr}${sender && sender !== 'Guest' && sender !== 'System' ? ` • ${sender}` : ''}`;
+        
+        messageDiv.appendChild(messageContent);
+        messageDiv.appendChild(messageTime);
+        
+        messagesContainer.appendChild(messageDiv);
+        this.scrollToBottom();
+      }
+      
+      showTypingIndicator(isTyping, senderName = 'Support') {
+        const indicator = document.getElementById('typing-indicator');
+        if (!indicator) return;
+        
+        const typingText = indicator.querySelector('.typing-text');
+        
+        if (isTyping) {
+          typingText.textContent = `${senderName} is typing...`;
+          indicator.style.display = 'flex';
+        } else {
+          indicator.style.display = 'none';
+        }
+        
+        this.scrollToBottom();
+      }
+      
+      toggleChat() {
+        if (this.isOpen) {
+          this.closeChat();
+        } else {
+          this.openChat();
+        }
+      }
+      
+      openChat() {
+        const chatWindow = document.getElementById('chat-window-enhanced');
+        const userInfo = document.getElementById('user-info');
+        const chatInputArea = document.getElementById('chat-input-area');
+        
+        if (!chatWindow) return;
+        
+        this.isOpen = true;
+        chatWindow.style.display = 'flex';
+        
+        setTimeout(() => {
+          chatWindow.classList.add('open');
+        }, 10);
+        
+        // Show appropriate section
+        if (!this.userName) {
+          if (userInfo) userInfo.style.display = 'flex';
+          if (chatInputArea) chatInputArea.style.display = 'none';
+          
+          // Focus on name input
+          const nameInput = document.getElementById('user-name');
+          if (nameInput) {
+            setTimeout(() => nameInput.focus(), 300);
+          }
+        } else {
+          if (userInfo) userInfo.style.display = 'none';
+          if (chatInputArea) chatInputArea.style.display = 'flex';
+          
+          // Focus on chat input
+          const chatInput = document.getElementById('chat-input-enhanced');
+          if (chatInput) {
+            setTimeout(() => chatInput.focus(), 300);
+          }
+        }
+        
+        this.clearUnreadCount();
+        this.scrollToBottom();
+      }
+      
+      closeChat() {
+        const chatWindow = document.getElementById('chat-window-enhanced');
+        if (!chatWindow) return;
+        
+        this.isOpen = false;
+        chatWindow.classList.remove('open');
+        
+        setTimeout(() => {
+          chatWindow.style.display = 'none';
+        }, 300);
+      }
+      
+      saveUserInfo() {
+        const nameInput = document.getElementById('user-name');
+        const emailInput = document.getElementById('user-email');
+        const userInfo = document.getElementById('user-info');
+        const chatInputArea = document.getElementById('chat-input-area');
+        
+        if (!nameInput) return;
+        
+        const name = nameInput.value.trim();
+        const email = emailInput ? emailInput.value.trim() : '';
+        
+        if (!name) {
+          nameInput.focus();
+          nameInput.style.borderColor = '#ef4444';
+          setTimeout(() => {
+            nameInput.style.borderColor = '';
+          }, 3000);
+          return;
+        }
+        
+        // Basic email validation if provided
+        if (email && !this.isValidEmail(email)) {
+          if (emailInput) {
+            emailInput.focus();
+            emailInput.style.borderColor = '#ef4444';
+            setTimeout(() => {
+              emailInput.style.borderColor = '';
+            }, 3000);
+          }
+          return;
+        }
+        
+        this.userName = name;
+        this.userEmail = email;
+        
+        // Hide user info form and show chat input
+        if (userInfo) userInfo.style.display = 'none';
+        if (chatInputArea) chatInputArea.style.display = 'flex';
+        
+        // Update identification on server
+        this.sendToServer({
+          type: 'identify',
+          name: this.userName,
+          email: this.userEmail,
+          isAdmin: false,
+          clientId: this.clientId
+        });
+        
+        // Focus on chat input
+        const chatInput = document.getElementById('chat-input-enhanced');
+        if (chatInput) {
+          setTimeout(() => chatInput.focus(), 100);
+        }
+        
+        // Show a welcome message
+        this.displayMessage(`Hello ${this.userName}! How can we help you today?`, 'system', 'System');
+      }
+      
+      isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+      
+      sendMessage() {
+        const chatInput = document.getElementById('chat-input-enhanced');
+        if (!chatInput) return;
+        
+        const message = chatInput.value.trim();
+        if (!message) return;
+        
+        // Clear input immediately
+        chatInput.value = '';
+        
+        console.log('Sending message:', message);
+        
+        // Display user message immediately (for better UX)
+        this.displayMessage(message, 'user', this.userName);
+        
+        // Send to server if connected
+        if (this.isConnected) {
+          this.sendToServer({
+            type: 'chat',
+            text: message,
+            name: this.userName,
+            email: this.userEmail,
+            clientId: this.clientId
+          });
+        } else {
+          // Demo response when offline
+          setTimeout(() => {
+            this.displayMessage(
+              "Thanks for your message! We're currently offline, but we'll get back to you soon. You can also call us at +49 017616146259.", 
+              'admin', 
+              'Support'
+            );
+          }, 1000);
+        }
+        
+        this.stopTyping();
+      }
+      
+      handleTyping() {
+        if (!this.isConnected) return;
+        
+        if (!this.isTyping) {
+          this.isTyping = true;
+          this.sendToServer({
+            type: 'typing',
+            isTyping: true,
+            clientId: this.clientId
+          });
+        }
+        
+        // Clear existing timeout
+        if (this.typingTimeout) {
+          clearTimeout(this.typingTimeout);
+        }
+        
+        // Set new timeout to stop typing indicator
+        this.typingTimeout = setTimeout(() => {
+          this.stopTyping();
+        }, 1000);
+      }
+      
+      stopTyping() {
+        if (this.isTyping) {
+          this.isTyping = false;
+          this.sendToServer({
+            type: 'typing',
+            isTyping: false,
+            clientId: this.clientId
+          });
+        }
+        
+        if (this.typingTimeout) {
+          clearTimeout(this.typingTimeout);
+          this.typingTimeout = null;
+        }
+      }
+      
+      scrollToBottom() {
+        const messagesContainer = document.getElementById('chat-messages');
+        if (messagesContainer) {
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+      }
+      
+      incrementUnreadCount() {
+        this.unreadCount++;
+        this.updateUnreadBadge();
+      }
+      
+      clearUnreadCount() {
+        this.unreadCount = 0;
+        this.updateUnreadBadge();
+      }
+      
+      updateUnreadBadge() {
+        const badge = document.getElementById('unread-badge');
+        if (!badge) return;
+        
+        if (this.unreadCount > 0) {
+          badge.textContent = this.unreadCount > 99 ? '99+' : this.unreadCount.toString();
+          badge.style.display = 'flex';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    }
+
+    // Initialize the fixed chat widget when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Initializing Fixed Chat Widget...');
+      window.fixedChatWidget = new FixedChatWidget();
+    });
+
+    // Test connection function
+    async function testConnection() {
+      try {
+        const response = await fetch('/api/health');
+        const data = await response.json();
+        console.log('Server health check:', data);
+        return data;
+      } catch (error) {
+        console.error('Server connection test failed:', error);
+        return null;
+      }
+    }
+
+    // Demo button for testing
+    function addTestMessage() {
+      if (window.fixedChatWidget) {
+        window.fixedChatWidget.displayMessage(
+          "This is a test admin message to check the chat functionality.",
+          'admin',
+          'Support'
+        );
+      }
+    }
+  </script>
+  
+  <!-- Demo Controls -->
+  <div class="fixed top-4 right-4 bg-white p-4 rounded-lg shadow-lg z-50">
+    <h3 class="font-semibold mb-2">Demo Controls</h3>
+    <button onclick="testConnection()" class="bg-blue-500 text-white px-3 py-1 rounded text-sm mb-2 w-full">
+      Test Connection
+    </button>
+    <button onclick="addTestMessage()" class="bg-green-500 text-white px-3 py-1 rounded text-sm w-full">
+      Add Test Message
+    </button>
+  </div>
+</body>
+</html>

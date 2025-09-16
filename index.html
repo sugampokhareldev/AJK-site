@@ -14,6 +14,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
   <!-- Structured data for SEO -->
   <script type="application/ld+json">
   {
@@ -68,329 +70,380 @@
   }
   </script>
   <style>
-    /* Custom styles with smooth transitions */
-    :root {
-      --primary: #1e40af;
-      --primary-dark: #1e3a8a;
-      --secondary: #059669;
-      --secondary-dark: #047857;
+    /* Chat Widget Styles */
+    .chat-widget-enhanced {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
     
-    * {
-      scroll-behavior: smooth;
+    .chat-toggle {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        background: #1e40af;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+        color: white;
     }
     
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    .chat-toggle:hover {
+        background: #1e3a8a;
+        transform: scale(1.05);
     }
     
-    /* Enhanced Navigation */
-    .navbar-scrolled {
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(12px);
-      background: rgba(255, 255, 255, 0.97);
-      transform: translateY(0);
+    .connection-indicator {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #ef4444;
+        border: 2px solid white;
+        transition: all 0.3s ease;
     }
     
-    .nav-link {
-      position: relative;
-      padding: 0.5rem 0;
-      transition: all 0.3s ease;
+    .connection-indicator.connected {
+        background: #10b981;
     }
     
-    .nav-link::after {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 2px;
-      bottom: 0;
-      left: 0;
-      background-color: var(--primary);
-      transition: width 0.3s ease;
+    .unread-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: #ef4444;
+        color: white;
+        border-radius: 50%;
+        min-width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+        border: 2px solid white;
     }
     
-    .nav-link:hover::after {
-      width: 100%;
-    }
-    
-    .nav-link.active::after {
-      width: 100%;
-    }
-    
-    /* Enhanced mobile menu */
-    .mobile-menu {
-      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-      transform-origin: top;
-      opacity: 0;
-      transform: scaleY(0) translateY(-20px);
-      display: none;
-    }
-    
-    .mobile-menu.open {
-      display: flex;
-      opacity: 1;
-      transform: scaleY(1) translateY(0);
-    }
-    
-    /* Enhanced CTA button */
-    .cta-button {
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      z-index: 1;
-    }
-    
-    .cta-button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: all 0.6s ease;
-      z-index: -1;
-    }
-    
-    .cta-button:hover::before {
-      left: 100%;
-    }
-    
-    /* Logo animation */
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-    
-    .logo:hover {
-      animation: pulse 1s infinite;
-    }
-    
-    /* Mobile menu button animation */
-    .menu-line {
-      transition: all 0.3s ease;
-    }
-    
-    .menu-open .menu-line:nth-child(1) {
-      transform: rotate(45deg) translate(6px, 6px);
-    }
-    
-    .menu-open .menu-line:nth-child(2) {
-      opacity: 0;
-    }
-    
-    .menu-open .menu-line:nth-child(3) {
-      transform: rotate(-45deg) translate(6px, -6px);
-    }
-    
-    /* Hero section overlay gradient */
-    .hero-overlay {
-      background: linear-gradient(to right, rgba(30, 64, 175, 0.8), rgba(5, 150, 105, 0.7));
-    }
-    
-    /* Service cards hover effect */
-    .service-card {
-      transition: all 0.3s ease;
-    }
-    
-    .service-card:hover {
-      transform: translateY(-5px);
-    }
-    
-    /* Testimonial carousel */
-    .testimonial-container {
-      scroll-behavior: smooth;
-      scroll-snap-type: x mandatory;
-    }
-    
-    .testimonial-slide {
-      scroll-snap-align: start;
-      flex: 0 0 auto;
-    }
-    
-    /* Form validation styles */
-    .form-input:invalid {
-      border-color: #f87171;
-    }
-    
-    .form-input:valid {
-      border-color: #34d399;
-    }
-    
-    /* Animations */
-    @keyframes fadeInUp {
-      from {
+    .chat-window {
+        position: absolute;
+        bottom: 75px;
+        right: 0;
+        width: 350px;
+        height: 450px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transform: translateY(20px) scale(0.9);
         opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
+        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        display: none;
+    }
+    
+    .chat-window.open {
+        transform: translateY(0) scale(1);
         opacity: 1;
-        transform: translateY(0);
-      }
+        display: flex;
     }
     
-    .animate-fade-in-up {
-      animation: fadeInUp 0.6s ease-out forwards;
+    .chat-header {
+        background: #1e40af;
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
     
-    /* Loading animation */
-    .loading-dots {
-      display: inline-flex;
+    .chat-header h3 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 600;
     }
     
-    .loading-dots span {
-      animation: loading 1.4s infinite ease-in-out both;
-      background-color: currentColor;
-      border-radius: 50%;
-      display: inline-block;
-      height: 8px;
-      margin: 0 2px;
-      width: 8px;
+    .chat-status {
+        font-size: 12px;
+        opacity: 0.9;
     }
     
-    .loading-dots span:nth-child(1) {
-      animation-delay: -0.32s;
+    .chat-header-actions {
+        display: flex;
+        gap: 5px;
     }
     
-    .loading-dots span:nth-child(2) {
-      animation-delay: -0.16s;
+    .minimize-btn, .close-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 28px;
+        height: 28px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
     }
     
-    @keyframes loading {
-      0%, 80%, 100% {
-        transform: scale(0);
-      }
-      40% {
-        transform: scale(1);
-      }
+    .minimize-btn:hover, .close-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
     }
     
-    /* Live chat styles - Fixed for mobile */
-    #chat-box {
-      transition: all 0.3s ease;
+    .chat-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        background: #f8fafc;
     }
     
-    .scrollbar-hide {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    .message {
+        margin-bottom: 15px;
+        animation: messageSlide 0.3s ease-out;
     }
     
-    .scrollbar-hide::-webkit-scrollbar {
-      display: none;
-    }
-    
-    /* Responsive hero image */
-    .hero-image {
-      background-image: url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80');
-      background-size: cover;
-      background-position: center;
-    }
-    
-    @media (min-width: 640px) {
-      .hero-image {
-        background-image: url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80');
-      }
-    }
-    
-    @media (min-width: 768px) {
-      .hero-image {
-        background-image: url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');
-      }
-    }
-    
-    @media (min-width: 1024px) {
-      .hero-image {
-        background-image: url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80');
-      }
-    }
-    
-    @media (min-width: 1280px) {
-      .hero-image {
-        background-image: url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1600&q=80');
-      }
-    }
-    
-    /* Improved accessibility */
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
-    }
-    
-    /* Focus styles for better accessibility */
-    a:focus-visible,
-    button:focus-visible,
-    input:focus-visible,
-    textarea:focus-visible,
-    select:focus-visible {
-      outline: 2px solid var(--primary);
-      outline-offset: 2px;
-    }
-    
-    /* Improved contrast for accessibility */
-    .text-blue-100 {
-      color: rgb(219, 234, 254);
-    }
-    
-    /* Mobile sticky CTA fix */
-    .sticky-cta {
-      padding-bottom: constant(safe-area-inset-bottom);
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-    
-    /* Chat widget mobile fixes */
-    @media (max-width: 768px) {
-      #chat-widget {
-        bottom: 80px; /* Position above the sticky CTA */
-        right: 16px;
-        z-index: 40;
-      }
-      
-      #chat-widget > div:first-child {
-        width: 50px;
-        height: 50px;
-        min-width: 44px;
-        min-height: 44px;
-      }
-      
-      #chat-box {
-        width: 90vw;
-        max-width: 320px;
-        right: -10px;
-        bottom: calc(100% + 10px);
-      }
-      
-      #chat-box .h-64 {
-        height: 200px;
-      }
-    }
-    
-    /* Ensure chat widget doesn't interfere with sticky CTA on mobile */
-    @media (max-width: 768px) {
-      .sticky-cta {
-        z-index: 50;
-      }
-    }
-  </style>
-  <script>
-    // Tailwind configuration
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#1e40af',
-            'primary-dark': '#1e3a8a',
-            secondary: '#059669',
-            'secondary-dark': '#047857',
-          }
+    @keyframes messageSlide {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
         }
-      }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
-  </script>
+    
+    .message-content {
+        max-width: 85%;
+        padding: 10px 15px;
+        border-radius: 18px;
+        word-wrap: break-word;
+        line-height: 1.4;
+    }
+    
+    .user-message .message-content {
+        background: #1e40af;
+        color: white;
+        margin-left: auto;
+        border-bottom-right-radius: 4px;
+    }
+    
+    .admin-message .message-content {
+        background: white;
+        color: #374151;
+        border: 1px solid #e5e7eb;
+        border-bottom-left-radius: 4px;
+    }
+    
+    .system-message .message-content {
+        background: #f3f4f6;
+        color: #6b7280;
+        margin: 0 auto;
+        text-align: center;
+        border-radius: 12px;
+        font-size: 14px;
+    }
+    
+    .message-time {
+        font-size: 11px;
+        color: #9ca3af;
+        margin-top: 5px;
+        text-align: right;
+    }
+    
+    .user-message .message-time {
+        text-align: right;
+    }
+    
+    .admin-message .message-time {
+        text-align: left;
+    }
+    
+    .typing-indicator {
+        padding: 15px;
+        background: white;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        display: none;
+    }
+    
+    .typing-dots {
+        display: flex;
+        gap: 3px;
+    }
+    
+    .typing-dots span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #9ca3af;
+        animation: typingDot 1.4s infinite ease-in-out;
+    }
+    
+    .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes typingDot {
+        0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+        40% { transform: scale(1); opacity: 1; }
+    }
+    
+    .typing-text {
+        font-size: 12px;
+        color: #6b7280;
+    }
+    
+    .chat-input-container {
+        background: white;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .user-info {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        display: none;
+    }
+    
+    .user-info input {
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    
+    .user-info input:focus {
+        outline: none;
+        border-color: #1e40af;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    }
+    
+    .user-info button {
+        background: #1e40af;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s;
+    }
+    
+    .user-info button:hover {
+        background: #1e3a8a;
+    }
+    
+    .chat-input-area {
+        display: flex;
+        padding: 15px;
+        gap: 10px;
+        align-items: flex-end;
+    }
+    
+    #chat-input-enhanced {
+        flex: 1;
+        border: 1px solid #d1d5db;
+        border-radius: 20px;
+        padding: 10px 15px;
+        font-size: 14px;
+        resize: none;
+        max-height: 100px;
+        min-height: 40px;
+    }
+    
+    #chat-input-enhanced:focus {
+        outline: none;
+        border-color: #1e40af;
+        box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    }
+    
+    #chat-send-enhanced {
+        background: #1e40af;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+    
+    #chat-send-enhanced:hover:not(:disabled) {
+        background: #1e3a8a;
+        transform: scale(1.05);
+    }
+    
+    #chat-send-enhanced:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    @media (max-width: 768px) {
+        .chat-widget-enhanced {
+            bottom: 15px;
+            right: 15px;
+        }
+        
+        .chat-window {
+            width: calc(100vw - 30px);
+            right: -15px;
+            height: 400px;
+        }
+        
+        .chat-toggle {
+            width: 55px;
+            height: 55px;
+        }
+    }
+    
+    /* Scrollbar styling */
+    .chat-messages::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-track {
+        background: #f1f5f9;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+      .connection-status {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 10000;
+        font-weight: bold;
+    }
+    .connection-status.connected { background: #4CAF50; color: white; }
+    .connection-status.disconnected { background: #f44336; color: white; }
+    .connection-status.connecting { background: #ff9800; color: white; }
+  </style>
 </head>
 <body class="font-sans text-gray-800 antialiased">
   <!-- Enhanced Navbar -->
@@ -682,9 +735,9 @@
         <h2 id="contact-heading" class="text-3xl font-bold text-primary mb-4">Get In Touch</h2>
         <p class="mb-6 text-gray-700">We're here to answer any questions you may have about our services. Reach out to us and we'll respond as soon as we can.</p>
         <div class="space-y-3">
-          <p class="flex items-center"><i class="fas fa-phone text-primary mr-3 w-5" aria-hidden="true"></i> +49 017616146259</p>
+          <p class="flex items-center"><i class="fas fa-phone text-primary mr-3 w-5" aria-hidden="true"></i> +49 017-616146259, +49 176-61852286</p>
           <p class="flex items-center"><i class="fas fa-envelope text-primary mr-3 w-5" aria-hidden="true"></i> Rajau691@gmail.com</p>
-          <p class="flex items-center"><i class="fas fa-map-marker-alt text-primary mr-3 w-5" aria-hidden="true"></i> Serving the Greater Area</p>
+          <p class="flex items-center"><i class="fas fa-map-marker-alt text-primary mr-3 w-5" aria-hidden="true"></i><a href="https://www.google.com/maps/place/AJK+Cleaning+Service,+Bahnhofstra%C3%9Fe+5,+65474+Bischofsheim/data=!4m2!3m1!1s0x47bd99f5e82f18e9:0x40cfb0ac711244f6?utm_source=mstt_1&entry=gps&coh=192189&g_ep=CAESBjI1LjQuMRgAINeCAyp1LDk0MjIzMjk5LDk0MjE2NDEzLDk0MjEyNDk2LDk0MjA3Mzk0LDk0MjA3NTA2LDk0MjA4NTA2LDk0MjE3NTIzLDk0MjE4NjUzLDk0MjI5ODM5LDk0Mjc1MTY4LDQ3MDg0MzkzLDk0MjEzMjAwLDk0Mjg2ODgyQgJERQ%3D%3D&skid=0a492a4a-b748-4ed0-a280-1519521eb675" target="_blank">Bahnhofstraße 5, 65474 Bischofsheim, Germany</a></p>
           <p class="flex items-center"><i class="fas fa-clock text-primary mr-3 w-5" aria-hidden="true"></i> Mon - Sat: 8:00am - 6:00pm</p>
         </div>
       </div>
@@ -795,312 +848,89 @@
     </a>
   </div>
 
-  <!-- Live Chat Widget - Fixed for mobile -->
-  <div id="chat-widget" class="fixed bottom-6 right-6 z-40">
-    <div class="bg-primary text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:bg-primary-dark transition-colors" aria-label="Open chat" role="button" tabindex="0">
-      <i class="fas fa-comment-alt text-xl"></i>
-    </div>
-    <div id="chat-box" class="hidden absolute bottom-full right-0 w-80 bg-white shadow-xl rounded-lg overflow-hidden mb-2" role="dialog" aria-labelledby="chat-heading" aria-modal="true">
-      <div class="bg-primary text-white p-3 flex justify-between items-center">
-        <h3 id="chat-heading" class="font-semibold">Chat with us</h3>
-        <button id="close-chat" class="text-white" aria-label="Close chat">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="p-4 h-64 overflow-y-auto">
-        <div class="bg-gray-100 rounded-lg p-3 mb-3">
-          <p class="text-sm">Hello! How can we help you today?</p>
+  <!-- Fixed Chat Widget -->
+  <div id="chat-widget-enhanced" class="chat-widget-enhanced">
+    <button class="chat-toggle" id="chat-toggle-enhanced" aria-label="Toggle chat">
+        <div class="chat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+            </svg>
         </div>
-        <!-- Chat messages will appear here -->
-      </div>
-      <div class="p-3 border-t">
-        <div class="flex">
-          <label for="chat-input" class="sr-only">Type your message</label>
-          <input type="text" id="chat-input" placeholder="Type your message..." class="flex-1 p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary">
-          <button class="bg-primary text-white px-4 rounded-r-lg hover:bg-primary-dark transition-colors" aria-label="Send message">
-            <i class="fas fa-paper-plane"></i>
-          </button>
+        <div class="connection-indicator" id="connection-indicator"></div>
+        <div class="unread-badge" id="unread-badge">0</div>
+    </button>
+    
+    <div class="chat-window" id="chat-window-enhanced">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <h3>AJK Cleaning Support</h3>
+                <div class="chat-status" id="chat-status">Connecting...</div>
+            </div>
+            <div class="chat-header-actions">
+                <button class="minimize-btn" id="minimize-chat" aria-label="Minimize chat">−</button>
+                <button class="close-btn" id="close-chat" aria-label="Close chat">×</button>
+            </div>
         </div>
-      </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will be added here -->
+        </div>
+        
+        <div class="typing-indicator" id="typing-indicator">
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <span class="typing-text">Support is typing...</span>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="user-info" id="user-info">
+                <input type="text" id="user-name" placeholder="Your name" maxlength="50" required>
+                <input type="email" id="user-email" placeholder="Your email (optional)" maxlength="100">
+                <button id="save-user-info">Start Chat</button>
+            </div>
+            <div class="chat-input-area" id="chat-input-area" style="display: none;">
+                <input type="text" id="chat-input-enhanced" placeholder="Type your message..." maxlength="500">
+                <button id="chat-send-enhanced" aria-label="Send message">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
     </div>
   </div>
 
-  <!-- Custom Script -->
-  <script>
-    // Enhanced mobile menu toggle
-    const menuBtn = document.getElementById('menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
+  <div id="connectionStatus" class="connection-status" style="display: none;">
+    Connection Status
+</div>
+
+<script>
+    // Simple connection status indicator
+    let connectionStatus = document.getElementById('connectionStatus');
     
-    menuBtn.addEventListener('click', () => {
-      const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
-      mobileMenu.classList.toggle('open');
-      menuBtn.classList.toggle('menu-open');
-      menuBtn.setAttribute('aria-expanded', !isExpanded);
-      mobileMenu.setAttribute('aria-hidden', isExpanded);
-    });
-    
-    // Close mobile menu when clicking on links
-    document.querySelectorAll('#mobile-menu a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.remove('open');
-        menuBtn.classList.remove('menu-open');
-        menuBtn.setAttribute('aria-expanded', 'false');
-        mobileMenu.setAttribute('aria-hidden', 'true');
-      });
-    });
-    
-    // Enhanced Navbar scroll effect
-    const navbar = document.getElementById('navbar');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 50) {
-        navbar.classList.add('navbar-scrolled');
-        navbar.classList.add('py-2');
-        navbar.classList.remove('py-3');
-      } else {
-        navbar.classList.remove('navbar-scrolled');
-        navbar.classList.remove('py-2');
-        navbar.classList.add('py-3');
-      }
-      
-      // Update active nav link based on scroll position
-      const sections = document.querySelectorAll('section');
-      let currentSection = '';
-      
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        
-        if (window.scrollY >= sectionTop - 100) {
-          currentSection = section.getAttribute('id');
+    function updateConnectionStatus(status, message) {
+        if (connectionStatus) {
+            connectionStatus.style.display = 'block';
+            connectionStatus.className = 'connection-status ' + status;
+            connectionStatus.textContent = message;
+            
+            // Auto-hide connected status after 3 seconds
+            if (status === 'connected') {
+                setTimeout(() => {
+                    connectionStatus.style.display = 'none';
+                }, 3000);
+            }
         }
-      });
-      
-      navLinks.forEach(link => {
-        link.classList.remove('active');
-        link.setAttribute('aria-current', 'false');
-        if (link.getAttribute('href').substring(1) === currentSection) {
-          link.classList.add('active');
-          link.setAttribute('aria-current', 'page');
-        }
-      });
-      
-      // Set Home as active if at the top of the page
-      if (window.scrollY < 100) {
-        const homeLink = document.querySelector('a[href="#home"]');
-        homeLink.classList.add('active');
-        homeLink.setAttribute('aria-current', 'page');
-      }
-    });
-    
-    // Testimonial carousel
-    const testimonialContainer = document.getElementById('testimonial-container');
-    const testimonialDots = document.querySelectorAll('.testimonial-dot');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    let currentTestimonial = 0;
-    
-    function showTestimonial(index) {
-      testimonialContainer.scrollTo({
-        left: testimonialContainer.clientWidth * index,
-        behavior: 'smooth'
-      });
-      
-      // Update active dot
-      testimonialDots.forEach((dot, i) => {
-        if (i === index) {
-          dot.classList.add('bg-primary');
-          dot.classList.remove('bg-gray-300');
-          dot.setAttribute('aria-current', 'true');
-        } else {
-          dot.classList.remove('bg-primary');
-          dot.classList.add('bg-gray-300');
-          dot.setAttribute('aria-current', 'false');
-        }
-      });
-      
-      currentTestimonial = index;
     }
     
-    testimonialDots.forEach((dot, index) => {
-      dot.addEventListener('click', () => showTestimonial(index));
-    });
-    
-    prevBtn.addEventListener('click', () => {
-      let newIndex = currentTestimonial - 1;
-      if (newIndex < 0) newIndex = testimonialDots.length - 1;
-      showTestimonial(newIndex);
-    });
-    
-    nextBtn.addEventListener('click', () => {
-      let newIndex = currentTestimonial + 1;
-      if (newIndex >= testimonialDots.length) newIndex = 0;
-      showTestimonial(newIndex);
-    });
-    
-    // Auto-rotate testimonials
-    setInterval(() => {
-      let newIndex = currentTestimonial + 1;
-      if (newIndex >= testimonialDots.length) newIndex = 0;
-      showTestimonial(newIndex);
-    }, 6000);
-    
-    // Form validation and submission
-    const contactForm = document.getElementById('contact-form');
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const nameError = document.getElementById('name-error');
-    const emailError = document.getElementById('email-error');
-    const submitBtn = document.getElementById('submit-btn');
-    const submitText = document.getElementById('submit-text');
-    const submitLoading = document.getElementById('submit-loading');
-    const formSuccess = document.getElementById('form-success');
-    const formError = document.getElementById('form-error');
-    
-    contactForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      let isValid = true;
-      
-      // Validate name
-      if (nameInput.value.trim() === '') {
-        nameError.classList.remove('hidden');
-        nameInput.setAttribute('aria-invalid', 'true');
-        isValid = false;
-      } else {
-        nameError.classList.add('hidden');
-        nameInput.setAttribute('aria-invalid', 'false');
-      }
-      
-      // Validate email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(emailInput.value)) {
-        emailError.classList.remove('hidden');
-        emailInput.setAttribute('aria-invalid', 'true');
-        isValid = false;
-      } else {
-        emailError.classList.add('hidden');
-        emailInput.setAttribute('aria-invalid', 'false');
-      }
-      
-      if (isValid) {
-        // Show loading state
-        submitText.classList.add('hidden');
-        submitLoading.classList.remove('hidden');
-        submitBtn.disabled = true;
-        
-        try {
-          // Prepare form data
-          const formData = {
-            name: document.getElementById('name').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            service: document.getElementById('service').value,
-            message: document.getElementById('message').value
-          };
-          
-          // Send to backend
-          const response = await fetch('/api/form/submit', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-          });
-          
-          const result = await response.json();
-          
-          if (result.success) {
-            // Show success message
-            formSuccess.classList.remove('hidden');
-            formError.classList.add('hidden');
-            document.getElementById('contact-form').reset();
-            
-            console.log("✅ Form submitted successfully!", result);
-          } else {
-            throw new Error(result.message);
-          }
-        } catch (error) {
-          // Show error message
-          formError.classList.remove('hidden');
-          formSuccess.classList.add('hidden');
-          console.error('❌ Form submission error:', error);
-        } finally {
-          // Reset button state
-          submitText.classList.remove('hidden');
-          submitLoading.classList.add('hidden');
-          submitBtn.disabled = false;
-        }
-      }
-    });
-    
-    // Add intersection observer for animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-in-up');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, observerOptions);
-    
-    // Observe elements with the animation class
-    document.querySelectorAll('.service-card, .testimonial-slide').forEach(el => {
-      observer.observe(el);
-    });
-    
-    // Set Home as active on page load
-    document.addEventListener('DOMContentLoaded', () => {
-      const homeLink = document.querySelector('a[href="#home"]');
-      homeLink.classList.add('active');
-      homeLink.setAttribute('aria-current', 'page');
-      
-      // Add touch event listeners for mobile
-      if ('ontouchstart' in window) {
-        // Increase touch targets for mobile
-        document.querySelectorAll('a, button').forEach(el => {
-          if (el.offsetWidth < 44 || el.offsetHeight < 44) {
-            el.style.minWidth = '44px';
-            el.style.minHeight = '44px';
-            el.style.display = 'inline-flex';
-            el.style.alignItems = 'center';
-            el.style.justifyContent = 'center';
-          }
-        });
-      }
-    });
-  
-    // Live Chat Toggle
-    const chatWidget = document.getElementById('chat-widget');
-    const chatBox = document.getElementById('chat-box');
-    const closeChat = document.getElementById('close-chat');
-    
-    chatWidget.addEventListener('click', function(e) {
-      if (e.target.closest('#chat-widget > div') && !e.target.closest('#chat-box')) {
-        chatBox.classList.toggle('hidden');
-        const isExpanded = chatBox.getAttribute('aria-hidden') === 'false';
-        chatBox.setAttribute('aria-hidden', isExpanded);
-      }
-    });
-    
-    closeChat.addEventListener('click', function() {
-      chatBox.classList.add('hidden');
-      chatBox.setAttribute('aria-hidden', 'true');
-    });
-    
-    // Close chat when clicking outside
-    document.addEventListener('click', function(e) {
-      if (!chatWidget.contains(e.target) && !chatBox.classList.contains('hidden')) {
-        chatBox.classList.add('hidden');
-        chatBox.setAttribute('aria-hidden', 'true');
-      }
-    });
-  </script>
+    // Expose this function globally so admin.js can use it
+    window.updateConnectionStatus = updateConnectionStatus;
+</script>
+
+  <!-- Custom Script -->
+  <script src="script.js"></script>
 </body>
 </html>
