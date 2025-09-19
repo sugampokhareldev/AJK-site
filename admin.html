@@ -3,209 +3,971 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - AJK Cleaning</title>
+    <title>AJK Cleaning - Admin Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="admin.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Login Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+        
+        .login-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .login-btn:hover {
+            background-color: #38a169;
+        }
+        
+        .login-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        
+        .login-error {
+            background-color: #ffecec;
+            color: #e53e3e;
+            border: 1px solid #ffcdd2;
+        }
+        
+        .login-success {
+            background-color: #e8f5e9;
+            color: #38a169;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        /* Admin Panel Styles */
+        .admin-panel {
+            display: none;
+            background: white;
+            min-height: 100vh;
+        }
+        
+        header {
+            background: #4a5568;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        h1 {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-btn {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .refresh-btn:hover {
+            background: #38a169;
+        }
+        
+        .auto-refresh-btn {
+            background: #ed8936;
+            color: white;
+        }
+        
+        .auto-refresh-btn:hover {
+            background: #dd7724;
+        }
+        
+        .auto-refresh-btn.active {
+            background: #e53e3e;
+        }
+        
+        .export-btn {
+            background: #4299e1;
+            color: white;
+        }
+        
+        .export-btn:hover {
+            background: #3182ce;
+        }
+        
+        .chat-btn {
+            background: #9f7aea;
+            color: white;
+        }
+        
+        .chat-btn:hover {
+            background: #805ad5;
+        }
+        
+        .delete-btn {
+            background: #e53e3e;
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background: #c53030;
+        }
+        
+        .auto-refresh-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: #edf2f7;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .auto-refresh-controls label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .auto-refresh-controls input {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-live {
+            background: #48bb78;
+        }
+        
+        .status-paused {
+            background: #e53e3e;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            background: #f7fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card h3 {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4a5568;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            font-weight: 600;
+            color: #4a5568;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            background: #edf2f7;
+        }
+        
+        th:hover {
+            background: #e2e8f0;
+        }
+        
+        tbody tr {
+            transition: background 0.2s;
+        }
+        
+        tbody tr:hover {
+            background: #f7fafc;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+        
+        .view-btn {
+            background-color: #4299e1;
+            color: white;
+            border: none;
+        }
+        
+        .view-btn:hover {
+            background-color: #3182ce;
+        }
+        
+        .chat-from-submission {
+            background-color: #9f7aea;
+            color: white;
+            border: none;
+        }
+        
+        .chat-from-submission:hover {
+            background-color: #805ad5;
+        }
+        
+        .delete-btn-sm {
+            background-color: #e53e3e;
+            color: white;
+            border: none;
+        }
+        
+        .delete-btn-sm:hover {
+            background-color: #c53030;
+        }
+        
+        .submission-details {
+            padding: 20px;
+            border-top: 1px solid #e2e8f0;
+            display: none;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .submission-details h3 {
+            margin-bottom: 15px;
+            color: #4a5568;
+            padding-right: 30px;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            width: 100px;
+            color: #718096;
+            flex-shrink: 0;
+        }
+        
+        .detail-content {
+            flex: 1;
+            word-break: break-word;
+        }
+        
+        .close-details {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #e53e3e;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .close-details:hover {
+            background: #c53030;
+            transform: scale(1.1);
+        }
+        
+        .last-refreshed {
+            text-align: right;
+            padding: 10px 20px;
+            font-size: 12px;
+            color: #718096;
+            background: #f7fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            max-width: 350px;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .notification.success {
+            background: #48bb78;
+        }
+        
+        .notification.error {
+            background: #e53e3e;
+        }
+        
+        .notification.info {
+            background: #4299e1;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #a0aec0;
+        }
+        
+        .connection-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            z-index: 10000;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .connection-status.connected { 
+            background: #48bb78; 
+            color: white; 
+        }
+        
+        .connection-status.disconnected { 
+            background: #e53e3e; 
+            color: white; 
+        }
+        
+        .connection-status.connecting { 
+            background: #ed8936; 
+            color: white; 
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #718096;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        /* Chat Interface Styles */
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .chat-container.minimized {
+            height: 50px;
+        }
+        
+        .chat-header {
+            background: #4a5568;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .chat-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .chat-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-controls button {
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        
+        .chat-controls button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .chat-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-clients {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 10px;
+            background: #f7fafc;
+        }
+        
+        .client-list {
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        
+        .client-item {
+            padding: 8px 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        
+        .client-item:hover {
+            background: #edf2f7;
+        }
+        
+        .client-item.active {
+            background: #4299e1;
+            color: white;
+        }
+        
+        .client-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .client-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .client-status {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .status-online {
+            background: #48bb78;
+        }
+        
+        .status-offline {
+            background: #e53e3e;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            position: relative;
+        }
+        
+        .message.admin {
+            align-self: flex-end;
+            background: #4299e1;
+            color: white;
+        }
+        
+        .message.client {
+            align-self: flex-start;
+            background: #edf2f7;
+            color: #4a5568;
+        }
+        
+        .message-info {
+            font-size: 11px;
+            margin-top: 4px;
+            opacity: 0.8;
+        }
+        
+        .chat-input {
+            padding: 10px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .chat-input button {
+            padding: 10px 15px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .chat-input button:hover {
+            background: #38a169;
+        }
+        
+        .no-clients {
+            text-align: center;
+            padding: 20px;
+            color: #a0aec0;
+        }
+        
+        .no-messages {
+            text-align: center;
+            padding: 20px;
+            color: #a0aec0;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .unread-count {
+            background: #e53e3e;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        
+        .broadcast-section {
+            padding: 10px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .broadcast-section input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .broadcast-section button {
+            padding: 10px 15px;
+            background: #9f7aea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .broadcast-section button:hover {
+            background: #805ad5;
+        }
+        
+        .typing-indicator {
+            font-size: 12px;
+            color: #718096;
+            padding: 5px 10px;
+            font-style: italic;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .controls {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .notification {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .detail-label {
+                width: 100%;
+            }
+
+            .chat-container {
+                width: 300px;
+                height: 400px;
+                right: 10px;
+                bottom: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div id="notification" class="notification"></div>
+    <!-- Login Section -->
+    <div class="login-container" id="login-section">
+        <div class="login-form">
+            <h2>Admin Login</h2>
+            <div id="login-message" class="login-message"></div>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+            </div>
+            <button id="login-btn" class="login-btn">Login</button>
+            <div id="loading" class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Logging in...
+            </div>
+        </div>
+    </div>
     
-    <div id="admin-container">
-        <!-- Login form -->
-        <div class="container" id="login-section">
-            <div class="login-container">
-                <h2>Admin Login</h2>
-                <div id="login-message" class="login-message" style="display: none;"></div>
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" placeholder="Enter your username" autocomplete="username">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
-                </div>
-                <button id="login-btn" class="login-btn">Login</button>
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="admin-panel">
+        <header>
+            <h1><i class="fas fa-tachometer-alt"></i> AJK Cleaning Admin Panel</h1>
+            <div class="controls">
+                <button id="refresh-btn" class="refresh-btn">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+                <button id="autoRefreshBtn" class="auto-refresh-btn">
+                    <i class="fas fa-clock"></i> Auto-Refresh: OFF
+                </button>
+                <button id="export-btn" class="export-btn">
+                    <i class="fas fa-download"></i> Export CSV
+                </button>
+                <button id="chat-toggle-btn" class="chat-btn">
+                    <i class="fas fa-comments"></i> Chat
+                </button>
+                <button id="logout-btn" class="delete-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <div class="auto-refresh-controls">
+            <label for="refreshInterval">Auto-Refresh Interval (seconds):</label>
+            <input type="number" id="refreshInterval" min="5" max="300" value="10">
+            <div id="refreshStatus">
+                <span class="status-indicator status-paused"></span>
+                <span id="statusText">Auto-Refresh Paused</span>
             </div>
         </div>
         
-        <!-- Admin panel -->
-        <div class="container" id="admin-panel" style="display: none;">
-            <header>
-                <h1>📊 AJK Cleaning Admin Panel</h1>
-                <div class="controls">
-                    <button id="refresh-btn" class="refresh-btn">🔄 Refresh</button>
-                    <button id="autoRefreshBtn" class="auto-refresh-btn">⏱️ Auto-Refresh: OFF</button>
-                    <button id="export-btn" class="export-btn">📥 Export CSV</button>
-                    <button id="chat-btn" class="chat-btn">💬 Chat Dashboard</button>
-                    <button id="logout-btn" class="delete-btn">🚪 Logout</button>
-                </div>
-            </header>
-
-            <div class="auto-refresh-controls">
-                <label for="refreshInterval">Auto-Refresh Interval (seconds):</label>
-                <input type="number" id="refreshInterval" min="5" max="300" value="10">
-                <div id="refreshStatus">
-                    <span class="status-indicator status-paused"></span>
-                    <span id="statusText">Auto-Refresh Paused</span>
-                </div>
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Submissions</h3>
+                <div class="number" id="totalSubmissions">0</div>
             </div>
-            
-            <div class="stats">
-                <div class="stat-card">
-                    <h3>Total Submissions</h3>
-                    <p id="totalSubmissions">0</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Today's Submissions</h3>
-                    <p id="todaySubmissions">0</p>
-                </div>
-                <div class="stat-card">
-                    <h3>This Week</h3>
-                    <p id="weekSubmissions">0</p>
-                </div>
+            <div class="stat-card">
+                <h3>Today's Submissions</h3>
+                <div class="number" id="todaySubmissions">0</div>
             </div>
-            
-            <div style="overflow-x: auto;">
-                <table id="submissionsTable">
-                    <thead>
-                        <tr>
-                            <th data-sort="id">ID</th>
-                            <th data-sort="name">Name</th>
-                            <th data-sort="email">Email</th>
-                            <th data-sort="phone">Phone</th>
-                            <th data-sort="service">Service</th>
-                            <th data-sort="date">Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="7">
-                                <div class="empty-state">
-                                    📝
-                                    <p>Loading submissions...</p>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="stat-card">
+                <h3>This Week</h3>
+                <div class="number" id="weekSubmissions">0</div>
             </div>
-            
-            <div id="detailView" class="submission-details">
-                <h3>Submission Details</h3>
-                <button id="close-details" title="Close details">×</button>
-                
-                <div class="detail-row">
-                    <div class="detail-label">ID:</div>
-                    <div class="detail-content" id="detail-id">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Name:</div>
-                    <div class="detail-content" id="detail-name">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Email:</div>
-                    <div class="detail-content" id="detail-email">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Phone:</div>
-                    <div class="detail-content" id="detail-phone">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Service:</div>
-                    <div class="detail-content" id="detail-service">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Message:</div>
-                    <div class="detail-content" id="detail-message">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Date:</div>
-                    <div class="detail-content" id="detail-date">-</div>
-                </div>
+            <div class="stat-card">
+                <h3>Active Chats</h3>
+                <div class="number" id="activeChats">0</div>
             </div>
-            
-            <div class="last-refreshed" id="lastRefreshed">
-                Last refreshed: Never
-            </div>
-
-            <!-- Enhanced Chat System -->
-            <div class="chat-container">
-                <div class="chat-sidebar">
-                    <div class="chat-sidebar-header">
-                        <h3>Active Conversations</h3>
-                        <button class="chat-action-btn" title="Refresh chats" id="refresh-chats">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </div>
-                    <div class="chat-search">
-                        <input type="text" placeholder="Search conversations..." id="chat-search">
-                    </div>
-                    <div class="chat-list" id="active-chats-list">
-                        <div class="no-active-chats" id="no-active-chats">
-                            <i class="fas fa-comments"></i>
-                            <p>No active conversations</p>
-                        </div>
-                        <!-- Chat items will be dynamically added here -->
-                    </div>
-                </div>
-                <div class="chat-main">
-                    <div class="chat-header" id="chat-header" style="display: none;">
-                        <div class="chat-header-info">
-                            <div class="chat-header-avatar" id="current-chat-avatar">CU</div>
-                            <div class="chat-header-details">
-                                <h3 id="current-chat-name">Customer</h3>
-                                <p><span class="status-dot"></span> <span class="chat-status" id="chat-status">Online</span></p>
+        </div>
+        
+        <div style="overflow-x: auto; padding: 20px;">
+            <table id="submissionsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Service</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-file-alt"></i>
+                                <p>Loading submissions...</p>
                             </div>
-                        </div>
-                        <div class="chat-actions">
-                            <button class="chat-action-btn" title="User details" id="user-details">
-                                <i class="fas fa-user"></i>
-                            </button>
-                            <button class="chat-action-btn" title="Clear chat" id="clear-chat">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                            <button class="chat-action-btn" title="Close chat" id="close-chat">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="chat-messages" id="chat-history">
-                        <div class="no-chat-selected" id="no-chat-selected">
-                            <i class="fas fa-comment-alt"></i>
-                            <p>Select a conversation to start messaging</p>
-                        </div>
-                        <!-- Messages will be dynamically added here -->
-                    </div>
-                    <div class="typing-indicator" id="typing-indicator" style="display: none;">
-                        <span>Customer is typing</span>
-                        <div class="typing-dots">
-                            <div class="typing-dot"></div>
-                            <div class="typing-dot"></div>
-                            <div class="typing-dot"></div>
-                        </div>
-                    </div>
-                    <div class="chat-input-container" id="reply-section" style="display: none;">
-                        <div class="quick-replies">
-                            <div class="quick-reply" data-reply="Hello, how can I help you?">Hello</div>
-                            <div class="quick-reply" data-reply="Thank you for your message.">Thanks</div>
-                            <div class="quick-reply" data-reply="I'll check that for you.">Checking</div>
-                            <div class="quick-reply" data-reply="Please provide more details.">More details</div>
-                        </div>
-                        <div class="chat-input-wrapper">
-                            <textarea class="chat-input" id="reply-message" placeholder="Type a message..."></textarea>
-                            <button class="chat-send-btn" id="send-reply">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                        <div class="char-count" id="char-count">0/500</div>
-                    </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="detailView" class="submission-details">
+            <h3>Submission Details</h3>
+            <button id="close-details" class="close-details">×</button>
+            
+            <div class="detail-row">
+                <div class="detail-label">ID:</div>
+                <div class="detail-content" id="detail-id">-</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Name:</div>
+                <div class="detail-content" id="detail-name">-</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Email:</div>
+                <div class="detail-content" id="detail-email">-</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Phone:</div>
+                <div class="detail-content" id="detail-phone">-</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Service:</div>
+                <div class="detail-content" id="detail-service">-</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Message:</div>
+                <div class="detail-content" id="detail-message">-</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Date:</div>
+                <div class="detail-content" id="detail-date">-</div>
+            </div>
+        </div>
+        
+        <div class="last-refreshed" id="lastRefreshed">
+            Last refreshed: Never
+        </div>
+
+        <footer>
+            <p>AJK Cleaning Company Admin Panel • Form submissions are stored securely</p>
+        </footer>
+    </div>
+
+    <!-- Chat Interface -->
+    <div class="chat-container" id="chat-container" style="display: none;">
+        <div class="chat-header" id="chat-toggle">
+            <div class="chat-title">
+                <i class="fas fa-comments"></i>
+                Live Chat
+                <span id="unread-count" class="unread-count" style="display: none;">0</span>
+            </div>
+            <div class="chat-controls">
+                <button id="minimize-chat"><i class="fas fa-minus"></i></button>
+                <button id="close-chat"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        
+        <div class="chat-content" id="chat-content">
+            <div class="chat-clients">
+                <h4>Connected Clients</h4>
+                <div class="client-list" id="client-list">
+                    <div class="no-clients">No clients connected</div>
                 </div>
             </div>
             
-            <footer>
-                <p>AJK Cleaning Company Admin Panel • Form submissions are stored securely</p>
-            </footer>
+            <div class="chat-messages" id="chat-messages">
+                <div class="no-messages">Select a client to view messages</div>
+            </div>
+            
+            <div class="typing-indicator" id="typing-indicator" style="display: none;"></div>
+            
+            <div class="chat-input">
+                <input type="text" id="message-input" placeholder="Type a message..." disabled>
+                <button id="send-message" disabled>Send</button>
+            </div>
+            
+            <div class="broadcast-section">
+                <input type="text" id="broadcast-input" placeholder="Message to all clients...">
+                <button id="broadcast-message">Broadcast</button>
+            </div>
         </div>
     </div>
 
@@ -213,6 +975,1113 @@
         Connection Status
     </div>
 
-    <script src="admin.js"></script>
+    <script>
+        // Admin Panel Class
+        class AdminPanel {
+            constructor() {
+                this.isAuthenticated = false;
+                this.autoRefreshInterval = null;
+                this.autoRefreshEnabled = false;
+                this.isRefreshing = false;
+                this.chat = null;
+                
+                this.initializeElements();
+                this.setupEventListeners();
+                this.checkAuthStatus();
+            }
+
+            // Initialize DOM elements
+            initializeElements() {
+                this.elements = {};
+                
+                const elementIds = [
+                    'login-section', 'admin-panel', 'login-btn', 'username', 'password',
+                    'login-message', 'refresh-btn', 'autoRefreshBtn', 'export-btn',
+                    'logout-btn', 'refreshInterval', 'refreshStatus', 'chat-toggle-btn',
+                    'statusText', 'totalSubmissions', 'todaySubmissions', 'weekSubmissions', 
+                    'activeChats', 'submissionsTable', 'detailView', 'close-details', 
+                    'lastRefreshed', 'connectionStatus', 'loading', 'chat-container'
+                ];
+
+                elementIds.forEach(id => {
+                    this.elements[id] = document.getElementById(id);
+                });
+            }
+
+            // Setup event listeners
+            setupEventListeners() {
+                // Login events
+                if (this.elements['login-btn']) {
+                    this.elements['login-btn'].addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.handleLogin();
+                    });
+                }
+
+                if (this.elements.password) {
+                    this.elements.password.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            this.handleLogin();
+                        }
+                    });
+                }
+
+                // Control buttons
+                if (this.elements['refresh-btn']) {
+                    this.elements['refresh-btn'].addEventListener('click', () => this.refreshData());
+                }
+
+                if (this.elements.autoRefreshBtn) {
+                    this.elements.autoRefreshBtn.addEventListener('click', () => this.toggleAutoRefresh());
+                }
+
+                if (this.elements['export-btn']) {
+                    this.elements['export-btn'].addEventListener('click', () => this.exportCSV());
+                }
+
+                if (this.elements['logout-btn']) {
+                    this.elements['logout-btn'].addEventListener('click', () => this.logout());
+                }
+
+                if (this.elements['chat-toggle-btn']) {
+                    this.elements['chat-toggle-btn'].addEventListener('click', () => {
+                        this.toggleChat();
+                    });
+                }
+
+                // Detail view close button
+                if (this.elements['close-details']) {
+                    this.elements['close-details'].addEventListener('click', () => {
+                        this.elements.detailView.style.display = 'none';
+                    });
+                }
+
+                // Initialize auto refresh interval input
+                if (this.elements.refreshInterval) {
+                    this.elements.refreshInterval.addEventListener('change', () => {
+                        if (this.autoRefreshEnabled) {
+                            this.startAutoRefresh();
+                        }
+                    });
+                }
+            }
+
+            // Toggle chat visibility
+            toggleChat() {
+                if (this.elements['chat-container'].style.display === 'none') {
+                    this.elements['chat-container'].style.display = 'flex';
+                    if (!this.chat) {
+                        this.chat = new AdminChat();
+                    }
+                } else {
+                    this.elements['chat-container'].style.display = 'none';
+                }
+            }
+
+            // Check authentication status
+            async checkAuthStatus() {
+                try {
+                    const response = await fetch('/api/admin/status', {
+                        credentials: 'include'
+                    });
+                    
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    
+                    const data = await response.json();
+                    
+                    if (data.authenticated) {
+                        this.isAuthenticated = true;
+                        this.showAdminPanel();
+                        this.loadStats();
+                        this.loadSubmissions();
+                        this.startAutoRefresh();
+                    } else {
+                        this.showLoginForm();
+                    }
+                } catch (error) {
+                    console.error('Auth check error:', error);
+                    this.showLoginForm();
+                }
+            }
+
+            // Handle login
+            async handleLogin() {
+                const username = this.elements.username?.value;
+                const password = this.elements.password?.value;
+                
+                if (!username || !password) {
+                    this.showLoginMessage('Please enter both username and password', 'error');
+                    return;
+                }
+                
+                const loginBtn = this.elements['login-btn'];
+                const loading = this.elements['loading'];
+                
+                if (loginBtn && loading) {
+                    loginBtn.disabled = true;
+                    loading.style.display = 'block';
+                }
+                
+                try {
+                    const response = await fetch('/api/admin/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ username, password }),
+                        credentials: 'include'
+                    });
+                    
+                    if (!response.ok) throw new Error('Login failed');
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.showLoginMessage('Login successful! Loading admin panel...', 'success');
+                        this.isAuthenticated = true;
+                        
+                        setTimeout(() => {
+                            this.showAdminPanel();
+                            this.loadStats();
+                            this.loadSubmissions();
+                            this.startAutoRefresh();
+                        }, 1000);
+                    } else {
+                        this.showLoginMessage(data.error || 'Login failed', 'error');
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    this.showLoginMessage('Login error. Please try again.', 'error');
+                } finally {
+                    if (loginBtn && loading) {
+                        loginBtn.disabled = false;
+                        loading.style.display = 'none';
+                    }
+                }
+            }
+
+            // Load statistics
+            async loadStats() {
+                try {
+                    const response = await fetch('/api/statistics', {
+                        credentials: 'include'
+                    });
+                    const data = await response.json();
+                    this.updateStatsDisplay(data);
+                } catch (error) {
+                    console.error('Error loading stats:', error);
+                }
+            }
+
+            // Load submissions
+            async loadSubmissions() {
+                try {
+                    const response = await fetch('/api/submissions', {
+                        credentials: 'include'
+                    });
+                    const submissions = await response.json();
+                    this.displaySubmissions(submissions);
+                    this.updateLastRefreshed();
+                } catch (error) {
+                    console.error('Error loading submissions:', error);
+                    this.showNotification('Error loading submissions', 'error');
+                }
+            }
+
+            // Display submissions
+            displaySubmissions(submissions) {
+                if (!this.elements.submissionsTable) return;
+                
+                const tbody = this.elements.submissionsTable.querySelector('tbody');
+                if (!tbody) return;
+                
+                if (!submissions || submissions.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <i class="fas fa-file-alt"></i>
+                                    <p>No submissions yet</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                tbody.innerHTML = '';
+                
+                submissions.forEach(submission => {
+                    const row = document.createElement('tr');
+                    const date = new Date(submission.submitted_at).toLocaleDateString();
+                    
+                    row.innerHTML = `
+                        <td>${submission.id}</td>
+                        <td>${submission.name}</td>
+                        <td>${submission.email}</td>
+                        <td>${submission.phone || '-'}</td>
+                        <td>${submission.service || '-'}</td>
+                        <td>${date}</td>
+                        <td>
+                            <button class="action-btn view-btn" data-id="${submission.id}">View</button>
+                            <button class="action-btn delete-btn-sm" data-id="${submission.id}">Delete</button>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // Add event listeners to buttons
+                this.setupSubmissionEventListeners();
+            }
+
+            // Setup submission event listeners
+            setupSubmissionEventListeners() {
+                // View buttons
+                document.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.getAttribute('data-id');
+                        this.viewSubmission(id);
+                    });
+                });
+                
+                // Delete buttons
+                document.querySelectorAll('.delete-btn-sm').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.getAttribute('data-id');
+                        this.deleteSubmission(id);
+                    });
+                });
+            }
+
+            // View submission
+            async viewSubmission(id) {
+                try {
+                    const response = await fetch(`/api/submissions/${id}`, {
+                        credentials: 'include'
+                    });
+                    const submission = await response.json();
+                    this.showSubmissionDetails(submission);
+                } catch (error) {
+                    console.error('Error loading submission:', error);
+                    this.showNotification('Error loading submission details', 'error');
+                }
+            }
+
+            // Show submission details
+            showSubmissionDetails(submission) {
+                if (!this.elements.detailView) return;
+                
+                const elements = {
+                    'detail-id': submission.id,
+                    'detail-name': submission.name,
+                    'detail-email': submission.email,
+                    'detail-phone': submission.phone || '-',
+                    'detail-service': submission.service || '-',
+                    'detail-message': submission.message,
+                    'detail-date': new Date(submission.submitted_at).toLocaleString()
+                };
+                
+                Object.entries(elements).forEach(([id, value]) => {
+                    const element = document.getElementById(id);
+                    if (element) element.textContent = value;
+                });
+                
+                this.elements.detailView.style.display = 'block';
+            }
+
+            // Delete submission
+            async deleteSubmission(id) {
+                if (!confirm('Are you sure you want to delete this submission?')) return;
+                
+                try {
+                    const response = await fetch(`/api/submissions/${id}`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.showNotification('Submission deleted successfully', 'success');
+                        this.loadSubmissions();
+                        this.loadStats();
+                    } else {
+                        this.showNotification('Error deleting submission', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error deleting submission:', error);
+                    this.showNotification('Error deleting submission', 'error');
+                }
+            }
+
+            // Export CSV
+            async exportCSV() {
+                try {
+                    const response = await fetch('/api/submissions', {
+                        credentials: 'include'
+                    });
+                    const submissions = await response.json();
+                    
+                    if (!submissions || submissions.length === 0) {
+                        this.showNotification('No data to export', 'info');
+                        return;
+                    }
+                    
+                    // Create CSV content
+                    let csvContent = 'ID,Name,Email,Phone,Service,Message,Date\n';
+                    
+                    submissions.forEach(submission => {
+                        const row = [
+                            submission.id,
+                            `"${submission.name.replace(/"/g, '""')}"`,
+                            submission.email,
+                            submission.phone || '',
+                            submission.service ? `"${submission.service.replace(/"/g, '""')}"` : '',
+                            `"${submission.message.replace(/"/g, '""')}"`,
+                            new Date(submission.submitted_at).toLocaleDateString()
+                        ];
+                        
+                        csvContent += row.join(',') + '\n';
+                    });
+                    
+                    // Create download link
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', `ajk-submissions-${new Date().toISOString().split('T')[0]}.csv`);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    this.showNotification('CSV exported successfully', 'success');
+                } catch (error) {
+                    console.error('Error exporting CSV:', error);
+                    this.showNotification('Error exporting CSV', 'error');
+                }
+            }
+
+            // Toggle auto refresh
+            toggleAutoRefresh() {
+                this.autoRefreshEnabled = !this.autoRefreshEnabled;
+                
+                if (this.autoRefreshEnabled) {
+                    this.startAutoRefresh();
+                } else {
+                    this.stopAutoRefresh();
+                }
+                
+                this.updateAutoRefreshUI();
+            }
+
+            // Start auto refresh with configurable interval
+            startAutoRefresh() {
+                this.stopAutoRefresh();
+                
+                const interval = parseInt(this.elements.refreshInterval?.value || '30') * 1000;
+                
+                // Allow any interval but set a reasonable minimum
+                if (interval < 1000) {
+                    this.showNotification('Refresh interval must be at least 1 second', 'error');
+                    return;
+                }
+                
+                this.autoRefreshInterval = setInterval(() => {
+                    this.refreshData();
+                }, interval);
+                
+                this.autoRefreshEnabled = true;
+                this.updateAutoRefreshUI();
+            }
+
+            // Stop auto refresh
+            stopAutoRefresh() {
+                if (this.autoRefreshInterval) {
+                    clearInterval(this.autoRefreshInterval);
+                    this.autoRefreshInterval = null;
+                }
+                this.autoRefreshEnabled = false;
+                this.updateAutoRefreshUI();
+            }
+
+            // Update auto refresh UI
+            updateAutoRefreshUI() {
+                if (this.elements.autoRefreshBtn) {
+                    this.elements.autoRefreshBtn.textContent = this.autoRefreshEnabled ? 
+                        'Auto-Refresh: ON' : 'Auto-Refresh: OFF';
+                    this.elements.autoRefreshBtn.classList.toggle('active', this.autoRefreshEnabled);
+                }
+                
+                if (this.elements.statusText) {
+                    this.elements.statusText.textContent = this.autoRefreshEnabled ? 
+                        'Auto-Refresh Enabled' : 'Auto-Refresh Paused';
+                }
+                
+                const statusIndicator = this.elements.refreshStatus?.querySelector('.status-indicator');
+                if (statusIndicator) {
+                    statusIndicator.classList.toggle('status-live', this.autoRefreshEnabled);
+                    statusIndicator.classList.toggle('status-paused', !this.autoRefreshEnabled);
+                }
+            }
+
+            // Refresh data
+            async refreshData() {
+                if (this.isRefreshing) return;
+                
+                this.isRefreshing = true;
+                const refreshBtn = this.elements['refresh-btn'];
+                if (refreshBtn) {
+                    refreshBtn.disabled = true;
+                    refreshBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Refreshing';
+                }
+                
+                try {
+                    await Promise.all([
+                        this.loadSubmissions(),
+                        this.loadStats()
+                    ]);
+                } catch (error) {
+                    console.error('Refresh error:', error);
+                } finally {
+                    this.isRefreshing = false;
+                    if (refreshBtn) {
+                        refreshBtn.disabled = false;
+                        refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                    }
+                }
+            }
+
+            // Logout
+            async logout() {
+                try {
+                    await fetch('/api/admin/logout', { 
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+                    this.isAuthenticated = false;
+                    this.stopAutoRefresh();
+                    if (this.chat) {
+                        this.chat.disconnect();
+                        this.chat = null;
+                    }
+                    this.showLoginForm();
+                    this.showNotification('Logged out successfully', 'success');
+                } catch (error) {
+                    console.error('Logout error:', error);
+                }
+            }
+
+            // Show notification
+            showNotification(message, type = 'info') {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // Show notification
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 10);
+                
+                // Remove after 5 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 300);
+                }, 5000);
+            }
+
+            // UI state management
+            showLoginForm() {
+                if (this.elements['login-section']) this.elements['login-section'].style.display = 'flex';
+                if (this.elements['admin-panel']) this.elements['admin-panel'].style.display = 'none';
+                if (this.elements['chat-container']) this.elements['chat-container'].style.display = 'none';
+            }
+
+            showAdminPanel() {
+                if (this.elements['login-section']) this.elements['login-section'].style.display = 'none';
+                if (this.elements['admin-panel']) this.elements['admin-panel'].style.display = 'block';
+            }
+
+            showLoginMessage(message, type) {
+                const loginMessage = this.elements['login-message'];
+                if (!loginMessage) return;
+                
+                loginMessage.textContent = message;
+                loginMessage.className = `login-message ${type === 'error' ? 'login-error' : 'login-success'}`;
+                loginMessage.style.display = 'block';
+                
+                setTimeout(() => {
+                    loginMessage.style.display = 'none';
+                }, 5000);
+            }
+
+            // Update stats display
+            updateStatsDisplay(stats) {
+                if (this.elements.totalSubmissions) this.elements.totalSubmissions.textContent = stats.total || 0;
+                if (this.elements.todaySubmissions) this.elements.todaySubmissions.textContent = stats.today || 0;
+                if (this.elements.weekSubmissions) this.elements.weekSubmissions.textContent = stats.week || 0;
+                if (this.elements.activeChats && this.chat) {
+                    this.elements.activeChats.textContent = this.chat.clients.size || 0;
+                }
+            }
+
+            // Update last refreshed time
+            updateLastRefreshed() {
+                if (this.elements.lastRefreshed) {
+                    this.elements.lastRefreshed.textContent = `Last refreshed: ${new Date().toLocaleTimeString()}`;
+                }
+            }
+        }
+
+        // Chat functionality
+        class AdminChat {
+            constructor() {
+                this.ws = null;
+                this.clients = new Map();
+                this.selectedClientId = null;
+                this.messages = new Map(); // clientId -> message array
+                this.unreadCounts = new Map();
+                this.isConnected = false;
+                this.reconnectAttempts = 0;
+                this.maxReconnectAttempts = 5;
+                
+                this.initializeChatElements();
+                this.setupChatEventListeners();
+                this.connectWebSocket();
+            }
+            
+            // Initialize chat DOM elements
+            initializeChatElements() {
+                this.elements = {};
+                
+                const chatElementIds = [
+                    'chat-container', 'chat-toggle', 'chat-content', 
+                    'client-list', 'chat-messages', 'message-input',
+                    'send-message', 'minimize-chat', 'close-chat',
+                    'unread-count', 'typing-indicator', 'broadcast-input',
+                    'broadcast-message'
+                ];
+
+                chatElementIds.forEach(id => {
+                    this.elements[id] = document.getElementById(id);
+                });
+            }
+            
+            // Setup chat event listeners
+            setupChatEventListeners() {
+                // Chat toggle
+                if (this.elements['chat-toggle']) {
+                    this.elements['chat-toggle'].addEventListener('click', () => {
+                        this.elements['chat-container'].classList.toggle('minimized');
+                    });
+                }
+                
+                // Minimize chat
+                if (this.elements['minimize-chat']) {
+                    this.elements['minimize-chat'].addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.elements['chat-container'].classList.toggle('minimized');
+                    });
+                }
+                
+                // Close chat
+                if (this.elements['close-chat']) {
+                    this.elements['close-chat'].addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.elements['chat-container'].style.display = 'none';
+                    });
+                }
+                
+                // Send message
+                if (this.elements['send-message']) {
+                    this.elements['send-message'].addEventListener('click', () => {
+                        this.sendMessage();
+                    });
+                }
+                
+                // Message input enter key
+                if (this.elements['message-input']) {
+                    this.elements['message-input'].addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            this.sendMessage();
+                        }
+                    });
+                }
+                
+                // Broadcast message
+                if (this.elements['broadcast-message']) {
+                    this.elements['broadcast-message'].addEventListener('click', () => {
+                        this.broadcastMessage();
+                    });
+                }
+                
+                // Broadcast input enter key
+                if (this.elements['broadcast-input']) {
+                    this.elements['broadcast-input'].addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            this.broadcastMessage();
+                        }
+                    });
+                }
+            }
+            
+            // Connect to WebSocket server
+            connectWebSocket() {
+                try {
+                    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                    const wsUrl = `${protocol}//${window.location.host}`;
+                    
+                    this.ws = new WebSocket(wsUrl);
+                    
+                    this.ws.onopen = () => {
+                        console.log('WebSocket connected');
+                        this.isConnected = true;
+                        this.reconnectAttempts = 0;
+                        this.updateConnectionStatus('connected');
+                        
+                        // Identify as admin
+                        this.ws.send(JSON.stringify({
+                            type: 'identify',
+                            isAdmin: true,
+                            name: 'Admin'
+                        }));
+                    };
+                    
+                    this.ws.onmessage = (event) => {
+                        try {
+                            const data = JSON.parse(event.data);
+                            this.handleMessage(data);
+                        } catch (error) {
+                            console.error('Error parsing WebSocket message:', error, event.data);
+                        }
+                    };
+                    
+                    this.ws.onclose = () => {
+                        console.log('WebSocket disconnected');
+                        this.isConnected = false;
+                        this.updateConnectionStatus('disconnected');
+                        this.attemptReconnect();
+                    };
+                    
+                    this.ws.onerror = (error) => {
+                        console.error('WebSocket error:', error);
+                        this.updateConnectionStatus('error');
+                    };
+                    
+                } catch (error) {
+                    console.error('Error connecting to WebSocket:', error);
+                    this.attemptReconnect();
+                }
+            }
+            
+            // Attempt to reconnect
+            attemptReconnect() {
+                if (this.reconnectAttempts < this.maxReconnectAttempts) {
+                    this.reconnectAttempts++;
+                    const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 10000);
+                    
+                    console.log(`Attempting to reconnect in ${delay/1000} seconds (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+                    
+                    setTimeout(() => {
+                        this.connectWebSocket();
+                    }, delay);
+                } else {
+                    console.error('Max reconnection attempts reached');
+                }
+            }
+            
+            // Handle incoming messages
+            handleMessage(data) {
+                console.log('Received message:', data);
+                
+                switch (data.type) {
+                    case 'client_id':
+                        // Our connection is established
+                        break;
+                        
+                    case 'chat':
+                        // Add message to the appropriate client
+                        if (data.clientId) {
+                            this.addMessage(data.clientId, data);
+                        } else {
+                            console.error('Received chat message without clientId:', data);
+                        }
+                        break;
+                        
+                    case 'history':
+                        // Load message history for a client
+                        if (data.clientId && data.messages) {
+                            this.loadMessageHistory(data.clientId, data.messages);
+                        }
+                        break;
+                        
+                    case 'typing':
+                        // Show typing indicator
+                        if (data.clientId) {
+                            this.showTypingIndicator(data.clientId, data.isTyping, data.name);
+                        }
+                        break;
+                        
+                    case 'system':
+                        // System message
+                        console.log('System message:', data.message);
+                        break;
+                        
+                    case 'admin':
+                        // Admin notification
+                        console.log('Admin notification:', data.message);
+                        // Show notification to admin
+                        if (window.adminPanel && data.message) {
+                            window.adminPanel.showNotification(data.message, 'info');
+                        }
+                        break;
+                        
+                    case 'clients':
+                        // Update client list
+                        if (data.clients) {
+                            this.updateClientList(data.clients);
+                        }
+                        break;
+                        
+                    default:
+                        console.log('Unknown message type:', data.type, data);
+                }
+            }
+            
+            // Update client list
+            updateClientList(clientsData) {
+                try {
+                    // Convert array to Map
+                    const clientsMap = new Map();
+                    if (Array.isArray(clientsData)) {
+                        clientsData.forEach(client => {
+                            if (client.id) {
+                                clientsMap.set(client.id, client);
+                            }
+                        });
+                    } else if (clientsData && typeof clientsData === 'object') {
+                        // Handle object format
+                        for (const [id, client] of Object.entries(clientsData)) {
+                            if (client && client.id) {
+                                clientsMap.set(client.id, client);
+                            }
+                        }
+                    }
+                    
+                    this.clients = clientsMap;
+                    this.renderClientList();
+                    
+                    // Update active chats count in admin panel
+                    if (window.adminPanel) {
+                        window.adminPanel.updateStatsDisplay({
+                            total: parseInt(document.getElementById('totalSubmissions').textContent),
+                            today: parseInt(document.getElementById('todaySubmissions').textContent),
+                            week: parseInt(document.getElementById('weekSubmissions').textContent),
+                            activeChats: this.clients.size
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error updating client list:', error, clientsData);
+                }
+            }
+            
+            // Render client list
+            renderClientList() {
+                if (!this.elements['client-list']) return;
+                
+                if (this.clients.size === 0) {
+                    this.elements['client-list'].innerHTML = '<div class="no-clients">No clients connected</div>';
+                    return;
+                }
+                
+                let html = '';
+                for (const [clientId, client] of this.clients) {
+                    const unreadCount = this.unreadCounts.get(clientId) || 0;
+                    const isActive = clientId === this.selectedClientId;
+                    const clientName = client.name || 'Guest';
+                    const clientEmail = client.email ? ` (${client.email})` : '';
+                    
+                    html += `
+                        <div class="client-item ${isActive ? 'active' : ''}" data-client-id="${clientId}">
+                            <div class="client-info">
+                                <div class="client-name">${clientName}${clientEmail}</div>
+                                <div class="client-status">
+                                    <span class="status-indicator status-online"></span>
+                                    Connected
+                                </div>
+                            </div>
+                            ${unreadCount > 0 ? `<span class="unread-count">${unreadCount}</span>` : ''}
+                        </div>
+                    `;
+                }
+                
+                this.elements['client-list'].innerHTML = html;
+                
+                // Add event listeners to client items
+                const clientItems = this.elements['client-list'].querySelectorAll('.client-item');
+                clientItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        const clientId = item.getAttribute('data-client-id');
+                        this.selectClient(clientId);
+                    });
+                });
+            }
+            
+            // Select a client
+            selectClient(clientId) {
+                this.selectedClientId = clientId;
+                
+                // Reset unread count for this client
+                this.unreadCounts.set(clientId, 0);
+                this.updateUnreadCount();
+                
+                // Update UI
+                this.renderClientList();
+                this.renderMessages();
+                
+                // Enable message input
+                if (this.elements['message-input']) {
+                    this.elements['message-input'].disabled = false;
+                    this.elements['send-message'].disabled = false;
+                    this.elements['message-input'].focus();
+                }
+                
+                // Request message history if we don't have it
+                if (!this.messages.has(clientId)) {
+                    this.messages.set(clientId, []);
+                    if (this.ws && this.isConnected) {
+                        this.ws.send(JSON.stringify({
+                            type: 'get_history',
+                            clientId: clientId
+                        }));
+                    }
+                }
+            }
+            
+            // Load message history
+            loadMessageHistory(clientId, messages) {
+                if (!this.messages.has(clientId)) {
+                    this.messages.set(clientId, []);
+                }
+                
+                // Add messages if they don't already exist
+                for (const message of messages) {
+                    if (!this.messages.get(clientId).some(m => m.id === message.id)) {
+                        this.messages.get(clientId).push(message);
+                    }
+                }
+                
+                // Sort by timestamp
+                this.messages.get(clientId).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                
+                // Render if this is the selected client
+                if (this.selectedClientId === clientId) {
+                    this.renderMessages();
+                }
+            }
+            
+            // Add a message
+            addMessage(clientId, message) {
+                if (!clientId) {
+                    console.error('Cannot add message without clientId:', message);
+                    return;
+                }
+                
+                // If we don't know about this client, create an entry for them
+                if (!this.clients.has(clientId)) {
+                    this.clients.set(clientId, {
+                        id: clientId,
+                        name: message.name || 'Unknown Client',
+                        email: message.email || ''
+                    });
+                }
+                
+                if (!this.messages.has(clientId)) {
+                    this.messages.set(clientId, []);
+                }
+                
+                // Add message if it doesn't already exist
+                if (!this.messages.get(clientId).some(m => m.id === message.id)) {
+                    this.messages.get(clientId).push(message);
+                    
+                    // If this isn't the selected client, increment unread count
+                    if (this.selectedClientId !== clientId) {
+                        const currentCount = this.unreadCounts.get(clientId) || 0;
+                        this.unreadCounts.set(clientId, currentCount + 1);
+                        this.updateUnreadCount();
+                    }
+                    
+                    // Render if this is the selected client
+                    if (this.selectedClientId === clientId) {
+                        this.renderMessages();
+                    }
+                    
+                    // Update client list to show unread count
+                    this.renderClientList();
+                }
+            }
+            
+            // Render messages
+            renderMessages() {
+                if (!this.elements['chat-messages'] || !this.selectedClientId) return;
+                
+                const messages = this.messages.get(this.selectedClientId) || [];
+                
+                if (messages.length === 0) {
+                    this.elements['chat-messages'].innerHTML = '<div class="no-messages">No messages yet</div>';
+                    return;
+                }
+                
+                let html = '';
+                for (const message of messages) {
+                    const isAdmin = message.isAdmin;
+                    const time = new Date(message.timestamp).toLocaleTimeString();
+                    const senderName = isAdmin ? 'You' : (message.name || 'Client');
+                    
+                    html += `
+                        <div class="message ${isAdmin ? 'admin' : 'client'}">
+                            <div class="message-text">${message.message}</div>
+                            <div class="message-info">
+                                ${senderName} • ${time}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                this.elements['chat-messages'].innerHTML = html;
+                
+                // Scroll to bottom
+                this.elements['chat-messages'].scrollTop = this.elements['chat-messages'].scrollHeight;
+            }
+            
+            // Send a message
+            sendMessage() {
+                if (!this.selectedClientId || !this.elements['message-input']) return;
+                
+                const messageText = this.elements['message-input'].value.trim();
+                if (!messageText) return;
+                
+                if (this.ws && this.isConnected) {
+                    this.ws.send(JSON.stringify({
+                        type: 'admin_message',
+                        targetClientId: this.selectedClientId,
+                        message: messageText
+                    }));
+                    
+                    // Add message to local history immediately for instant feedback
+                    this.addMessage(this.selectedClientId, {
+                        id: 'temp-' + Date.now(),
+                        type: 'chat',
+                        message: messageText,
+                        name: 'Admin',
+                        timestamp: new Date().toISOString(),
+                        isAdmin: true,
+                        clientId: this.selectedClientId
+                    });
+                    
+                    // Clear input
+                    this.elements['message-input'].value = '';
+                }
+            }
+            
+            // Broadcast a message to all clients
+            broadcastMessage() {
+                if (!this.elements['broadcast-input']) return;
+                
+                const messageText = this.elements['broadcast-input'].value.trim();
+                if (!messageText) return;
+                
+                if (this.ws && this.isConnected) {
+                    this.ws.send(JSON.stringify({
+                        type: 'broadcast',
+                        message: messageText
+                    }));
+                    
+                    // Add broadcast message to all client histories
+                    for (const clientId of this.clients.keys()) {
+                        this.addMessage(clientId, {
+                            id: 'broadcast-' + Date.now(),
+                            type: 'chat',
+                            message: messageText,
+                            name: 'Admin (Broadcast)',
+                            timestamp: new Date().toISOString(),
+                            isAdmin: true,
+                            clientId: clientId
+                        });
+                    }
+                    
+                    // Clear input
+                    this.elements['broadcast-input'].value = '';
+                    
+                    // Show confirmation
+                    if (window.adminPanel) {
+                        window.adminPanel.showNotification(`Broadcast sent to ${this.clients.size} clients`, 'success');
+                    }
+                }
+            }
+            
+            // Show typing indicator
+            showTypingIndicator(clientId, isTyping, name) {
+                if (!this.elements['typing-indicator'] || this.selectedClientId !== clientId) return;
+                
+                if (isTyping) {
+                    this.elements['typing-indicator'].textContent = `${name} is typing...`;
+                    this.elements['typing-indicator'].style.display = 'block';
+                } else {
+                    this.elements['typing-indicator'].style.display = 'none';
+                }
+            }
+            
+            // Update unread count badge
+            updateUnreadCount() {
+                if (!this.elements['unread-count']) return;
+                
+                let totalUnread = 0;
+                for (const count of this.unreadCounts.values()) {
+                    totalUnread += count;
+                }
+                
+                if (totalUnread > 0) {
+                    this.elements['unread-count'].textContent = totalUnread;
+                    this.elements['unread-count'].style.display = 'flex';
+                } else {
+                    this.elements['unread-count'].style.display = 'none';
+                }
+            }
+            
+            // Update connection status
+            updateConnectionStatus(status) {
+                const statusElement = document.getElementById('connectionStatus');
+                if (!statusElement) return;
+                
+                statusElement.textContent = `Chat: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
+                statusElement.className = `connection-status ${status}`;
+                statusElement.style.display = 'block';
+            }
+            
+            // Disconnect from WebSocket
+            disconnect() {
+                if (this.ws) {
+                    this.ws.close();
+                }
+                this.isConnected = false;
+                this.updateConnectionStatus('disconnected');
+            }
+        }
+
+        // Initialize the admin panel when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            window.adminPanel = new AdminPanel();
+        });
+    </script>
 </body>
 </html>
