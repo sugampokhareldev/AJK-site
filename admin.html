@@ -1072,7 +1072,7 @@
                 if (this.elements['chat-container'].style.display === 'none') {
                     this.elements['chat-container'].style.display = 'flex';
                     if (!this.chat) {
-                        this.chat = new AdminChat();
+                        this.chat = new AdminChat(this);
                     }
                 } else {
                     this.elements['chat-container'].style.display = 'none';
@@ -1082,7 +1082,7 @@
             // Check authentication status
             async checkAuthStatus() {
                 try {
-                    const response = await fetch('/api/admin/status', {
+                    const response = await fetch('/api/test', {
                         credentials: 'include'
                     });
                     
@@ -1544,7 +1544,8 @@
 
         // Chat functionality
         class AdminChat {
-            constructor() {
+            constructor(adminPanel) {
+                this.adminPanel = adminPanel;
                 this.ws = null;
                 this.clients = new Map();
                 this.selectedClientId = null;
@@ -1740,15 +1741,8 @@
                         // Admin notification
                         console.log('Admin notification:', data.message);
                         // Show notification to admin
-                        if (window.adminPanel && data.message) {
-                            window.adminPanel.showNotification(data.message, 'info');
-                        }
-                        break;
-                        
-                    case 'clients':
-                        // Update client list
-                        if (data.clients) {
-                            this.updateClientList(data.clients);
+                        if (this.adminPanel && data.message) {
+                            this.adminPanel.showNotification(data.message, 'info');
                         }
                         break;
                         
@@ -1781,8 +1775,8 @@
                     this.renderClientList();
                     
                     // Update active chats count in admin panel
-                    if (window.adminPanel) {
-                        window.adminPanel.updateStatsDisplay({
+                    if (this.adminPanel) {
+                        this.adminPanel.updateStatsDisplay({
                             total: parseInt(document.getElementById('totalSubmissions').textContent),
                             today: parseInt(document.getElementById('todaySubmissions').textContent),
                             week: parseInt(document.getElementById('weekSubmissions').textContent),
@@ -2023,8 +2017,8 @@
                     this.elements['broadcast-input'].value = '';
                     
                     // Show confirmation
-                    if (window.adminPanel) {
-                        window.adminPanel.showNotification(`Broadcast sent to ${this.clients.size} clients`, 'success');
+                    if (this.adminPanel) {
+                        this.adminPanel.showNotification(`Broadcast sent to ${this.clients.size} clients`, 'success');
                     }
                 }
             }

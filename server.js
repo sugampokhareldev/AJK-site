@@ -253,12 +253,19 @@ wss.on('connection', (ws, request) => {
             clientId: clientId
         }));
         
+        // Send recent chat history to the client
         if (chatHistory.length > 0) {
-            ws.send(JSON.stringify({
-                type: 'history',
-                messages: chatHistory.slice(-50),
-                clientId: clientId
-            }));
+            const recentMessages = chatHistory.filter(msg => 
+                msg.clientId === clientId || msg.isAdmin
+            ).slice(-20);
+            
+            if (recentMessages.length > 0) {
+                ws.send(JSON.stringify({
+                    type: 'history',
+                    messages: recentMessages,
+                    clientId: clientId
+                }));
+            }
         }
     } catch (error) {
         console.error('Error sending initial messages:', error);
@@ -918,6 +925,11 @@ app.get('/', (req, res) => {
 // Serve admin panel for both login and main admin interface
 app.get(['/admin', '/admin/login'], (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+// Serve the enhanced chat client
+app.get('/chat', (req, res) => {
+    res.sendFile(path.join(__dirname, 'chat.html'));
 });
 
 // 404 handler for API routes
