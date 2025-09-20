@@ -232,7 +232,8 @@ wss.on('connection', (ws, request) => {
         email: '',
         id: clientId,
         joined: new Date().toISOString(),
-        sessionId: null
+        sessionId: null,
+        hasReceivedWelcome: false
     };
     clients.set(clientId, client);
     
@@ -259,12 +260,6 @@ wss.on('connection', (ws, request) => {
                 clientId: clientId
             }));
         }
-        
-        ws.send(JSON.stringify({
-            type: 'system',
-            message: 'Welcome to AJK Cleaning! How can we help you today?',
-            timestamp: new Date().toISOString()
-        }));
     } catch (error) {
         console.error('Error sending initial messages:', error);
     }
@@ -295,6 +290,18 @@ wss.on('connection', (ws, request) => {
                     }
                     
                     const sanitizedText = validator.escape(messageText.trim()).substring(0, 500);
+                    
+                    // Check if this is a duplicate message (based on timestamp and content)
+                    const isDuplicate = chatHistory.some(msg => 
+                        msg.clientId === clientId && 
+                        msg.message === sanitizedText && 
+                        (Date.now() - new Date(msg.timestamp).getTime()) < 1000
+                    );
+                    
+                    if (isDuplicate) {
+                        console.log('Duplicate message detected, ignoring:', clientIp);
+                        return;
+                    }
                     
                     const chatMessage = {
                         id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
@@ -350,6 +357,20 @@ wss.on('connection', (ws, request) => {
                     
                     console.log('Client identified:', client.name, client.email, client.isAdmin ? '(Admin)' : '');
                     
+                    // Only send welcome message to non-admin clients on first identification
+                    if (!client.isAdmin && !client.hasReceivedWelcome) {
+                        try {
+                            ws.send(JSON.stringify({
+                                type: 'system',
+                                message: 'Welcome to AJK Cleaning! How can we help you today?',
+                                timestamp: new Date().toISOString()
+                            }));
+                            client.hasReceivedWelcome = true;
+                        } catch (error) {
+                            console.error('Error sending welcome message:', error);
+                        }
+                    }
+                    
                     if (!client.isAdmin) {
                         notifyAdmin(`Client ${clientId} identified as: ${client.name} (${client.email || 'no email'})`);
                     }
@@ -386,22 +407,32 @@ wss.on('connection', (ws, request) => {
                                 clientId: message.targetClientId
                             };
                             
-                            chatHistory.push(adminMessage);
+                            // Check for duplicate before adding to history
+                            const isDup = chatHistory.some(msg => 
+                                msg.clientId === adminMessage.clientId && 
+                                msg.message === adminMessage.message && 
+                                (Date.now() - new Date(msg.timestamp).getTime()) < 1000
+                            );
                             
-                            try {
-                                targetClient.ws.send(JSON.stringify(adminMessage));
+                            if (!isDup) {
+                                chatHistory.push(adminMessage);
                                 
-                                clients.forEach(c => {
-                                    if (c.isAdmin && c.ws.readyState === WebSocket.OPEN) {
-                                        try {
-                                            c.ws.send(JSON.stringify(adminMessage));
-                                        } catch (error) {
-                                            console.error('Error sending to admin:', error);
+                                try {
+                                    targetClient.ws.send(JSON.stringify(adminMessage));
+                                    
+                                    // Send to all admins except the sender to prevent duplication
+                                    clients.forEach(c => {
+                                        if (c.isAdmin && c.id !== client.id && c.ws.readyState === WebSocket.OPEN) {
+                                            try {
+                                                c.ws.send(JSON.stringify(adminMessage));
+                                            } catch (error) {
+                                                console.error('Error sending to admin:', error);
+                                            }
                                         }
-                                    }
-                                });
-                            } catch (error) {
-                                console.error('Error sending admin message:', error);
+                                    });
+                                } catch (error) {
+                                    console.error('Error sending admin message:', error);
+                                }
                             }
                         }
                     }
