@@ -17,15 +17,12 @@ const { JSONFile } = require('lowdb/node');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
 
-// Import security functions
-const security = require('./security');
-
 const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-// Trust Render's proxy (CRITICAL for secure cookies)
+// Trust proxy (CRITICAL for secure cookies)
 app.set('trust proxy', 1);
 
 // Use environment secret or generate one
@@ -33,9 +30,6 @@ const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(64).toSt
 
 // Environment-specific settings
 const isProduction = NODE_ENV === 'production';
-
-// Set security functions in app context
-app.set('security', security);
 
 // Database setup with lowdb
 const dbPath = process.env.DB_PATH || path.join(__dirname, 'db.json');
@@ -50,85 +44,55 @@ if (!fs.existsSync(dbDir)) {
 const adapter = new JSONFile(dbPath);
 const db = new Low(adapter, { submissions: [], admin_users: [] });
 
-// Initialize database with error handling
-async function initializeDB() {
-    try {
-        // Ensure the directory exists
-        if (!fs.existsSync(dbDir)) {
-            fs.mkdirSync(dbDir, { recursive: true });
-            console.log('Created database directory:', dbDir);
-        }
-        
-        await db.read();
-        
-        // Initialize if database is empty or corrupted
-        if (!db.data || typeof db.data !== 'object') {
-            console.log('Initializing new database...');
-            db.data = { submissions: [], admin_users: [] };
-        }
-        
-        // Ensure arrays exist
-        db.data.submissions = db.data.submissions || [];
-        db.data.admin_users = db.data.admin_users || [];
-        
-        // Create admin user if it doesn't exist
-        const adminUser = db.data.admin_users.find(user => user.username === 'Sanud119@gmail.com');
-        if (!adminUser) {
-            console.log('Creating admin user...');
-            const hash = await bcrypt.hash('Sugam@2008', 12);
-            db.data.admin_users.push({
-                id: Date.now(),
-                username: 'Sanud119@gmail.com',
-                password_hash: hash,
-                created_at: new Date().toISOString()
-            });
-            await db.write();
-            console.log('Admin user created successfully');
-        }
-        
-        console.log('Database ready at:', dbPath);
-        
-    } catch (error) {
-        console.error('Database initialization error:', error);
-        // Try to create fresh database
-        try {
-            db.data = { submissions: [], admin_users: [] };
-            
-            const hash = await bcrypt.hash('Sugam@2008', 12);
-            db.data.admin_users.push({
-                id: Date.now(),
-                username: 'Sanud119@gmail.com',
-                password_hash: hash,
-                created_at: new Date().toISOString()
-            });
-            
-            await db.write();
-            console.log('Fresh database created successfully');
-        } catch (writeError) {
-            console.error('Failed to create fresh database:', writeError);
-            throw writeError;
-        }
-    }
-}
-
 // ==================== WEBSOCKET CHAT SERVER ====================
 const clients = new Map();
+const adminSessions = new Map(); // Track admin sessions
 const chatHistory = [];
 const connectionQuality = new Map();
 
-function broadcastToAll(message) {
+// FIXED: Modified broadcastToAll to prevent duplicate messages
+function broadcastToAll(message, sourceSessionId = null, excludeClientId = null) {
     clients.forEach(c => {
-        if (c.ws.readyState === WebSocket.OPEN) {
-            try {
-                c.ws.send(JSON.stringify(message));
-            } catch (error) {
-                console.error('Error sending message to client:', error);
+        // Skip excluded client (sender)
+        if (excludeClientId && c.id === excludeClientId) {
+            return;
+        }
+        
+        // For admin messages, send to the target client and all admins
+        if (message.isAdmin) {
+            // Send to the target client
+            if (c.id === message.clientId && c.ws.readyState === WebSocket.OPEN) {
+                try {
+                    c.ws.send(JSON.stringify(message));
+                } catch (error) {
+                    console.error('Error sending message to client:', error);
+                }
+            }
+            
+            // Send to all admins (excluding sender if specified)
+            if (c.isAdmin && c.ws.readyState === WebSocket.OPEN) {
+                try {
+                    c.ws.send(JSON.stringify(message));
+                } catch (error) {
+                    console.error('Error sending message to admin:', error);
+                }
+            }
+        } 
+        // For client messages, send to all admins
+        else {
+            if (c.isAdmin && c.ws.readyState === WebSocket.OPEN) {
+                try {
+                    c.ws.send(JSON.stringify(message));
+                } catch (error) {
+                    console.error('Error sending message to admin:', error);
+                }
             }
         }
     });
 }
 
-function notifyAdmin(message) {
+// FIXED: Modified notifyAdmin to send to all admins
+function notifyAdmin(message, targetSessionId = null) {
     clients.forEach(client => {
         if (client.isAdmin && client.ws.readyState === WebSocket.OPEN) {
             try {
@@ -144,7 +108,8 @@ function notifyAdmin(message) {
     });
 }
 
-function sendToClient(clientId, messageText) {
+// Modify sendToClient to include session information
+function sendToClient(clientId, messageText, sourceSessionId = null) {
     const client = clients.get(clientId);
     if (client && client.ws.readyState === WebSocket.OPEN) {
         const adminMessage = {
@@ -154,7 +119,8 @@ function sendToClient(clientId, messageText) {
             name: 'Support',
             timestamp: new Date().toISOString(),
             isAdmin: true,
-            clientId: clientId
+            clientId: clientId,
+            sessionId: sourceSessionId // Include session ID
         };
         
         chatHistory.push(adminMessage);
@@ -170,10 +136,12 @@ function sendToClient(clientId, messageText) {
     return false;
 }
 
-function broadcastToClients(messageText) {
+// Modify broadcastToClients to respect sessions
+function broadcastToClients(messageText, sourceSessionId = null) {
     let count = 0;
     clients.forEach(client => {
-        if (!client.isAdmin && client.ws.readyState === WebSocket.OPEN) {
+        if (!client.isAdmin && client.ws.readyState === WebSocket.OPEN && 
+            (!sourceSessionId || client.sessionId === sourceSessionId)) {
             const adminMessage = {
                 id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
                 type: 'chat',
@@ -181,7 +149,8 @@ function broadcastToClients(messageText) {
                 name: 'Support',
                 timestamp: new Date().toISOString(),
                 isAdmin: true,
-                clientId: client.id
+                clientId: client.id,
+                sessionId: sourceSessionId
             };
             
             chatHistory.push(adminMessage);
@@ -214,11 +183,28 @@ const wss = new WebSocket.Server({
     }
 });
 
+// Allowed origins for WebSocket connections
+const allowedOrigins = [
+    'https://ajk-cleaning.onrender.com',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3001'
+];
+
 wss.on('connection', (ws, request) => {
     const clientIp = request.headers['x-forwarded-for']?.split(',')[0]?.trim() || 
                      request.headers['x-real-ip'] || 
                      request.socket.remoteAddress || 
                      'unknown';
+    
+    // Check origin for WebSocket connections
+    const origin = request.headers.origin;
+    if (origin && !allowedOrigins.includes(origin)) {
+        console.log('WebSocket connection from blocked origin:', origin);
+        ws.close(1008, 'Origin not allowed');
+        return;
+    }
     
     console.log('Client connected:', clientIp);
     
@@ -322,7 +308,15 @@ wss.on('connection', (ws, request) => {
                     };
                     
                     chatHistory.push(chatMessage);
-                    broadcastToAll(chatMessage);
+                    
+                    // Broadcast to all relevant clients (FIXED: prevent duplicates)
+                    if (client.isAdmin) {
+                        // For admin messages, exclude the sender to prevent duplicates
+                        broadcastToAll(chatMessage, null, clientId);
+                    } else {
+                        // For client messages, broadcast normally
+                        broadcastToAll(chatMessage);
+                    }
                     
                     if (!client.isAdmin) {
                         notifyAdmin(`New message from ${client.name}: ${sanitizedText.substring(0, 50)}${sanitizedText.length > 50 ? '...' : ''}`);
@@ -359,10 +353,27 @@ wss.on('connection', (ws, request) => {
                     }
                     if (message.sessionId && typeof message.sessionId === 'string') {
                         client.sessionId = message.sessionId;
+                        
+                        // Track admin sessions
+                        if (message.isAdmin) {
+                            // Validate admin session
+                            if (!adminSessions.has(message.sessionId)) {
+                                console.log('Invalid admin session attempt:', message.sessionId);
+                                ws.close(1008, 'Invalid admin session');
+                                return;
+                            }
+                            
+                            adminSessions.set(message.sessionId, {
+                                id: message.sessionId,
+                                name: client.name,
+                                connectedAt: new Date().toISOString(),
+                                ip: clientIp
+                            });
+                        }
                     }
                     client.isAdmin = message.isAdmin || false;
                     
-                    console.log('Client identified:', client.name, client.email, client.isAdmin ? '(Admin)' : '');
+                    console.log('Client identified:', client.name, client.email, client.isAdmin ? '(Admin)' : '', 'Session:', client.sessionId);
                     
                     // Only send welcome message to non-admin clients on first identification
                     if (!client.isAdmin && !client.hasReceivedWelcome) {
@@ -411,7 +422,8 @@ wss.on('connection', (ws, request) => {
                                 name: 'Support',
                                 timestamp: new Date().toISOString(),
                                 isAdmin: true,
-                                clientId: message.targetClientId
+                                clientId: message.targetClientId,
+                                sessionId: client.sessionId
                             };
                             
                             // Check for duplicate before adding to history
@@ -424,22 +436,8 @@ wss.on('connection', (ws, request) => {
                             if (!isDup) {
                                 chatHistory.push(adminMessage);
                                 
-                                try {
-                                    targetClient.ws.send(JSON.stringify(adminMessage));
-                                    
-                                    // Send to all admins except the sender to prevent duplication
-                                    clients.forEach(c => {
-                                        if (c.isAdmin && c.id !== client.id && c.ws.readyState === WebSocket.OPEN) {
-                                            try {
-                                                c.ws.send(JSON.stringify(adminMessage));
-                                            } catch (error) {
-                                                console.error('Error sending to admin:', error);
-                                            }
-                                        }
-                                    });
-                                } catch (error) {
-                                    console.error('Error sending admin message:', error);
-                                }
+                                // Use broadcastToAll to send to target client and all admins, excluding sender
+                                broadcastToAll(adminMessage, null, client.id);
                             }
                         }
                     }
@@ -447,7 +445,7 @@ wss.on('connection', (ws, request) => {
                     
                 case 'broadcast':
                     if (client.isAdmin && message.message) {
-                        const broadcastCount = broadcastToClients(message.message);
+                        const broadcastCount = broadcastToClients(message.message, client.sessionId);
                         try {
                             client.ws.send(JSON.stringify({
                                 type: 'system',
@@ -469,6 +467,12 @@ wss.on('connection', (ws, request) => {
     
     ws.on('close', (code, reason) => {
         console.log('Client disconnected:', clientIp, clientId, 'Code:', code, 'Reason:', reason);
+        
+        // Clean up admin sessions
+        if (client.isAdmin && client.sessionId) {
+            adminSessions.delete(client.sessionId);
+        }
+        
         clients.delete(clientId);
         connectionQuality.delete(clientId);
         notifyAdmin(`Client disconnected: ${client.name} (${clientId})`);
@@ -476,6 +480,12 @@ wss.on('connection', (ws, request) => {
     
     ws.on('error', (error) => {
         console.error('WebSocket error for client', clientIp, ':', error);
+        
+        // Clean up admin sessions
+        if (client.isAdmin && client.sessionId) {
+            adminSessions.delete(client.sessionId);
+        }
+        
         clients.delete(clientId);
         connectionQuality.delete(clientId);
     });
@@ -665,28 +675,69 @@ const loginLimiter = rateLimit({
 app.use('/api/admin/login', loginLimiter);
 // ==================== END RATE LIMITING ====================
 
+// Initialize database function
+async function initializeDB() {
+    try {
+        // Ensure the directory exists
+        if (!fs.existsSync(dbDir)) {
+            fs.mkdirSync(dbDir, { recursive: true });
+            console.log('Created database directory:', dbDir);
+        }
+        
+        await db.read();
+        
+        // Initialize if database is empty or corrupted
+        if (!db.data || typeof db.data !== 'object') {
+            console.log('Initializing new database...');
+            db.data = { submissions: [], admin_users: [] };
+        }
+        
+        // Ensure arrays exist
+        db.data.submissions = db.data.submissions || [];
+        db.data.admin_users = db.data.admin_users || [];
+        
+        // Create admin user if it doesn't exist
+        const adminUser = db.data.admin_users.find(user => user.username === 'Sanud119@gmail.com');
+        if (!adminUser) {
+            console.log('Creating admin user...');
+            const hash = await bcrypt.hash('Sugam@2008', 12);
+            db.data.admin_users.push({
+                id: Date.now(),
+                username: 'Sanud119@gmail.com',
+                password_hash: hash,
+                created_at: new Date().toISOString()
+            });
+            await db.write();
+            console.log('Admin user created successfully');
+        }
+        
+        console.log('Database ready at:', dbPath);
+        
+    } catch (error) {
+        console.error('Database initialization error:', error);
+        // Try to create fresh database
+        try {
+            db.data = { submissions: [], admin_users: [] };
+            
+            const hash = await bcrypt.hash('Sugam@2008', 12);
+            db.data.admin_users.push({
+                id: Date.now(),
+                username: 'Sanud119@gmail.com',
+                password_hash: hash,
+                created_at: new Date().toISOString()
+            });
+            
+            await db.write();
+            console.log('Fresh database created successfully');
+        } catch (writeError) {
+            console.error('Failed to create fresh database:', writeError);
+            throw writeError;
+        }
+    }
+}
+
 // After initializing the database, set it in the app context
 app.set('db', db);
-
-// After session configuration
-// Create route handlers
-const authRoutes = require('./routes/auth');
-const submissionRoutes = require('./routes/submissions');
-
-app.use('/api/admin', authRoutes);
-app.use('/api/submissions', submissionRoutes);
-
-// Test endpoint
-app.get('/api/test', (req, res) => {
-    res.json({
-        authenticated: !!req.session.authenticated,
-        sessionId: req.sessionID,
-        environment: NODE_ENV,
-        port: PORT,
-        secureCookie: req.session.cookie.secure,
-        clientIp: req.ip
-    });
-});
 
 // Authentication middleware
 function requireAuth(req, res, next) {
@@ -788,7 +839,7 @@ app.delete('/api/submissions/:id', requireAuth, async (req, res) => {
     }
 });
 
-app.get('/api/statistics', requireAuth, async (req, res) => {
+app.get('/api/statistics', requireAuth, async (req, res) =>  {
     try {
         await db.read();
         const submissions = db.data.submissions;
@@ -896,6 +947,74 @@ app.get('/api/health', (req, res) => {
             messages: chatHistory.length
         }
     });
+});
+
+// Admin login endpoint
+app.post('/api/admin/login', async (req, res) => {
+    const { username, password, sessionId, deviceType } = req.body;
+    
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Username and password are required' });
+    }
+    
+    try {
+        await db.read();
+        const user = db.data.admin_users.find(u => u.username === username);
+        
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        
+        const isValid = await bcrypt.compare(password, user.password_hash);
+        
+        if (!isValid) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        
+        req.session.authenticated = true;
+        req.session.user = { id: user.id, username: user.username };
+        
+        // Store admin session for WebSocket validation
+        if (sessionId) {
+            adminSessions.set(sessionId, {
+                id: sessionId,
+                username: username,
+                loginTime: new Date().toISOString(),
+                deviceType: deviceType || 'unknown',
+                ip: req.ip
+            });
+        }
+        
+        res.json({ success: true, message: 'Login successful' });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Admin logout endpoint
+app.post('/api/admin/logout', (req, res) => {
+    const { sessionId } = req.body;
+    
+    // Remove from admin sessions
+    if (sessionId) {
+        adminSessions.delete(sessionId);
+    }
+    
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Logout error:', err);
+            return res.status(500).json({ error: 'Logout failed' });
+        }
+        
+        res.clearCookie('connect.sid');
+        res.json({ success: true, message: 'Logout successful' });
+    });
+});
+
+// Check authentication status
+app.get('/api/admin/status', (req, res) => {
+    res.json({ authenticated: !!req.session.authenticated });
 });
 
 // Serve static files
@@ -1006,7 +1125,6 @@ initializeDB().then(() => {
         console.log(`Database path: ${dbPath}`);
         console.log(`Trust proxy: ${app.get('trust proxy')}`);
         console.log(`Secure cookies: ${isProduction}`);
-        console.log(`Brute force protection: ENABLED (${security.MAX_ATTEMPTS} attempts)`);
         console.log(`Rate limiting: ENABLED`);
         console.log(`Enhanced validation: ENABLED`);
         console.log(`WebSocket chat server: READY`);

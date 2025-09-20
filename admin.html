@@ -481,187 +481,227 @@
             border-top: 1px solid #e2e8f0;
         }
         
-        /* Chat Interface Styles */
-        .chat-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 350px;
-            height: 500px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            z-index: 1000;
-            transition: all 0.3s ease;
-            overflow: hidden;
+        /* Chat Section Styles */
+        .chat-section {
+            display: none;
+            padding: 20px;
+            background: #f7fafc;
+            border-top: 1px solid #e2e8f0;
         }
-        
-        .chat-container.minimized {
-            height: 50px;
-        }
-        
+
         .chat-header {
-            background: #4a5568;
-            color: white;
-            padding: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: pointer;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
         }
-        
-        .chat-title {
-            font-weight: 600;
+
+        .chat-header h2 {
+            color: #4a5568;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
-        
+
         .chat-controls {
             display: flex;
             gap: 10px;
         }
-        
-        .chat-controls button {
-            background: transparent;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 5px;
-            border-radius: 4px;
-            transition: background 0.2s;
+
+        .chat-layout {
+            display: flex;
+            gap: 20px;
+            height: 500px;
         }
-        
-        .chat-controls button:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .chat-content {
-            flex: 1;
+
+        .clients-panel {
+            width: 300px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
-        
-        .chat-clients {
+
+        .clients-header {
+            padding: 15px;
             border-bottom: 1px solid #e2e8f0;
-            padding: 10px;
-            background: #f7fafc;
-        }
-        
-        .client-list {
-            max-height: 120px;
-            overflow-y: auto;
-        }
-        
-        .client-item {
-            padding: 8px 10px;
-            margin: 5px 0;
-            background: white;
-            border-radius: 5px;
-            cursor: pointer;
+            font-weight: 600;
+            color: #4a5568;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: background 0.2s;
         }
-        
+
+        .clients-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .client-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #f7fafc;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+        }
+
         .client-item:hover {
             background: #edf2f7;
         }
-        
+
         .client-item.active {
             background: #4299e1;
             color: white;
+            border-color: #4299e1;
         }
-        
+
         .client-info {
             display: flex;
             flex-direction: column;
+            flex: 1;
         }
-        
+
         .client-name {
             font-weight: 600;
             font-size: 14px;
         }
-        
-        .client-status {
+
+        .client-time {
             font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .client-preview {
+            font-size: 12px;
+            margin-top: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .client-status {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
+            font-size: 12px;
         }
-        
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        
+
         .status-online {
             background: #48bb78;
         }
-        
+
         .status-offline {
             background: #e53e3e;
         }
-        
-        .chat-messages {
+
+        .chat-panel {
             flex: 1;
-            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-current-client {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .client-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .client-main-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .client-name-large {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .client-contact {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-messages-container {
+            flex: 1;
+            padding: 15px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
         }
-        
+
         .message {
-            max-width: 80%;
-            padding: 8px 12px;
+            max-width: 70%;
+            padding: 10px 15px;
             border-radius: 8px;
-            margin-bottom: 5px;
             position: relative;
         }
-        
+
         .message.admin {
             align-self: flex-end;
             background: #4299e1;
             color: white;
         }
-        
+
         .message.client {
             align-self: flex-start;
             background: #edf2f7;
             color: #4a5568;
         }
-        
+
         .message-info {
             font-size: 11px;
             margin-top: 4px;
             opacity: 0.8;
+            display: flex;
+            justify-content: space-between;
         }
-        
-        .chat-input {
-            padding: 10px;
+
+        .message-status {
+            font-style: italic;
+        }
+
+        .chat-input-container {
+            padding: 15px;
             border-top: 1px solid #e2e8f0;
             display: flex;
             gap: 10px;
         }
-        
-        .chat-input input {
+
+        .chat-input-container input {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #cbd5e0;
             border-radius: 5px;
             font-size: 14px;
         }
-        
-        .chat-input button {
-            padding: 10px 15px;
+
+        .chat-input-container button {
+            padding: 12px 20px;
             background: #48bb78;
             color: white;
             border: none;
@@ -669,28 +709,34 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        
-        .chat-input button:hover {
+
+        .chat-input-container button:hover {
             background: #38a169;
         }
-        
-        .no-clients {
-            text-align: center;
-            padding: 20px;
-            color: #a0aec0;
-        }
-        
-        .no-messages {
-            text-align: center;
-            padding: 20px;
-            color: #a0aec0;
-            flex: 1;
+
+        .no-chat-selected {
             display: flex;
             align-items: center;
             justify-content: center;
+            height: 100%;
+            color: #a0aec0;
+            text-align: center;
         }
-        
-        .unread-count {
+
+        .chat-search {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .chat-search input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .unread-badge {
             background: #e53e3e;
             color: white;
             border-radius: 50%;
@@ -700,43 +746,75 @@
             align-items: center;
             justify-content: center;
             font-size: 12px;
-            margin-left: 5px;
         }
-        
-        .broadcast-section {
-            padding: 10px;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            gap: 10px;
+
+        .empty-chat-list {
+            padding: 20px;
+            text-align: center;
+            color: #a0aec0;
         }
-        
-        .broadcast-section input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #cbd5e0;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        
-        .broadcast-section button {
-            padding: 10px 15px;
-            background: #9f7aea;
+
+        .export-chat-btn {
+            background: #4299e1;
             color: white;
             border: none;
-            border-radius: 5px;
+            padding: 8px 12px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background 0.2s;
         }
-        
-        .broadcast-section button:hover {
-            background: #805ad5;
+
+        .delete-chat-btn {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
         }
-        
-        .typing-indicator {
+
+        .date-divider {
+            text-align: center;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .date-divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .date-divider span {
+            background: #f7fafc;
+            padding: 5px 10px;
+            border-radius: 15px;
             font-size: 12px;
             color: #718096;
-            padding: 5px 10px;
-            font-style: italic;
+            position: relative;
+            z-index: 2;
+        }
+
+        .session-info {
+            padding: 8px 12px;
+            background: #edf2f7;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .session-id {
+            font-family: monospace;
+            background: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #cbd5e0;
         }
 
         /* Animations */
@@ -751,7 +829,21 @@
         }
         
         /* Responsive Styles */
-        @media (max-width: 768px) {
+        @media (max-width: 968px) {
+            .chat-layout {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .clients-panel {
+                width: 100%;
+                height: 250px;
+            }
+            
+            .chat-panel {
+                height: 400px;
+            }
+            
             .stats {
                 grid-template-columns: 1fr;
             }
@@ -781,11 +873,10 @@
                 width: 100%;
             }
 
-            .chat-container {
-                width: 300px;
-                height: 400px;
-                right: 10px;
-                bottom: 10px;
+            .session-info {
+                flex-direction: column;
+                gap: 5px;
+                align-items: flex-start;
             }
         }
     </style>
@@ -826,7 +917,7 @@
                     <i class="fas fa-download"></i> Export CSV
                 </button>
                 <button id="chat-toggle-btn" class="chat-btn">
-                    <i class="fas fa-comments"></i> Chat
+                    <i class="fas fa-comments"></i> Show Chat
                 </button>
                 <button id="logout-btn" class="delete-btn">
                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -841,6 +932,11 @@
                 <span class="status-indicator status-paused"></span>
                 <span id="statusText">Auto-Refresh Paused</span>
             </div>
+        </div>
+        
+        <div class="session-info">
+            <span>Your Session ID: <span id="session-id" class="session-id">Generating...</span></span>
+            <span>Device: <span id="device-type">Detecting...</span></span>
         </div>
         
         <div class="stats">
@@ -888,6 +984,73 @@
             </table>
         </div>
         
+        <!-- Chat Section -->
+        <div class="chat-section" id="chat-section">
+            <div class="chat-header">
+                <h2><i class="fas fa-comments"></i> Client Chat</h2>
+                <div class="chat-controls">
+                    <button id="refresh-chats" class="refresh-btn">
+                        <i class="fas fa-sync-alt"></i> Refresh Chats
+                    </button>
+                </div>
+            </div>
+            
+            <div class="chat-layout">
+                <div class="clients-panel">
+                    <div class="clients-header">
+                        <span>Clients</span>
+                        <span id="clients-count">0</span>
+                    </div>
+                    <div class="chat-search">
+                        <input type="text" id="chat-search" placeholder="Search clients...">
+                    </div>
+                    <div class="clients-list" id="clients-list">
+                        <div class="empty-chat-list">
+                            <i class="fas fa-comments"></i>
+                            <p>No active chats</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-panel">
+                    <div class="chat-current-client">
+                        <div class="client-details">
+                            <div class="client-main-info">
+                                <div class="client-name-large" id="current-client-name">Select a client to chat</div>
+                                <div class="client-status" id="current-client-status">
+                                    <span class="status-indicator status-offline"></span>
+                                    <span>Offline</span>
+                                </div>
+                            </div>
+                            <div class="client-contact" id="current-client-contact"></div>
+                        </div>
+                        <div class="chat-actions">
+                            <button id="export-chat" class="export-chat-btn action-btn" disabled>
+                                <i class="fas fa-download"></i> Save
+                            </button>
+                            <button id="delete-chat" class="delete-chat-btn action-btn" disabled>
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages-container" id="chat-messages">
+                        <div class="no-chat-selected">
+                            <div>
+                                <i class="fas fa-comments fa-2x"></i>
+                                <p>Select a client to view messages</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <input type="text" id="message-input" placeholder="Type a message..." disabled>
+                        <button id="send-message" disabled>Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div id="detailView" class="submission-details">
             <h3>Submission Details</h3>
             <button id="close-details" class="close-details">×</button>
@@ -931,51 +1094,73 @@
         </footer>
     </div>
 
-    <!-- Chat Interface -->
-    <div class="chat-container" id="chat-container" style="display: none;">
-        <div class="chat-header" id="chat-toggle">
-            <div class="chat-title">
-                <i class="fas fa-comments"></i>
-                Live Chat
-                <span id="unread-count" class="unread-count" style="display: none;">0</span>
-            </div>
-            <div class="chat-controls">
-                <button id="minimize-chat"><i class="fas fa-minus"></i></button>
-                <button id="close-chat"><i class="fas fa-times"></i></button>
-            </div>
-        </div>
-        
-        <div class="chat-content" id="chat-content">
-            <div class="chat-clients">
-                <h4>Connected Clients</h4>
-                <div class="client-list" id="client-list">
-                    <div class="no-clients">No clients connected</div>
-                </div>
-            </div>
-            
-            <div class="chat-messages" id="chat-messages">
-                <div class="no-messages">Select a client to view messages</div>
-            </div>
-            
-            <div class="typing-indicator" id="typing-indicator" style="display: none;"></div>
-            
-            <div class="chat-input">
-                <input type="text" id="message-input" placeholder="Type a message..." disabled>
-                <button id="send-message" disabled>Send</button>
-            </div>
-            
-            <div class="broadcast-section">
-                <input type="text" id="broadcast-input" placeholder="Message to all clients...">
-                <button id="broadcast-message">Broadcast</button>
-            </div>
-        </div>
-    </div>
-
     <div id="connectionStatus" class="connection-status" style="display: none;">
         Connection Status
     </div>
 
     <script>
+        // Device and session management
+        const DeviceManager = {
+            sessionId: null,
+            deviceType: null,
+            
+            init() {
+                this.generateSessionId();
+                this.detectDeviceType();
+                this.displaySessionInfo();
+            },
+            
+            generateSessionId() {
+                // Generate a unique session ID each time the page loads
+                const timestamp = Date.now();
+                const random = Math.random().toString(36).substr(2, 9);
+                const userAgent = navigator.userAgent.substr(0, 20).replace(/[^a-zA-Z0-9]/g, '');
+                
+                this.sessionId = `admin_${timestamp}_${random}_${userAgent}`;
+                
+                // Store in sessionStorage (not localStorage) so each tab gets its own session
+                sessionStorage.setItem('adminSessionId', this.sessionId);
+                
+                return this.sessionId;
+            },
+            
+            detectDeviceType() {
+                const userAgent = navigator.userAgent;
+                
+                if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)) {
+                    this.deviceType = 'Mobile';
+                } else {
+                    this.deviceType = 'Desktop';
+                }
+                
+                return this.deviceType;
+            },
+            
+            displaySessionInfo() {
+                const sessionIdElement = document.getElementById('session-id');
+                const deviceTypeElement = document.getElementById('device-type');
+                
+                if (sessionIdElement) {
+                    sessionIdElement.textContent = this.sessionId;
+                }
+                
+                if (deviceTypeElement) {
+                    deviceTypeElement.textContent = this.deviceType;
+                }
+            },
+            
+            getSessionId() {
+                return this.sessionId;
+            },
+            
+            getDeviceType() {
+                return this.deviceType;
+            }
+        };
+
+        // Initialize device manager
+        DeviceManager.init();
+
         // Admin Panel Class
         class AdminPanel {
             constructor() {
@@ -984,6 +1169,8 @@
                 this.autoRefreshEnabled = false;
                 this.isRefreshing = false;
                 this.chat = null;
+                this.sessionId = DeviceManager.getSessionId();
+                this.currentView = 'submissions'; // 'submissions' or 'chat'
                 
                 this.initializeElements();
                 this.setupEventListeners();
@@ -1000,7 +1187,11 @@
                     'logout-btn', 'refreshInterval', 'refreshStatus', 'chat-toggle-btn',
                     'statusText', 'totalSubmissions', 'todaySubmissions', 'weekSubmissions', 
                     'activeChats', 'submissionsTable', 'detailView', 'close-details', 
-                    'lastRefreshed', 'connectionStatus', 'loading', 'chat-container'
+                    'lastRefreshed', 'connectionStatus', 'loading', 'chat-section',
+                    'clients-list', 'chat-messages', 'message-input', 'send-message',
+                    'current-client-name', 'current-client-status', 'current-client-contact',
+                    'export-chat', 'delete-chat', 'refresh-chats', 'chat-search',
+                    'clients-count'
                 ];
 
                 elementIds.forEach(id => {
@@ -1044,9 +1235,10 @@
                     this.elements['logout-btn'].addEventListener('click', () => this.logout());
                 }
 
+                // Chat toggle button
                 if (this.elements['chat-toggle-btn']) {
                     this.elements['chat-toggle-btn'].addEventListener('click', () => {
-                        this.toggleChat();
+                        this.toggleChatView();
                     });
                 }
 
@@ -1065,24 +1257,65 @@
                         }
                     });
                 }
+
+                // Chat refresh button
+                if (this.elements['refresh-chats']) {
+                    this.elements['refresh-chats'].addEventListener('click', () => {
+                        if (this.chat) {
+                            this.chat.requestClientList();
+                        }
+                    });
+                }
+
+                // Chat search
+                if (this.elements['chat-search']) {
+                    this.elements['chat-search'].addEventListener('input', (e) => {
+                        this.filterClients(e.target.value);
+                    });
+                }
             }
 
-            // Toggle chat visibility
-            toggleChat() {
-                if (this.elements['chat-container'].style.display === 'none') {
-                    this.elements['chat-container'].style.display = 'flex';
+            // Toggle between submissions and chat views
+            toggleChatView() {
+                if (this.currentView === 'submissions') {
+                    this.currentView = 'chat';
+                    this.elements['chat-section'].style.display = 'block';
+                    this.elements['chat-toggle-btn'].innerHTML = '<i class="fas fa-table"></i> Show Submissions';
+                    
+                    // Initialize chat if not already done
                     if (!this.chat) {
                         this.chat = new AdminChat(this);
                     }
                 } else {
-                    this.elements['chat-container'].style.display = 'none';
+                    this.currentView = 'submissions';
+                    this.elements['chat-section'].style.display = 'none';
+                    this.elements['chat-toggle-btn'].innerHTML = '<i class="fas fa-comments"></i> Show Chat';
                 }
+            }
+
+            // Filter clients based on search input
+            filterClients(searchTerm) {
+                if (!this.chat) return;
+                
+                const clients = this.elements['clients-list'].querySelectorAll('.client-item');
+                const searchLower = searchTerm.toLowerCase();
+                
+                clients.forEach(client => {
+                    const clientName = client.querySelector('.client-name').textContent.toLowerCase();
+                    const clientPreview = client.querySelector('.client-preview').textContent.toLowerCase();
+                    
+                    if (clientName.includes(searchLower) || clientPreview.includes(searchLower)) {
+                        client.style.display = 'flex';
+                    } else {
+                        client.style.display = 'none';
+                    }
+                });
             }
 
             // Check authentication status
             async checkAuthStatus() {
                 try {
-                    const response = await fetch('/api/test', {
+                    const response = await fetch('/api/admin/status', {
                         credentials: 'include'
                     });
                     
@@ -1129,7 +1362,12 @@
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ username, password }),
+                        body: JSON.stringify({ 
+                            username, 
+                            password,
+                            sessionId: this.sessionId,
+                            deviceType: DeviceManager.getDeviceType()
+                        }),
                         credentials: 'include'
                     });
                     
@@ -1503,7 +1741,6 @@
             showLoginForm() {
                 if (this.elements['login-section']) this.elements['login-section'].style.display = 'flex';
                 if (this.elements['admin-panel']) this.elements['admin-panel'].style.display = 'none';
-                if (this.elements['chat-container']) this.elements['chat-container'].style.display = 'none';
             }
 
             showAdminPanel() {
@@ -1554,6 +1791,8 @@
                 this.isConnected = false;
                 this.reconnectAttempts = 0;
                 this.maxReconnectAttempts = 5;
+                this.sessionId = DeviceManager.getSessionId();
+                this.clientConnectionId = null;
                 
                 this.initializeChatElements();
                 this.setupChatEventListeners();
@@ -1565,11 +1804,10 @@
                 this.elements = {};
                 
                 const chatElementIds = [
-                    'chat-container', 'chat-toggle', 'chat-content', 
-                    'client-list', 'chat-messages', 'message-input',
-                    'send-message', 'minimize-chat', 'close-chat',
-                    'unread-count', 'typing-indicator', 'broadcast-input',
-                    'broadcast-message'
+                    'clients-list', 'chat-messages', 'message-input',
+                    'send-message', 'current-client-name', 'current-client-status',
+                    'current-client-contact', 'export-chat', 'delete-chat',
+                    'clients-count'
                 ];
 
                 chatElementIds.forEach(id => {
@@ -1579,29 +1817,6 @@
             
             // Setup chat event listeners
             setupChatEventListeners() {
-                // Chat toggle
-                if (this.elements['chat-toggle']) {
-                    this.elements['chat-toggle'].addEventListener('click', () => {
-                        this.elements['chat-container'].classList.toggle('minimized');
-                    });
-                }
-                
-                // Minimize chat
-                if (this.elements['minimize-chat']) {
-                    this.elements['minimize-chat'].addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        this.elements['chat-container'].classList.toggle('minimized');
-                    });
-                }
-                
-                // Close chat
-                if (this.elements['close-chat']) {
-                    this.elements['close-chat'].addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        this.elements['chat-container'].style.display = 'none';
-                    });
-                }
-                
                 // Send message
                 if (this.elements['send-message']) {
                     this.elements['send-message'].addEventListener('click', () => {
@@ -1618,19 +1833,17 @@
                     });
                 }
                 
-                // Broadcast message
-                if (this.elements['broadcast-message']) {
-                    this.elements['broadcast-message'].addEventListener('click', () => {
-                        this.broadcastMessage();
+                // Export chat button
+                if (this.elements['export-chat']) {
+                    this.elements['export-chat'].addEventListener('click', () => {
+                        this.exportChat();
                     });
                 }
                 
-                // Broadcast input enter key
-                if (this.elements['broadcast-input']) {
-                    this.elements['broadcast-input'].addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') {
-                            this.broadcastMessage();
-                        }
+                // Delete chat button
+                if (this.elements['delete-chat']) {
+                    this.elements['delete-chat'].addEventListener('click', () => {
+                        this.deleteChat();
                     });
                 }
             }
@@ -1649,11 +1862,13 @@
                         this.reconnectAttempts = 0;
                         this.updateConnectionStatus('connected');
                         
-                        // Identify as admin
+                        // Identify as admin with session ID
                         this.ws.send(JSON.stringify({
                             type: 'identify',
                             isAdmin: true,
-                            name: 'Admin'
+                            name: 'Admin',
+                            sessionId: this.sessionId,
+                            deviceType: DeviceManager.getDeviceType()
                         }));
                     };
                     
@@ -1704,11 +1919,26 @@
             handleMessage(data) {
                 console.log('Received message:', data);
                 
+                // Store our connection ID when we receive it
+                if (data.type === 'client_id') {
+                    this.clientConnectionId = data.clientId;
+                    console.log('Our connection ID:', this.clientConnectionId);
+                    return;
+                }
+                
+                // CRITICAL FIX: Only process messages meant for this specific admin session
+                if (data.targetSessionId && data.targetSessionId !== this.sessionId) {
+                    console.log('Ignoring message for different session:', data.targetSessionId, 'ours:', this.sessionId);
+                    return;
+                }
+                
+                // If this is an admin message but from a different connection ID, ignore it
+                if (data.isAdmin && data.fromConnectionId && data.fromConnectionId === this.clientConnectionId) {
+                    console.log('Ignoring echo of our own message');
+                    return;
+                }
+                
                 switch (data.type) {
-                    case 'client_id':
-                        // Our connection is established
-                        break;
-                        
                     case 'chat':
                         // Add message to the appropriate client
                         if (data.clientId) {
@@ -1746,6 +1976,13 @@
                         }
                         break;
                         
+                    case 'clients':
+                        // Update client list
+                        if (data.clients) {
+                            this.updateClientList(data.clients);
+                        }
+                        break;
+                        
                     default:
                         console.log('Unknown message type:', data.type, data);
                 }
@@ -1758,14 +1995,14 @@
                     const clientsMap = new Map();
                     if (Array.isArray(clientsData)) {
                         clientsData.forEach(client => {
-                            if (client.id) {
+                            if (client.id && !client.isAdmin) {  // Exclude admin clients
                                 clientsMap.set(client.id, client);
                             }
                         });
                     } else if (clientsData && typeof clientsData === 'object') {
                         // Handle object format
                         for (const [id, client] of Object.entries(clientsData)) {
-                            if (client && client.id) {
+                            if (client && client.id && !client.isAdmin) {  // Exclude admin clients
                                 clientsMap.set(client.id, client);
                             }
                         }
@@ -1783,6 +2020,11 @@
                             activeChats: this.clients.size
                         });
                     }
+                    
+                    // Update clients count
+                    if (this.elements['clients-count']) {
+                        this.elements['clients-count'].textContent = this.clients.size;
+                    }
                 } catch (error) {
                     console.error('Error updating client list:', error, clientsData);
                 }
@@ -1790,10 +2032,10 @@
             
             // Render client list
             renderClientList() {
-                if (!this.elements['client-list']) return;
+                if (!this.elements['clients-list']) return;
                 
                 if (this.clients.size === 0) {
-                    this.elements['client-list'].innerHTML = '<div class="no-clients">No clients connected</div>';
+                    this.elements['clients-list'].innerHTML = '<div class="empty-chat-list"><i class="fas fa-comments"></i><p>No active chats</p></div>';
                     return;
                 }
                 
@@ -1802,26 +2044,31 @@
                     const unreadCount = this.unreadCounts.get(clientId) || 0;
                     const isActive = clientId === this.selectedClientId;
                     const clientName = client.name || 'Guest';
-                    const clientEmail = client.email ? ` (${client.email})` : '';
+                    const clientEmail = client.email || '';
+                    const lastMessage = this.getLastMessagePreview(clientId);
+                    const lastActive = client.lastActive ? new Date(client.lastActive).toLocaleTimeString() : '';
                     
                     html += `
                         <div class="client-item ${isActive ? 'active' : ''}" data-client-id="${clientId}">
-                            <div class="client-info">
-                                <div class="client-name">${clientName}${clientEmail}</div>
-                                <div class="client-status">
-                                    <span class="status-indicator status-online"></span>
-                                    Connected
+                            <div style="flex: 1;">
+                                <div class="client-info">
+                                    <div class="client-name">${clientName}</div>
+                                    <div class="client-time">${lastActive}</div>
                                 </div>
+                                <div class="client-preview">${lastMessage.preview}</div>
                             </div>
-                            ${unreadCount > 0 ? `<span class="unread-count">${unreadCount}</span>` : ''}
+                            <div class="client-status">
+                                <span class="status-indicator ${client.isOnline ? 'status-online' : 'status-offline'}"></span>
+                                ${unreadCount > 0 ? `<span class="unread-badge">${unreadCount}</span>` : ''}
+                            </div>
                         </div>
                     `;
                 }
                 
-                this.elements['client-list'].innerHTML = html;
+                this.elements['clients-list'].innerHTML = html;
                 
                 // Add event listeners to client items
-                const clientItems = this.elements['client-list'].querySelectorAll('.client-item');
+                const clientItems = this.elements['clients-list'].querySelectorAll('.client-item');
                 clientItems.forEach(item => {
                     item.addEventListener('click', () => {
                         const clientId = item.getAttribute('data-client-id');
@@ -1830,9 +2077,30 @@
                 });
             }
             
+            // Get last message preview for a client
+            getLastMessagePreview(clientId) {
+                const messages = this.messages.get(clientId) || [];
+                if (messages.length === 0) {
+                    return { preview: 'No messages yet', time: '' };
+                }
+                
+                const lastMessage = messages[messages.length - 1];
+                const preview = lastMessage.message.length > 30 
+                    ? lastMessage.message.substring(0, 30) + '...' 
+                    : lastMessage.message;
+                    
+                return { 
+                    preview, 
+                    time: new Date(lastMessage.timestamp).toLocaleTimeString() 
+                };
+            }
+            
             // Select a client
             selectClient(clientId) {
                 this.selectedClientId = clientId;
+                const client = this.clients.get(clientId);
+                
+                if (!client) return;
                 
                 // Reset unread count for this client
                 this.unreadCounts.set(clientId, 0);
@@ -1842,11 +2110,40 @@
                 this.renderClientList();
                 this.renderMessages();
                 
-                // Enable message input
+                // Update client info in the header
+                if (this.elements['current-client-name']) {
+                    this.elements['current-client-name'].textContent = client.name || 'Guest';
+                }
+                
+                if (this.elements['current-client-status']) {
+                    const statusIndicator = this.elements['current-client-status'].querySelector('.status-indicator');
+                    const statusText = this.elements['current-client-status'].querySelector('span:last-child');
+                    
+                    if (statusIndicator && statusText) {
+                        statusIndicator.className = `status-indicator ${client.isOnline ? 'status-online' : 'status-offline'}`;
+                        statusText.textContent = client.isOnline ? 'Online' : 'Offline';
+                    }
+                }
+                
+                if (this.elements['current-client-contact']) {
+                    this.elements['current-client-contact'].textContent = client.email ? 
+                        `Email: ${client.email} ${client.phone ? `| Phone: ${client.phone}` : ''}` : 
+                        (client.phone ? `Phone: ${client.phone}` : 'No contact info');
+                }
+                
+                // Enable message input and action buttons
                 if (this.elements['message-input']) {
                     this.elements['message-input'].disabled = false;
                     this.elements['send-message'].disabled = false;
                     this.elements['message-input'].focus();
+                }
+                
+                if (this.elements['export-chat']) {
+                    this.elements['export-chat'].disabled = false;
+                }
+                
+                if (this.elements['delete-chat']) {
+                    this.elements['delete-chat'].disabled = false;
                 }
                 
                 // Request message history if we don't have it
@@ -1855,7 +2152,8 @@
                     if (this.ws && this.isConnected) {
                         this.ws.send(JSON.stringify({
                             type: 'get_history',
-                            clientId: clientId
+                            clientId: clientId,
+                            sessionId: this.sessionId
                         }));
                     }
                 }
@@ -1867,8 +2165,17 @@
                     this.messages.set(clientId, []);
                 }
                 
+                // Filter out messages from other admin sessions
+                const filteredMessages = messages.filter(msg => {
+                    // Include all client messages
+                    if (!msg.isAdmin) return true;
+                    
+                    // Include admin messages from this session
+                    return msg.sessionId === this.sessionId || !msg.sessionId;
+                });
+                
                 // Add messages if they don't already exist
-                for (const message of messages) {
+                for (const message of filteredMessages) {
                     if (!this.messages.get(clientId).some(m => m.id === message.id)) {
                         this.messages.get(clientId).push(message);
                     }
@@ -1881,6 +2188,9 @@
                 if (this.selectedClientId === clientId) {
                     this.renderMessages();
                 }
+                
+                // Update client list to refresh previews
+                this.renderClientList();
             }
             
             // Add a message
@@ -1890,12 +2200,20 @@
                     return;
                 }
                 
+                // Filter out messages from other admin sessions
+                if (message.isAdmin && message.sessionId && message.sessionId !== this.sessionId) {
+                    console.log('Ignoring message from different admin session:', message.sessionId);
+                    return;
+                }
+                
                 // If we don't know about this client, create an entry for them
-                if (!this.clients.has(clientId)) {
+                if (!this.clients.has(clientId) && !message.isAdmin) {
                     this.clients.set(clientId, {
                         id: clientId,
                         name: message.name || 'Unknown Client',
-                        email: message.email || ''
+                        email: message.email || '',
+                        phone: message.phone || '',
+                        isOnline: true
                     });
                 }
                 
@@ -1903,12 +2221,17 @@
                     this.messages.set(clientId, []);
                 }
                 
+                // Add session ID to our admin messages
+                if (message.isAdmin && !message.sessionId) {
+                    message.sessionId = this.sessionId;
+                }
+                
                 // Add message if it doesn't already exist
                 if (!this.messages.get(clientId).some(m => m.id === message.id)) {
                     this.messages.get(clientId).push(message);
                     
-                    // If this isn't the selected client, increment unread count
-                    if (this.selectedClientId !== clientId) {
+                    // If this isn't the selected client and it's not our own message, increment unread count
+                    if (this.selectedClientId !== clientId && !message.isAdmin) {
                         const currentCount = this.unreadCounts.get(clientId) || 0;
                         this.unreadCounts.set(clientId, currentCount + 1);
                         this.updateUnreadCount();
@@ -1919,24 +2242,40 @@
                         this.renderMessages();
                     }
                     
-                    // Update client list to show unread count
+                    // Update client list to show unread count and new message preview
                     this.renderClientList();
                 }
             }
             
-            // Render messages
+            // Render messages with date dividers
             renderMessages() {
-                if (!this.elements['chat-messages'] || !this.selectedClientId) return;
+                if (!this.elements['chat-messages'] || !this.selectedClientId) {
+                    return;
+                }
                 
                 const messages = this.messages.get(this.selectedClientId) || [];
                 
                 if (messages.length === 0) {
-                    this.elements['chat-messages'].innerHTML = '<div class="no-messages">No messages yet</div>';
+                    this.elements['chat-messages'].innerHTML = '<div class="no-chat-selected"><div><i class="fas fa-comments fa-2x"></i><p>No messages yet</p></div></div>';
                     return;
                 }
                 
                 let html = '';
+                let currentDate = '';
+                
                 for (const message of messages) {
+                    const messageDate = new Date(message.timestamp).toDateString();
+                    
+                    // Add date divider if date has changed
+                    if (messageDate !== currentDate) {
+                        currentDate = messageDate;
+                        html += `
+                            <div class="date-divider">
+                                <span>${currentDate}</span>
+                            </div>
+                        `;
+                    }
+                    
                     const isAdmin = message.isAdmin;
                     const time = new Date(message.timestamp).toLocaleTimeString();
                     const senderName = isAdmin ? 'You' : (message.name || 'Client');
@@ -1945,7 +2284,8 @@
                         <div class="message ${isAdmin ? 'admin' : 'client'}">
                             <div class="message-text">${message.message}</div>
                             <div class="message-info">
-                                ${senderName} • ${time}
+                                <span>${senderName} • ${time}</span>
+                                ${isAdmin ? '<span class="message-status">Delivered</span>' : ''}
                             </div>
                         </div>
                     `;
@@ -1965,21 +2305,26 @@
                 if (!messageText) return;
                 
                 if (this.ws && this.isConnected) {
-                    this.ws.send(JSON.stringify({
+                    const messageData = {
                         type: 'admin_message',
                         targetClientId: this.selectedClientId,
-                        message: messageText
-                    }));
+                        message: messageText,
+                        sessionId: this.sessionId,
+                        fromConnectionId: this.clientConnectionId
+                    };
+                    
+                    this.ws.send(JSON.stringify(messageData));
                     
                     // Add message to local history immediately for instant feedback
                     this.addMessage(this.selectedClientId, {
-                        id: 'temp-' + Date.now(),
+                        id: 'local-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
                         type: 'chat',
                         message: messageText,
                         name: 'Admin',
                         timestamp: new Date().toISOString(),
                         isAdmin: true,
-                        clientId: this.selectedClientId
+                        clientId: this.selectedClientId,
+                        sessionId: this.sessionId
                     });
                     
                     // Clear input
@@ -1987,69 +2332,99 @@
                 }
             }
             
-            // Broadcast a message to all clients
-            broadcastMessage() {
-                if (!this.elements['broadcast-input']) return;
+            // Export chat to text file
+            exportChat() {
+                if (!this.selectedClientId) return;
                 
-                const messageText = this.elements['broadcast-input'].value.trim();
-                if (!messageText) return;
+                const messages = this.messages.get(this.selectedClientId) || [];
+                const client = this.clients.get(this.selectedClientId);
                 
-                if (this.ws && this.isConnected) {
-                    this.ws.send(JSON.stringify({
-                        type: 'broadcast',
-                        message: messageText
-                    }));
-                    
-                    // Add broadcast message to all client histories
-                    for (const clientId of this.clients.keys()) {
-                        this.addMessage(clientId, {
-                            id: 'broadcast-' + Date.now(),
-                            type: 'chat',
-                            message: messageText,
-                            name: 'Admin (Broadcast)',
-                            timestamp: new Date().toISOString(),
-                            isAdmin: true,
-                            clientId: clientId
-                        });
-                    }
-                    
-                    // Clear input
-                    this.elements['broadcast-input'].value = '';
-                    
-                    // Show confirmation
-                    if (this.adminPanel) {
-                        this.adminPanel.showNotification(`Broadcast sent to ${this.clients.size} clients`, 'success');
-                    }
+                if (messages.length === 0) {
+                    this.adminPanel.showNotification('No messages to export', 'info');
+                    return;
                 }
+                
+                let chatContent = `Chat History with ${client.name || 'Unknown Client'}\n`;
+                chatContent += `Exported on: ${new Date().toLocaleString()}\n`;
+                chatContent += '============================================\n\n';
+                
+                let currentDate = '';
+                
+                for (const message of messages) {
+                    const messageDate = new Date(message.timestamp).toDateString();
+                    
+                    // Add date header if date has changed
+                    if (messageDate !== currentDate) {
+                        currentDate = messageDate;
+                        chatContent += `\n${currentDate}\n`;
+                        chatContent += '--------------------------------------------\n';
+                    }
+                    
+                    const time = new Date(message.timestamp).toLocaleTimeString();
+                    const sender = message.isAdmin ? 'Admin' : (message.name || 'Client');
+                    
+                    chatContent += `[${time}] ${sender}: ${message.message}\n`;
+                }
+                
+                // Create download link
+                const blob = new Blob([chatContent], { type: 'text/plain;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', `chat-${client.name || 'client'}-${new Date().toISOString().split('T')[0]}.txt`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                this.adminPanel.showNotification('Chat exported successfully', 'success');
             }
             
-            // Show typing indicator
-            showTypingIndicator(clientId, isTyping, name) {
-                if (!this.elements['typing-indicator'] || this.selectedClientId !== clientId) return;
+            // Delete chat history
+            deleteChat() {
+                if (!this.selectedClientId) return;
                 
-                if (isTyping) {
-                    this.elements['typing-indicator'].textContent = `${name} is typing...`;
-                    this.elements['typing-indicator'].style.display = 'block';
-                } else {
-                    this.elements['typing-indicator'].style.display = 'none';
+                if (!confirm('Are you sure you want to delete this chat history? This action cannot be undone.')) {
+                    return;
+                }
+                
+                // Send request to server to delete chat
+                if (this.ws && this.isConnected) {
+                    this.ws.send(JSON.stringify({
+                        type: 'delete_chat',
+                        clientId: this.selectedClientId,
+                        sessionId: this.sessionId
+                    }));
+                }
+                
+                // Clear local messages
+                this.messages.set(this.selectedClientId, []);
+                this.renderMessages();
+                
+                this.adminPanel.showNotification('Chat history deleted', 'success');
+            }
+            
+            // Request client list from server
+            requestClientList() {
+                if (this.ws && this.isConnected) {
+                    this.ws.send(JSON.stringify({
+                        type: 'get_clients',
+                        sessionId: this.sessionId
+                    }));
                 }
             }
             
             // Update unread count badge
             updateUnreadCount() {
-                if (!this.elements['unread-count']) return;
+                if (!this.elements['clients-count']) return;
                 
                 let totalUnread = 0;
                 for (const count of this.unreadCounts.values()) {
                     totalUnread += count;
                 }
                 
-                if (totalUnread > 0) {
-                    this.elements['unread-count'].textContent = totalUnread;
-                    this.elements['unread-count'].style.display = 'flex';
-                } else {
-                    this.elements['unread-count'].style.display = 'none';
-                }
+                // Update the clients list to reflect unread counts
+                this.renderClientList();
             }
             
             // Update connection status
