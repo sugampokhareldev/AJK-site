@@ -6,6 +6,7 @@
     <title>AJK Cleaning - Admin Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* All CSS styles remain the same as in the previous implementation */
         * {
             margin: 0;
             padding: 0;
@@ -178,15 +179,6 @@
             background: #3182ce;
         }
         
-        .chat-btn {
-            background: #9f7aea;
-            color: white;
-        }
-        
-        .chat-btn:hover {
-            background: #805ad5;
-        }
-        
         .delete-btn {
             background: #e53e3e;
             color: white;
@@ -266,6 +258,53 @@
             font-size: 24px;
             font-weight: 700;
             color: #4a5568;
+        }
+        
+        /* Table Controls */
+        .table-controls {
+            padding: 15px 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            background: #edf2f7;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .search-input input {
+            width: 100%;
+            padding: 10px 35px 10px 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .search-input i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+        
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            background: white;
+            font-size: 14px;
         }
         
         table {
@@ -483,17 +522,19 @@
         
         /* Chat Section Styles */
         .chat-section {
-            display: none;
+            display: block;
             padding: 20px;
             background: #f7fafc;
             border-top: 1px solid #e2e8f0;
+            height: 500px;
+            overflow: hidden;
         }
 
         .chat-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             padding-bottom: 15px;
             border-bottom: 1px solid #e2e8f0;
         }
@@ -503,6 +544,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 18px;
         }
 
         .chat-controls {
@@ -512,37 +554,39 @@
 
         .chat-layout {
             display: flex;
-            gap: 20px;
-            height: 500px;
+            gap: 15px;
+            height: calc(100% - 60px);
         }
 
         .clients-panel {
-            width: 300px;
+            width: 250px;
             background: white;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
         }
 
         .clients-header {
-            padding: 15px;
+            padding: 12px;
             border-bottom: 1px solid #e2e8f0;
             font-weight: 600;
             color: #4a5568;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: #edf2f7;
         }
 
         .clients-list {
             flex: 1;
             overflow-y: auto;
             padding: 10px;
+            max-height: 300px;
         }
 
         .client-item {
-            padding: 12px;
+            padding: 10px;
             margin-bottom: 8px;
             background: #f7fafc;
             border-radius: 6px;
@@ -575,7 +619,7 @@
         }
 
         .client-time {
-            font-size: 12px;
+            font-size: 11px;
             opacity: 0.8;
         }
 
@@ -596,10 +640,16 @@
 
         .status-online {
             background: #48bb78;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
         }
 
         .status-offline {
             background: #e53e3e;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
         }
 
         .chat-panel {
@@ -608,15 +658,16 @@
             flex-direction: column;
             background: white;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .chat-current-client {
-            padding: 15px;
+            padding: 12px;
             border-bottom: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: #edf2f7;
         }
 
         .client-details {
@@ -636,13 +687,13 @@
         }
 
         .client-contact {
-            font-size: 14px;
+            font-size: 13px;
             color: #718096;
         }
 
         .chat-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .chat-messages-container {
@@ -651,12 +702,13 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px;
+            max-height: 300px;
         }
 
         .message {
-            max-width: 70%;
-            padding: 10px 15px;
+            max-width: 75%;
+            padding: 10px 12px;
             border-radius: 8px;
             position: relative;
         }
@@ -686,7 +738,7 @@
         }
 
         .chat-input-container {
-            padding: 15px;
+            padding: 12px;
             border-top: 1px solid #e2e8f0;
             display: flex;
             gap: 10px;
@@ -694,14 +746,14 @@
 
         .chat-input-container input {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             border: 1px solid #cbd5e0;
             border-radius: 5px;
             font-size: 14px;
         }
 
         .chat-input-container button {
-            padding: 12px 20px;
+            padding: 10px 15px;
             background: #48bb78;
             color: white;
             border: none;
@@ -724,28 +776,28 @@
         }
 
         .chat-search {
-            padding: 10px 15px;
+            padding: 8px 12px;
             border-bottom: 1px solid #e2e8f0;
         }
 
         .chat-search input {
             width: 100%;
-            padding: 8px 12px;
+            padding: 8px;
             border: 1px solid #cbd5e0;
             border-radius: 5px;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .unread-badge {
             background: #e53e3e;
             color: white;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .empty-chat-list {
@@ -758,23 +810,25 @@
             background: #4299e1;
             color: white;
             border: none;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 12px;
         }
 
         .delete-chat-btn {
             background: #e53e3e;
             color: white;
             border: none;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 12px;
         }
 
         .date-divider {
             text-align: center;
-            margin: 15px 0;
+            margin: 10px 0;
             position: relative;
         }
 
@@ -791,9 +845,9 @@
 
         .date-divider span {
             background: #f7fafc;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
             color: #718096;
             position: relative;
             z-index: 2;
@@ -817,6 +871,184 @@
             border: 1px solid #cbd5e0;
         }
 
+        /* Pagination Styles */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .pagination button {
+            padding: 8px 12px;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .pagination button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+        
+        .pagination span {
+            font-size: 14px;
+            color: #4a5568;
+        }
+        
+        .pagination select {
+            padding: 8px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4299e1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .table-container {
+            position: relative;
+            min-height: 200px;
+        }
+
+        /* Chat Management Styles */
+        .chat-management {
+            padding: 20px;
+            border-top: 1px solid #e2e8f0;
+            background: #f7fafc;
+        }
+
+        .chat-management h2 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-controls input,
+        .search-controls select {
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            font-size: 14px;
+            min-width: 200px;
+        }
+
+        .chats-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .chat-item {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .chat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .chat-info {
+            flex: 1;
+            margin-bottom: 15px;
+        }
+
+        .chat-info h4 {
+            margin: 0 0 10px 0;
+            color: #2d3748;
+        }
+
+        .chat-info p {
+            margin: 5px 0;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .chat-info small {
+            display: block;
+            margin: 3px 0;
+            color: #a0aec0;
+            font-size: 12px;
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-view {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .btn-view:hover {
+            background: #3182ce;
+        }
+
+        .btn-delete {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .btn-delete:hover:not(:disabled) {
+            background: #c53030;
+        }
+
+        .btn-delete:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+
         /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -837,11 +1069,11 @@
             
             .clients-panel {
                 width: 100%;
-                height: 250px;
+                height: 200px;
             }
             
             .chat-panel {
-                height: 400px;
+                height: 350px;
             }
             
             .stats {
@@ -877,6 +1109,33 @@
                 flex-direction: column;
                 gap: 5px;
                 align-items: flex-start;
+            }
+            
+            .chat-section {
+                height: auto;
+            }
+            
+            .table-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-input {
+                min-width: 100%;
+            }
+            
+            .filter-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .chats-list {
+                grid-template-columns: 1fr;
+            }
+
+            .search-controls input,
+            .search-controls select {
+                min-width: 100%;
             }
         }
     </style>
@@ -916,8 +1175,8 @@
                 <button id="export-btn" class="export-btn">
                     <i class="fas fa-download"></i> Export CSV
                 </button>
-                <button id="chat-toggle-btn" class="chat-btn">
-                    <i class="fas fa-comments"></i> Show Chat
+                <button id="reconnect-chat" class="refresh-btn">
+                    <i class="fas fa-plug"></i> Reconnect
                 </button>
                 <button id="logout-btn" class="delete-btn">
                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -958,36 +1217,77 @@
             </div>
         </div>
         
-        <div style="overflow-x: auto; padding: 20px;">
-            <table id="submissionsTable">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Service</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="7">
-                            <div class="empty-state">
-                                <i class="fas fa-file-alt"></i>
-                                <p>Loading submissions...</p>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Table Controls -->
+        <div class="table-controls">
+            <div class="search-input">
+                <input type="text" id="search-input" placeholder="Search submissions...">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="filter-controls">
+                <select id="service-filter" class="filter-select">
+                    <option value="">All Services</option>
+                    <option value="Residential Cleaning">Residential Cleaning</option>
+                    <option value="Commercial Cleaning">Commercial Cleaning</option>
+                    <option value="Deep Cleaning">Deep Cleaning</option>
+                    <option value="Move In/Out Cleaning">Move In/Out Cleaning</option>
+                </select>
+                <select id="date-filter" class="filter-select">
+                    <option value="">All Dates</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+            </div>
         </div>
         
-        <!-- Chat Section -->
+        <div class="table-container">
+            <div class="loading-overlay" id="table-loading">
+                <div class="spinner"></div>
+            </div>
+            <div style="overflow-x: auto; padding: 0 20px;">
+                <table id="submissionsTable">
+                    <thead>
+                        <tr>
+                            <th data-sort="id">ID <i class="fas fa-sort"></i></th>
+                            <th data-sort="name">Name <i class="fas fa-sort"></i></th>
+                            <th data-sort="email">Email <i class="fas fa-sort"></i></th>
+                            <th data-sort="phone">Phone <i class="fas fa-sort"></i></th>
+                            <th data-sort="service">Service <i class="fas fa-sort"></i></th>
+                            <th data-sort="date">Date <i class="fas fa-sort"></i></th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <i class="fas fa-file-alt"></i>
+                                    <p>Loading submissions...</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="pagination" id="pagination-controls">
+            <button id="prev-page" disabled>Previous</button>
+            <span id="page-info">Page 1 of 1</span>
+            <button id="next-page" disabled>Next</button>
+            <select id="page-size">
+                <option value="10">10 per page</option>
+                <option value="25">25 per page</option>
+                <option value="50">50 per page</option>
+                <option value="100">100 per page</option>
+            </select>
+        </div>
+        
+        <!-- Chat Section - Always Visible -->
         <div class="chat-section" id="chat-section">
             <div class="chat-header">
-                <h2><i class="fas fa-comments"></i> Client Chat</h2>
+                <h2><i class="fas fa-comments"></i> Live Client Chat</h2>
                 <div class="chat-controls">
                     <button id="refresh-chats" class="refresh-btn">
                         <i class="fas fa-sync-alt"></i> Refresh Chats
@@ -998,7 +1298,7 @@
             <div class="chat-layout">
                 <div class="clients-panel">
                     <div class="clients-header">
-                        <span>Clients</span>
+                        <span>Active Clients</span>
                         <span id="clients-count">0</span>
                     </div>
                     <div class="chat-search">
@@ -1047,6 +1347,27 @@
                         <input type="text" id="message-input" placeholder="Type a message..." disabled>
                         <button id="send-message" disabled>Send</button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Management Section -->
+        <div class="chat-management" id="chat-management">
+            <h2><i class="fas fa-comments"></i> Chat Management</h2>
+            
+            <div class="search-controls">
+                <input type="text" id="chat-search-management" placeholder="Search chats...">
+                <select id="chat-filter">
+                    <option value="all">All Chats</option>
+                    <option value="active">Active Only</option>
+                    <option value="deleted">Deleted</option>
+                </select>
+            </div>
+            
+            <div class="chats-list" id="chats-list">
+                <div class="empty-state">
+                    <i class="fas fa-comments"></i>
+                    <p>Loading chat history...</p>
                 </div>
             </div>
         </div>
@@ -1099,6 +1420,49 @@
     </div>
 
     <script>
+        // Utility functions
+        const Utils = {
+            // Debounce function to limit API calls
+            debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            },
+            
+            // Format date for display
+            formatDate(dateString) {
+                if (!dateString) return 'Unknown';
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return 'Unknown';
+                try {
+                    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                } catch (e) {
+                    return date.toString();
+                }
+            },
+            
+            // Escape HTML to prevent XSS
+            escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+        };
+
+        // Runtime flags
+        const DEBUG = false; // Set true to enable verbose logging
+        const ADMIN_SEND_AUTO_WELCOME = false; // Prevent duplicate welcome messages
+        const SAVE_CHAT_STATE = false; // Opt-in to store chat state in localStorage
+
         // Device and session management
         const DeviceManager = {
             sessionId: null,
@@ -1170,7 +1534,18 @@
                 this.isRefreshing = false;
                 this.chat = null;
                 this.sessionId = DeviceManager.getSessionId();
-                this.currentView = 'submissions'; // 'submissions' or 'chat'
+                this.submissions = [];
+                this.filteredSubmissions = [];
+                this.currentPage = 1;
+                this.pageSize = 10;
+                this.totalPages = 1;
+                this.sortField = 'id';
+                this.sortDirection = 'desc';
+                this.searchTerm = '';
+                this.serviceFilter = '';
+                this.dateFilter = '';
+                this.chats = [];
+                this.filteredChats = [];
                 
                 this.initializeElements();
                 this.setupEventListeners();
@@ -1184,14 +1559,16 @@
                 const elementIds = [
                     'login-section', 'admin-panel', 'login-btn', 'username', 'password',
                     'login-message', 'refresh-btn', 'autoRefreshBtn', 'export-btn',
-                    'logout-btn', 'refreshInterval', 'refreshStatus', 'chat-toggle-btn',
+                    'logout-btn', 'refreshInterval', 'refreshStatus',
                     'statusText', 'totalSubmissions', 'todaySubmissions', 'weekSubmissions', 
                     'activeChats', 'submissionsTable', 'detailView', 'close-details', 
                     'lastRefreshed', 'connectionStatus', 'loading', 'chat-section',
                     'clients-list', 'chat-messages', 'message-input', 'send-message',
                     'current-client-name', 'current-client-status', 'current-client-contact',
                     'export-chat', 'delete-chat', 'refresh-chats', 'chat-search',
-                    'clients-count'
+                    'clients-count', 'search-input', 'service-filter', 'date-filter',
+                    'prev-page', 'next-page', 'page-info', 'page-size', 'table-loading',
+                    'reconnect-chat', 'chat-management', 'chat-search-management', 'chats-list'
                 ];
 
                 elementIds.forEach(id => {
@@ -1235,10 +1612,12 @@
                     this.elements['logout-btn'].addEventListener('click', () => this.logout());
                 }
 
-                // Chat toggle button
-                if (this.elements['chat-toggle-btn']) {
-                    this.elements['chat-toggle-btn'].addEventListener('click', () => {
-                        this.toggleChatView();
+                // Reconnect chat button
+                if (this.elements['reconnect-chat']) {
+                    this.elements['reconnect-chat'].addEventListener('click', () => {
+                        if (this.chat) {
+                            this.chat.manualReconnect();
+                        }
                     });
                 }
 
@@ -1273,23 +1652,105 @@
                         this.filterClients(e.target.value);
                     });
                 }
-            }
+                
+                // Search input with debouncing
+                if (this.elements['search-input']) {
+                    this.elements['search-input'].addEventListener('input', 
+                        Utils.debounce((e) => {
+                            this.searchTerm = e.target.value;
+                            this.filterAndSortSubmissions();
+                            this.currentPage = 1;
+                            this.renderSubmissions();
+                        }, 300)
+                    );
+                }
+                
+                // Filter controls
+                if (this.elements['service-filter']) {
+                    this.elements['service-filter'].addEventListener('change', (e) => {
+                        this.serviceFilter = e.target.value;
+                        this.filterAndSortSubmissions();
+                        this.currentPage = 1;
+                        this.renderSubmissions();
+                    });
+                }
+                
+                if (this.elements['date-filter']) {
+                    this.elements['date-filter'].addEventListener('change', (e) => {
+                        this.dateFilter = e.target.value;
+                        this.filterAndSortSubmissions();
+                        this.currentPage = 1;
+                        this.renderSubmissions();
+                    });
+                }
+                
+                // Pagination controls
+                if (this.elements['prev-page']) {
+                    this.elements['prev-page'].addEventListener('click', () => {
+                        if (this.currentPage > 1) {
+                            this.currentPage--;
+                            this.renderSubmissions();
+                        }
+                    });
+                }
+                
+                if (this.elements['next-page']) {
+                    this.elements['next-page'].addEventListener('click', () => {
+                        if (this.currentPage < this.totalPages) {
+                            this.currentPage++;
+                            this.renderSubmissions();
+                        }
+                    });
+                }
+                
+                if (this.elements['page-size']) {
+                    this.elements['page-size'].addEventListener('change', (e) => {
+                        this.pageSize = parseInt(e.target.value);
+                        this.currentPage = 1;
+                        this.calculateTotalPages();
+                        this.renderSubmissions();
+                    });
+                }
+                
+                // Table sorting
+                document.querySelectorAll('th[data-sort]').forEach(th => {
+                    th.addEventListener('click', () => {
+                        const field = th.getAttribute('data-sort');
+                        if (this.sortField === field) {
+                            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+                        } else {
+                            this.sortField = field;
+                            this.sortDirection = 'desc';
+                        }
+                        
+                        // Update sort indicators
+                        document.querySelectorAll('th i').forEach(icon => {
+                            icon.className = 'fas fa-sort';
+                        });
+                        
+                        const icon = th.querySelector('i');
+                        if (icon) {
+                            icon.className = `fas fa-sort-${this.sortDirection === 'asc' ? 'up' : 'down'}`;
+                        }
+                        
+                        this.filterAndSortSubmissions();
+                        this.renderSubmissions();
+                    });
+                });
 
-            // Toggle between submissions and chat views
-            toggleChatView() {
-                if (this.currentView === 'submissions') {
-                    this.currentView = 'chat';
-                    this.elements['chat-section'].style.display = 'block';
-                    this.elements['chat-toggle-btn'].innerHTML = '<i class="fas fa-table"></i> Show Submissions';
-                    
-                    // Initialize chat if not already done
-                    if (!this.chat) {
-                        this.chat = new AdminChat(this);
-                    }
-                } else {
-                    this.currentView = 'submissions';
-                    this.elements['chat-section'].style.display = 'none';
-                    this.elements['chat-toggle-btn'].innerHTML = '<i class="fas fa-comments"></i> Show Chat';
+                // Chat management search and filter
+                if (this.elements['chat-search-management']) {
+                    this.elements['chat-search-management'].addEventListener('input', 
+                        Utils.debounce((e) => {
+                            this.filterChats();
+                        }, 300)
+                    );
+                }
+
+                if (this.elements['chat-filter']) {
+                    this.elements['chat-filter'].addEventListener('change', () => {
+                        this.filterChats();
+                    });
                 }
             }
 
@@ -1328,6 +1789,7 @@
                         this.showAdminPanel();
                         this.loadStats();
                         this.loadSubmissions();
+                        this.loadChats();
                         this.startAutoRefresh();
                     } else {
                         this.showLoginForm();
@@ -1383,6 +1845,7 @@
                             this.showAdminPanel();
                             this.loadStats();
                             this.loadSubmissions();
+                            this.loadChats();
                             this.startAutoRefresh();
                         }, 1000);
                     } else {
@@ -1415,32 +1878,306 @@
             // Load submissions
             async loadSubmissions() {
                 try {
+                    this.showTableLoading(true);
                     const response = await fetch('/api/submissions', {
                         credentials: 'include'
                     });
-                    const submissions = await response.json();
-                    this.displaySubmissions(submissions);
+                    this.submissions = await response.json();
+                    this.filterAndSortSubmissions();
+                    this.renderSubmissions();
                     this.updateLastRefreshed();
                 } catch (error) {
                     console.error('Error loading submissions:', error);
                     this.showNotification('Error loading submissions', 'error');
+                } finally {
+                    this.showTableLoading(false);
                 }
             }
 
-            // Display submissions
-            displaySubmissions(submissions) {
+            // Load chats
+            async loadChats() {
+                try {
+                    const response = await fetch('/api/chats', {
+                        credentials: 'include'
+                    });
+                    if (!response.ok) {
+                        let errMsg = 'Error loading chats';
+                        try {
+                            const err = await response.json();
+                            if (err && err.error) errMsg = err.error;
+                        } catch (_) {}
+                        throw new Error(errMsg);
+                    }
+                    const data = await response.json();
+                    this.chats = data && typeof data === 'object' ? data : {};
+                    this.filterChats();
+                } catch (error) {
+                    console.error('Error loading chats:', error);
+                    this.chats = {};
+                    this.filteredChats = [];
+                    if (this.elements['chats-list']) {
+                        this.elements['chats-list'].innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-comments"></i>
+                            <p>${Utils.escapeHtml(error.message || 'Error loading chats')}</p>
+                        </div>`;
+                    }
+                    this.showNotification('Error loading chats', 'error');
+                }
+            }
+
+            // Filter chats based on search and filter criteria
+            filterChats() {
+                const searchTerm = this.elements['chat-search-management']?.value.toLowerCase() || '';
+                const filterValue = this.elements['chat-filter']?.value || 'all';
+                
+                this.filteredChats = Object.entries(this.chats).filter(([clientId, chat]) => {
+                    if (!chat || typeof chat !== 'object') return false;
+                    // Apply filter
+                    if (filterValue === 'active' && chat.deleted) return false;
+                    if (filterValue === 'deleted' && !chat.deleted) return false;
+                    
+                    // Apply search
+                    if (searchTerm) {
+                        const name = (chat.clientInfo?.name || '').toLowerCase();
+                        const email = (chat.clientInfo?.email || '').toLowerCase();
+                        return name.includes(searchTerm) || email.includes(searchTerm);
+                    }
+                    
+                    return true;
+                });
+                
+                this.renderChats();
+            }
+
+            // Render chat list
+            renderChats() {
+                if (!this.elements['chats-list']) return;
+                
+                if (this.filteredChats.length === 0) {
+                    this.elements['chats-list'].innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-comments"></i>
+                            <p>No chats found</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                
+                this.filteredChats.forEach(([clientId, chat]) => {
+                    const clientInfo = chat.clientInfo || {};
+                    html += `
+                        <div class="chat-item">
+                            <div class="chat-info">
+                                <h4>${Utils.escapeHtml(clientInfo.name || 'Anonymous')}</h4>
+                                <p>${Utils.escapeHtml(clientInfo.email || 'No email')}</p>
+                                <small>First seen: ${clientInfo.firstSeen ? Utils.formatDate(clientInfo.firstSeen) : 'Unknown'}</small>
+                                <small>Messages: ${chat.messages?.length || 0}</small>
+                                ${chat.deleted ? '<small style="color: #e53e3e;">Deleted</small>' : ''}
+                            </div>
+                            <div class="chat-actions">
+                                <button class="btn-view" data-client-id="${clientId}">View</button>
+                                <button class="btn-delete" data-client-id="${clientId}" ${chat.deleted ? 'disabled' : ''}>
+                                    ${chat.deleted ? 'Deleted' : 'Delete'}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                this.elements['chats-list'].innerHTML = html;
+                
+                // Add event listeners to buttons
+                document.querySelectorAll('.btn-view').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const clientId = btn.getAttribute('data-client-id');
+                        this.viewChat(clientId);
+                    });
+                });
+                
+                document.querySelectorAll('.btn-delete:not(:disabled)').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const clientId = btn.getAttribute('data-client-id');
+                        this.deleteChat(clientId);
+                    });
+                });
+            }
+
+            // View chat details
+            async viewChat(clientId) {
+                try {
+                    const response = await fetch(`/api/chats/${clientId}`, {
+                        credentials: 'include'
+                    });
+                    const chat = await response.json();
+                    this.showChatDetails(chat);
+                } catch (error) {
+                    console.error('Error loading chat:', error);
+                    this.showNotification('Error loading chat details', 'error');
+                }
+            }
+
+            // Show chat details
+            showChatDetails(chat) {
+                // For now, just show an alert with the chat info
+                // In a real implementation, you might want to show this in a modal or dedicated section
+                const clientInfo = chat.clientInfo || {};
+                alert(`Chat with ${clientInfo.name || 'Anonymous'}\nEmail: ${clientInfo.email || 'No email'}\nMessages: ${chat.messages?.length || 0}`);
+            }
+
+            // Delete a chat
+            async deleteChat(clientId) {
+                if (!confirm('Are you sure you want to delete this chat? This action cannot be undone.')) {
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`/api/chats/${clientId}`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.showNotification('Chat deleted successfully', 'success');
+                        // Reload chats to reflect the change
+                        this.loadChats();
+                    } else {
+                        this.showNotification('Error deleting chat', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error deleting chat:', error);
+                    this.showNotification('Error deleting chat', 'error');
+                }
+            }
+            
+            // Filter and sort submissions based on current criteria
+            filterAndSortSubmissions() {
+                // Apply filters
+                this.filteredSubmissions = this.submissions.filter(submission => {
+                    // Search term filter
+                    if (this.searchTerm) {
+                        const searchLower = this.searchTerm.toLowerCase();
+                        const matchesSearch = 
+                            (submission.name && submission.name.toLowerCase().includes(searchLower)) ||
+                            (submission.email && submission.email.toLowerCase().includes(searchLower)) ||
+                            (submission.phone && submission.phone.toLowerCase().includes(searchLower)) ||
+                            (submission.service && submission.service.toLowerCase().includes(searchLower)) ||
+                            (submission.message && submission.message.toLowerCase().includes(searchLower));
+                        
+                        if (!matchesSearch) return false;
+                    }
+                    
+                    // Service filter
+                    if (this.serviceFilter && submission.service !== this.serviceFilter) {
+                        return false;
+                    }
+                    
+                    // Date filter
+                    if (this.dateFilter) {
+                        const submissionDate = new Date(submission.submitted_at);
+                        const today = new Date();
+                        
+                        switch (this.dateFilter) {
+                            case 'today':
+                                if (submissionDate.toDateString() !== today.toDateString()) return false;
+                                break;
+                            case 'week':
+                                const weekStart = new Date(today);
+                                weekStart.setDate(today.getDate() - today.getDay());
+                                weekStart.setHours(0, 0, 0, 0);
+                                if (submissionDate < weekStart) return false;
+                                break;
+                            case 'month':
+                                const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+                                if (submissionDate < monthStart) return false;
+                                break;
+                        }
+                    }
+                    
+                    return true;
+                });
+                
+                // Apply sorting
+                this.filteredSubmissions.sort((a, b) => {
+                    let valueA, valueB;
+                    
+                    switch (this.sortField) {
+                        case 'name':
+                            valueA = a.name || '';
+                            valueB = b.name || '';
+                            break;
+                        case 'email':
+                            valueA = a.email || '';
+                            valueB = b.email || '';
+                            break;
+                        case 'phone':
+                            valueA = a.phone || '';
+                            valueB = b.phone || '';
+                            break;
+                        case 'service':
+                            valueA = a.service || '';
+                            valueB = b.service || '';
+                            break;
+                        case 'date':
+                            valueA = new Date(a.submitted_at);
+                            valueB = new Date(b.submitted_at);
+                            break;
+                        default: // id
+                            valueA = a.id;
+                            valueB = b.id;
+                    }
+                    
+                    if (typeof valueA === 'string' && typeof valueB === 'string') {
+                        return this.sortDirection === 'asc' 
+                            ? valueA.localeCompare(valueB) 
+                            : valueB.localeCompare(valueA);
+                    } else {
+                        return this.sortDirection === 'asc' 
+                            ? valueA - valueB 
+                            : valueB - valueA;
+                    }
+                });
+                
+                // Calculate pagination
+                this.calculateTotalPages();
+            }
+            
+            // Calculate total pages based on filtered submissions
+            calculateTotalPages() {
+                this.totalPages = Math.ceil(this.filteredSubmissions.length / this.pageSize);
+                
+                // Update pagination controls
+                if (this.elements['page-info']) {
+                    this.elements['page-info'].textContent = `Page ${this.currentPage} of ${this.totalPages || 1}`;
+                }
+                
+                if (this.elements['prev-page']) {
+                    this.elements['prev-page'].disabled = this.currentPage <= 1;
+                }
+                
+                if (this.elements['next-page']) {
+                    this.elements['next-page'].disabled = this.currentPage >= this.totalPages;
+                }
+            }
+
+            // Display submissions with pagination
+            renderSubmissions() {
                 if (!this.elements.submissionsTable) return;
                 
                 const tbody = this.elements.submissionsTable.querySelector('tbody');
                 if (!tbody) return;
                 
-                if (!submissions || submissions.length === 0) {
+                if (!this.filteredSubmissions || this.filteredSubmissions.length === 0) {
                     tbody.innerHTML = `
                         <tr>
                             <td colspan="7">
                                 <div class="empty-state">
                                     <i class="fas fa-file-alt"></i>
-                                    <p>No submissions yet</p>
+                                    <p>No submissions found</p>
                                 </div>
                             </td>
                         </tr>
@@ -1448,16 +2185,21 @@
                     return;
                 }
                 
+                // Calculate pagination slice
+                const startIndex = (this.currentPage - 1) * this.pageSize;
+                const endIndex = Math.min(startIndex + this.pageSize, this.filteredSubmissions.length);
+                const pageSubmissions = this.filteredSubmissions.slice(startIndex, endIndex);
+                
                 tbody.innerHTML = '';
                 
-                submissions.forEach(submission => {
+                pageSubmissions.forEach(submission => {
                     const row = document.createElement('tr');
                     const date = new Date(submission.submitted_at).toLocaleDateString();
                     
                     row.innerHTML = `
                         <td>${submission.id}</td>
-                        <td>${submission.name}</td>
-                        <td>${submission.email}</td>
+                        <td>${Utils.escapeHtml(submission.name)}</td>
+                        <td>${Utils.escapeHtml(submission.email)}</td>
                         <td>${submission.phone || '-'}</td>
                         <td>${submission.service || '-'}</td>
                         <td>${date}</td>
@@ -1472,6 +2214,16 @@
                 
                 // Add event listeners to buttons
                 this.setupSubmissionEventListeners();
+                
+                // Update pagination info
+                this.calculateTotalPages();
+            }
+            
+            // Show/hide table loading indicator
+            showTableLoading(show) {
+                if (this.elements['table-loading']) {
+                    this.elements['table-loading'].style.display = show ? 'flex' : 'none';
+                }
             }
 
             // Setup submission event listeners
@@ -1543,7 +2295,10 @@
                     
                     if (data.success) {
                         this.showNotification('Submission deleted successfully', 'success');
-                        this.loadSubmissions();
+                        // Remove from local data
+                        this.submissions = this.submissions.filter(s => s.id != id);
+                        this.filterAndSortSubmissions();
+                        this.renderSubmissions();
                         this.loadStats();
                     } else {
                         this.showNotification('Error deleting submission', 'error');
@@ -1557,12 +2312,11 @@
             // Export CSV
             async exportCSV() {
                 try {
-                    const response = await fetch('/api/submissions', {
-                        credentials: 'include'
-                    });
-                    const submissions = await response.json();
+                    // Use filtered submissions for export if there are filters active
+                    const exportData = this.filteredSubmissions.length > 0 ? 
+                        this.filteredSubmissions : this.submissions;
                     
-                    if (!submissions || submissions.length === 0) {
+                    if (!exportData || exportData.length === 0) {
                         this.showNotification('No data to export', 'info');
                         return;
                     }
@@ -1570,15 +2324,22 @@
                     // Create CSV content
                     let csvContent = 'ID,Name,Email,Phone,Service,Message,Date\n';
                     
-                    submissions.forEach(submission => {
+                    const csvSanitize = (val) => {
+                        let s = (val ?? '').toString();
+                        if (/^[=+\-@]/.test(s)) s = "'" + s; // prevent formula injection
+                        s = s.replace(/"/g, '""');
+                        return `"${s}"`;
+                    };
+                    
+                    exportData.forEach(submission => {
                         const row = [
-                            submission.id,
-                            `"${submission.name.replace(/"/g, '""')}"`,
-                            submission.email,
-                            submission.phone || '',
-                            submission.service ? `"${submission.service.replace(/"/g, '""')}"` : '',
-                            `"${submission.message.replace(/"/g, '""')}"`,
-                            new Date(submission.submitted_at).toLocaleDateString()
+                            csvSanitize(submission.id),
+                            csvSanitize(submission.name),
+                            csvSanitize(submission.email),
+                            csvSanitize(submission.phone || ''),
+                            csvSanitize(submission.service || ''),
+                            csvSanitize(submission.message || ''),
+                            csvSanitize(new Date(submission.submitted_at).toLocaleDateString())
                         ];
                         
                         csvContent += row.join(',') + '\n';
@@ -1679,7 +2440,8 @@
                 try {
                     await Promise.all([
                         this.loadSubmissions(),
-                        this.loadStats()
+                        this.loadStats(),
+                        this.loadChats()
                     ]);
                 } catch (error) {
                     console.error('Refresh error:', error);
@@ -1746,6 +2508,11 @@
             showAdminPanel() {
                 if (this.elements['login-section']) this.elements['login-section'].style.display = 'none';
                 if (this.elements['admin-panel']) this.elements['admin-panel'].style.display = 'block';
+                
+                // Initialize chat when admin panel is shown
+                if (!this.chat) {
+                    this.chat = new AdminChat(this);
+                }
             }
 
             showLoginMessage(message, type) {
@@ -1779,7 +2546,7 @@
             }
         }
 
-        // Chat functionality
+        // Chat functionality with enhanced reconnection and state persistence
         class AdminChat {
             constructor(adminPanel) {
                 this.adminPanel = adminPanel;
@@ -1789,14 +2556,22 @@
                 this.messages = new Map(); // clientId -> message array
                 this.unreadCounts = new Map();
                 this.isConnected = false;
-                this.reconnectAttempts = 0;
-                this.maxReconnectAttempts = 5;
+                this.reconnectTimeout = null;
+                this.connectionAttempts = 0;
+                this.maxConnectionAttempts = 10;
                 this.sessionId = DeviceManager.getSessionId();
                 this.clientConnectionId = null;
+                this.welcomedClients = new Set(); // Track clients we've sent welcome message to
+                this.processedMessageIds = new Set(); // Track processed message IDs to prevent duplicates
                 
                 this.initializeChatElements();
                 this.setupChatEventListeners();
                 this.connectWebSocket();
+                
+                // Set up periodic state saving
+                this.stateSaveInterval = setInterval(() => {
+                    this.saveChatState();
+                }, 5000); // Save every 5 seconds
             }
             
             // Initialize chat DOM elements
@@ -1848,9 +2623,61 @@
                 }
             }
             
-            // Connect to WebSocket server
+            // Save chat state to localStorage
+            saveChatState() {
+                if (!SAVE_CHAT_STATE) return;
+                try {
+                    const state = {
+                        selectedClientId: this.selectedClientId,
+                        clients: Array.from(this.clients.entries()),
+                        messages: Array.from(this.messages.entries()),
+                        unreadCounts: Array.from(this.unreadCounts.entries()),
+                        sessionId: this.sessionId
+                    };
+                    localStorage.setItem('adminChatState', JSON.stringify(state));
+                } catch (error) {
+                    if (DEBUG) console.error('Error saving chat state:', error);
+                }
+            }
+
+            // Load chat state from localStorage
+            loadChatState() {
+                if (!SAVE_CHAT_STATE) return;
+                try {
+                    const savedState = localStorage.getItem('adminChatState');
+                    if (savedState) {
+                        const state = JSON.parse(savedState);
+                        
+                        // Only restore if session ID matches
+                        if (state.sessionId === this.sessionId) {
+                            this.selectedClientId = state.selectedClientId;
+                            this.clients = new Map(state.clients);
+                            this.messages = new Map(state.messages);
+                            this.unreadCounts = new Map(state.unreadCounts);
+                            
+                            // Update UI with restored state
+                            this.renderClientList();
+                            if (this.selectedClientId) {
+                                this.selectClient(this.selectedClientId);
+                            }
+                            
+                            if (DEBUG) console.log('Chat state restored from localStorage');
+                        }
+                    }
+                } catch (error) {
+                    if (DEBUG) console.error('Error loading chat state:', error);
+                }
+            }
+            
+            // Connect to WebSocket server with enhanced reconnection handling
             connectWebSocket() {
                 try {
+                    // Clear any existing reconnection timeout
+                    if (this.reconnectTimeout) {
+                        clearTimeout(this.reconnectTimeout);
+                        this.reconnectTimeout = null;
+                    }
+                    
                     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
                     const wsUrl = `${protocol}//${window.location.host}`;
                     
@@ -1859,7 +2686,7 @@
                     this.ws.onopen = () => {
                         console.log('WebSocket connected');
                         this.isConnected = true;
-                        this.reconnectAttempts = 0;
+                        this.connectionAttempts = 0;
                         this.updateConnectionStatus('connected');
                         
                         // Identify as admin with session ID
@@ -1870,6 +2697,12 @@
                             sessionId: this.sessionId,
                             deviceType: DeviceManager.getDeviceType()
                         }));
+                        
+                        // Request client list immediately after connection
+                        this.requestClientList();
+                        
+                        // Load saved state
+                        this.loadChatState();
                     };
                     
                     this.ws.onmessage = (event) => {
@@ -1899,25 +2732,49 @@
                 }
             }
             
-            // Attempt to reconnect
+            // Enhanced reconnect method with exponential backoff
             attemptReconnect() {
-                if (this.reconnectAttempts < this.maxReconnectAttempts) {
-                    this.reconnectAttempts++;
-                    const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 10000);
+                if (this.connectionAttempts < this.maxConnectionAttempts) {
+                    this.connectionAttempts++;
+                    const delay = Math.min(1000 * Math.pow(2, this.connectionAttempts), 30000);
                     
-                    console.log(`Attempting to reconnect in ${delay/1000} seconds (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+                    console.log(`Attempting to reconnect in ${delay/1000} seconds (attempt ${this.connectionAttempts}/${this.maxConnectionAttempts})`);
                     
-                    setTimeout(() => {
+                    this.reconnectTimeout = setTimeout(() => {
                         this.connectWebSocket();
                     }, delay);
                 } else {
                     console.error('Max reconnection attempts reached');
+                    this.updateConnectionStatus('disconnected');
+                    this.adminPanel.showNotification('Failed to connect to chat server. Please refresh the page.', 'error');
                 }
+            }
+            
+            // Manual reconnect method
+            manualReconnect() {
+                this.connectionAttempts = 0;
+                this.connectWebSocket();
+                this.adminPanel.showNotification('Attempting to reconnect to chat server...', 'info');
             }
             
             // Handle incoming messages
             handleMessage(data) {
-                console.log('Received message:', data);
+                if (DEBUG) console.log('Received message:', data);
+                
+                // CRITICAL: Check if this message is already processed
+                if (data.id && this.processedMessageIds.has(data.id)) {
+                    console.log('Ignoring duplicate message:', data.id);
+                    return;
+                }
+                
+                if (data.id) {
+                    this.processedMessageIds.add(data.id);
+                    // Clean up old IDs to prevent memory issues
+                    if (this.processedMessageIds.size > 1000) {
+                        const values = Array.from(this.processedMessageIds);
+                        this.processedMessageIds = new Set(values.slice(-500));
+                    }
+                }
                 
                 // Store our connection ID when we receive it
                 if (data.type === 'client_id') {
@@ -1942,6 +2799,11 @@
                     case 'chat':
                         // Add message to the appropriate client
                         if (data.clientId) {
+                            // Send welcome message if this is the first message from this client
+                            if (!data.isAdmin && !this.welcomedClients.has(data.clientId)) {
+                                this.welcomedClients.add(data.clientId);
+                                this.sendWelcomeMessage(data.clientId);
+                            }
                             this.addMessage(data.clientId, data);
                         } else {
                             console.error('Received chat message without clientId:', data);
@@ -1983,8 +2845,48 @@
                         }
                         break;
                         
+                    case 'new_submission':
+                        // New form submission notification
+                        if (this.adminPanel) {
+                            this.adminPanel.showNotification(`New submission from ${data.name}`, 'info');
+                            // Refresh submissions data
+                            this.adminPanel.loadSubmissions();
+                            this.adminPanel.loadStats();
+                        }
+                        break;
+                        
                     default:
                         console.log('Unknown message type:', data.type, data);
+                }
+            }
+            
+            // Send welcome message to new client
+            sendWelcomeMessage(clientId) {
+                if (!ADMIN_SEND_AUTO_WELCOME) return;
+                const welcomeMessage = "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.";
+                
+                if (this.ws && this.isConnected) {
+                    const messageData = {
+                        type: 'admin_message',
+                        targetClientId: clientId,
+                        message: welcomeMessage,
+                        sessionId: this.sessionId,
+                        fromConnectionId: this.clientConnectionId
+                    };
+                    
+                    this.ws.send(JSON.stringify(messageData));
+                    
+                    // Also add the message to our local history for immediate feedback
+                    this.addMessage(clientId, {
+                        id: 'welcome-' + Date.now(),
+                        type: 'chat',
+                        message: welcomeMessage,
+                        name: 'Admin',
+                        timestamp: new Date().toISOString(),
+                        isAdmin: true,
+                        clientId: clientId,
+                        sessionId: this.sessionId
+                    });
                 }
             }
             
@@ -2052,10 +2954,10 @@
                         <div class="client-item ${isActive ? 'active' : ''}" data-client-id="${clientId}">
                             <div style="flex: 1;">
                                 <div class="client-info">
-                                    <div class="client-name">${clientName}</div>
+                                    <div class="client-name">${Utils.escapeHtml(clientName)}</div>
                                     <div class="client-time">${lastActive}</div>
                                 </div>
-                                <div class="client-preview">${lastMessage.preview}</div>
+                                <div class="client-preview">${Utils.escapeHtml(lastMessage.preview)}</div>
                             </div>
                             <div class="client-status">
                                 <span class="status-indicator ${client.isOnline ? 'status-online' : 'status-offline'}"></span>
@@ -2282,9 +3184,9 @@
                     
                     html += `
                         <div class="message ${isAdmin ? 'admin' : 'client'}">
-                            <div class="message-text">${message.message}</div>
+                            <div class="message-text">${Utils.escapeHtml(message.message)}</div>
                             <div class="message-info">
-                                <span>${senderName} • ${time}</span>
+                                <span>${Utils.escapeHtml(senderName)} • ${time}</span>
                                 ${isAdmin ? '<span class="message-status">Delivered</span>' : ''}
                             </div>
                         </div>
@@ -2442,6 +3344,18 @@
                 if (this.ws) {
                     this.ws.close();
                 }
+                if (this.reconnectTimeout) {
+                    clearTimeout(this.reconnectTimeout);
+                    this.reconnectTimeout = null;
+                }
+                if (this.stateSaveInterval) {
+                    clearInterval(this.stateSaveInterval);
+                    this.stateSaveInterval = null;
+                }
+                
+                // Save state one final time
+                this.saveChatState();
+                
                 this.isConnected = false;
                 this.updateConnectionStatus('disconnected');
             }

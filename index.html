@@ -6,14 +6,12 @@
   <title>AJK Cleaning Company | Professional Cleaning Services</title>
   <meta name="description" content="Professional cleaning services for homes and businesses. Eco-friendly products, fully insured, and satisfaction guaranteed. AJK Cleaning Service">
   <!-- Preload critical resources -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Preload hero image -->
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" imagesrcset="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80 600w, https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80 800w, https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80 1000w, https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80 1200w, https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1600&q=80 1600w">
+    <!-- Preload hero image -->
+  <link rel="preload" as="image" crossorigin="anonymous" imagesizes="100vw" href="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" imagesrcset="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80 600w, https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80 800w, https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80 1000w, https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80 1200w, https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1600&q=80 1600w">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
   <!-- Custom CSS -->
   <link rel="stylesheet" href="styles.css">
   <!-- Structured data for SEO -->
@@ -24,14 +22,21 @@
     "name": "AJK Cleaning Company",
     "description": "Professional cleaning services for homes and businesses",
     "url": "https://www.ajkcleaning.com",
-    "telephone": "+49017616146259",
-    "email": "Rajau691@gmail.com",
-    "areaServed": "Greater Area",
+    "telephone": "+4917616146259",
+    "email": "rajau691@gmail.com",
     "serviceType": "Cleaning service",
-    "openingHours": "Mo-Sa 08:00-18:00",
+    "openingHoursSpecification": [{
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+      "opens": "08:00",
+      "closes": "18:00"
+    }],
     "address": {
       "@type": "PostalAddress",
-      "addressRegion": "Greater Area"
+      "streetAddress": "Bahnhofstraße 5",
+      "addressLocality": "Bischofsheim",
+      "postalCode": "65474",
+      "addressCountry": "DE"
     },
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
@@ -142,7 +147,7 @@
         border-radius: 12px;
         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
         overflow: hidden;
-        display: flex;
+        /* display: flex; */
         flex-direction: column;
         transform: translateY(20px) scale(0.9);
         opacity: 0;
@@ -273,7 +278,7 @@
         padding: 15px;
         background: white;
         border-top: 1px solid #e5e7eb;
-        display: flex;
+        /* display: flex; */
         align-items: center;
         gap: 10px;
         display: none;
@@ -465,7 +470,7 @@
       </nav>
       
       <!-- Enhanced mobile menu button -->
-      <button id="menu-btn" class="md:hidden flex flex-col w-8 h-8 justify-center items-center space-y-1.5 focus:outline-none" aria-label="Toggle menu" aria-expanded="false">
+      <button id="menu-btn" type="button" class="md:hidden flex flex-col w-8 h-8 justify-center items-center space-y-1.5 focus:outline-none" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
         <span class="menu-line block w-6 h-0.5 bg-primary transition-all duration-300"></span>
         <span class="menu-line block w-6 h-0.5 bg-primary transition-all duration-300"></span>
         <span class="menu-line block w-6 h-0.5 bg-primary transition-all duration-300"></span>
@@ -669,7 +674,7 @@
                 </div>
               </div>
               <p class="italic text-gray-700 mb-6">"AJK keeps our office spotless. They're always punctual, and their attention to detail is impressive. Our employees love working in such a clean environment!"</p>
-              <div class="flex items-center justify center">
+              <div class="flex items-center justify-center">
                 <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="David R." class="w-12 h-12 rounded-full mr-4" width="48" height="48" loading="lazy">
                 <div>
                   <h4 class="font-bold">David R.</h4>
@@ -703,16 +708,16 @@
         
         <!-- Navigation dots -->
         <div class="flex justify-center mt-8 space-x-2" aria-label="Testimonial navigation">
-          <button class="testimonial-dot w-3 h-3 rounded-full bg-primary" data-index="0" aria-label="Show testimonial 1"></button>
-          <button class="testimonial-dot w-3 h-3 rounded-full bg-gray-300" data-index="1" aria-label="Show testimonial 2"></button>
-          <button class="testimonial-dot w-3 h-3 rounded-full bg-gray-300" data-index="2" aria-label="Show testimonial 3"></button>
+          <button type="button" class="testimonial-dot w-3 h-3 rounded-full bg-primary" data-index="0" aria-label="Show testimonial 1"></button>
+          <button type="button" class="testimonial-dot w-3 h-3 rounded-full bg-gray-300" data-index="1" aria-label="Show testimonial 2"></button>
+          <button type="button" class="testimonial-dot w-3 h-3 rounded-full bg-gray-300" data-index="2" aria-label="Show testimonial 3"></button>
         </div>
         
         <!-- Arrows -->
-        <button id="prev-btn" class="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-4 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-colors duration-300" aria-label="Previous testimonial">
+        <button id="prev-btn" type="button" class="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-4 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-colors duration-300" aria-label="Previous testimonial">
           <i class="fas fa-chevron-left text-primary"></i>
         </button>
-        <button id="next-btn" class="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-4 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-colors duration-300" aria-label="Next testimonial">
+        <button id="next-btn" type="button" class="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-4 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 transition-colors duration-300" aria-label="Next testimonial">
           <i class="fas fa-chevron-right text-primary"></i>
         </button>
       </div>
@@ -735,14 +740,14 @@
         <h2 id="contact-heading" class="text-3xl font-bold text-primary mb-4">Get In Touch</h2>
         <p class="mb-6 text-gray-700">We're here to answer any questions you may have about our services. Reach out to us and we'll respond as soon as we can.</p>
         <div class="space-y-3">
-          <p class="flex items-center"><i class="fas fa-phone text-primary mr-3 w-5" aria-hidden="true"></i> +49 017-616146259, +49 176-61852286</p>
-          <p class="flex items-center"><i class="fas fa-envelope text-primary mr-3 w-5" aria-hidden="true"></i> Rajau691@gmail.com</p>
-          <p class="flex items-center"><i class="fas fa-map-marker-alt text-primary mr-3 w-5" aria-hidden="true"></i><a href="https://www.google.com/maps/place/AJK+Cleaning+Service,+Bahnhofstra%C3%9Fe+5,+65474+Bischofsheim/data=!4m2!3m1!1s0x47bd99f5e82f18e9:0x40cfb0ac711244f6?utm_source=mstt_1&entry=gps&coh=192189&g_ep=CAESBjI1LjQuMRgAINeCAyp1LDk0MjIzMjk5LDk0MjE2NDEzLDk0MjEyNDk2LDk0MjA3Mzk0LDk0MjA3NTA2LDk0MjA4NTA2LDk0MjE3NTIzLDk0MjE4NjUzLDk0MjI5ODM5LDk0Mjc1MTY4LDQ3MDg0MzkzLDk0MjEzMjAwLDk0Mjg2ODgyQgJERQ%3D%3D&skid=0a492a4a-b748-4ed0-a280-1519521eb675" target="_blank">Bahnhofstraße 5, 65474 Bischofsheim, Germany</a></p>
+          <p class="flex items-center"><i class="fas fa-phone text-primary mr-3 w-5" aria-hidden="true"></i> <a href="tel:+4917616146259" class="hover:underline">+49 176 16146259</a>, <a href="tel:+4917661852286" class="hover:underline">+49 176 61852286</a></p>
+          <p class="flex items-center"><i class="fas fa-envelope text-primary mr-3 w-5" aria-hidden="true"></i> <a href="mailto:rajau691@gmail.com" class="hover:underline">rajau691@gmail.com</a></p>
+          <p class="flex items-center"><i class="fas fa-map-marker-alt text-primary mr-3 w-5" aria-hidden="true"></i><a href="https://www.google.com/maps/place/AJK+Cleaning+Service,+Bahnhofstra%C3%9Fe+5,+65474+Bischofsheim/data=!4m2!3m1!1s0x47bd99f5e82f18e9:0x40cfb0ac711244f6?utm_source=mstt_1&entry=gps&coh=192189&g_ep=CAESBjI1LjQuMRgAINeCAyp1LDk0MjIzMjk5LDk0MjE2NDEzLDk0MjEyNDk2LDk0MjA3Mzk0LDk0MjA3NTA2LDk0MjA4NTA2LDk0MjE3NTIzLDk0MjE4NjUzLDk0MjI5ODM5LDk0Mjc1MTY4LDQ3MDg0MzkzLDk0MjEzMjAwLDk0Mjg2ODgyQgJERQ%3D%3D&skid=0a492a4a-b748-4ed0-a280-1519521eb675" target="_blank" rel="noopener noreferrer">Bahnhofstraße 5, 65474 Bischofsheim, Germany</a></p>
           <p class="flex items-center"><i class="fas fa-clock text-primary mr-3 w-5" aria-hidden="true"></i> Mon - Sat: 8:00am - 6:00pm</p>
         </div>
       </div>
       <div>
-        <h2 class="text-3xl font-bold text-primary mb-4">Get a Free Quote</h2>
+        <h3 class="text-3xl font-bold text-primary mb-4">Get a Free Quote</h3>
         <form id="contact-form" class="space-y-4" novalidate>
           <div>
             <label for="name" class="sr-only">Name</label>
@@ -826,7 +831,7 @@
           <div class="flex">
             <label for="newsletter-email" class="sr-only">Your email</label>
             <input type="email" id="newsletter-email" placeholder="Your email" class="bg-white bg-opacity-10 border-0 text-white px-3 py-2 rounded-l-lg focus:ring-2 focus:ring-secondary focus:outline-none placeholder-blue-200 w-full">
-            <button class="bg-secondary hover:bg-secondary-dark transition-colors duration-300 px-4 py-2 rounded-r-lg" aria-label="Subscribe">
+            <button type="button" class="bg-secondary hover:bg-secondary-dark transition-colors duration-300 px-4 py-2 rounded-r-lg" aria-label="Subscribe">
               <i class="fas fa-paper-plane"></i>
             </button>
           </div>
@@ -840,7 +845,7 @@
 
   <!-- Sticky CTA for mobile -->
   <div class="sticky-cta fixed bottom-0 left-0 right-0 bg-white shadow-lg p-3 flex justify-between items-center md:hidden z-50">
-    <a href="tel:+49017616146259" class="flex items-center text-primary font-semibold px-4 py-2">
+    <a href="tel:+4917616146259" class="flex items-center text-primary font-semibold px-4 py-2">
       <i class="fas fa-phone mr-2" aria-hidden="true"></i> Call Now
     </a>
     <a href="#contact" class="bg-secondary text-white px-4 py-2 rounded-lg font-semibold">
@@ -850,14 +855,14 @@
 
   <!-- Fixed Chat Widget -->
   <div id="chat-widget-enhanced" class="chat-widget-enhanced">
-    <button class="chat-toggle" id="chat-toggle-enhanced" aria-label="Toggle chat">
+    <button class="chat-toggle" id="chat-toggle-enhanced" type="button" aria-label="Toggle chat">
         <div class="chat-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
             </svg>
         </div>
         <div class="connection-indicator" id="connection-indicator"></div>
-        <div class="unread-badge" id="unread-badge">0</div>
+        <div class="unread-badge" id="unread-badge" style="display:none;" aria-hidden="true">0</div>
     </button>
     
     <div class="chat-window" id="chat-window-enhanced">
@@ -867,8 +872,8 @@
                 <div class="chat-status" id="chat-status">Connecting...</div>
             </div>
             <div class="chat-header-actions">
-                <button class="minimize-btn" id="minimize-chat" aria-label="Minimize chat">−</button>
-                <button class="close-btn" id="close-chat" aria-label="Close chat">×</button>
+                <button class="minimize-btn" id="minimize-chat" type="button" aria-label="Minimize chat">−</button>
+                <button class="close-btn" id="close-chat" type="button" aria-label="Close chat">×</button>
             </div>
         </div>
         
@@ -889,11 +894,11 @@
             <div class="user-info" id="user-info">
                 <input type="text" id="user-name" placeholder="Your name" maxlength="50" required>
                 <input type="email" id="user-email" placeholder="Your email (optional)" maxlength="100">
-                <button id="save-user-info">Start Chat</button>
+                <button id="save-user-info" type="button">Start Chat</button>
             </div>
             <div class="chat-input-area" id="chat-input-area" style="display: none;">
-                <input type="text" id="chat-input-enhanced" placeholder="Type your message..." maxlength="500">
-                <button id="chat-send-enhanced" aria-label="Send message">
+                <input type="text" id="chat-input-enhanced" placeholder="Type your message..." maxlength="500" aria-label="Message input">
+                <button id="chat-send-enhanced" type="button" aria-label="Send message">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                     </svg>

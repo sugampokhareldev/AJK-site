@@ -23,25 +23,57 @@ class ChatWidget {
     this.reconnectAttempts = 0;
     this.maxReconnectAttempts = 5;
     this.unreadCount = 0;
-    this.clientId = this.generateClientId();
-    this.userName = 'Guest';
-    this.userEmail = '';
+    this.identifyTimeout = null;
+    
+    // Try to load existing client ID from storage
+    this.clientId = localStorage.getItem('chatClientId') || this.generateClientId();
+    this.userName = localStorage.getItem('chatUserName') || 'Guest';
+    this.userEmail = localStorage.getItem('chatUserEmail') || '';
+    
+    // Store client ID for future sessions
+    localStorage.setItem('chatClientId', this.clientId);
     
     this.init();
   }
   
   generateClientId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    return 'client_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
   }
   
   init() {
     this.attachEventListeners();
     this.connectWebSocket();
     
+    // Load any saved messages
+    this.loadSavedMessages();
+    
     // Auto-open chat if there are unread messages
     if (localStorage.getItem('chat-unread-count')) {
       this.unreadCount = parseInt(localStorage.getItem('chat-unread-count')) || 0;
       this.updateUnreadBadge();
+    }
+  }
+  
+  // Method to save user info
+  saveUserInfo() {
+    localStorage.setItem('chatUserName', this.userName);
+    localStorage.setItem('chatUserEmail', this.userEmail);
+    
+    // Send identification to server
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.sendIdentifyMessage();
+    }
+  }
+  
+  sendIdentifyMessage() {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify({
+        type: 'identify',
+        name: this.userName,
+        email: this.userEmail,
+        isAdmin: false,
+        clientId: this.clientId
+      }));
     }
   }
   
@@ -67,7 +99,7 @@ class ChatWidget {
     if (closeChat) closeChat.addEventListener('click', () => this.closeChat());
     if (minimizeChat) minimizeChat.addEventListener('click', () => this.minimizeChat());
     if (chatSend) chatSend.addEventListener('click', () => this.sendMessage());
-    if (saveUserInfo) saveUserInfo.addEventListener('click', () => this.saveUserInfo());
+    if (saveUserInfo) saveUserInfo.addEventListener('click', () => this.saveUserInfoForm());
     
     // Handle Enter key for sending messages
     if (chatInput) {
@@ -106,13 +138,11 @@ class ChatWidget {
         this.updateConnectionStatus();
         this.enableChatInput();
         
-        // Send identification to server
-        this.ws.send(JSON.stringify({
-          type: 'identify',
-          name: this.userName,
-          email: this.userEmail,
-          isAdmin: false
-        }));
+        // Set timeout to send identify if we don't get client_id from server
+        this.identifyTimeout = setTimeout(() => {
+          console.log('No client_id received from server, identifying with current clientId');
+          this.sendIdentifyMessage();
+        }, 3000);
       };
       
       this.ws.onmessage = (event) => {
@@ -129,6 +159,13 @@ class ChatWidget {
         this.isConnected = false;
         this.updateConnectionStatus();
         this.disableChatInput();
+        
+        // Clear the identify timeout
+        if (this.identifyTimeout) {
+          clearTimeout(this.identifyTimeout);
+          this.identifyTimeout = null;
+        }
+        
         this.attemptReconnect();
       };
       
@@ -136,6 +173,12 @@ class ChatWidget {
         console.error('WebSocket error:', error);
         this.isConnected = false;
         this.updateConnectionStatus('Connection error');
+        
+        // Clear the identify timeout
+        if (this.identifyTimeout) {
+          clearTimeout(this.identifyTimeout);
+          this.identifyTimeout = null;
+        }
       };
       
     } catch (error) {
@@ -150,7 +193,20 @@ class ChatWidget {
     setTimeout(() => {
       this.updateConnectionStatus();
       this.enableChatInput();
+      this.sendWelcomeMessage();
     }, 1000);
+  }
+  
+  sendWelcomeMessage() {
+    // Only send welcome message if we haven't sent it before in this session
+    if (!localStorage.getItem('welcomeSent')) {
+      this.displayMessage(
+        "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+        'system',
+        'Support'
+      );
+      localStorage.setItem('welcomeSent', 'true');
+    }
   }
   
   attemptReconnect() {
@@ -225,36 +281,56 @@ class ChatWidget {
     
     switch (data.type) {
       case 'chat':
-    // Always display admin messages, only display user messages if they're not from this client
-      if (data.isAdmin || data.clientId !== this.clientId) {
+        // Always display admin messages, only display user messages if they're not from this client
+        if (data.isAdmin || data.clientId !== this.clientId) {
+          // Use data.message OR data.text (server might send either)
+          const messageText = data.message || data.text;
           this.displayMessage(
-              data.message, // Changed from data.text to data.message
-              data.isAdmin ? 'admin' : 'user', 
-              data.name || (data.isAdmin ? 'Support' : 'Guest'),
-              data.timestamp
+            messageText,
+            data.isAdmin ? 'admin' : 'user', 
+            data.name || (data.isAdmin ? 'Support' : 'Guest'),
+            data.timestamp
           );
           
+          // Save message to localStorage
+          this.saveMessageToStorage({
+            text: messageText,
+            type: data.isAdmin ? 'admin' : 'user',
+            sender: data.name || (data.isAdmin ? 'Support' : 'Guest'),
+            timestamp: data.timestamp || new Date().toISOString()
+          });
+          
           if (data.isAdmin) {
-              this.playNotificationSound();
-              this.incrementUnreadCount();
+            this.playNotificationSound();
+            this.incrementUnreadCount();
           }
-      }
-      break;
+        }
+        break;
         
       case 'system':
         this.displayMessage(data.message, 'system', 'System', data.timestamp);
         break;
         
       case 'history':
-        // Load chat history
+        // Load chat history from server
         if (data.messages && Array.isArray(data.messages)) {
           data.messages.forEach(msg => {
+            // Use msg.message OR msg.text (server might send either)
+            const messageText = msg.message || msg.text;
             this.displayMessage(
-              msg.message,
+              messageText,
               msg.isAdmin ? 'admin' : 'user',
               msg.name || (msg.isAdmin ? 'Support' : 'Guest'),
               msg.timestamp
             );
+            
+            // Save to localStorage
+            this.saveMessageToStorage({
+              text: messageText,
+              type: msg.isAdmin ? 'admin' : 'user',
+              sender: msg.name || (msg.isAdmin ? 'Support' : 'Guest'),
+              timestamp: msg.timestamp
+            });
           });
         }
         break;
@@ -272,9 +348,58 @@ class ChatWidget {
         break;
         
       case 'client_id':
-        this.clientId = data.clientId;
-        console.log('Received client ID:', this.clientId);
+        // Clear the identify timeout
+        if (this.identifyTimeout) {
+          clearTimeout(this.identifyTimeout);
+          this.identifyTimeout = null;
+        }
+
+        // Update client ID if server provides a different one
+        if (data.clientId && data.clientId !== this.clientId) {
+          this.clientId = data.clientId;
+          localStorage.setItem('chatClientId', this.clientId);
+          console.log('Received new client ID:', this.clientId);
+        }
+        
+        // Now identify ourselves to the server with the updated clientId
+        this.sendIdentifyMessage();
         break;
+    }
+  }
+  
+  saveMessageToStorage(message) {
+    try {
+      // Get existing messages
+      const storedMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
+      
+      // Add new message
+      storedMessages.push(message);
+      
+      // Save back to localStorage (limit to 100 messages to prevent storage issues)
+      if (storedMessages.length > 100) {
+        storedMessages.splice(0, storedMessages.length - 100);
+      }
+      
+      localStorage.setItem('chatMessages', JSON.stringify(storedMessages));
+    } catch (error) {
+      console.error('Error saving message to storage:', error);
+    }
+  }
+  
+  loadSavedMessages() {
+    try {
+      const storedMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
+      
+      storedMessages.forEach(msg => {
+        this.displayMessage(
+          msg.text,
+          msg.type,
+          msg.sender,
+          msg.timestamp
+        );
+      });
+    } catch (error) {
+      console.error('Error loading saved messages:', error);
     }
   }
   
@@ -368,7 +493,8 @@ class ChatWidget {
     this.closeChat();
   }
   
-  saveUserInfo() {
+  // This method is called when the user submits the user info form
+  saveUserInfoForm() {
     const nameInput = document.getElementById('user-name');
     const emailInput = document.getElementById('user-email');
     const userInfo = document.getElementById('user-info');
@@ -392,20 +518,16 @@ class ChatWidget {
     this.userName = name;
     this.userEmail = email;
     
+    // Save to localStorage
+    localStorage.setItem('chatUserName', name);
+    if (email) localStorage.setItem('chatUserEmail', email);
+    
     // Hide user info form and show chat input
     if (userInfo) userInfo.style.display = 'none';
     if (chatInputArea) chatInputArea.style.display = 'flex';
     
     // Update identification on server if connected
-    if (this.isConnected && this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify({
-        type: 'identify',
-        name: this.userName,
-        email: this.userEmail,
-        isAdmin: false,
-        clientId: this.clientId
-      }));
-    }
+    this.sendIdentifyMessage();
     
     if (chatInput) chatInput.focus();
   }
@@ -426,30 +548,47 @@ class ChatWidget {
     // Display user message immediately for better UX
     this.displayMessage(message, 'user', this.userName);
     
+    // Save to localStorage
+    this.saveMessageToStorage({
+      text: message,
+      type: 'user',
+      sender: this.userName,
+      timestamp: new Date().toISOString()
+    });
+    
     // Send to server if connected
     if (this.isConnected && this.ws && this.ws.readyState === WebSocket.OPEN) {
-        this.ws.send(JSON.stringify({
-            type: 'chat',
-            message: message, // Changed from text to message
-            name: this.userName,
-            email: this.userEmail,
-            clientId: this.clientId,
-            timestamp: new Date().toISOString()
-        }));
+      this.ws.send(JSON.stringify({
+        type: 'chat',
+        text: message,
+        name: this.userName,
+        email: this.userEmail,
+        clientId: this.clientId,
+        timestamp: new Date().toISOString()
+      }));
     } else {
-        // Demo response when not connected to server
-        console.log('Not connected to server, showing demo response');
-        setTimeout(() => {
-            this.displayMessage(
-                "Thanks for your message! We're currently offline, but we'll get back to you soon. You can also call us at +49 017616146259.", 
-                'admin', 
-                'Support'
-            );
-        }, 1000);
+      // Demo response when not connected to server
+      console.log('Not connected to server, showing demo response');
+      setTimeout(() => {
+        this.displayMessage(
+          "Thanks for your message! We're currently offline, but we'll get back to you soon. You can also call us at +49 017616146259.", 
+          'admin', 
+          'Support'
+        );
+        
+        // Save demo response to storage
+        this.saveMessageToStorage({
+          text: "Thanks for your message! We're currently offline, but we'll get back to you soon. You can also call us at +49 017616146259.",
+          type: 'admin',
+          sender: 'Support',
+          timestamp: new Date().toISOString()
+        });
+      }, 1000);
     }
     
     this.stopTyping();
-} 
+  }
+  
   handleTyping() {
     if (!this.isConnected) return;
     
