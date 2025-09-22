@@ -37,6 +37,11 @@ class ChatWidget {
   }
   
   generateClientId() {
+    try {
+      if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        return 'client_' + crypto.randomUUID();
+      }
+    } catch (e) {}
     return 'client_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
   }
   
@@ -126,7 +131,7 @@ class ChatWidget {
     try {
       // Determine WebSocket protocol based on current page protocol
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = `${protocol}//${window.location.host}`;
+      const wsUrl = `${protocol}//${window.location.host}?clientId=${encodeURIComponent(this.clientId)}`;
       
       console.log('Attempting WebSocket connection to:', wsUrl);
       this.ws = new WebSocket(wsUrl);
@@ -285,9 +290,10 @@ class ChatWidget {
         if (data.isAdmin || data.clientId !== this.clientId) {
           // Use data.message OR data.text (server might send either)
           const messageText = data.message || data.text;
+          const messageType = data.type === 'system' ? 'system' : (data.isAdmin ? 'admin' : 'user');
           this.displayMessage(
             messageText,
-            data.isAdmin ? 'admin' : 'user', 
+            messageType, 
             data.name || (data.isAdmin ? 'Support' : 'Guest'),
             data.timestamp
           );
@@ -295,7 +301,7 @@ class ChatWidget {
           // Save message to localStorage
           this.saveMessageToStorage({
             text: messageText,
-            type: data.isAdmin ? 'admin' : 'user',
+            type: messageType,
             sender: data.name || (data.isAdmin ? 'Support' : 'Guest'),
             timestamp: data.timestamp || new Date().toISOString()
           });
@@ -314,12 +320,18 @@ class ChatWidget {
       case 'history':
         // Load chat history from server
         if (data.messages && Array.isArray(data.messages)) {
+          // Clear UI and local cache before rendering server history
+          const messagesContainer = document.getElementById('chat-messages');
+          if (messagesContainer) { messagesContainer.innerHTML = ''; }
+          try { localStorage.setItem('chatMessages', '[]'); } catch (e) {}
+
           data.messages.forEach(msg => {
             // Use msg.message OR msg.text (server might send either)
             const messageText = msg.message || msg.text;
+            const messageType = msg.type === 'system' ? 'system' : (msg.isAdmin ? 'admin' : 'user');
             this.displayMessage(
               messageText,
-              msg.isAdmin ? 'admin' : 'user',
+              messageType,
               msg.name || (msg.isAdmin ? 'Support' : 'Guest'),
               msg.timestamp
             );
@@ -327,7 +339,7 @@ class ChatWidget {
             // Save to localStorage
             this.saveMessageToStorage({
               text: messageText,
-              type: msg.isAdmin ? 'admin' : 'user',
+              type: messageType,
               sender: msg.name || (msg.isAdmin ? 'Support' : 'Guest'),
               timestamp: msg.timestamp
             });
@@ -347,6 +359,10 @@ class ChatWidget {
         console.log('Admin notification:', data.message);
         break;
         
+      case 'chat_reset':
+        this.handleChatReset();
+        break;
+        
       case 'client_id':
         // Clear the identify timeout
         if (this.identifyTimeout) {
@@ -361,6 +377,7 @@ class ChatWidget {
           console.log('Received new client ID:', this.clientId);
         }
         
+        // Do not clear UI or local cache on client_id; history may have just been loaded
         // Now identify ourselves to the server with the updated clientId
         this.sendIdentifyMessage();
         break;
@@ -649,6 +666,42 @@ class ChatWidget {
     this.unreadCount = 0;
     this.updateUnreadBadge();
     localStorage.setItem('chat-unread-count', '0');
+  }
+
+  // Handle server-initiated chat reset (e.g., admin deleted this chat)
+  handleChatReset() {
+    try {
+      localStorage.removeItem('chatMessages');
+      localStorage.removeItem('chat-unread-count');
+      localStorage.removeItem('welcomeSent');
+      localStorage.removeItem('chatUserName');
+      localStorage.removeItem('chatUserEmail');
+      localStorage.removeItem('chatClientId');
+    } catch (e) {}
+
+    this.userName = 'Guest';
+    this.userEmail = '';
+    this.clearUnreadCount();
+
+    const messagesContainer = document.getElementById('chat-messages');
+    if (messagesContainer) {
+      messagesContainer.innerHTML = '';
+    }
+
+    // Generate a new clientId so the next session is a brand-new ticket
+    this.clientId = this.generateClientId();
+    try { localStorage.setItem('chatClientId', this.clientId); } catch (e) {}
+
+    // Inform the user
+    this.displayMessage('Chat was reset. Please start a new conversation.', 'system', 'System', new Date().toISOString());
+
+    // Force a reconnect so the server can initialize a fresh chat session
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      try { this.ws.close(4000, 'reset'); } catch (e) {}
+    } else {
+      // If not open, connect immediately with the new clientId
+      this.connectWebSocket();
+    }
   }
   
   updateUnreadBadge() {

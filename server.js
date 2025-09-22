@@ -9,7 +9,6 @@ const path = require('path');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
-const MemoryStore = require('memorystore')(session);
 const crypto = require('crypto');
 const fs = require('fs');
 const { Low } = require('lowdb');
@@ -17,6 +16,7 @@ const { JSONFile } = require('lowdb/node');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
 
+const FileStore = require('session-file-store')(session);
 const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
@@ -32,7 +32,9 @@ const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(64).toSt
 const isProduction = NODE_ENV === 'production';
 
 // Database setup with lowdb
-const dbPath = process.env.DB_PATH || path.join(__dirname, 'db.json');
+const DEFAULT_DB_DIR = process.env.DB_DIR || path.join(__dirname, 'data');
+const DEFAULT_DB_FILE = process.env.DB_FILE || 'db.json';
+const dbPath = process.env.DB_PATH || path.join(DEFAULT_DB_DIR, DEFAULT_DB_FILE);
 const dbDir = path.dirname(dbPath);
 
 // Ensure the directory exists
@@ -49,6 +51,34 @@ const clients = new Map();
 const adminSessions = new Map(); // Track admin sessions
 const chatHistory = [];
 const connectionQuality = new Map();
+
+// Persist a chat message to LowDB for a given clientId
+async function persistChatMessage(clientId, message) {
+  try {
+    await db.read();
+    db.data = db.data && typeof db.data === 'object' ? db.data : {};
+    db.data.chats = db.data.chats || {};
+    if (!db.data.chats[clientId] || db.data.chats[clientId].deleted) {
+      db.data.chats[clientId] = {
+        clientInfo: db.data.chats[clientId]?.clientInfo || { name: 'Guest', email: '', ip: 'unknown', firstSeen: new Date().toISOString() },
+        messages: []
+      };
+    }
+    const exists = (db.data.chats[clientId].messages || []).some(m => m.id === message.id);
+    if (!exists) {
+      db.data.chats[clientId].messages.push({
+        id: message.id,
+        message: message.message,
+        timestamp: message.timestamp,
+        isAdmin: !!message.isAdmin,
+        type: message.type || 'chat'
+      });
+      await db.write();
+    }
+  } catch (e) {
+    console.error('Error persisting chat message:', e);
+  }
+}
 
 // Function to store offline messages
 function storeOfflineMessage(clientId, message) {
@@ -169,6 +199,8 @@ function sendToClient(clientId, messageText, sourceSessionId = null) {
         
         try {
             client.ws.send(JSON.stringify(adminMessage));
+            // Persist even when client is online to keep full history
+            persistChatMessage(clientId, adminMessage);
             return true;
         } catch (error) {
             console.error('Error sending message to client:', error);
@@ -250,7 +282,47 @@ wss.on('connection', async (ws, request) => {
     
     console.log('Client connected:', clientIp);
     
-    const clientId = 'client_' + Date.now() + Math.random().toString(36).substr(2, 9);
+    // Adopt stable clientId from query param if provided by client
+    let clientId;
+    let hadProvidedClientId = false;
+    try {
+        const urlObj = new URL(request.url, `http://${request.headers.host}`);
+        const providedClientId = urlObj.searchParams.get('clientId');
+        if (providedClientId && /^client_[a-zA-Z0-9_-]{5,}$/.test(providedClientId)) {
+            clientId = providedClientId;
+            hadProvidedClientId = true;
+        } else {
+            clientId = 'client_' + Date.now() + Math.random().toString(36).substr(2, 9);
+        }
+    } catch (_) {
+        clientId = 'client_' + Date.now() + Math.random().toString(36).substr(2, 9);
+    }
+
+    // Fallback mapping: if no clientId provided, try to reuse the latest chat for this IP
+    if (!hadProvidedClientId) {
+        try {
+            await db.read();
+            const chats = (db.data && db.data.chats) ? db.data.chats : {};
+            let bestId = null;
+            let bestTime = 0;
+            for (const [cid, chat] of Object.entries(chats)) {
+                if (!chat || chat.deleted) continue;
+                const ipMatch = chat.clientInfo && chat.clientInfo.ip === clientIp;
+                if (!ipMatch) continue;
+                const msgs = Array.isArray(chat.messages) ? chat.messages : [];
+                const lastTs = msgs.length ? new Date(msgs[msgs.length - 1].timestamp).getTime() : 0;
+                if (lastTs > bestTime && !clients.has(cid)) { // don't hijack an active session
+                    bestTime = lastTs;
+                    bestId = cid;
+                }
+            }
+            if (bestId) {
+                clientId = bestId;
+            }
+        } catch (e) {
+            console.error('Error attempting IP-based chat mapping:', e);
+        }
+    }
     
     const client = {
         ws,
@@ -281,6 +353,7 @@ wss.on('connection', async (ws, request) => {
     db.data = db.data && typeof db.data === 'object' ? db.data : {};
     db.data.chats = db.data.chats || {};
     db.data.offline_messages = db.data.offline_messages || {};
+    db.data.pending_client_messages = db.data.pending_client_messages || {};
     if (db.data.chats[clientId] && db.data.chats[clientId].deleted) {
         // Create a new chat session
         db.data.chats[clientId] = {
@@ -295,10 +368,12 @@ wss.on('connection', async (ws, request) => {
         };
         await db.write();
     }
+
+    // DEFERRED: Chat object creation is now deferred until the first message or identification to avoid creating empty chats for non-interactive visitors.
     
     // Load chat history if it exists
     if (db.data.chats[clientId] && !db.data.chats[clientId].deleted) {
-        const chatHistory = db.data.chats[clientId].messages;
+        const chatHistory = db.data.chats[clientId].messages || [];
         
         // Send history to client
         if (chatHistory.length > 0) {
@@ -320,19 +395,38 @@ wss.on('connection', async (ws, request) => {
             clientId: clientId
         }));
         
-        // Send recent chat history to the client
-        if (chatHistory.length > 0) {
-            const recentMessages = chatHistory.filter(msg => 
-                msg.clientId === clientId || msg.isAdmin
-            ).slice(-20);
-            
-            if (recentMessages.length > 0) {
-                ws.send(JSON.stringify({
-                    type: 'history',
-                    messages: recentMessages,
-                    clientId: clientId
-                }));
+        // Deliver any pending admin messages queued while client was offline
+        try {
+            await db.read();
+            db.data = db.data && typeof db.data === 'object' ? db.data : {};
+            db.data.pending_client_messages = db.data.pending_client_messages || {};
+            db.data.chats = db.data.chats || {};
+            if (!db.data.chats[clientId]) {
+                db.data.chats[clientId] = { clientInfo: { name: 'Guest', email: '', ip: clientIp, firstSeen: new Date().toISOString() }, messages: [] };
             }
+            const pending = db.data.pending_client_messages[clientId] || [];
+            if (pending.length > 0) {
+                for (const pm of pending) {
+                    // Send to client
+                    try { ws.send(JSON.stringify(pm)); } catch (e) { console.error('Error delivering pending message:', e); }
+                    // Append to persistent history now that it is delivered (avoid duplicates)
+                    const exists = (db.data.chats[clientId].messages || []).some(m => m.id === pm.id);
+                    if (!exists) {
+                        db.data.chats[clientId].messages.push({
+                            id: pm.id,
+                            message: pm.message,
+                            timestamp: pm.timestamp,
+                            isAdmin: true,
+                            type: 'chat'
+                        });
+                    }
+                }
+                // Clear queue
+                db.data.pending_client_messages[clientId] = [];
+                await db.write();
+            }
+        } catch (e) {
+            console.error('Error delivering pending client messages:', e);
         }
     } catch (error) {
         console.error('Error sending initial messages:', error);
@@ -410,6 +504,17 @@ wss.on('connection', async (ws, request) => {
                     await db.read();
                     db.data = db.data && typeof db.data === 'object' ? db.data : {};
                     db.data.chats = db.data.chats || {};
+                    if (db.data.chats[clientId] && db.data.chats[clientId].deleted) {
+                        db.data.chats[clientId] = {
+                            clientInfo: {
+                                name: client.name,
+                                email: client.email,
+                                ip: clientIp,
+                                firstSeen: new Date().toISOString()
+                            },
+                            messages: []
+                        };
+                    }
                     if (!db.data.chats[clientId]) {
                         db.data.chats[clientId] = {
                             clientInfo: {
@@ -547,6 +652,51 @@ wss.on('connection', async (ws, request) => {
                                 ip: clientIp
                             });
                             
+                            // Send all chat history to admin when they connect
+                            try {
+                                await db.read();
+                                db.data = db.data && typeof db.data === 'object' ? db.data : {};
+                                db.data.chats = db.data.chats || {};
+                                
+                                // Send history for all chats to admin (include empty chats)
+                                const allChats = {};
+                                Object.keys(db.data.chats).forEach(cId => {
+                                    const chat = db.data.chats[cId];
+                                    if (chat && !chat.deleted) {
+                                        allChats[cId] = {
+                                            clientInfo: chat.clientInfo,
+                                            messages: Array.isArray(chat.messages) ? chat.messages : []
+                                        };
+                                    }
+                                });
+                                
+                                try {
+                                    ws.send(JSON.stringify({
+                                        type: 'admin_history',
+                                        chats: allChats
+                                    }));
+                                } catch (_) {}
+
+                                // Also push current online clients list
+                                const clientList = Array.from(clients.values())
+                                    .filter(c => !c.isAdmin)
+                                    .map(c => ({
+                                        id: c.id,
+                                        name: c.name,
+                                        email: c.email,
+                                        isOnline: c.ws.readyState === WebSocket.OPEN,
+                                        lastActive: c.lastActive
+                                    }));
+                                try {
+                                    ws.send(JSON.stringify({
+                                        type: 'clients',
+                                        clients: clientList
+                                    }));
+                                } catch (_) {}
+                            } catch (e) {
+                                console.error('Error sending admin history:', e);
+                            }
+                            
                             // Deliver any offline messages when admin connects
                             deliverOfflineMessages();
                             
@@ -555,6 +705,35 @@ wss.on('connection', async (ws, request) => {
                         }
                     } else {
                         client.isAdmin = false;
+
+                        // Ensure a persistent chat session (ticket) exists for this client upon identification
+                        try {
+                            await db.read();
+                            db.data = db.data && typeof db.data === 'object' ? db.data : {};
+                            db.data.chats = db.data.chats || {};
+                            
+                            // If chat doesn't exist or was deleted, create a new one. Otherwise, update it.
+                            if (!db.data.chats[clientId] || db.data.chats[clientId].deleted) {
+                                db.data.chats[clientId] = {
+                                    clientInfo: {
+                                        name: client.name || 'Guest',
+                                        email: client.email || '',
+                                        ip: client.ip,
+                                        firstSeen: new Date().toISOString()
+                                    },
+                                    messages: []
+                                };
+                            } else {
+                                db.data.chats[clientId].clientInfo = db.data.chats[clientId].clientInfo || {};
+                                db.data.chats[clientId].clientInfo.name = client.name || db.data.chats[clientId].clientInfo.name || 'Guest';
+                                if (client.email) db.data.chats[clientId].clientInfo.email = client.email;
+                                db.data.chats[clientId].clientInfo.lastSeen = new Date().toISOString();
+                            }
+
+                            await db.write();
+                        } catch (e) {
+                            console.error('Error upserting chat on identify:', e);
+                        }
                     }
                     
                     console.log('Client identified:', client.name, client.email, client.isAdmin ? '(Admin)' : '', 'Session:', client.sessionId);
@@ -567,16 +746,22 @@ wss.on('connection', async (ws, request) => {
                 case 'get_history':
                     if (client.isAdmin && message.clientId) {
                         const targetClientId = message.clientId;
-                        const clientMessages = chatHistory.filter(msg => msg.clientId === targetClientId);
-                        
                         try {
+                            await db.read();
+                            db.data = db.data && typeof db.data === 'object' ? db.data : {};
+                            db.data.chats = db.data.chats || {};
+                            const clientChat = db.data.chats[targetClientId];
+                            const persistedMessages = (clientChat && !clientChat.deleted) ? (clientChat.messages || []) : [];
                             ws.send(JSON.stringify({
                                 type: 'history',
-                                messages: clientMessages,
+                                messages: persistedMessages,
                                 clientId: targetClientId
                             }));
                         } catch (error) {
-                            console.error('Error sending history:', error);
+                            console.error('Error sending history from DB:', error);
+                            try {
+                                ws.send(JSON.stringify({ type: 'history', messages: [], clientId: targetClientId }));
+                            } catch (_) {}
                         }
                     }
                     break;
@@ -607,30 +792,74 @@ wss.on('connection', async (ws, request) => {
                 case 'admin_message':
                     if (client.isAdmin && message.targetClientId && message.message) {
                         const targetClient = clients.get(message.targetClientId);
+                        const adminMessage = {
+                            id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+                            type: 'chat',
+                            message: message.message,
+                            name: 'Support',
+                            timestamp: new Date().toISOString(),
+                            isAdmin: true,
+                            clientId: message.targetClientId,
+                            sessionId: client.sessionId
+                        };
+
+                        // If client online, send immediately
                         if (targetClient && targetClient.ws.readyState === WebSocket.OPEN) {
-                            const adminMessage = {
-                                id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
-                                type: 'chat',
-                                message: message.message,
-                                name: 'Support',
-                                timestamp: new Date().toISOString(),
-                                isAdmin: true,
-                                clientId: message.targetClientId,
-                                sessionId: client.sessionId
-                            };
-                            
-                            // Check for duplicate before adding to history
                             const isDup = chatHistory.some(msg => 
                                 msg.clientId === adminMessage.clientId && 
                                 msg.message === adminMessage.message && 
                                 (Date.now() - new Date(msg.timestamp).getTime()) < 1000
                             );
-                            
                             if (!isDup) {
                                 chatHistory.push(adminMessage);
-                                
-                                // Use broadcastToAll to send to target client and all admins, excluding sender
                                 broadcastToAll(adminMessage, null, client.id);
+                                // Persist admin message even when client is online
+                                try { await persistChatMessage(adminMessage.clientId, adminMessage); } catch (e) {}
+                            }
+                        } else {
+                            // Client offline: persist and queue for delivery
+                            try {
+                                await db.read();
+                                db.data = db.data && typeof db.data === 'object' ? db.data : {};
+                                db.data.chats = db.data.chats || {};
+                                db.data.pending_client_messages = db.data.pending_client_messages || {};
+                                if (!db.data.chats[adminMessage.clientId]) {
+                                    db.data.chats[adminMessage.clientId] = {
+                                        clientInfo: { name: 'Guest', email: '', ip: 'unknown', firstSeen: new Date().toISOString() },
+                                        messages: []
+                                    };
+                                }
+                                // Queue for next delivery (do not add to history yet to avoid duplicates)
+                                if (!db.data.pending_client_messages[adminMessage.clientId]) {
+                                    db.data.pending_client_messages[adminMessage.clientId] = [];
+                                }
+                                // Mark as queued for admin UI context
+                                adminMessage.queued = true;
+                                db.data.pending_client_messages[adminMessage.clientId].push(adminMessage);
+                                await db.write();
+                                // Also persist in chat history immediately (avoid duplicates on delivery)
+                                const chatObj = db.data.chats[adminMessage.clientId];
+                                if (chatObj) {
+                                    const exists = (chatObj.messages || []).some(m => m.id === adminMessage.id);
+                                    if (!exists) {
+                                        chatObj.messages.push({
+                                            id: adminMessage.id,
+                                            message: adminMessage.message,
+                                            timestamp: adminMessage.timestamp,
+                                            isAdmin: true,
+                                            type: 'chat'
+                                        });
+                                        await db.write();
+                                    }
+                                }
+                                // Echo to all admins so message appears in live chat UI
+                                try { broadcastToAll(adminMessage); } catch (_) {}
+                                // Acknowledge to sender
+                                try {
+                                    client.ws.send(JSON.stringify({ type: 'system', message: 'Client is offline. Message queued.' }));
+                                } catch (_) {}
+                            } catch (e) {
+                                console.error('Error queuing admin offline message:', e);
                             }
                         }
                     }
@@ -865,8 +1094,10 @@ app.use(session({
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    store: new MemoryStore({
-        checkPeriod: 86400000
+    store: new FileStore({
+        path: path.join(__dirname, 'sessions'),
+        ttl: 86400, // 1 day in seconds
+        logFn: function () {} // Disable logging
     }),
     cookie: { 
         secure: isProduction,
@@ -928,6 +1159,7 @@ async function initializeDB() {
         db.data.admin_users = db.data.admin_users || [];
         db.data.offline_messages = db.data.offline_messages || {};
         db.data.chats = db.data.chats || {};
+        db.data.pending_client_messages = db.data.pending_client_messages || {};
         
         // Create admin user if it doesn't exist
         const adminUser = db.data.admin_users.find(user => user.username === 'Sanud119@gmail.com');
@@ -944,6 +1176,9 @@ async function initializeDB() {
             console.log('Admin user created successfully');
         }
         
+        // Persist ensured structure (safe no-op if unchanged)
+        try { await db.write(); } catch (_) {}
+
         console.log('Database ready at:', dbPath);
         
     } catch (error) {
@@ -1020,7 +1255,7 @@ app.post('/api/form/submit', validateFormSubmission, async (req, res) => {
 app.get('/api/submissions', requireAuth, async (req, res) => {
     try {
         await db.read();
-        res.json(db.data.submissions.reverse());
+        res.json([...db.data.submissions].reverse());
     } catch (err) {
         console.error('Database error:', err);
         res.status(500).json({ error: 'Database error' });
@@ -1126,17 +1361,67 @@ app.get('/api/chat/stats', requireAuth, (req, res) => {
     });
 });
 
-app.post('/api/chat/send', requireAuth, (req, res) => {
+app.post('/api/chat/send', requireAuth, async (req, res) => {
     const { clientId, message } = req.body;
     
     if (!clientId || !message) {
         return res.status(400).json({ success: false, error: 'Client ID and message are required' });
     }
-    
-    if (sendToClient(clientId, message)) {
-        res.json({ success: true, message: 'Message sent successfully' });
-    } else {
-        res.status(404).json({ success: false, error: 'Client not found or not connected' });
+
+    // Try to send immediately if client is online
+    const sent = sendToClient(clientId, message);
+    if (sent) {
+        return res.json({ success: true, message: 'Message sent successfully' });
+    }
+
+    // Client is offline: queue for delivery and echo to admins
+    try {
+        await db.read();
+        db.data = db.data && typeof db.data === 'object' ? db.data : {};
+        db.data.chats = db.data.chats || {};
+        db.data.pending_client_messages = db.data.pending_client_messages || {};
+        if (!db.data.chats[clientId]) {
+            db.data.chats[clientId] = {
+                clientInfo: { name: 'Guest', email: '', ip: 'unknown', firstSeen: new Date().toISOString() },
+                messages: []
+            };
+        }
+        if (!db.data.pending_client_messages[clientId]) {
+            db.data.pending_client_messages[clientId] = [];
+        }
+        const adminMessage = {
+            id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+            type: 'chat',
+            message: message,
+            name: 'Support',
+            timestamp: new Date().toISOString(),
+            isAdmin: true,
+            clientId: clientId,
+            queued: true
+        };
+        db.data.pending_client_messages[clientId].push(adminMessage);
+        await db.write();
+        // Also persist in chat history immediately (avoid duplicates on delivery)
+        const chatObj = db.data.chats[clientId];
+        if (chatObj) {
+            const exists = (chatObj.messages || []).some(m => m.id === adminMessage.id);
+            if (!exists) {
+                chatObj.messages.push({
+                    id: adminMessage.id,
+                    message: adminMessage.message,
+                    timestamp: adminMessage.timestamp,
+                    isAdmin: true,
+                    type: 'chat'
+                });
+                await db.write();
+            }
+        }
+        // Echo to all admins so it appears in live chat UI
+        try { broadcastToAll(adminMessage); } catch (_) {}
+        return res.json({ success: true, message: 'Client offline. Message queued.' });
+    } catch (e) {
+        console.error('Error queuing message via REST:', e);
+        return res.status(500).json({ success: false, error: 'Failed to queue message' });
     }
 });
 
@@ -1151,15 +1436,21 @@ app.post('/api/chat/broadcast', requireAuth, (req, res) => {
     res.json({ success: true, message: `Message broadcast to ${count} clients` });
 });
 
-app.get('/api/chat/history/:clientId', requireAuth, (req, res) => {
+app.get('/api/chat/history/:clientId', requireAuth, async (req, res) => {
     const { clientId } = req.params;
     const limit = parseInt(req.query.limit) || 100;
-    
-    const clientMessages = chatHistory
-        .filter(msg => msg.clientId === clientId)
-        .slice(-limit);
-    
-    res.json(clientMessages);
+    try {
+        await db.read();
+        const chats = (db.data && db.data.chats) ? db.data.chats : {};
+        const chat = chats[clientId];
+        const messages = (chat && !chat.deleted && Array.isArray(chat.messages)) ? chat.messages : [];
+        // Return the last N messages (persisted order is chronological append)
+        const start = Math.max(0, messages.length - limit);
+        return res.json(messages.slice(start));
+    } catch (e) {
+        console.error('Error reading chat history from DB:', e);
+        return res.status(500).json({ error: 'Database error' });
+    }
 });
 
 app.get('/api/chat/history', requireAuth, (req, res) => {
@@ -1188,10 +1479,32 @@ app.delete('/api/chats/:clientId', requireAuth, async (req, res) => {
     db.data = db.data && typeof db.data === 'object' ? db.data : {};
     db.data.chats = db.data.chats || {};
     if (db.data.chats[clientId]) {
-      // Mark as deleted rather than removing, so we know to start fresh
+      // Mark as deleted and cleanup related state
       db.data.chats[clientId].deleted = true;
       db.data.chats[clientId].deletedAt = new Date().toISOString();
+      db.data.pending_client_messages = db.data.pending_client_messages || {};
+      db.data.offline_messages = db.data.offline_messages || {};
+      db.data.pending_client_messages[clientId] = [];
+      db.data.offline_messages[clientId] = [];
       await db.write();
+
+      // Purge in-memory history for this client
+      for (let i = chatHistory.length - 1; i >= 0; i--) {
+          if (chatHistory[i].clientId === clientId) {
+              chatHistory.splice(i, 1);
+          }
+      }
+
+      // Notify live client to reset chat UI
+      const liveClient = clients.get(clientId);
+      if (liveClient && liveClient.ws && liveClient.ws.readyState === WebSocket.OPEN) {
+          try {
+              liveClient.ws.send(JSON.stringify({ type: 'chat_reset' }));
+          } catch (e) {
+              console.error('Error notifying client of chat reset:', e);
+          }
+      }
+
       res.json({ success: true, message: 'Chat deleted successfully' });
     } else {
       res.status(404).json({ error: 'Chat not found' });
@@ -1199,6 +1512,27 @@ app.delete('/api/chats/:clientId', requireAuth, async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: 'Database error' });
   }
+});
+
+// Route to resolve a chat
+app.post('/api/chats/resolve/:clientId', requireAuth, async (req, res) => {
+    const clientId = req.params.clientId;
+
+    try {
+        await db.read();
+        db.data = db.data && typeof db.data === 'object' ? db.data : {};
+        db.data.chats = db.data.chats || {};
+        if (db.data.chats[clientId]) {
+            db.data.chats[clientId].status = 'resolved';
+            await db.write();
+            res.json({ success: true, message: 'Chat resolved successfully' });
+        } else {
+            res.status(404).json({ error: 'Chat not found' });
+        }
+    } catch (err) {
+        console.error('Database error:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
 });
 
 // Get a specific chat

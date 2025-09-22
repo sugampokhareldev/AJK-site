@@ -8,7 +8,9 @@
       "created_at": "2025-09-12T18:22:47.708Z"
     }
   ],
-  "offline_messages": {},
+  "offline_messages": {
+    "client_1758475759027sk1yx7lmj": []
+  },
   "chats": {
     "client_1758474526544a3y1sp5s8": {
       "clientInfo": {
@@ -28,6 +30,289 @@
       ],
       "deleted": true,
       "deletedAt": "2025-09-21T17:09:37.175Z"
+    },
+    "client_1758475683388rmgrt9fsq": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-21T17:28:10.435Z"
+      },
+      "messages": [
+        {
+          "id": "1758475690434-aeul4omh1",
+          "message": "hello",
+          "timestamp": "2025-09-21T17:28:10.435Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758475690447-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-21T17:28:10.447Z",
+          "isAdmin": false,
+          "type": "system"
+        }
+      ],
+      "offlineAutoMessageSent": true,
+      "deleted": true,
+      "deletedAt": "2025-09-21T17:29:14.968Z"
+    },
+    "client_1758476321970ud4fuxlzf": {
+      "clientInfo": {
+        "name": "Sugam-Test",
+        "email": "",
+        "ip": "103.166.101.183",
+        "firstSeen": "2025-09-21T17:38:52.229Z"
+      },
+      "messages": [
+        {
+          "id": "1758476332227-pryznydai",
+          "message": "Hello",
+          "timestamp": "2025-09-21T17:38:52.229Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758476332243-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-21T17:38:52.243Z",
+          "isAdmin": false,
+          "type": "system"
+        }
+      ],
+      "offlineAutoMessageSent": true,
+      "deleted": true,
+      "deletedAt": "2025-09-21T17:46:19.575Z"
+    },
+    "client_1758476776094raj23jh4e": {
+      "clientInfo": {
+        "name": "Guest",
+        "email": "",
+        "ip": "103.166.101.183",
+        "firstSeen": "2025-09-21T17:46:16.150Z"
+      },
+      "messages": [],
+      "deleted": true,
+      "deletedAt": "2025-09-21T17:46:25.167Z"
+    },
+    "client_1758476795805j9wr375xg": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "",
+        "ip": "103.166.101.183",
+        "firstSeen": "2025-09-21T17:46:38.969Z"
+      },
+      "messages": [
+        {
+          "id": "1758476798966-kf8w3o2mv",
+          "message": "hi",
+          "timestamp": "2025-09-21T17:46:38.969Z",
+          "isAdmin": false,
+          "type": "chat"
+        }
+      ],
+      "deleted": true,
+      "deletedAt": "2025-09-21T17:47:23.094Z"
+    },
+    "client_1758476824292he40n0c2v": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "",
+        "ip": "103.166.101.183",
+        "firstSeen": "2025-09-21T17:47:15.371Z"
+      },
+      "messages": [
+        {
+          "id": "1758476835370-p36pdmldz",
+          "message": "good",
+          "timestamp": "2025-09-21T17:47:15.371Z",
+          "isAdmin": false,
+          "type": "chat"
+        }
+      ],
+      "deleted": true,
+      "deletedAt": "2025-09-21T17:47:20.955Z"
+    },
+    "client_1758481495482osf5rqz41": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "",
+        "ip": "103.166.101.183",
+        "firstSeen": "2025-09-21T19:05:10.027Z"
+      },
+      "messages": [
+        {
+          "id": "1758481510025-1al0fhhe6",
+          "message": "hello",
+          "timestamp": "2025-09-21T19:05:10.027Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758481510036-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-21T19:05:10.036Z",
+          "isAdmin": false,
+          "type": "system"
+        }
+      ],
+      "offlineAutoMessageSent": true,
+      "deleted": true,
+      "deletedAt": "2025-09-21T19:06:32.933Z"
+    },
+    "client_17584815274078vi4xkwcq": {
+      "clientInfo": {
+        "name": "Guest",
+        "email": "",
+        "ip": "103.166.101.183",
+        "firstSeen": "2025-09-21T19:05:27.410Z"
+      },
+      "messages": [],
+      "deleted": true,
+      "deletedAt": "2025-09-21T19:05:35.462Z"
+    },
+    "client_1758481560358csbln72wt": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "",
+        "ip": "103.166.101.183",
+        "firstSeen": "2025-09-21T19:07:22.122Z"
+      },
+      "messages": [
+        {
+          "id": "1758481642120-zql0aj9kk",
+          "message": "Ahh yes i need help",
+          "timestamp": "2025-09-21T19:07:22.122Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758481642129-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-21T19:07:22.129Z",
+          "isAdmin": false,
+          "type": "system"
+        }
+      ],
+      "offlineAutoMessageSent": true,
+      "deleted": true,
+      "deletedAt": "2025-09-21T19:07:49.715Z"
+    },
+    "client_1758481702375qzp7xf6ou": {
+      "clientInfo": {
+        "name": "Sugam-Test",
+        "email": "",
+        "ip": "103.166.101.183",
+        "firstSeen": "2025-09-21T19:08:28.611Z"
+      },
+      "messages": [
+        {
+          "id": "1758481708609-y8nomfcw9",
+          "message": ".",
+          "timestamp": "2025-09-21T19:08:28.611Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758481708616-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-21T19:08:28.616Z",
+          "isAdmin": false,
+          "type": "system"
+        }
+      ],
+      "offlineAutoMessageSent": true,
+      "deleted": true,
+      "deletedAt": "2025-09-21T19:08:38.653Z"
+    },
+    "client_1758481721947rm73wv7ud": {
+      "clientInfo": {
+        "name": "Guest",
+        "email": "",
+        "ip": "103.166.101.183",
+        "firstSeen": "2025-09-21T19:15:42.481Z"
+      },
+      "messages": [],
+      "deleted": true,
+      "deletedAt": "2025-09-21T19:24:19.298Z"
+    },
+    "client_1758482064371bnes5935x": {
+      "clientInfo": {
+        "name": "Guest",
+        "email": "",
+        "ip": "103.166.101.183",
+        "firstSeen": "2025-09-21T19:14:24.374Z"
+      },
+      "messages": [],
+      "deleted": true,
+      "deletedAt": "2025-09-21T19:15:40.275Z"
+    },
+    "client_1758482654641wcp128br6": {
+      "clientInfo": {
+        "name": "Guest",
+        "email": "",
+        "ip": "103.166.101.183",
+        "firstSeen": "2025-09-21T19:24:14.645Z"
+      },
+      "messages": [],
+      "deleted": true,
+      "deletedAt": "2025-09-21T19:24:21.281Z"
+    },
+    "client_1758482087938bgh0va1fs": {
+      "clientInfo": {
+        "name": "Guest",
+        "email": "",
+        "ip": "103.166.101.183",
+        "firstSeen": "2025-09-21T19:25:34.581Z"
+      },
+      "messages": [],
+      "deleted": true,
+      "deletedAt": "2025-09-21T19:47:58.024Z"
+    },
+    "client_1758482690355h9x6hqewv": {
+      "clientInfo": {
+        "name": "Guest",
+        "email": "",
+        "ip": "103.166.101.183",
+        "firstSeen": "2025-09-21T19:24:50.359Z"
+      },
+      "messages": [],
+      "deleted": true,
+      "deletedAt": "2025-09-21T19:25:32.496Z"
+    },
+    "client_1758475759027sk1yx7lmj": {
+      "clientInfo": {
+        "name": "Guest",
+        "email": "",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-22T04:11:20.598Z"
+      },
+      "messages": []
     }
+  },
+  "pending_client_messages": {
+    "client_1758476795805j9wr375xg": [
+      {
+        "id": "1758476818952-3okba5zol",
+        "type": "chat",
+        "message": "yo wasp",
+        "name": "Support",
+        "timestamp": "2025-09-21T17:46:58.952Z",
+        "isAdmin": true,
+        "clientId": "client_1758476795805j9wr375xg",
+        "sessionId": "admin_1758476765161_lmplfs5ia_Mozilla50Windows"
+      }
+    ],
+    "client_17584815274078vi4xkwcq": [],
+    "client_1758481495482osf5rqz41": [],
+    "client_1758481560358csbln72wt": [],
+    "client_1758481702375qzp7xf6ou": [],
+    "client_1758481721947rm73wv7ud": [],
+    "client_1758482064371bnes5935x": [],
+    "client_1758482654641wcp128br6": [],
+    "client_1758482087938bgh0va1fs": [],
+    "client_1758482690355h9x6hqewv": [],
+    "client_1758475759027sk1yx7lmj": []
   }
 }

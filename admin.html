@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="">
     <title>AJK Cleaning - Admin Panel</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <style>
         /* All CSS styles remain the same as in the previous implementation */
         * {
@@ -913,7 +914,6 @@
             right: 0;
             bottom: 0;
             background: rgba(255, 255, 255, 0.8);
-            display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -1049,6 +1049,145 @@
             cursor: not-allowed;
         }
 
+        /* Override generic message styles for the ticket modal */
+        .chat-ticket-messages .message {
+            max-width: 100%; /* Reset max-width from general styles */
+        }
+        /* Chat Ticket Modal Styles */
+        .chat-ticket-modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(45, 55, 72, 0.75);
+            animation: fadeIn 0.3s;
+        }
+        .chat-ticket-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+        }
+        .chat-ticket-header {
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            position: relative;
+        }
+        .chat-ticket-header h3 {
+            margin: 0;
+            color: #2d3748;
+        }
+        .chat-ticket-header p {
+            margin: 0;
+            color: #718096;
+        }
+        .close-ticket-modal {
+            position: absolute;
+            top: -10px;
+            right: 0;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .chat-ticket-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 5px;
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .chat-ticket-messages .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            max-width: 85%;
+        }
+        .chat-ticket-messages .message.client {
+            align-self: flex-start;
+        }
+        .chat-ticket-messages .message.admin {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: white;
+        }
+        .message.client .message-avatar {
+            background-color: #4a5568;
+        }
+        .message.admin .message-avatar {
+            background-color: #4299e1;
+        }
+        .message-bubble {
+            padding: 10px 15px;
+            border-radius: 15px;
+        }
+        .message.client .message-bubble {
+            background-color: #e2e8f0;
+            border-top-left-radius: 0;
+            color: #2d3748;
+        }
+        .message.admin .message-bubble {
+            background-color: #4299e1;
+            border-top-right-radius: 0;
+            color: white;
+        }
+        .message-text {
+            word-break: break-word;
+        }
+        .message-info {
+            font-size: 11px;
+            margin-top: 5px;
+            text-align: right;
+            opacity: 0.8;
+        }
+        .chat-ticket-reply {
+            display: flex;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        #ticket-reply-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            resize: none;
+            font-size: 14px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        #ticket-reply-input:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.5);
+        }
+        .chat-ticket-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
         /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -1154,7 +1293,7 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
             </div>
-            <button id="login-btn" class="login-btn">Login</button>
+            <button type="button" id="login-btn" class="login-btn">Login</button>
             <div id="loading" class="loading">
                 <i class="fas fa-spinner fa-spin"></i> Logging in...
             </div>
@@ -1166,19 +1305,19 @@
         <header>
             <h1><i class="fas fa-tachometer-alt"></i> AJK Cleaning Admin Panel</h1>
             <div class="controls">
-                <button id="refresh-btn" class="refresh-btn">
+                <button type="button" id="refresh-btn" class="refresh-btn">
                     <i class="fas fa-sync-alt"></i> Refresh
                 </button>
-                <button id="autoRefreshBtn" class="auto-refresh-btn">
+                <button type="button" id="autoRefreshBtn" class="auto-refresh-btn">
                     <i class="fas fa-clock"></i> Auto-Refresh: OFF
                 </button>
-                <button id="export-btn" class="export-btn">
+                <button type="button" id="export-btn" class="export-btn">
                     <i class="fas fa-download"></i> Export CSV
                 </button>
-                <button id="reconnect-chat" class="refresh-btn">
+                <button type="button" id="reconnect-chat" class="refresh-btn">
                     <i class="fas fa-plug"></i> Reconnect
                 </button>
-                <button id="logout-btn" class="delete-btn">
+                <button type="button" id="logout-btn" class="delete-btn">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
             </div>
@@ -1273,9 +1412,9 @@
         
         <!-- Pagination -->
         <div class="pagination" id="pagination-controls">
-            <button id="prev-page" disabled>Previous</button>
+            <button type="button" id="prev-page" disabled>Previous</button>
             <span id="page-info">Page 1 of 1</span>
-            <button id="next-page" disabled>Next</button>
+            <button type="button" id="next-page" disabled>Next</button>
             <select id="page-size">
                 <option value="10">10 per page</option>
                 <option value="25">25 per page</option>
@@ -1284,73 +1423,6 @@
             </select>
         </div>
         
-        <!-- Chat Section - Always Visible -->
-        <div class="chat-section" id="chat-section">
-            <div class="chat-header">
-                <h2><i class="fas fa-comments"></i> Live Client Chat</h2>
-                <div class="chat-controls">
-                    <button id="refresh-chats" class="refresh-btn">
-                        <i class="fas fa-sync-alt"></i> Refresh Chats
-                    </button>
-                </div>
-            </div>
-            
-            <div class="chat-layout">
-                <div class="clients-panel">
-                    <div class="clients-header">
-                        <span>Active Clients</span>
-                        <span id="clients-count">0</span>
-                    </div>
-                    <div class="chat-search">
-                        <input type="text" id="chat-search" placeholder="Search clients...">
-                    </div>
-                    <div class="clients-list" id="clients-list">
-                        <div class="empty-chat-list">
-                            <i class="fas fa-comments"></i>
-                            <p>No active chats</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="chat-panel">
-                    <div class="chat-current-client">
-                        <div class="client-details">
-                            <div class="client-main-info">
-                                <div class="client-name-large" id="current-client-name">Select a client to chat</div>
-                                <div class="client-status" id="current-client-status">
-                                    <span class="status-indicator status-offline"></span>
-                                    <span>Offline</span>
-                                </div>
-                            </div>
-                            <div class="client-contact" id="current-client-contact"></div>
-                        </div>
-                        <div class="chat-actions">
-                            <button id="export-chat" class="export-chat-btn action-btn" disabled>
-                                <i class="fas fa-download"></i> Save
-                            </button>
-                            <button id="delete-chat" class="delete-chat-btn action-btn" disabled>
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="chat-messages-container" id="chat-messages">
-                        <div class="no-chat-selected">
-                            <div>
-                                <i class="fas fa-comments fa-2x"></i>
-                                <p>Select a client to view messages</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="chat-input-container">
-                        <input type="text" id="message-input" placeholder="Type a message..." disabled>
-                        <button id="send-message" disabled>Send</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Chat Management Section -->
         <div class="chat-management" id="chat-management">
             <h2><i class="fas fa-comments"></i> Chat Management</h2>
@@ -1360,6 +1432,8 @@
                 <select id="chat-filter">
                     <option value="all">All Chats</option>
                     <option value="active">Active Only</option>
+                    <option value="pending">Pending</option>
+                    <option value="resolved">Resolved</option>
                     <option value="deleted">Deleted</option>
                 </select>
             </div>
@@ -1372,9 +1446,25 @@
             </div>
         </div>
         
+        <!-- Chat Ticket Modal -->
+        <div id="chat-ticket-modal" class="chat-ticket-modal">
+            <div class="chat-ticket-content">
+                <div class="chat-ticket-header">
+                    <span id="close-ticket-modal" class="close-ticket-modal">&times;</span>
+                    <h3 id="ticket-client-name">Client Name</h3>
+                    <p id="ticket-client-email">client@email.com</p>
+                </div>
+                <div class="chat-ticket-messages" id="ticket-messages"></div>
+                <div class="chat-ticket-reply">
+                    <textarea id="ticket-reply-input" placeholder="Type your reply..."></textarea>
+                    <button type="button" id="ticket-send-reply" class="btn-view">Send</button>
+                </div>
+            </div>
+        </div>
+
         <div id="detailView" class="submission-details">
             <h3>Submission Details</h3>
-            <button id="close-details" class="close-details">×</button>
+            <button type="button" id="close-details" class="close-details">×</button>
             
             <div class="detail-row">
                 <div class="detail-label">ID:</div>
@@ -1449,7 +1539,9 @@
             
             // Escape HTML to prevent XSS
             escapeHtml(unsafe) {
-                return unsafe
+                if (unsafe === null || unsafe === undefined) return '';
+                const s = String(unsafe);
+                return s
                     .replace(/&/g, "&amp;")
                     .replace(/</g, "&lt;")
                     .replace(/>/g, "&gt;")
@@ -1475,7 +1567,13 @@
             },
             
             generateSessionId() {
-                // Generate a unique session ID each time the page loads
+                // Reuse existing sessionId if available to keep WebSocket identify valid across reloads
+                const existing = sessionStorage.getItem('adminSessionId');
+                if (existing) {
+                    this.sessionId = existing;
+                    return this.sessionId;
+                }
+                // Otherwise generate a new one
                 const timestamp = Date.now();
                 const random = Math.random().toString(36).substr(2, 9);
                 const userAgent = navigator.userAgent.substr(0, 20).replace(/[^a-zA-Z0-9]/g, '');
@@ -1505,7 +1603,9 @@
                 const deviceTypeElement = document.getElementById('device-type');
                 
                 if (sessionIdElement) {
-                    sessionIdElement.textContent = this.sessionId;
+                    const sid = this.sessionId || '';
+                    const masked = sid.length > 8 ? sid.slice(-8) : sid;
+                    sessionIdElement.textContent = `••••••${masked}`;
                 }
                 
                 if (deviceTypeElement) {
@@ -1532,7 +1632,7 @@
                 this.autoRefreshInterval = null;
                 this.autoRefreshEnabled = false;
                 this.isRefreshing = false;
-                this.chat = null;
+                this.chatSocket = null;
                 this.sessionId = DeviceManager.getSessionId();
                 this.submissions = [];
                 this.filteredSubmissions = [];
@@ -1545,6 +1645,7 @@
                 this.serviceFilter = '';
                 this.dateFilter = '';
                 this.chats = [];
+                this.selectedChatId = null;
                 this.filteredChats = [];
                 
                 this.initializeElements();
@@ -1564,12 +1665,14 @@
                     'activeChats', 'submissionsTable', 'detailView', 'close-details', 
                     'lastRefreshed', 'connectionStatus', 'loading', 'chat-section',
                     'clients-list', 'chat-messages', 'message-input', 'send-message',
-                    'current-client-name', 'current-client-status', 'current-client-contact',
+                   'current-client-name', 'current-client-status', 'current-client-contact',
                     'export-chat', 'delete-chat', 'refresh-chats', 'chat-search',
                     'clients-count', 'search-input', 'service-filter', 'date-filter',
                     'prev-page', 'next-page', 'page-info', 'page-size', 'table-loading',
-                    'reconnect-chat', 'chat-management', 'chat-search-management', 'chats-list'
+                    'reconnect-chat', 'chat-management', 'chat-search-management', 'chat-filter', 'chats-list'
                 ];
+
+                elementIds.push('chat-ticket-modal', 'close-ticket-modal', 'ticket-client-name', 'ticket-client-email', 'ticket-messages', 'ticket-reply-input', 'ticket-send-reply');
 
                 elementIds.forEach(id => {
                     this.elements[id] = document.getElementById(id);
@@ -1615,8 +1718,10 @@
                 // Reconnect chat button
                 if (this.elements['reconnect-chat']) {
                     this.elements['reconnect-chat'].addEventListener('click', () => {
-                        if (this.chat) {
-                            this.chat.manualReconnect();
+                        if (this.chatSocket) {
+                            this.chatSocket.reconnect();
+                        } else {
+                            this.initializeChatSocket();
                         }
                     });
                 }
@@ -1634,22 +1739,6 @@
                         if (this.autoRefreshEnabled) {
                             this.startAutoRefresh();
                         }
-                    });
-                }
-
-                // Chat refresh button
-                if (this.elements['refresh-chats']) {
-                    this.elements['refresh-chats'].addEventListener('click', () => {
-                        if (this.chat) {
-                            this.chat.requestClientList();
-                        }
-                    });
-                }
-
-                // Chat search
-                if (this.elements['chat-search']) {
-                    this.elements['chat-search'].addEventListener('input', (e) => {
-                        this.filterClients(e.target.value);
                     });
                 }
                 
@@ -1752,25 +1841,26 @@
                         this.filterChats();
                     });
                 }
-            }
 
-            // Filter clients based on search input
-            filterClients(searchTerm) {
-                if (!this.chat) return;
-                
-                const clients = this.elements['clients-list'].querySelectorAll('.client-item');
-                const searchLower = searchTerm.toLowerCase();
-                
-                clients.forEach(client => {
-                    const clientName = client.querySelector('.client-name').textContent.toLowerCase();
-                    const clientPreview = client.querySelector('.client-preview').textContent.toLowerCase();
-                    
-                    if (clientName.includes(searchLower) || clientPreview.includes(searchLower)) {
-                        client.style.display = 'flex';
-                    } else {
-                        client.style.display = 'none';
-                    }
-                });
+                // Ticket Modal Listeners
+                if (this.elements['close-ticket-modal']) {
+                    this.elements['close-ticket-modal'].addEventListener('click', () => {
+                        this.elements['chat-ticket-modal'].style.display = 'none';
+                        this.selectedChatId = null;
+                    });
+                }
+
+                if (this.elements['ticket-send-reply']) {
+                    this.elements['ticket-send-reply'].addEventListener('click', () => this.sendTicketReply());
+                }
+                if (this.elements['ticket-reply-input']) {
+                    this.elements['ticket-reply-input'].addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            this.sendTicketReply();
+                        }
+                    });
+                }
             }
 
             // Check authentication status
@@ -1790,6 +1880,7 @@
                         this.loadStats();
                         this.loadSubmissions();
                         this.loadChats();
+                        this.initializeChatSocket();
                         this.startAutoRefresh();
                     } else {
                         this.showLoginForm();
@@ -1798,6 +1889,19 @@
                     console.error('Auth check error:', error);
                     this.showLoginForm();
                 }
+            }
+
+            // Initialize chat WebSocket
+            initializeChatSocket() {
+                if (this.chatSocket) {
+                    try {
+                        this.chatSocket.disconnect();
+                    } catch (e) {
+                        console.error('Error disconnecting existing socket:', e);
+                    }
+                }
+                
+                this.chatSocket = new AdminSocket(this);
             }
 
             // Handle login
@@ -1823,6 +1927,7 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'CSRF-Token': (document.querySelector('meta[name="csrf-token"]')?.content || '')
                         },
                         body: JSON.stringify({ 
                             username, 
@@ -1846,6 +1951,7 @@
                             this.loadStats();
                             this.loadSubmissions();
                             this.loadChats();
+                            this.initializeChatSocket();
                             this.startAutoRefresh();
                         }, 1000);
                     } else {
@@ -1865,9 +1971,10 @@
             // Load statistics
             async loadStats() {
                 try {
-                    const response = await fetch('/api/statistics', {
-                        credentials: 'include'
-                    });
+                    const response = await fetch('/api/statistics', { credentials: 'include' });
+                    if (!response.ok) {
+                        throw new Error('Failed to load statistics');
+                    }
                     const data = await response.json();
                     this.updateStatsDisplay(data);
                 } catch (error) {
@@ -1879,9 +1986,10 @@
             async loadSubmissions() {
                 try {
                     this.showTableLoading(true);
-                    const response = await fetch('/api/submissions', {
-                        credentials: 'include'
-                    });
+                    const response = await fetch('/api/submissions', { credentials: 'include' });
+                    if (!response.ok) {
+                        throw new Error('Failed to load submissions');
+                    }
                     this.submissions = await response.json();
                     this.filterAndSortSubmissions();
                     this.renderSubmissions();
@@ -1911,6 +2019,14 @@
                     const data = await response.json();
                     this.chats = data && typeof data === 'object' ? data : {};
                     this.filterChats();
+
+                    // Auto-restore the last selected chat on refresh/login
+                    try {
+                        const savedId = sessionStorage.getItem('adminSelectedClientId');
+                        if (savedId && this.chats && this.chats[savedId] && !this.chats[savedId].deleted) {
+                            this.viewChat(savedId);
+                        }
+                    } catch (e) {}
                 } catch (error) {
                     console.error('Error loading chats:', error);
                     this.chats = {};
@@ -1954,6 +2070,7 @@
             renderChats() {
                 if (!this.elements['chats-list']) return;
                 
+                
                 if (this.filteredChats.length === 0) {
                     this.elements['chats-list'].innerHTML = `
                         <div class="empty-state">
@@ -1968,9 +2085,11 @@
                 
                 this.filteredChats.forEach(([clientId, chat]) => {
                     const clientInfo = chat.clientInfo || {};
+                    const status = chat.status || 'pending';
                     html += `
                         <div class="chat-item">
                             <div class="chat-info">
+                                 <span style="font-size: 11px; display: block; margin-bottom: 5px; color: ${status === 'resolved' ? '#48bb78' : '#d69e2e'};">${status === 'resolved' ? 'Resolved' : 'Pending'}</span>
                                 <h4>${Utils.escapeHtml(clientInfo.name || 'Anonymous')}</h4>
                                 <p>${Utils.escapeHtml(clientInfo.email || 'No email')}</p>
                                 <small>First seen: ${clientInfo.firstSeen ? Utils.formatDate(clientInfo.firstSeen) : 'Unknown'}</small>
@@ -1978,8 +2097,8 @@
                                 ${chat.deleted ? '<small style="color: #e53e3e;">Deleted</small>' : ''}
                             </div>
                             <div class="chat-actions">
-                                <button class="btn-view" data-client-id="${clientId}">View</button>
-                                <button class="btn-delete" data-client-id="${clientId}" ${chat.deleted ? 'disabled' : ''}>
+                                <button type="button" class="btn-view" data-client-id="${clientId}">View</button>
+                                 <button type="button" class="btn-delete" data-client-id="${clientId}" ${chat.deleted ? 'disabled' : ''}>
                                     ${chat.deleted ? 'Deleted' : 'Delete'}
                                 </button>
                             </div>
@@ -2007,24 +2126,90 @@
 
             // View chat details
             async viewChat(clientId) {
+                this.selectedChatId = clientId;
+                const modal = this.elements['chat-ticket-modal'];
+                if (!modal) return;
+
                 try {
                     const response = await fetch(`/api/chats/${clientId}`, {
                         credentials: 'include'
                     });
+                    if (!response.ok) throw new Error('Chat not found');
                     const chat = await response.json();
-                    this.showChatDetails(chat);
+                    
+                    // Populate modal header
+                    const name = chat.clientInfo?.name || 'Anonymous';
+                    const email = chat.clientInfo?.email || '';
+                    this.elements['ticket-client-name'].textContent = name;
+                    this.elements['ticket-client-email'].textContent = email;
+
+                    // Render messages
+                    const container = this.elements['ticket-messages'];
+                    if (container) {
+                        container.innerHTML = '';
+                        (chat.messages || []).forEach(m => {
+                            const wrap = document.createElement('div');
+                            wrap.className = `message ${m.isAdmin ? 'admin' : 'client'}`; // This class is now used for alignment
+                            wrap.innerHTML = `
+                                <div class="message-avatar">
+                                    <i class="fas ${m.isAdmin ? 'fa-user-shield' : 'fa-user'}"></i>
+                                </div>
+                                <div class="message-bubble">
+                                    <div class="message-text">${Utils.escapeHtml(m.message || '')}</div>
+                                    <div class="message-info">${new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                </div>
+                            `;
+                            container.appendChild(wrap);
+                        });
+                        container.scrollTop = container.scrollHeight;
+                    }
+
+                    modal.style.display = 'block';
+                    this.elements['ticket-reply-input'].focus();
+
                 } catch (error) {
                     console.error('Error loading chat:', error);
                     this.showNotification('Error loading chat details', 'error');
                 }
             }
 
-            // Show chat details
-            showChatDetails(chat) {
-                // For now, just show an alert with the chat info
-                // In a real implementation, you might want to show this in a modal or dedicated section
-                const clientInfo = chat.clientInfo || {};
-                alert(`Chat with ${clientInfo.name || 'Anonymous'}\nEmail: ${clientInfo.email || 'No email'}\nMessages: ${chat.messages?.length || 0}`);
+            // Send reply to chat ticket
+            async sendTicketReply() {
+                const input = this.elements['ticket-reply-input'];
+                const message = input.value.trim();
+                if (!message || !this.selectedChatId) return;
+
+                try {
+                    input.disabled = true;
+                    
+                    const response = await fetch('/api/chat/send', {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json', 
+                            'CSRF-Token': (document.querySelector('meta[name="csrf-token"]')?.content || '') 
+                        },
+                        body: JSON.stringify({ 
+                            clientId: this.selectedChatId, 
+                            message,
+                            isAdmin: true
+                        }),
+                        credentials: 'include',
+                    });
+
+                    if (response.ok) {
+                        input.value = '';
+                        // Refresh the view to show the new message
+                        this.viewChat(this.selectedChatId);
+                        this.showNotification('Message sent successfully', 'success');
+                    } else {
+                        throw new Error('Failed to send message');
+                    }
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    this.showNotification('Failed to send reply', 'error');
+                } finally {
+                    input.disabled = false;
+                }
             }
 
             // Delete a chat
@@ -2036,14 +2221,19 @@
                 try {
                     const response = await fetch(`/api/chats/${clientId}`, {
                         method: 'DELETE',
-                        credentials: 'include'
+                        credentials: 'include',
+                        headers: { 'CSRF-Token': (document.querySelector('meta[name="csrf-token"]')?.content || '') }
                     });
                     
                     const data = await response.json();
                     
                     if (data.success) {
                         this.showNotification('Chat deleted successfully', 'success');
-                        // Reload chats to reflect the change
+                        // If the deleted chat is the one in the ticket modal, close it
+                        if (this.selectedChatId === clientId) {
+                            this.elements['chat-ticket-modal'].style.display = 'none';
+                            this.selectedChatId = null;
+                        }
                         this.loadChats();
                     } else {
                         this.showNotification('Error deleting chat', 'error');
@@ -2123,8 +2313,12 @@
                             valueB = b.service || '';
                             break;
                         case 'date':
-                            valueA = new Date(a.submitted_at);
-                            valueB = new Date(b.submitted_at);
+                            {
+                                const dA = new Date(a.submitted_at);
+                                const dB = new Date(b.submitted_at);
+                                valueA = isNaN(dA) ? 0 : dA.getTime();
+                                valueB = isNaN(dB) ? 0 : dB.getTime();
+                            }
                             break;
                         default: // id
                             valueA = a.id;
@@ -2148,7 +2342,10 @@
             
             // Calculate total pages based on filtered submissions
             calculateTotalPages() {
-                this.totalPages = Math.ceil(this.filteredSubmissions.length / this.pageSize);
+                this.totalPages = Math.max(1, Math.ceil(this.filteredSubmissions.length / this.pageSize));
+                if (this.currentPage > this.totalPages) {
+                    this.currentPage = this.totalPages;
+                }
                 
                 // Update pagination controls
                 if (this.elements['page-info']) {
@@ -2200,12 +2397,12 @@
                         <td>${submission.id}</td>
                         <td>${Utils.escapeHtml(submission.name)}</td>
                         <td>${Utils.escapeHtml(submission.email)}</td>
-                        <td>${submission.phone || '-'}</td>
-                        <td>${submission.service || '-'}</td>
+                        <td>${Utils.escapeHtml(submission.phone || '-')}</td>
+                        <td>${Utils.escapeHtml(submission.service || '-')}</td>
                         <td>${date}</td>
                         <td>
-                            <button class="action-btn view-btn" data-id="${submission.id}">View</button>
-                            <button class="action-btn delete-btn-sm" data-id="${submission.id}">Delete</button>
+                            <button type="button" class="action-btn view-btn" data-id="${submission.id}">View</button>
+                            <button type="button" class="action-btn delete-btn-sm" data-id="${submission.id}">Delete</button>
                         </td>
                     `;
                     
@@ -2288,7 +2485,8 @@
                 try {
                     const response = await fetch(`/api/submissions/${id}`, {
                         method: 'DELETE',
-                        credentials: 'include'
+                        credentials: 'include',
+                        headers: { 'CSRF-Token': (document.querySelector('meta[name="csrf-token"]')?.content || '') }
                     });
                     
                     const data = await response.json();
@@ -2459,13 +2657,14 @@
                 try {
                     await fetch('/api/admin/logout', { 
                         method: 'POST',
-                        credentials: 'include'
+                        credentials: 'include',
+                        headers: { 'CSRF-Token': (document.querySelector('meta[name="csrf-token"]')?.content || '') }
                     });
                     this.isAuthenticated = false;
                     this.stopAutoRefresh();
-                    if (this.chat) {
-                        this.chat.disconnect();
-                        this.chat = null;
+                    if (this.chatSocket) {
+                        this.chatSocket.disconnect();
+                        this.chatSocket = null;
                     }
                     this.showLoginForm();
                     this.showNotification('Logged out successfully', 'success');
@@ -2508,11 +2707,6 @@
             showAdminPanel() {
                 if (this.elements['login-section']) this.elements['login-section'].style.display = 'none';
                 if (this.elements['admin-panel']) this.elements['admin-panel'].style.display = 'block';
-                
-                // Initialize chat when admin panel is shown
-                if (!this.chat) {
-                    this.chat = new AdminChat(this);
-                }
             }
 
             showLoginMessage(message, type) {
@@ -2533,8 +2727,10 @@
                 if (this.elements.totalSubmissions) this.elements.totalSubmissions.textContent = stats.total || 0;
                 if (this.elements.todaySubmissions) this.elements.todaySubmissions.textContent = stats.today || 0;
                 if (this.elements.weekSubmissions) this.elements.weekSubmissions.textContent = stats.week || 0;
-                if (this.elements.activeChats && this.chat) {
-                    this.elements.activeChats.textContent = this.chat.clients.size || 0;
+                if (this.elements.activeChats) {
+                    const active = (typeof stats.activeChats === 'number') ? stats.activeChats : 'N/A';
+                 this.elements.activeChats.textContent = active || 0;
+
                 }
             }
 
@@ -2546,818 +2742,85 @@
             }
         }
 
-        // Chat functionality with enhanced reconnection and state persistence
-        class AdminChat {
+        // Admin WebSocket Class
+        class AdminSocket {
             constructor(adminPanel) {
                 this.adminPanel = adminPanel;
                 this.ws = null;
-                this.clients = new Map();
-                this.selectedClientId = null;
-                this.messages = new Map(); // clientId -> message array
-                this.unreadCounts = new Map();
                 this.isConnected = false;
                 this.reconnectTimeout = null;
-                this.connectionAttempts = 0;
-                this.maxConnectionAttempts = 10;
                 this.sessionId = DeviceManager.getSessionId();
-                this.clientConnectionId = null;
-                this.welcomedClients = new Set(); // Track clients we've sent welcome message to
-                this.processedMessageIds = new Set(); // Track processed message IDs to prevent duplicates
-                
-                this.initializeChatElements();
-                this.setupChatEventListeners();
-                this.connectWebSocket();
-                
-                // Set up periodic state saving
-                this.stateSaveInterval = setInterval(() => {
-                    this.saveChatState();
-                }, 5000); // Save every 5 seconds
-            }
-            
-            // Initialize chat DOM elements
-            initializeChatElements() {
-                this.elements = {};
-                
-                const chatElementIds = [
-                    'clients-list', 'chat-messages', 'message-input',
-                    'send-message', 'current-client-name', 'current-client-status',
-                    'current-client-contact', 'export-chat', 'delete-chat',
-                    'clients-count'
-                ];
-
-                chatElementIds.forEach(id => {
-                    this.elements[id] = document.getElementById(id);
-                });
-            }
-            
-            // Setup chat event listeners
-            setupChatEventListeners() {
-                // Send message
-                if (this.elements['send-message']) {
-                    this.elements['send-message'].addEventListener('click', () => {
-                        this.sendMessage();
-                    });
-                }
-                
-                // Message input enter key
-                if (this.elements['message-input']) {
-                    this.elements['message-input'].addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') {
-                            this.sendMessage();
-                        }
-                    });
-                }
-                
-                // Export chat button
-                if (this.elements['export-chat']) {
-                    this.elements['export-chat'].addEventListener('click', () => {
-                        this.exportChat();
-                    });
-                }
-                
-                // Delete chat button
-                if (this.elements['delete-chat']) {
-                    this.elements['delete-chat'].addEventListener('click', () => {
-                        this.deleteChat();
-                    });
-                }
-            }
-            
-            // Save chat state to localStorage
-            saveChatState() {
-                if (!SAVE_CHAT_STATE) return;
-                try {
-                    const state = {
-                        selectedClientId: this.selectedClientId,
-                        clients: Array.from(this.clients.entries()),
-                        messages: Array.from(this.messages.entries()),
-                        unreadCounts: Array.from(this.unreadCounts.entries()),
-                        sessionId: this.sessionId
-                    };
-                    localStorage.setItem('adminChatState', JSON.stringify(state));
-                } catch (error) {
-                    if (DEBUG) console.error('Error saving chat state:', error);
-                }
+                this.connect();
             }
 
-            // Load chat state from localStorage
-            loadChatState() {
-                if (!SAVE_CHAT_STATE) return;
-                try {
-                    const savedState = localStorage.getItem('adminChatState');
-                    if (savedState) {
-                        const state = JSON.parse(savedState);
-                        
-                        // Only restore if session ID matches
-                        if (state.sessionId === this.sessionId) {
-                            this.selectedClientId = state.selectedClientId;
-                            this.clients = new Map(state.clients);
-                            this.messages = new Map(state.messages);
-                            this.unreadCounts = new Map(state.unreadCounts);
-                            
-                            // Update UI with restored state
-                            this.renderClientList();
-                            if (this.selectedClientId) {
-                                this.selectClient(this.selectedClientId);
-                            }
-                            
-                            if (DEBUG) console.log('Chat state restored from localStorage');
-                        }
-                    }
-                } catch (error) {
-                    if (DEBUG) console.error('Error loading chat state:', error);
+            connect() {
+                if (this.ws) {
+                    try { this.ws.close(); } catch (e) {}
                 }
-            }
-            
-            // Connect to WebSocket server with enhanced reconnection handling
-            connectWebSocket() {
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const wsUrl = `${protocol}//${window.location.host}`;
+                
                 try {
-                    // Clear any existing reconnection timeout
-                    if (this.reconnectTimeout) {
-                        clearTimeout(this.reconnectTimeout);
-                        this.reconnectTimeout = null;
-                    }
-                    
-                    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-                    const wsUrl = `${protocol}//${window.location.host}`;
-                    
                     this.ws = new WebSocket(wsUrl);
-                    
+
                     this.ws.onopen = () => {
-                        console.log('WebSocket connected');
+                        console.log('Admin WebSocket connected.');
                         this.isConnected = true;
-                        this.connectionAttempts = 0;
-                        this.updateConnectionStatus('connected');
+                        this.adminPanel.showNotification('Connected to chat server', 'success');
                         
-                        // Identify as admin with session ID
+                        // Identify as admin
                         this.ws.send(JSON.stringify({
                             type: 'identify',
                             isAdmin: true,
-                            name: 'Admin',
                             sessionId: this.sessionId,
-                            deviceType: DeviceManager.getDeviceType()
+                            name: 'Admin'
                         }));
-                        
-                        // Request client list immediately after connection
-                        this.requestClientList();
-                        
-                        // Load saved state
-                        this.loadChatState();
                     };
-                    
+
                     this.ws.onmessage = (event) => {
                         try {
                             const data = JSON.parse(event.data);
-                            this.handleMessage(data);
-                        } catch (error) {
-                            console.error('Error parsing WebSocket message:', error, event.data);
+                            // When a new message comes in from a client, the server sends a 'chat' message.
+                            // We can use this to trigger a refresh of the ticket list.
+                            if (data.type === 'chat' && !data.isAdmin) {
+                                console.log('Received client message, reloading chats.');
+                                this.adminPanel.loadChats();
+                                this.adminPanel.showNotification(`New message from ${data.name || 'client'}`, 'info');
+                            }
+                        } catch (e) {
+                            console.error('Error processing admin socket message', e);
                         }
                     };
-                    
+
                     this.ws.onclose = () => {
-                        console.log('WebSocket disconnected');
+                        console.log('Admin WebSocket disconnected. Attempting to reconnect...');
                         this.isConnected = false;
-                        this.updateConnectionStatus('disconnected');
-                        this.attemptReconnect();
+                        this.adminPanel.showNotification('Chat connection lost. Reconnecting...', 'error');
+                        this.reconnect();
                     };
-                    
+
                     this.ws.onerror = (error) => {
-                        console.error('WebSocket error:', error);
-                        this.updateConnectionStatus('error');
+                        console.error('Admin WebSocket error:', error);
+                        this.isConnected = false;
+                        this.adminPanel.showNotification('Chat connection error', 'error');
                     };
-                    
                 } catch (error) {
-                    console.error('Error connecting to WebSocket:', error);
-                    this.attemptReconnect();
+                    console.error('WebSocket connection error:', error);
+                    this.reconnect();
                 }
             }
-            
-            // Enhanced reconnect method with exponential backoff
-            attemptReconnect() {
-                if (this.connectionAttempts < this.maxConnectionAttempts) {
-                    this.connectionAttempts++;
-                    const delay = Math.min(1000 * Math.pow(2, this.connectionAttempts), 30000);
-                    
-                    console.log(`Attempting to reconnect in ${delay/1000} seconds (attempt ${this.connectionAttempts}/${this.maxConnectionAttempts})`);
-                    
-                    this.reconnectTimeout = setTimeout(() => {
-                        this.connectWebSocket();
-                    }, delay);
-                } else {
-                    console.error('Max reconnection attempts reached');
-                    this.updateConnectionStatus('disconnected');
-                    this.adminPanel.showNotification('Failed to connect to chat server. Please refresh the page.', 'error');
-                }
+
+            reconnect() {
+                if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
+                this.reconnectTimeout = setTimeout(() => this.connect(), 5000); // Reconnect every 5 seconds
             }
-            
-            // Manual reconnect method
-            manualReconnect() {
-                this.connectionAttempts = 0;
-                this.connectWebSocket();
-                this.adminPanel.showNotification('Attempting to reconnect to chat server...', 'info');
-            }
-            
-            // Handle incoming messages
-            handleMessage(data) {
-                if (DEBUG) console.log('Received message:', data);
-                
-                // CRITICAL: Check if this message is already processed
-                if (data.id && this.processedMessageIds.has(data.id)) {
-                    console.log('Ignoring duplicate message:', data.id);
-                    return;
-                }
-                
-                if (data.id) {
-                    this.processedMessageIds.add(data.id);
-                    // Clean up old IDs to prevent memory issues
-                    if (this.processedMessageIds.size > 1000) {
-                        const values = Array.from(this.processedMessageIds);
-                        this.processedMessageIds = new Set(values.slice(-500));
-                    }
-                }
-                
-                // Store our connection ID when we receive it
-                if (data.type === 'client_id') {
-                    this.clientConnectionId = data.clientId;
-                    console.log('Our connection ID:', this.clientConnectionId);
-                    return;
-                }
-                
-                // CRITICAL FIX: Only process messages meant for this specific admin session
-                if (data.targetSessionId && data.targetSessionId !== this.sessionId) {
-                    console.log('Ignoring message for different session:', data.targetSessionId, 'ours:', this.sessionId);
-                    return;
-                }
-                
-                // If this is an admin message but from a different connection ID, ignore it
-                if (data.isAdmin && data.fromConnectionId && data.fromConnectionId === this.clientConnectionId) {
-                    console.log('Ignoring echo of our own message');
-                    return;
-                }
-                
-                switch (data.type) {
-                    case 'chat':
-                        // Add message to the appropriate client
-                        if (data.clientId) {
-                            // Send welcome message if this is the first message from this client
-                            if (!data.isAdmin && !this.welcomedClients.has(data.clientId)) {
-                                this.welcomedClients.add(data.clientId);
-                                this.sendWelcomeMessage(data.clientId);
-                            }
-                            this.addMessage(data.clientId, data);
-                        } else {
-                            console.error('Received chat message without clientId:', data);
-                        }
-                        break;
-                        
-                    case 'history':
-                        // Load message history for a client
-                        if (data.clientId && data.messages) {
-                            this.loadMessageHistory(data.clientId, data.messages);
-                        }
-                        break;
-                        
-                    case 'typing':
-                        // Show typing indicator
-                        if (data.clientId) {
-                            this.showTypingIndicator(data.clientId, data.isTyping, data.name);
-                        }
-                        break;
-                        
-                    case 'system':
-                        // System message
-                        console.log('System message:', data.message);
-                        break;
-                        
-                    case 'admin':
-                        // Admin notification
-                        console.log('Admin notification:', data.message);
-                        // Show notification to admin
-                        if (this.adminPanel && data.message) {
-                            this.adminPanel.showNotification(data.message, 'info');
-                        }
-                        break;
-                        
-                    case 'clients':
-                        // Update client list
-                        if (data.clients) {
-                            this.updateClientList(data.clients);
-                        }
-                        break;
-                        
-                    case 'new_submission':
-                        // New form submission notification
-                        if (this.adminPanel) {
-                            this.adminPanel.showNotification(`New submission from ${data.name}`, 'info');
-                            // Refresh submissions data
-                            this.adminPanel.loadSubmissions();
-                            this.adminPanel.loadStats();
-                        }
-                        break;
-                        
-                    default:
-                        console.log('Unknown message type:', data.type, data);
-                }
-            }
-            
-            // Send welcome message to new client
-            sendWelcomeMessage(clientId) {
-                if (!ADMIN_SEND_AUTO_WELCOME) return;
-                const welcomeMessage = "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.";
-                
-                if (this.ws && this.isConnected) {
-                    const messageData = {
-                        type: 'admin_message',
-                        targetClientId: clientId,
-                        message: welcomeMessage,
-                        sessionId: this.sessionId,
-                        fromConnectionId: this.clientConnectionId
-                    };
-                    
-                    this.ws.send(JSON.stringify(messageData));
-                    
-                    // Also add the message to our local history for immediate feedback
-                    this.addMessage(clientId, {
-                        id: 'welcome-' + Date.now(),
-                        type: 'chat',
-                        message: welcomeMessage,
-                        name: 'Admin',
-                        timestamp: new Date().toISOString(),
-                        isAdmin: true,
-                        clientId: clientId,
-                        sessionId: this.sessionId
-                    });
-                }
-            }
-            
-            // Update client list
-            updateClientList(clientsData) {
-                try {
-                    // Convert array to Map
-                    const clientsMap = new Map();
-                    if (Array.isArray(clientsData)) {
-                        clientsData.forEach(client => {
-                            if (client.id && !client.isAdmin) {  // Exclude admin clients
-                                clientsMap.set(client.id, client);
-                            }
-                        });
-                    } else if (clientsData && typeof clientsData === 'object') {
-                        // Handle object format
-                        for (const [id, client] of Object.entries(clientsData)) {
-                            if (client && client.id && !client.isAdmin) {  // Exclude admin clients
-                                clientsMap.set(client.id, client);
-                            }
-                        }
-                    }
-                    
-                    this.clients = clientsMap;
-                    this.renderClientList();
-                    
-                    // Update active chats count in admin panel
-                    if (this.adminPanel) {
-                        this.adminPanel.updateStatsDisplay({
-                            total: parseInt(document.getElementById('totalSubmissions').textContent),
-                            today: parseInt(document.getElementById('todaySubmissions').textContent),
-                            week: parseInt(document.getElementById('weekSubmissions').textContent),
-                            activeChats: this.clients.size
-                        });
-                    }
-                    
-                    // Update clients count
-                    if (this.elements['clients-count']) {
-                        this.elements['clients-count'].textContent = this.clients.size;
-                    }
-                } catch (error) {
-                    console.error('Error updating client list:', error, clientsData);
-                }
-            }
-            
-            // Render client list
-            renderClientList() {
-                if (!this.elements['clients-list']) return;
-                
-                if (this.clients.size === 0) {
-                    this.elements['clients-list'].innerHTML = '<div class="empty-chat-list"><i class="fas fa-comments"></i><p>No active chats</p></div>';
-                    return;
-                }
-                
-                let html = '';
-                for (const [clientId, client] of this.clients) {
-                    const unreadCount = this.unreadCounts.get(clientId) || 0;
-                    const isActive = clientId === this.selectedClientId;
-                    const clientName = client.name || 'Guest';
-                    const clientEmail = client.email || '';
-                    const lastMessage = this.getLastMessagePreview(clientId);
-                    const lastActive = client.lastActive ? new Date(client.lastActive).toLocaleTimeString() : '';
-                    
-                    html += `
-                        <div class="client-item ${isActive ? 'active' : ''}" data-client-id="${clientId}">
-                            <div style="flex: 1;">
-                                <div class="client-info">
-                                    <div class="client-name">${Utils.escapeHtml(clientName)}</div>
-                                    <div class="client-time">${lastActive}</div>
-                                </div>
-                                <div class="client-preview">${Utils.escapeHtml(lastMessage.preview)}</div>
-                            </div>
-                            <div class="client-status">
-                                <span class="status-indicator ${client.isOnline ? 'status-online' : 'status-offline'}"></span>
-                                ${unreadCount > 0 ? `<span class="unread-badge">${unreadCount}</span>` : ''}
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                this.elements['clients-list'].innerHTML = html;
-                
-                // Add event listeners to client items
-                const clientItems = this.elements['clients-list'].querySelectorAll('.client-item');
-                clientItems.forEach(item => {
-                    item.addEventListener('click', () => {
-                        const clientId = item.getAttribute('data-client-id');
-                        this.selectClient(clientId);
-                    });
-                });
-            }
-            
-            // Get last message preview for a client
-            getLastMessagePreview(clientId) {
-                const messages = this.messages.get(clientId) || [];
-                if (messages.length === 0) {
-                    return { preview: 'No messages yet', time: '' };
-                }
-                
-                const lastMessage = messages[messages.length - 1];
-                const preview = lastMessage.message.length > 30 
-                    ? lastMessage.message.substring(0, 30) + '...' 
-                    : lastMessage.message;
-                    
-                return { 
-                    preview, 
-                    time: new Date(lastMessage.timestamp).toLocaleTimeString() 
-                };
-            }
-            
-            // Select a client
-            selectClient(clientId) {
-                this.selectedClientId = clientId;
-                const client = this.clients.get(clientId);
-                
-                if (!client) return;
-                
-                // Reset unread count for this client
-                this.unreadCounts.set(clientId, 0);
-                this.updateUnreadCount();
-                
-                // Update UI
-                this.renderClientList();
-                this.renderMessages();
-                
-                // Update client info in the header
-                if (this.elements['current-client-name']) {
-                    this.elements['current-client-name'].textContent = client.name || 'Guest';
-                }
-                
-                if (this.elements['current-client-status']) {
-                    const statusIndicator = this.elements['current-client-status'].querySelector('.status-indicator');
-                    const statusText = this.elements['current-client-status'].querySelector('span:last-child');
-                    
-                    if (statusIndicator && statusText) {
-                        statusIndicator.className = `status-indicator ${client.isOnline ? 'status-online' : 'status-offline'}`;
-                        statusText.textContent = client.isOnline ? 'Online' : 'Offline';
-                    }
-                }
-                
-                if (this.elements['current-client-contact']) {
-                    this.elements['current-client-contact'].textContent = client.email ? 
-                        `Email: ${client.email} ${client.phone ? `| Phone: ${client.phone}` : ''}` : 
-                        (client.phone ? `Phone: ${client.phone}` : 'No contact info');
-                }
-                
-                // Enable message input and action buttons
-                if (this.elements['message-input']) {
-                    this.elements['message-input'].disabled = false;
-                    this.elements['send-message'].disabled = false;
-                    this.elements['message-input'].focus();
-                }
-                
-                if (this.elements['export-chat']) {
-                    this.elements['export-chat'].disabled = false;
-                }
-                
-                if (this.elements['delete-chat']) {
-                    this.elements['delete-chat'].disabled = false;
-                }
-                
-                // Request message history if we don't have it
-                if (!this.messages.has(clientId)) {
-                    this.messages.set(clientId, []);
-                    if (this.ws && this.isConnected) {
-                        this.ws.send(JSON.stringify({
-                            type: 'get_history',
-                            clientId: clientId,
-                            sessionId: this.sessionId
-                        }));
-                    }
-                }
-            }
-            
-            // Load message history
-            loadMessageHistory(clientId, messages) {
-                if (!this.messages.has(clientId)) {
-                    this.messages.set(clientId, []);
-                }
-                
-                // Filter out messages from other admin sessions
-                const filteredMessages = messages.filter(msg => {
-                    // Include all client messages
-                    if (!msg.isAdmin) return true;
-                    
-                    // Include admin messages from this session
-                    return msg.sessionId === this.sessionId || !msg.sessionId;
-                });
-                
-                // Add messages if they don't already exist
-                for (const message of filteredMessages) {
-                    if (!this.messages.get(clientId).some(m => m.id === message.id)) {
-                        this.messages.get(clientId).push(message);
-                    }
-                }
-                
-                // Sort by timestamp
-                this.messages.get(clientId).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-                
-                // Render if this is the selected client
-                if (this.selectedClientId === clientId) {
-                    this.renderMessages();
-                }
-                
-                // Update client list to refresh previews
-                this.renderClientList();
-            }
-            
-            // Add a message
-            addMessage(clientId, message) {
-                if (!clientId) {
-                    console.error('Cannot add message without clientId:', message);
-                    return;
-                }
-                
-                // Filter out messages from other admin sessions
-                if (message.isAdmin && message.sessionId && message.sessionId !== this.sessionId) {
-                    console.log('Ignoring message from different admin session:', message.sessionId);
-                    return;
-                }
-                
-                // If we don't know about this client, create an entry for them
-                if (!this.clients.has(clientId) && !message.isAdmin) {
-                    this.clients.set(clientId, {
-                        id: clientId,
-                        name: message.name || 'Unknown Client',
-                        email: message.email || '',
-                        phone: message.phone || '',
-                        isOnline: true
-                    });
-                }
-                
-                if (!this.messages.has(clientId)) {
-                    this.messages.set(clientId, []);
-                }
-                
-                // Add session ID to our admin messages
-                if (message.isAdmin && !message.sessionId) {
-                    message.sessionId = this.sessionId;
-                }
-                
-                // Add message if it doesn't already exist
-                if (!this.messages.get(clientId).some(m => m.id === message.id)) {
-                    this.messages.get(clientId).push(message);
-                    
-                    // If this isn't the selected client and it's not our own message, increment unread count
-                    if (this.selectedClientId !== clientId && !message.isAdmin) {
-                        const currentCount = this.unreadCounts.get(clientId) || 0;
-                        this.unreadCounts.set(clientId, currentCount + 1);
-                        this.updateUnreadCount();
-                    }
-                    
-                    // Render if this is the selected client
-                    if (this.selectedClientId === clientId) {
-                        this.renderMessages();
-                    }
-                    
-                    // Update client list to show unread count and new message preview
-                    this.renderClientList();
-                }
-            }
-            
-            // Render messages with date dividers
-            renderMessages() {
-                if (!this.elements['chat-messages'] || !this.selectedClientId) {
-                    return;
-                }
-                
-                const messages = this.messages.get(this.selectedClientId) || [];
-                
-                if (messages.length === 0) {
-                    this.elements['chat-messages'].innerHTML = '<div class="no-chat-selected"><div><i class="fas fa-comments fa-2x"></i><p>No messages yet</p></div></div>';
-                    return;
-                }
-                
-                let html = '';
-                let currentDate = '';
-                
-                for (const message of messages) {
-                    const messageDate = new Date(message.timestamp).toDateString();
-                    
-                    // Add date divider if date has changed
-                    if (messageDate !== currentDate) {
-                        currentDate = messageDate;
-                        html += `
-                            <div class="date-divider">
-                                <span>${currentDate}</span>
-                            </div>
-                        `;
-                    }
-                    
-                    const isAdmin = message.isAdmin;
-                    const time = new Date(message.timestamp).toLocaleTimeString();
-                    const senderName = isAdmin ? 'You' : (message.name || 'Client');
-                    
-                    html += `
-                        <div class="message ${isAdmin ? 'admin' : 'client'}">
-                            <div class="message-text">${Utils.escapeHtml(message.message)}</div>
-                            <div class="message-info">
-                                <span>${Utils.escapeHtml(senderName)} • ${time}</span>
-                                ${isAdmin ? '<span class="message-status">Delivered</span>' : ''}
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                this.elements['chat-messages'].innerHTML = html;
-                
-                // Scroll to bottom
-                this.elements['chat-messages'].scrollTop = this.elements['chat-messages'].scrollHeight;
-            }
-            
-            // Send a message
-            sendMessage() {
-                if (!this.selectedClientId || !this.elements['message-input']) return;
-                
-                const messageText = this.elements['message-input'].value.trim();
-                if (!messageText) return;
-                
-                if (this.ws && this.isConnected) {
-                    const messageData = {
-                        type: 'admin_message',
-                        targetClientId: this.selectedClientId,
-                        message: messageText,
-                        sessionId: this.sessionId,
-                        fromConnectionId: this.clientConnectionId
-                    };
-                    
-                    this.ws.send(JSON.stringify(messageData));
-                    
-                    // Add message to local history immediately for instant feedback
-                    this.addMessage(this.selectedClientId, {
-                        id: 'local-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
-                        type: 'chat',
-                        message: messageText,
-                        name: 'Admin',
-                        timestamp: new Date().toISOString(),
-                        isAdmin: true,
-                        clientId: this.selectedClientId,
-                        sessionId: this.sessionId
-                    });
-                    
-                    // Clear input
-                    this.elements['message-input'].value = '';
-                }
-            }
-            
-            // Export chat to text file
-            exportChat() {
-                if (!this.selectedClientId) return;
-                
-                const messages = this.messages.get(this.selectedClientId) || [];
-                const client = this.clients.get(this.selectedClientId);
-                
-                if (messages.length === 0) {
-                    this.adminPanel.showNotification('No messages to export', 'info');
-                    return;
-                }
-                
-                let chatContent = `Chat History with ${client.name || 'Unknown Client'}\n`;
-                chatContent += `Exported on: ${new Date().toLocaleString()}\n`;
-                chatContent += '============================================\n\n';
-                
-                let currentDate = '';
-                
-                for (const message of messages) {
-                    const messageDate = new Date(message.timestamp).toDateString();
-                    
-                    // Add date header if date has changed
-                    if (messageDate !== currentDate) {
-                        currentDate = messageDate;
-                        chatContent += `\n${currentDate}\n`;
-                        chatContent += '--------------------------------------------\n';
-                    }
-                    
-                    const time = new Date(message.timestamp).toLocaleTimeString();
-                    const sender = message.isAdmin ? 'Admin' : (message.name || 'Client');
-                    
-                    chatContent += `[${time}] ${sender}: ${message.message}\n`;
-                }
-                
-                // Create download link
-                const blob = new Blob([chatContent], { type: 'text/plain;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.setAttribute('href', url);
-                link.setAttribute('download', `chat-${client.name || 'client'}-${new Date().toISOString().split('T')[0]}.txt`);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                this.adminPanel.showNotification('Chat exported successfully', 'success');
-            }
-            
-            // Delete chat history
-            deleteChat() {
-                if (!this.selectedClientId) return;
-                
-                if (!confirm('Are you sure you want to delete this chat history? This action cannot be undone.')) {
-                    return;
-                }
-                
-                // Send request to server to delete chat
-                if (this.ws && this.isConnected) {
-                    this.ws.send(JSON.stringify({
-                        type: 'delete_chat',
-                        clientId: this.selectedClientId,
-                        sessionId: this.sessionId
-                    }));
-                }
-                
-                // Clear local messages
-                this.messages.set(this.selectedClientId, []);
-                this.renderMessages();
-                
-                this.adminPanel.showNotification('Chat history deleted', 'success');
-            }
-            
-            // Request client list from server
-            requestClientList() {
-                if (this.ws && this.isConnected) {
-                    this.ws.send(JSON.stringify({
-                        type: 'get_clients',
-                        sessionId: this.sessionId
-                    }));
-                }
-            }
-            
-            // Update unread count badge
-            updateUnreadCount() {
-                if (!this.elements['clients-count']) return;
-                
-                let totalUnread = 0;
-                for (const count of this.unreadCounts.values()) {
-                    totalUnread += count;
-                }
-                
-                // Update the clients list to reflect unread counts
-                this.renderClientList();
-            }
-            
-            // Update connection status
-            updateConnectionStatus(status) {
-                const statusElement = document.getElementById('connectionStatus');
-                if (!statusElement) return;
-                
-                statusElement.textContent = `Chat: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
-                statusElement.className = `connection-status ${status}`;
-                statusElement.style.display = 'block';
-            }
-            
-            // Disconnect from WebSocket
+
             disconnect() {
+                if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
                 if (this.ws) {
+                    this.ws.onclose = null; // prevent reconnecting on manual disconnect
                     this.ws.close();
                 }
-                if (this.reconnectTimeout) {
-                    clearTimeout(this.reconnectTimeout);
-                    this.reconnectTimeout = null;
-                }
-                if (this.stateSaveInterval) {
-                    clearInterval(this.stateSaveInterval);
-                    this.stateSaveInterval = null;
-                }
-                
-                // Save state one final time
-                this.saveChatState();
-                
-                this.isConnected = false;
-                this.updateConnectionStatus('disconnected');
             }
         }
 
