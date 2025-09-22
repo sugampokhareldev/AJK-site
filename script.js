@@ -24,6 +24,7 @@ class ChatWidget {
     this.maxReconnectAttempts = 5;
     this.unreadCount = 0;
     this.identifyTimeout = null;
+    this.hasIdentified = false; // Track if we've sent the initial identify message
     
     // Try to load existing client ID from storage
     this.clientId = localStorage.getItem('chatClientId') || this.generateClientId();
@@ -143,11 +144,8 @@ class ChatWidget {
         this.updateConnectionStatus();
         this.enableChatInput();
         
-        // Set timeout to send identify if we don't get client_id from server
-        this.identifyTimeout = setTimeout(() => {
-          console.log('No client_id received from server, identifying with current clientId');
-          this.sendIdentifyMessage();
-        }, 3000);
+        // The 'identify' message is now sent only when the user opens the chat.
+        // This prevents creating empty chat sessions for every site visitor.
       };
       
       this.ws.onmessage = (event) => {
@@ -381,6 +379,12 @@ class ChatWidget {
         // Now identify ourselves to the server with the updated clientId
         this.sendIdentifyMessage();
         break;
+        
+      default:
+        // If we receive any message, it implies the server is aware of us.
+        // If we haven't identified yet, and the chat is open, do so.
+        const chatWindow = document.getElementById('chat-window-enhanced');
+        if (!this.hasIdentified && chatWindow && chatWindow.classList.contains('open')) this.sendIdentifyMessage();
     }
   }
   
@@ -489,6 +493,12 @@ class ChatWidget {
     } else if (userInfo && chatInputArea) {
       userInfo.style.display = 'none';
       chatInputArea.style.display = 'flex';
+    }
+    
+    // Identify the user to the server the first time they open the chat.
+    if (!this.hasIdentified && this.isConnected) {
+      this.sendIdentifyMessage();
+      this.hasIdentified = true;
     }
     
     this.clearUnreadCount();
