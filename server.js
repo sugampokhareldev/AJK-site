@@ -352,8 +352,6 @@ wss.on('connection', async (ws, request) => {
     await db.read();
     db.data = db.data && typeof db.data === 'object' ? db.data : {};
     db.data.chats = db.data.chats || {};
-    db.data.offline_messages = db.data.offline_messages || {};
-    db.data.pending_client_messages = db.data.pending_client_messages || {};
     if (db.data.chats[clientId] && db.data.chats[clientId].deleted) {
         // Create a new chat session
         db.data.chats[clientId] = {
@@ -387,49 +385,6 @@ wss.on('connection', async (ws, request) => {
                 console.error('Error sending chat history:', error);
             }
         }
-    }
-    
-    try {
-        ws.send(JSON.stringify({
-            type: 'client_id',
-            clientId: clientId
-        }));
-        
-        // Deliver any pending admin messages queued while client was offline
-        try {
-            await db.read();
-            db.data = db.data && typeof db.data === 'object' ? db.data : {};
-            db.data.pending_client_messages = db.data.pending_client_messages || {};
-            db.data.chats = db.data.chats || {};
-            if (!db.data.chats[clientId]) {
-                db.data.chats[clientId] = { clientInfo: { name: 'Guest', email: '', ip: clientIp, firstSeen: new Date().toISOString() }, messages: [] };
-            }
-            const pending = db.data.pending_client_messages[clientId] || [];
-            if (pending.length > 0) {
-                for (const pm of pending) {
-                    // Send to client
-                    try { ws.send(JSON.stringify(pm)); } catch (e) { console.error('Error delivering pending message:', e); }
-                    // Append to persistent history now that it is delivered (avoid duplicates)
-                    const exists = (db.data.chats[clientId].messages || []).some(m => m.id === pm.id);
-                    if (!exists) {
-                        db.data.chats[clientId].messages.push({
-                            id: pm.id,
-                            message: pm.message,
-                            timestamp: pm.timestamp,
-                            isAdmin: true,
-                            type: 'chat'
-                        });
-                    }
-                }
-                // Clear queue
-                db.data.pending_client_messages[clientId] = [];
-                await db.write();
-            }
-        } catch (e) {
-            console.error('Error delivering pending client messages:', e);
-        }
-    } catch (error) {
-        console.error('Error sending initial messages:', error);
     }
     
     notifyAdmin(`New client connected: ${clientIp} (${clientId})`);
@@ -512,7 +467,8 @@ wss.on('connection', async (ws, request) => {
                                 ip: clientIp,
                                 firstSeen: new Date().toISOString()
                             },
-                            messages: []
+                            messages: [],
+                            status: 'active'
                         };
                     }
                     if (!db.data.chats[clientId]) {
@@ -523,7 +479,8 @@ wss.on('connection', async (ws, request) => {
                                 ip: clientIp,
                                 firstSeen: new Date().toISOString()
                             },
-                            messages: []
+                            messages: [],
+                            status: 'active'
                         };
                     }
                     
@@ -721,7 +678,8 @@ wss.on('connection', async (ws, request) => {
                                         ip: client.ip,
                                         firstSeen: new Date().toISOString()
                                     },
-                                    messages: []
+                                    messages: [],
+                                    status: 'active'
                                 };
                             } else {
                                 db.data.chats[clientId].clientInfo = db.data.chats[clientId].clientInfo || {};
@@ -1157,9 +1115,7 @@ async function initializeDB() {
         // Ensure arrays exist
         db.data.submissions = db.data.submissions || [];
         db.data.admin_users = db.data.admin_users || [];
-        db.data.offline_messages = db.data.offline_messages || {};
         db.data.chats = db.data.chats || {};
-        db.data.pending_client_messages = db.data.pending_client_messages || {};
         
         // Create admin user if it doesn't exist
         const adminUser = db.data.admin_users.find(user => user.username === 'Sanud119@gmail.com');
@@ -1378,21 +1334,8 @@ app.post('/api/chat/send', requireAuth, async (req, res) => {
         return res.json({ success: true, message: 'Message sent successfully' });
     }
 
-    // Client is offline: queue for delivery and echo to admins
+    // Client is offline: persist the message and echo to admins
     try {
-        await db.read();
-        db.data = db.data && typeof db.data === 'object' ? db.data : {};
-        db.data.chats = db.data.chats || {};
-        db.data.pending_client_messages = db.data.pending_client_messages || {};
-        if (!db.data.chats[clientId]) {
-            db.data.chats[clientId] = {
-                clientInfo: { name: 'Guest', email: '', ip: 'unknown', firstSeen: new Date().toISOString() },
-                messages: []
-            };
-        }
-        if (!db.data.pending_client_messages[clientId]) {
-            db.data.pending_client_messages[clientId] = [];
-        }
         const adminMessage = {
             id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
             type: 'chat',
@@ -1401,31 +1344,18 @@ app.post('/api/chat/send', requireAuth, async (req, res) => {
             timestamp: new Date().toISOString(),
             isAdmin: true,
             clientId: clientId,
-            queued: true
+            queued: true // This can be used by admin UI to show it was sent to an offline user
         };
-        db.data.pending_client_messages[clientId].push(adminMessage);
-        await db.write();
-        // Also persist in chat history immediately (avoid duplicates on delivery)
-        const chatObj = db.data.chats[clientId];
-        if (chatObj) {
-            const exists = (chatObj.messages || []).some(m => m.id === adminMessage.id);
-            if (!exists) {
-                chatObj.messages.push({
-                    id: adminMessage.id,
-                    message: adminMessage.message,
-                    timestamp: adminMessage.timestamp,
-                    isAdmin: true,
-                    type: 'chat'
-                });
-                await db.write();
-            }
-        }
+
+        await persistChatMessage(clientId, adminMessage);
+        
         // Echo to all admins so it appears in live chat UI
         try { broadcastToAll(adminMessage); } catch (_) {}
-        return res.json({ success: true, message: 'Client offline. Message queued.' });
+        
+        return res.json({ success: true, message: 'Client offline. Message saved.' });
     } catch (e) {
-        console.error('Error queuing message via REST:', e);
-        return res.status(500).json({ success: false, error: 'Failed to queue message' });
+        console.error('Error saving offline message via REST:', e);
+        return res.status(500).json({ success: false, error: 'Failed to save message' });
     }
 });
 
@@ -1486,10 +1416,6 @@ app.delete('/api/chats/:clientId', requireAuth, async (req, res) => {
       // Mark as deleted and cleanup related state
       db.data.chats[clientId].deleted = true;
       db.data.chats[clientId].deletedAt = new Date().toISOString();
-      db.data.pending_client_messages = db.data.pending_client_messages || {};
-      db.data.offline_messages = db.data.offline_messages || {};
-      db.data.pending_client_messages[clientId] = [];
-      db.data.offline_messages[clientId] = [];
       await db.write();
 
       // Purge in-memory history for this client
@@ -1523,7 +1449,7 @@ app.post('/api/chats/:clientId/status', requireAuth, async (req, res) => {
     const { clientId } = req.params;
     const { status } = req.body;
 
-    if (!['pending', 'resolved'].includes(status)) {
+    if (!['active', 'resolved'].includes(status)) {
         return res.status(400).json({ error: 'Invalid status' });
     }
 

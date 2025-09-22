@@ -274,6 +274,17 @@
             background: var(--danger);
         }
         
+        /* Session Info */
+        .session-info {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background: var(--light);
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
         /* Navigation Tabs */
         .admin-nav {
             background: var(--white);
@@ -1409,6 +1420,11 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+            
+            .session-info {
+                flex-direction: column;
+                gap: 5px;
+            }
         }
         
         @media (max-width: 576px) {
@@ -1437,6 +1453,20 @@
             .setting-item {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .chat-actions {
+                flex-direction: column;
+            }
+            
+            .client-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .chat-ticket-header {
+                flex-direction: column;
                 gap: 10px;
             }
         }
@@ -1719,7 +1749,6 @@
                         <option value="pending">Pending</option>
                         <option value="active">Active</option>
                         <option value="resolved">Resolved</option>
-                        <option value="deleted">Deleted</option>
                     </select>
                     <select id="chat-sort">
                         <option value="newest">Newest First</option>
@@ -1835,7 +1864,7 @@
                             <h4>Clear All Data</h4>
                             <p>Permanently delete all submissions and chat history</p>
                         </div>
-                        <button type="button" class="delete-btn-sm">Clear Data</button>
+                        <button type="button" class="delete-btn-sm" id="clear-data-btn">Clear Data</button>
                     </div>
                 </div>
             </div>
@@ -2165,7 +2194,8 @@
                     'dashboard-tab', 'submissions-tab', 'chats-tab', 'settings-tab',
                     'chat-ticket-modal', 'close-ticket-modal', 'ticket-client-name', 'ticket-client-email', 
                     'ticket-messages', 'ticket-reply-input', 'ticket-send-reply', 'resolve-ticket', 'delete-ticket',
-                    'totalTrend', 'todayTrend', 'weekTrend', 'chatTrend', 'recent-activity-list'
+                    'totalTrend', 'todayTrend', 'weekTrend', 'chatTrend', 'recent-activity-list',
+                    'date-from', 'date-to', 'clear-data-btn'
                 ];
 
                 elementIds.forEach(id => {
@@ -2276,17 +2306,21 @@
                 }
                 
                 // Date range filters
-                document.getElementById('date-from').addEventListener('change', () => {
-                    this.filterAndSortSubmissions();
-                    this.currentPage = 1;
-                    this.renderSubmissions();
-                });
+                if (this.elements['date-from']) {
+                    this.elements['date-from'].addEventListener('change', () => {
+                        this.filterAndSortSubmissions();
+                        this.currentPage = 1;
+                        this.renderSubmissions();
+                    });
+                }
                 
-                document.getElementById('date-to').addEventListener('change', () => {
-                    this.filterAndSortSubmissions();
-                    this.currentPage = 1;
-                    this.renderSubmissions();
-                });
+                if (this.elements['date-to']) {
+                    this.elements['date-to'].addEventListener('change', () => {
+                        this.filterAndSortSubmissions();
+                        this.currentPage = 1;
+                        this.renderSubmissions();
+                    });
+                }
                 
                 // Pagination controls
                 if (this.elements['prev-page']) {
@@ -2358,9 +2392,11 @@
                 }
 
                 // Chat sort
-                document.getElementById('chat-sort').addEventListener('change', () => {
-                    this.filterChats();
-                });
+                if (document.getElementById('chat-sort')) {
+                    document.getElementById('chat-sort').addEventListener('change', () => {
+                        this.filterChats();
+                    });
+                }
 
                 // Ticket Modal Listeners
                 if (this.elements['close-ticket-modal']) {
@@ -2388,7 +2424,7 @@
                 }
 
                 if (this.elements['delete-ticket']) {
-                    this.elements['delete-ticket'].addEventListener('click', () => this.deleteTicket());
+                    this.elements['delete-ticket'].addEventListener('click', () => this.deleteChat(this.selectedChatId));
                 }
 
                 // Settings toggles
@@ -2399,6 +2435,15 @@
                         this.saveSetting(id, value);
                     });
                 });
+
+                // Clear data button
+                if (this.elements['clear-data-btn']) {
+                    this.elements['clear-data-btn'].addEventListener('click', () => {
+                        if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                            this.clearAllData();
+                        }
+                    });
+                }
             }
 
             // Switch between tabs
@@ -2770,7 +2815,7 @@
                     if (filterValue !== 'all') {
                         if (filterValue === 'deleted' && !chat.deleted) return false;
                         if (filterValue !== 'deleted' && chat.deleted) return false;
-                        if (filterValue !== 'deleted' && chat.status !== filterValue) return false;
+                        if (filterValue !== 'deleted' && (chat.status || 'active') !== filterValue) return false;
                     }
                     
                     // Apply search
@@ -2820,7 +2865,7 @@
                 
                 this.filteredChats.forEach(([clientId, chat]) => {
                     const clientInfo = chat.clientInfo || {};
-                    const status = chat.status || 'pending';
+                    const status = chat.status || 'active';
                     const messageCount = chat.messages?.length || 0;
                     const lastMessage = messageCount > 0 ? chat.messages[messageCount - 1] : null;
                     const lastMessageText = lastMessage ? lastMessage.message : 'No messages yet';
@@ -3021,7 +3066,7 @@
                 
                 try {
                     const response = await fetch(`/api/chats/${this.selectedChatId}/status`, {
-                        method: 'PUT',
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'CSRF-Token': (document.querySelector('meta[name="csrf-token"]')?.content || '')
@@ -3056,7 +3101,7 @@
                 
                 try {
                     const response = await fetch(`/api/chats/${clientId}/status`, {
-                        method: 'PUT',
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'CSRF-Token': (document.querySelector('meta[name="csrf-token"]')?.content || '')
@@ -3086,17 +3131,6 @@
                 }
             }
 
-            // Delete a chat from the modal
-            async deleteTicket() {
-                if (!this.selectedChatId) return;
-                
-                if (!confirm('Are you sure you want to delete this chat? This action cannot be undone.')) {
-                    return;
-                }
-                
-                await this.deleteChat(this.selectedChatId);
-            }
-
             // Delete a chat
             async deleteChat(clientId) {
                 if (!confirm('Are you sure you want to delete this chat? This action cannot be undone.')) {
@@ -3114,8 +3148,9 @@
                     
                     if (data.success) {
                         this.showNotification('Chat deleted successfully', 'success');
-                        // Update local data
-                        this.chats[clientId].deleted = true;
+                        
+                        // Remove the chat from local storage
+                        delete this.chats[clientId];
                         
                         // If the deleted chat is the one in the ticket modal, close it
                         if (this.selectedChatId === clientId) {
@@ -3123,6 +3158,7 @@
                             this.selectedChatId = null;
                         }
                         
+                        // Update the chat list
                         this.filterChats();
                     } else {
                         this.showNotification('Error deleting chat', 'error');
@@ -3178,8 +3214,8 @@
                     }
                     
                     // Date range filter
-                    const dateFrom = document.getElementById('date-from').value;
-                    const dateTo = document.getElementById('date-to').value;
+                    const dateFrom = this.elements['date-from']?.value;
+                    const dateTo = this.elements['date-to']?.value;
                     
                     if (dateFrom) {
                         const fromDate = new Date(dateFrom);
@@ -3409,6 +3445,39 @@
                 } catch (error) {
                     console.error('Error deleting submission:', error);
                     this.showNotification('Error deleting submission', 'error');
+                }
+            }
+
+            // Clear all data
+            async clearAllData() {
+                if (!confirm('Are you absolutely sure you want to clear ALL data? This action cannot be undone and will delete all submissions and chat history.')) {
+                    return;
+                }
+                
+                try {
+                    const response = await fetch('/api/clear-all-data', {
+                        method: 'DELETE',
+                        credentials: 'include',
+                        headers: { 'CSRF-Token': (document.querySelector('meta[name="csrf-token"]')?.content || '') }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.showNotification('All data cleared successfully', 'success');
+                        // Reset local data
+                        this.submissions = [];
+                        this.chats = {};
+                        this.filterAndSortSubmissions();
+                        this.renderSubmissions();
+                        this.filterChats();
+                        this.loadStats();
+                    } else {
+                        this.showNotification('Error clearing data', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error clearing data:', error);
+                    this.showNotification('Error clearing data', 'error');
                 }
             }
 
