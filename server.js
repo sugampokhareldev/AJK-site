@@ -164,13 +164,13 @@ function broadcastToAll(message, sourceSessionId = null, excludeClientId = null)
 }
 
 // FIXED: Modified notifyAdmin to send to all admins
-function notifyAdmin(message, targetSessionId = null) {
+function notifyAdmin(type, payload, targetSessionId = null) {
     clients.forEach(client => {
         if (client.isAdmin && client.ws.readyState === WebSocket.OPEN) {
             try {
                 client.ws.send(JSON.stringify({
-                    type: 'admin',
-                    message: message,
+                    type: type,
+                    payload: payload,
                     timestamp: new Date().toISOString()
                 }));
             } catch (error) {
@@ -1240,7 +1240,11 @@ app.post('/api/form/submit', validateFormSubmission, async (req, res) => {
         db.data.submissions.push(submission);
         await db.write();
         
-        notifyAdmin(`New contact form submission from ${sanitizedData.name} (${sanitizedData.email})`);
+        notifyAdmin('new_submission', {
+            id: submission.id,
+            name: sanitizedData.name,
+            email: sanitizedData.email
+        });
         
         console.log('Form submission received:', { id: submission.id, email: sanitizedData.email });
         
@@ -1512,6 +1516,29 @@ app.delete('/api/chats/:clientId', requireAuth, async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: 'Database error' });
   }
+});
+
+// Route to update chat status
+app.post('/api/chats/:clientId/status', requireAuth, async (req, res) => {
+    const { clientId } = req.params;
+    const { status } = req.body;
+
+    if (!['pending', 'resolved'].includes(status)) {
+        return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    try {
+        await db.read();
+        if (db.data.chats[clientId]) {
+            db.data.chats[clientId].status = status;
+            await db.write();
+            res.json({ success: true, message: `Chat status updated to ${status}` });
+        } else {
+            res.status(404).json({ error: 'Chat not found' });
+        }
+    } catch (err) {
+        res.status(500).json({ error: 'Database error' });
+    }
 });
 
 // Route to resolve a chat
