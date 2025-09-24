@@ -16,7 +16,8 @@ const { JSONFile } = require('lowdb/node');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
 
-const FileStore = require('session-file-store')(session);
+// Use memory store for sessions to avoid file system issues
+const MemoryStore = require('memorystore')(session);
 const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
@@ -210,6 +211,25 @@ function sendToClient(clientId, messageText, sourceSessionId = null) {
     return false;
 }
 
+// NEW: Function to send chat reset message to client
+function sendChatReset(clientId) {
+    const client = clients.get(clientId);
+    if (client && client.ws.readyState === WebSocket.OPEN) {
+        try {
+            client.ws.send(JSON.stringify({
+                type: 'chat_reset',
+                message: 'Chat session has been reset by admin',
+                timestamp: new Date().toISOString()
+            }));
+            return true;
+        } catch (error) {
+            console.error('Error sending chat reset message:', error);
+            return false;
+        }
+    }
+    return false;
+}
+
 // Modify broadcastToClients to respect sessions
 function broadcastToClients(messageText, sourceSessionId = null) {
     let count = 0;
@@ -240,6 +260,37 @@ function broadcastToClients(messageText, sourceSessionId = null) {
     return count;
 }
 
+// Add this function to clean up existing ghost chats
+async function cleanupGhostChats() {
+    try {
+        await db.read();
+        const chats = db.data.chats || {};
+        let removedCount = 0;
+        
+        Object.keys(chats).forEach(clientId => {
+            const chat = chats[clientId];
+            // Remove chats that have no messages and are from "Guest"
+            if (chat && 
+                chat.clientInfo && 
+                chat.clientInfo.name === 'Guest' && 
+                (!chat.messages || chat.messages.length === 0) &&
+                // Keep chats created in last 24 hours to avoid deleting new legitimate ones
+                new Date(chat.clientInfo.firstSeen) < new Date(Date.now() - 24 * 60 * 60 * 1000)) {
+                
+                delete chats[clientId];
+                removedCount++;
+            }
+        });
+        
+        if (removedCount > 0) {
+            await db.write();
+            console.log(`Cleaned up ${removedCount} ghost chats`);
+        }
+    } catch (e) {
+        console.error('Error cleaning up ghost chats:', e);
+    }
+}
+
 // Create WebSocket server
 const wss = new WebSocket.Server({ 
     server,
@@ -260,6 +311,8 @@ const wss = new WebSocket.Server({
 // Allowed origins for WebSocket connections
 const allowedOrigins = [
     'https://ajk-cleaning.onrender.com',
+    'https://ajkcleaners.de',
+    'http://ajkcleaners.de',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'http://localhost:3001',
@@ -348,43 +401,32 @@ wss.on('connection', async (ws, request) => {
         missedPings: 0
     });
     
-    // Check if chat was deleted and create new session if needed
-    await db.read();
-    db.data = db.data && typeof db.data === 'object' ? db.data : {};
-    db.data.chats = db.data.chats || {};
-    if (db.data.chats[clientId] && db.data.chats[clientId].deleted) {
-        // Create a new chat session
-        db.data.chats[clientId] = {
-            clientInfo: {
-                name: client.name,
-                email: client.email,
-                ip: clientIp,
-                firstSeen: new Date().toISOString()
-            },
-            messages: [],
-            previousChat: db.data.chats[clientId].clientId // Reference to old chat
-        };
-        await db.write();
-    }
-
-    // DEFERRED: Chat object creation is now deferred until the first message or identification to avoid creating empty chats for non-interactive visitors.
+    // FIX 1: REMOVED automatic chat creation - chats will be created only on first message or identify
     
-    // Load chat history if it exists
-    if (db.data.chats[clientId] && !db.data.chats[clientId].deleted) {
-        const chatHistory = db.data.chats[clientId].messages || [];
+    // Load existing chat history if it exists (without creating new chat)
+    try {
+        await db.read();
+        db.data = db.data && typeof db.data === 'object' ? db.data : {};
+        db.data.chats = db.data.chats || {};
         
-        // Send history to client
-        if (chatHistory.length > 0) {
-            try {
-                ws.send(JSON.stringify({
-                    type: 'history',
-                    messages: chatHistory,
-                    clientId: clientId
-                }));
-            } catch (error) {
-                console.error('Error sending chat history:', error);
+        if (db.data.chats[clientId] && !db.data.chats[clientId].deleted) {
+            const existingChatHistory = db.data.chats[clientId].messages || [];
+            
+            // Send history to client
+            if (existingChatHistory.length > 0) {
+                try {
+                    ws.send(JSON.stringify({
+                        type: 'history',
+                        messages: existingChatHistory,
+                        clientId: clientId
+                    }));
+                } catch (error) {
+                    console.error('Error sending chat history:', error);
+                }
             }
         }
+    } catch (e) {
+        console.error('Error loading chat history:', e);
     }
     
     notifyAdmin(`New client connected: ${clientIp} (${clientId})`);
@@ -442,6 +484,28 @@ wss.on('connection', async (ws, request) => {
                         return;
                     }
                     
+                    // FIX 1: Ensure chat exists before storing message
+                    try {
+                        await db.read();
+                        db.data = db.data && typeof db.data === 'object' ? db.data : {};
+                        db.data.chats = db.data.chats || {};
+                        
+                        if (!db.data.chats[clientId] || db.data.chats[clientId].deleted) {
+                            db.data.chats[clientId] = {
+                                clientInfo: {
+                                    name: client.name || 'Guest',
+                                    email: client.email || '',
+                                    ip: clientIp,
+                                    firstSeen: new Date().toISOString()
+                                },
+                                messages: [],
+                                status: 'active'
+                            };
+                        }
+                    } catch (e) {
+                        console.error('Error ensuring chat exists:', e);
+                    }
+                    
                     const chatMessage = {
                         id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
                         type: 'chat',
@@ -456,43 +520,36 @@ wss.on('connection', async (ws, request) => {
                     chatHistory.push(chatMessage);
                     
                     // Store message in database
-                    await db.read();
-                    db.data = db.data && typeof db.data === 'object' ? db.data : {};
-                    db.data.chats = db.data.chats || {};
-                    if (db.data.chats[clientId] && db.data.chats[clientId].deleted) {
-                        db.data.chats[clientId] = {
-                            clientInfo: {
-                                name: client.name,
-                                email: client.email,
-                                ip: clientIp,
-                                firstSeen: new Date().toISOString()
-                            },
-                            messages: [],
-                            status: 'active'
-                        };
+                    try {
+                        await db.read();
+                        db.data = db.data && typeof db.data === 'object' ? db.data : {};
+                        db.data.chats = db.data.chats || {};
+                        
+                        if (!db.data.chats[clientId] || db.data.chats[clientId].deleted) {
+                            db.data.chats[clientId] = {
+                                clientInfo: {
+                                    name: client.name || 'Guest',
+                                    email: client.email || '',
+                                    ip: clientIp,
+                                    firstSeen: new Date().toISOString()
+                                },
+                                messages: [],
+                                status: 'active'
+                            };
+                        }
+                        
+                        db.data.chats[clientId].messages.push({
+                            id: chatMessage.id,
+                            message: sanitizedText,
+                            timestamp: new Date().toISOString(),
+                            isAdmin: client.isAdmin,
+                            type: 'chat'
+                        });
+                        
+                        await db.write();
+                    } catch (e) {
+                        console.error('Error storing chat message:', e);
                     }
-                    if (!db.data.chats[clientId]) {
-                        db.data.chats[clientId] = {
-                            clientInfo: {
-                                name: client.name,
-                                email: client.email,
-                                ip: clientIp,
-                                firstSeen: new Date().toISOString()
-                            },
-                            messages: [],
-                            status: 'active'
-                        };
-                    }
-                    
-                    db.data.chats[clientId].messages.push({
-                        id: chatMessage.id,
-                        message: sanitizedText,
-                        timestamp: new Date().toISOString(),
-                        isAdmin: client.isAdmin,
-                        type: 'chat'
-                    });
-                    
-                    await db.write();
                     
                     // Check if any admin is online
                     let adminOnline = false;
@@ -588,8 +645,9 @@ wss.on('connection', async (ws, request) => {
                     
                     // Handle admin identification
                     if (message.isAdmin) {
-                        // Validate admin session
-                        if (!adminSessions.has(message.sessionId)) {
+                        // FIX 2: Improved admin session validation
+                        const sessionData = adminSessions.get(message.sessionId);
+                        if (!sessionData) {
                             console.log('Invalid admin session attempt:', message.sessionId);
                             // Don't close the connection, just don't mark as admin
                             try {
@@ -600,14 +658,12 @@ wss.on('connection', async (ws, request) => {
                             } catch (error) {
                                 console.error('Error sending error message:', error);
                             }
+                            break; // Important: break out of the switch case
                         } else {
                             client.isAdmin = true;
-                            adminSessions.set(message.sessionId, {
-                                id: message.sessionId,
-                                name: client.name,
-                                connectedAt: new Date().toISOString(),
-                                ip: clientIp
-                            });
+                            // Update session data with connection info
+                            sessionData.connectedAt = new Date().toISOString();
+                            sessionData.wsClientId = clientId;
                             
                             // Send all chat history to admin when they connect
                             try {
@@ -663,7 +719,7 @@ wss.on('connection', async (ws, request) => {
                     } else {
                         client.isAdmin = false;
 
-                        // Ensure a persistent chat session (ticket) exists for this client upon identification
+                        // FIX 1: Ensure a persistent chat session exists for this client upon identification
                         try {
                             await db.read();
                             db.data = db.data && typeof db.data === 'object' ? db.data : {};
@@ -681,14 +737,14 @@ wss.on('connection', async (ws, request) => {
                                     messages: [],
                                     status: 'active'
                                 };
+                                await db.write();
                             } else {
                                 db.data.chats[clientId].clientInfo = db.data.chats[clientId].clientInfo || {};
                                 db.data.chats[clientId].clientInfo.name = client.name || db.data.chats[clientId].clientInfo.name || 'Guest';
                                 if (client.email) db.data.chats[clientId].clientInfo.email = client.email;
                                 db.data.chats[clientId].clientInfo.lastSeen = new Date().toISOString();
+                                await db.write();
                             }
-
-                            await db.write();
                         } catch (e) {
                             console.error('Error upserting chat on identify:', e);
                         }
@@ -874,7 +930,10 @@ wss.on('connection', async (ws, request) => {
         
         // Clean up admin sessions
         if (client.isAdmin && client.sessionId) {
-            adminSessions.delete(client.sessionId);
+            const sessionData = adminSessions.get(client.sessionId);
+            if (sessionData) {
+                sessionData.disconnectedAt = new Date().toISOString();
+            }
             notifyAdmin(`Admin ${client.name} disconnected`);
         }
         
@@ -964,6 +1023,10 @@ wss.on('close', () => {
     clearInterval(heartbeatInterval);
 });
 
+// Run cleanup on server start and periodically
+setTimeout(cleanupGhostChats, 5000); // Run 5 seconds after startup
+setInterval(cleanupGhostChats, 60 * 60 * 1000); // Every hour
+
 // ==================== END WEBSOCKET CHAT SERVER ====================
 
 // ==================== ENHANCED VALIDATION MIDDLEWARE ====================
@@ -1009,7 +1072,9 @@ app.use(cors({
             'http://localhost:3000',
             'http://127.0.0.1:3000',
             'http://localhost:3001',
-            'http://127.0.0.1:3001'
+            'http://127.0.0.1:3001',
+            'https://www.ajkcleaners.de',
+            
         ];
         
         if (allowedOrigins.indexOf(origin) !== -1 || (origin && origin.includes('localhost'))) {
@@ -1047,15 +1112,13 @@ app.use((req, res, next) => {
     next();
 });
 
-// Session configuration
+// FIX 3: Use memory store for sessions to avoid file system issues
 app.use(session({
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    store: new FileStore({
-        path: path.join(__dirname, 'sessions'),
-        ttl: 86400, // 1 day in seconds
-        logFn: function () {} // Disable logging
+    store: new MemoryStore({
+        checkPeriod: 86400000 // prune expired entries every 24h
     }),
     cookie: { 
         secure: isProduction,
@@ -1404,44 +1467,68 @@ app.get('/api/chats', requireAuth, async (req, res) => {
   }
 });
 
-// Delete a chat
+// FIX 1: Enhanced Chat Deletion with proper reset notification
 app.delete('/api/chats/:clientId', requireAuth, async (req, res) => {
-  const clientId = req.params.clientId;
-  
-  try {
-    await db.read();
-    db.data = db.data && typeof db.data === 'object' ? db.data : {};
-    db.data.chats = db.data.chats || {};
-    if (db.data.chats[clientId]) {
-      // Mark as deleted and cleanup related state
-      db.data.chats[clientId].deleted = true;
-      db.data.chats[clientId].deletedAt = new Date().toISOString();
-      await db.write();
+    const clientId = req.params.clientId;
+    
+    try {
+        await db.read();
+        db.data = db.data && typeof db.data === 'object' ? db.data : {};
+        db.data.chats = db.data.chats || {};
+        
+        if (db.data.chats[clientId]) {
+            // COMPLETELY remove the chat data
+            delete db.data.chats[clientId];
+            
+            // Also clean up pending messages
+            if (db.data.pending_client_messages && db.data.pending_client_messages[clientId]) {
+                delete db.data.pending_client_messages[clientId];
+            }
+            
+            await db.write();
 
-      // Purge in-memory history for this client
-      for (let i = chatHistory.length - 1; i >= 0; i--) {
-          if (chatHistory[i].clientId === clientId) {
-              chatHistory.splice(i, 1);
-          }
-      }
+            // Clean up in-memory data more aggressively
+            for (let i = chatHistory.length - 1; i >= 0; i--) {
+                if (chatHistory[i].clientId === clientId) {
+                    chatHistory.splice(i, 1);
+                }
+            }
 
-      // Notify live client to reset chat UI
-      const liveClient = clients.get(clientId);
-      if (liveClient && liveClient.ws && liveClient.ws.readyState === WebSocket.OPEN) {
-          try {
-              liveClient.ws.send(JSON.stringify({ type: 'chat_reset' }));
-          } catch (e) {
-              console.error('Error notifying client of chat reset:', e);
-          }
-      }
+            // FIX 1: Send chat reset message before closing connection
+            const liveClient = clients.get(clientId);
+            if (liveClient && liveClient.ws) {
+                try {
+                    // Send reset message first
+                    sendChatReset(clientId);
+                    
+                    // Wait a bit for message to be delivered, then close
+                    setTimeout(() => {
+                        try {
+                            liveClient.ws.close(1000, 'Chat deleted by admin');
+                        } catch (e) {
+                            console.error('Error closing client connection:', e);
+                        }
+                        clients.delete(clientId);
+                    }, 100);
+                } catch (e) {
+                    console.error('Error notifying client of chat reset:', e);
+                    try {
+                        liveClient.ws.close(1000, 'Chat deleted by admin');
+                    } catch (closeError) {
+                        console.error('Error closing client connection:', closeError);
+                    }
+                    clients.delete(clientId);
+                }
+            }
 
-      res.json({ success: true, message: 'Chat deleted successfully' });
-    } else {
-      res.status(404).json({ error: 'Chat not found' });
+            res.json({ success: true, message: 'Chat completely deleted' });
+        } else {
+            res.status(404).json({ error: 'Chat not found' });
+        }
+    } catch (err) {
+        console.error('Chat deletion error:', err);
+        res.status(500).json({ error: 'Database error' });
     }
-  } catch (err) {
-    res.status(500).json({ error: 'Database error' });
-  }
 });
 
 // Route to update chat status
@@ -1580,14 +1667,15 @@ app.post('/api/admin/login', async (req, res) => {
         req.session.authenticated = true;
         req.session.user = { id: user.id, username: user.username };
         
-        // Store admin session for WebSocket validation
+        // FIX 2: Improved admin session storage
         if (sessionId) {
             adminSessions.set(sessionId, {
                 id: sessionId,
                 username: username,
                 loginTime: new Date().toISOString(),
                 deviceType: deviceType || 'unknown',
-                ip: req.ip
+                ip: req.ip,
+                authenticated: true
             });
         }
         
@@ -1737,6 +1825,8 @@ initializeDB().then(() => {
         console.log(`Offline message support: ENABLED`);
         console.log(`Connection quality monitoring: ENABLED`);
         console.log(`Chat persistence: ENABLED`);
+        console.log(`Ghost chat prevention: ENABLED`);
+        console.log(`Ghost chat cleanup: ENABLED`);
         console.log(`=== SERVER READY ===`);
     });
 }).catch(err => {
