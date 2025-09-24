@@ -1068,13 +1068,13 @@ app.use(cors({
         if (!origin) return callback(null, true);
         
         const allowedOrigins = [
+            'https://ajkcleaners.de', // Add this line for your production domain
+            'https://www.ajkcleaners.de', // Consider adding this too
             'https://ajk-cleaning.onrender.com',
             'http://localhost:3000',
             'http://127.0.0.1:3000',
             'http://localhost:3001',
-            'http://127.0.0.1:3001',
-            'https://www.ajkcleaners.de',
-            
+            'http://127.0.0.1:3001'
         ];
         
         if (allowedOrigins.indexOf(origin) !== -1 || (origin && origin.includes('localhost'))) {
