@@ -789,6 +789,25 @@
             transform: translateY(-1px);
         }
         
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 14px;
+            flex: 1;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            font-weight: 600;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
         .chat-from-submission {
             background-color: #8b5cf6;
             color: var(--white);
@@ -960,6 +979,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            backdrop-filter: blur(10px);
         }
         
         .connection-status.connected { 
@@ -974,6 +994,11 @@
         
         .connection-status.connecting { 
             background: var(--warning); 
+            color: var(--white); 
+        }
+        
+        .connection-status.error { 
+            background: var(--info); 
             color: var(--white); 
         }
         
@@ -1365,6 +1390,21 @@
             gap: 3px;
         }
         
+        .date-divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .date-divider span {
+            background: var(--white);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--gray-500);
+            border: 1px solid var(--gray-200);
+        }
+        
         .chat-ticket-reply {
             display: flex;
             gap: 12px;
@@ -1589,6 +1629,40 @@
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             overflow: hidden;
+        }
+
+        /* Modal loading styles */
+        .modal-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            border-radius: var(--radius-lg);
+        }
+
+        .modal-loading .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        button:disabled:hover {
+            transform: none !important;
         }
 
         /* Animations */
@@ -2177,7 +2251,7 @@
                 </div>
                 <div class="chat-ticket-reply">
                     <textarea id="ticket-reply-input" placeholder="Type your reply..."></textarea>
-                    <button type="button" id="ticket-send-reply" class="btn-view">Send</button>
+                    <button type="button" id="ticket-send-reply" class="btn-primary">Send</button>
                 </div>
                 <div class="chat-ticket-actions">
                     <button type="button" class="action-btn" id="ticket-export">
@@ -2429,6 +2503,212 @@
             }
         };
 
+        // Enhanced Admin WebSocket Class
+        class AdminSocket {
+            constructor(adminPanel) {
+                this.adminPanel = adminPanel;
+                this.ws = null;
+                this.isConnected = false;
+                this.reconnectTimeout = null;
+                this.sessionId = DeviceManager.getSessionId();
+                this.reconnectAttempts = 0;
+                this.maxReconnectAttempts = 5;
+                this.connect();
+            }
+
+            connect() {
+                if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                    return;
+                }
+                
+                try {
+                    if (this.ws) {
+                        this.ws.onclose = null;
+                        this.ws.onerror = null;
+                        this.ws.close();
+                    }
+                    
+                    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                    // Use the correct WebSocket endpoint for admin
+                    const wsUrl = `${protocol}//${window.location.host}?sessionId=${encodeURIComponent(this.sessionId)}&endpoint=admin`;
+                    
+                    console.log('Connecting to Admin WebSocket:', wsUrl);
+                    this.ws = new WebSocket(wsUrl);
+
+                    this.ws.onopen = () => {
+                        console.log('Admin WebSocket connected successfully');
+                        this.isConnected = true;
+                        this.reconnectAttempts = 0;
+                        this.adminPanel.updateConnectionStatus('connected');
+                        this.adminPanel.showNotification('Connected to chat server', 'success');
+                        
+                        // Identify as admin
+                        setTimeout(() => {
+                            if (this.ws.readyState === WebSocket.OPEN) {
+                                this.ws.send(JSON.stringify({
+                                    type: 'admin_identify',
+                                    sessionId: this.sessionId,
+                                    name: 'Admin',
+                                    timestamp: new Date().toISOString()
+                                }));
+                            }
+                        }, 100);
+                    };
+
+                    this.ws.onmessage = (event) => {
+                        try {
+                            const data = JSON.parse(event.data);
+                            console.log('Admin WebSocket message received:', data);
+                            
+                            this.handleMessage(data);
+                        } catch (e) {
+                            console.error('Error processing admin socket message:', e);
+                        }
+                    };
+
+                    this.ws.onclose = (event) => {
+                        console.log('Admin WebSocket disconnected:', event.code, event.reason);
+                        this.isConnected = false;
+                        this.adminPanel.updateConnectionStatus('disconnected');
+                        
+                        if (event.code !== 1000) { // Not a normal closure
+                            this.reconnect();
+                        }
+                    };
+
+                    this.ws.onerror = (error) => {
+                        console.error('Admin WebSocket error:', error);
+                        this.isConnected = false;
+                        this.adminPanel.updateConnectionStatus('error');
+                    };
+
+                } catch (error) {
+                    console.error('WebSocket connection error:', error);
+                    this.reconnect();
+                }
+            }
+
+            handleMessage(data) {
+                switch(data.type) {
+                    case 'chat_history':
+                        this.handleChatHistory(data);
+                        break;
+                    case 'admin_identified':
+                        this.handleAdminIdentified(data);
+                        break;
+                    case 'error':
+                        this.handleError(data);
+                        break;
+                    case 'info':
+                        console.log('Server info:', data.message);
+                        this.adminPanel.showNotification(data.message, 'info');
+                        break;
+                    case 'chat': // Handle incoming chat messages from users
+                        this.adminPanel.handleIncomingChatMessage(data);
+                        break;
+                    case 'client_connected':
+                        this.adminPanel.handleClientConnected(data.payload);
+                        break;
+                    case 'client_disconnected':
+                        this.adminPanel.handleClientDisconnected(data.payload);
+                        break;
+                    case 'client_list': // Handle list of currently online clients
+                        this.adminPanel.handleClientList(data.clients);
+                        break;
+                    default:
+                        console.log('Unhandled admin message type:', data.type);
+                }
+            }
+
+            handleChatHistory(data) {
+                console.log('Received chat history for:', data.clientId);
+                this.adminPanel.historyLoaded = true; // Set flag when history is received
+                
+                if (this.adminPanel.selectedChatId === data.clientId) {
+                    this.adminPanel.renderChatMessages(data.messages || []);
+                } else {
+                    console.log('Received history for different client:', data.clientId, 'current:', this.adminPanel.selectedChatId);
+                }
+            }
+
+            handleAdminIdentified(data) {
+                console.log('Admin identification confirmed');
+                this.adminPanel.showNotification('Admin session established', 'success');
+            }
+
+            handleError(data) {
+                console.error('WebSocket error:', data.message);
+                this.adminPanel.showNotification(`Chat error: ${data.message}`, 'error');
+            }
+
+            reconnect() {
+                if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+                    console.error('Max reconnection attempts reached');
+                    this.adminPanel.showNotification('Failed to reconnect to chat server', 'error');
+                    return;
+                }
+                
+                this.reconnectAttempts++;
+                const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
+                
+                console.log(`Reconnecting in ${delay}ms (attempt ${this.reconnectAttempts})`);
+                this.adminPanel.showNotification(`Reconnecting to chat... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`, 'warning');
+                
+                if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
+                this.reconnectTimeout = setTimeout(() => this.connect(), delay);
+            }
+
+            disconnect() {
+                if (this.reconnectTimeout) {
+                    clearTimeout(this.reconnectTimeout);
+                    this.reconnectTimeout = null;
+                }
+                
+                if (this.ws) {
+                    this.ws.onclose = null;
+                    this.ws.onerror = null;
+                    this.ws.close(1000, 'Admin disconnecting');
+                    this.ws = null;
+                }
+                
+                this.isConnected = false;
+                this.adminPanel.updateConnectionStatus('disconnected');
+            }
+
+            sendMessage(message) {
+                if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+                    console.error('WebSocket not connected');
+                    return false;
+                }
+                
+                try {
+                    message.timestamp = message.timestamp || new Date().toISOString();
+                    message.sessionId = this.sessionId;
+                    this.ws.send(JSON.stringify(message));
+                    return true;
+                } catch (error) {
+                    console.error('Error sending WebSocket message:', error);
+                    return false;
+                }
+            }
+
+            requestChatHistory(clientId) {
+                return this.sendMessage({
+                    type: 'get_chat_history',
+                    clientId: clientId
+                });
+            }
+
+            sendChatMessage(clientId, message) {
+                return this.sendMessage({
+                    type: 'admin_message',
+                    clientId: clientId,
+                    message: message,
+                    timestamp: new Date().toISOString()
+                });
+            }
+        }
+
         // Admin Panel Class
         class AdminPanel {
             constructor() {
@@ -2453,10 +2733,18 @@
                 this.filteredChats = [];
                 this.activeTab = 'dashboard';
                 this.stats = {};
+                this.historyLoaded = false;
+                this.chatData = {}; // Use this to store all chat data
+                this.isLoading = false;
+                this.isSendingMessage = false; // Add this flag for send button
                 
                 this.initializeElements();
                 this.setupEventListeners();
                 this.checkAuthStatus();
+                
+                // Initialize connection status
+                this.updateConnectionStatus('connecting');
+                
                 ChartManager.init();
                 DatePickerManager.init();
             }
@@ -2538,10 +2826,9 @@
                 if (this.elements['reconnect-chat']) {
                     this.elements['reconnect-chat'].addEventListener('click', () => {
                         if (this.chatSocket) {
-                            this.chatSocket.reconnect();
-                        } else {
-                            this.initializeChatSocket();
+                            this.chatSocket.disconnect();
                         }
+                        this.initializeChatSocket();
                     });
                 }
 
@@ -2685,33 +2972,59 @@
                     });
                 }
 
-                // Ticket Modal Listeners
+                // Ticket Modal Listeners - Fixed with event prevention
                 if (this.elements['close-ticket-modal']) {
-                    this.elements['close-ticket-modal'].addEventListener('click', () => {
+                    this.elements['close-ticket-modal'].addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         this.elements['chat-ticket-modal'].style.display = 'none';
                         this.selectedChatId = null;
+                        sessionStorage.removeItem('adminSelectedClientId');
                     });
                 }
 
+                // Fixed send button event listener
                 if (this.elements['ticket-send-reply']) {
-                    this.elements['ticket-send-reply'].addEventListener('click', () => this.sendTicketReply());
+                    this.elements['ticket-send-reply'].addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Add a small delay to ensure any focus events are handled
+                        setTimeout(() => {
+                            this.sendTicketReply();
+                        }, 50);
+                    });
                 }
                 
+                // Improved Enter key handler
                 if (this.elements['ticket-reply-input']) {
-                    this.elements['ticket-reply-input'].addEventListener('keypress', (e) => {
+                    this.elements['ticket-reply-input'].addEventListener('keydown', (e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                             e.preventDefault();
-                            this.sendTicketReply();
+                            e.stopPropagation();
+                            
+                            // Small delay to ensure the enter key event is fully processed
+                            setTimeout(() => {
+                                this.sendTicketReply();
+                            }, 50);
                         }
                     });
                 }
 
                 if (this.elements['resolve-ticket']) {
-                    this.elements['resolve-ticket'].addEventListener('click', () => this.resolveTicket());
+                    this.elements['resolve-ticket'].addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.resolveTicket();
+                    });
                 }
 
                 if (this.elements['delete-ticket']) {
-                    this.elements['delete-ticket'].addEventListener('click', () => this.deleteChat(this.selectedChatId));
+                    this.elements['delete-ticket'].addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.deleteChat(this.selectedChatId);
+                    });
                 }
 
                 // Settings toggles
@@ -2730,6 +3043,137 @@
                             this.clearAllData();
                         }
                     });
+                }
+            }
+
+            // Handle incoming chat messages
+            handleIncomingChatMessage(message) {
+                // If the message is for the currently viewed chat, add it to the UI
+                if (this.selectedChatId === message.clientId) {
+                    this.addMessageToUI(message);
+                }
+
+                // Update the main chat list with the new message info
+                if (this.chats[message.clientId]) {
+                    this.chats[message.clientId].messages.push(message);
+                    this.filterChats(); // Re-render the list
+                }
+                
+                this.showNotification(`New message from ${message.name || 'a client'}`, 'info');
+            }
+
+            // Handle new client connections
+            handleClientConnected(clientInfo) {
+                this.showNotification(`Client connected: ${clientInfo.name || clientInfo.id}`, 'info');
+                // Add or update the client in the main chat list
+                this.loadChats(); // For simplicity, just reload all chats
+            }
+
+            // Handle client disconnections
+            handleClientDisconnected(clientInfo) {
+                this.showNotification(`Client disconnected: ${clientInfo.name || clientInfo.id}`, 'warning');
+                // Update the client's status in the main chat list
+                this.loadChats(); // For simplicity, just reload all chats
+            }
+
+            // Handle the initial list of online clients
+            handleClientList(clients) {
+                this.showNotification(`${clients.length} client(s) are currently online.`, 'info');
+                // We can merge this with the main chat list if needed,
+                // but a full refresh is often simpler and sufficient.
+                this.loadChats();
+            }
+
+            // =================================================================
+            // START: FIX 1 - OPTIMISTIC UI FOR CHAT
+            // =================================================================
+            async sendTicketReply() {
+                const input = this.elements['ticket-reply-input'];
+                const message = input.value.trim();
+                
+                if (!message || !this.selectedChatId) {
+                    this.showNotification('Please enter a message', 'warning');
+                    return;
+                }
+            
+                if (this.isSendingMessage) return;
+                this.isSendingMessage = true;
+            
+                // --- START: Optimistic UI Update ---
+                const optimisticMessage = {
+                    message: message,
+                    isAdmin: true,
+                    timestamp: new Date().toISOString(),
+                    // Add a temporary ID for potential status updates later
+                    id: `temp_${Date.now()}` 
+                };
+                this.addMessageToUI(optimisticMessage); 
+                input.value = ''; // Clear input immediately
+                // --- END: Optimistic UI Update ---
+            
+                const sendButton = this.elements['ticket-send-reply'];
+                const originalButtonHTML = sendButton.innerHTML;
+                sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                sendButton.disabled = true;
+                input.disabled = true;
+            
+                try {
+                    let messageSent = false;
+                    if (this.chatSocket && this.chatSocket.isConnected) {
+                        messageSent = this.chatSocket.sendChatMessage(this.selectedChatId, message);
+                    }
+            
+                    if (messageSent) {
+                        // WebSocket sent successfully. The server broadcast will confirm it.
+                        // We've already updated the UI optimistically.
+                        return; // Exit here, finally block will run.
+                    }
+            
+                    // Fallback to REST API if WebSocket fails
+                    console.log('WebSocket not available, using REST API fallback for sending message.');
+                    const response = await fetch('/api/chat/send', {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'CSRF-Token': (document.querySelector('meta[name="csrf-token"]')?.content || '')
+                        },
+                        body: JSON.stringify({ 
+                            clientId: this.selectedChatId, 
+                            message: message,
+                            isAdmin: true
+                        }),
+                        credentials: 'include',
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.error || `HTTP ${response.status}`);
+                    }
+                    // If the REST call succeeds, the next refresh will sync the state.
+                    // The optimistic message is good enough for the user for now.
+                } catch (error) {
+                    // If sending fails, you could update the optimistic message to show a "failed" state.
+                    console.error('Error sending message:', error);
+                    this.showNotification('Failed to send message: ' + error.message, 'error');
+                    // Re-enable input for retry
+                    input.value = message; // Restore the failed message text
+                } finally {
+                    this.resetSendButton(sendButton, originalButtonHTML, input);
+                    this.isSendingMessage = false;
+                }
+            }
+            // =================================================================
+            // END: FIX 1
+            // =================================================================
+
+            // Helper method to reset the send button
+            resetSendButton(button, originalHTML, input) {
+                if (button) {
+                    button.innerHTML = originalHTML;
+                    button.disabled = false;
+                }
+                if (input) {
+                    input.disabled = false;
                 }
             }
 
@@ -2760,6 +3204,8 @@
 
             // Update dashboard with latest data
             updateDashboard() {
+                this.updateStatsDisplay(this.stats);
+
                 // Update trend indicators
                 if (this.stats.trends) {
                     const trends = this.stats.trends;
@@ -3018,6 +3464,9 @@
                     }
                     const data = await response.json();
                     this.stats = data;
+                    
+                    // This function only updates the internal this.stats property
+                    // The UI update happens in updateDashboard()
                     this.updateStatsDisplay(data);
                     
                     // Update dashboard if it's active
@@ -3064,26 +3513,19 @@
                         throw new Error(errMsg);
                     }
                     const data = await response.json();
-                    this.chats = data && typeof data === 'object' ? data : {};
+                    this.chats = data && typeof data === 'object' ? data : {}; 
                     this.filterChats();
 
-                    // Auto-restore the last selected chat on refresh/login
-                    try {
-                        const savedId = sessionStorage.getItem('adminSelectedClientId');
-                        if (savedId && this.chats && this.chats[savedId] && !this.chats[savedId].deleted) {
-                            this.viewChat(savedId);
-                        }
-                    } catch (e) {}
                 } catch (error) {
                     console.error('Error loading chats:', error);
                     this.chats = {};
                     this.filteredChats = [];
                     if (this.elements['chats-list']) {
                         this.elements['chats-list'].innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-comments"></i>
-                            <p>${Utils.escapeHtml(error.message || 'Error loading chats')}</p>
-                        </div>`;
+                            <div class="empty-state">
+                                <i class="fas fa-comments"></i>
+                                <p>${Utils.escapeHtml(error.message || 'Error loading chats')}</p>
+                            </div>`;
                     }
                     this.showNotification('Error loading chats', 'error');
                 }
@@ -3095,7 +3537,7 @@
                 const filterValue = this.elements['chat-filter']?.value || 'all';
                 const sortValue = document.getElementById('chat-sort')?.value || 'newest';
                 
-                this.filteredChats = Object.entries(this.chats).filter(([clientId, chat]) => {
+                let filtered = Object.entries(this.chats).filter(([clientId, chat]) => {
                     if (!chat || typeof chat !== 'object') return false;
                     
                     // Apply filter
@@ -3115,10 +3557,10 @@
                     return true;
                 });
                 
-                // Sort chats
-                this.filteredChats.sort((a, b) => {
-                    const chatA = a[1];
-                    const chatB = b[1];
+                // Sort chats (a and b are [clientId, chatObject])
+                filtered.sort((a, b) => {
+                    const chatA = a[1] || {};
+                    const chatB = b[1] || {};
                     
                     switch (sortValue) {
                         case 'oldest':
@@ -3130,7 +3572,8 @@
                             return new Date(chatB.clientInfo?.firstSeen || 0) - new Date(chatA.clientInfo?.firstSeen || 0);
                     }
                 });
-                
+
+                this.filteredChats = filtered;
                 this.renderChats();
             }
 
@@ -3172,7 +3615,7 @@
                             <div class="chat-actions">
                                 <button type="button" class="btn-view" data-client-id="${clientId}">View</button>
                                 ${!chat.deleted ? `
-                                    ${status !== 'resolved' ? '<button type="button" class="btn-resolve" data-client-id="${clientId}">Resolve</button>' : ''}
+                                    ${status !== 'resolved' ? `<button type="button" class="btn-resolve" data-client-id="${clientId}">Resolve</button>` : ''}
                                     <button type="button" class="btn-delete" data-client-id="${clientId}">Delete</button>
                                 ` : ''}
                             </div>
@@ -3182,158 +3625,209 @@
                 
                 this.elements['chats-list'].innerHTML = html;
                 
-                // Add event listeners to buttons
+                // Add event listeners to buttons - Fixed with event prevention
                 document.querySelectorAll('.btn-view').forEach(btn => {
-                    btn.addEventListener('click', () => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         const clientId = btn.getAttribute('data-client-id');
                         this.viewChat(clientId);
                     });
                 });
                 
                 document.querySelectorAll('.btn-resolve').forEach(btn => {
-                    btn.addEventListener('click', () => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         const clientId = btn.getAttribute('data-client-id');
                         this.resolveChat(clientId);
                     });
                 });
                 
                 document.querySelectorAll('.btn-delete:not(:disabled)').forEach(btn => {
-                    btn.addEventListener('click', () => {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         const clientId = btn.getAttribute('data-client-id');
                         this.deleteChat(clientId);
                     });
                 });
             }
 
-            // View chat details
+            // View chat details - Fixed with improved loading states
             async viewChat(clientId) {
-                this.selectedChatId = clientId;
+                console.log('Opening chat for client:', clientId);
+                
+                // Clear previous chat and show loading
                 const modal = this.elements['chat-ticket-modal'];
-                if (!modal) return;
+                const messagesContainer = this.elements['ticket-messages'];
+                
+                if (!modal || !messagesContainer) {
+                    console.error('Modal elements not found');
+                    return;
+                }
 
+                this.selectedChatId = clientId;
+                this.historyLoaded = false; // Reset history loaded flag
+                
                 try {
-                    const response = await fetch(`/api/chats/${clientId}`, {
-                        credentials: 'include'
-                    });
-                    if (!response.ok) throw new Error('Chat not found');
-                    const chat = await response.json();
-                    
-                    // Populate modal header
-                    const name = chat.clientInfo?.name || 'Anonymous';
-                    const email = chat.clientInfo?.email || '';
-                    const status = chat.status || 'pending';
-                    
-                    this.elements['ticket-client-name'].textContent = name;
-                    this.elements['ticket-client-email'].textContent = email;
-                    
-                    // Update status indicator
-                    const statusElement = document.getElementById('ticket-status');
-                    statusElement.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-                    statusElement.className = `chat-status status-${status}`;
-                    
-                    // Update resolve button text based on status
-                    const resolveBtn = document.getElementById('resolve-ticket');
-                    if (status === 'resolved') {
-                        resolveBtn.textContent = 'Reopen Chat';
-                    } else {
-                        resolveBtn.textContent = 'Mark Resolved';
-                    }
-
-                    // Render messages
-                    const container = this.elements['ticket-messages'];
-                    if (container) {
-                        container.innerHTML = '';
-                        
-                        // Group messages by date
-                        const messagesByDate = {};
-                        (chat.messages || []).forEach(m => {
-                            const date = new Date(m.timestamp).toDateString();
-                            if (!messagesByDate[date]) {
-                                messagesByDate[date] = [];
-                            }
-                            messagesByDate[date].push(m);
-                        });
-                        
-                        // Render each date group
-                        Object.entries(messagesByDate).forEach(([date, messages]) => {
-                            // Add date divider
-                            const dateDivider = document.createElement('div');
-                            dateDivider.className = 'date-divider';
-                            dateDivider.innerHTML = `<span>${new Date(date).toLocaleDateString()}</span>`;
-                            container.appendChild(dateDivider);
-                            
-                            // Add messages for this date
-                            messages.forEach(m => {
-                                const messageDiv = document.createElement('div');
-                                messageDiv.className = `message ${m.isAdmin ? 'admin' : 'client'}`;
-                                
-                                const time = new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                                
-                                messageDiv.innerHTML = `
-                                    <div class="message-avatar">
-                                        <i class="fas ${m.isAdmin ? 'fa-user-shield' : 'fa-user'}"></i>
-                                    </div>
-                                    <div class="message-bubble">
-                                        <div class="message-text">${Utils.escapeHtml(m.message || '')}</div>
-                                        <div class="message-info">
-                                            <span class="message-time">${time}</span>
-                                            ${m.isAdmin ? '<span class="message-status"><i class="fas fa-check"></i> Sent</span>' : ''}
-                                        </div>
-                                    </div>
-                                `;
-                                
-                                container.appendChild(messageDiv);
-                            });
-                        });
-                        
-                        container.scrollTop = container.scrollHeight;
-                    }
-
+                    // Show loading state immediately
+                    messagesContainer.innerHTML = '<div class="modal-loading"><div class="spinner"></div></div>';
                     modal.style.display = 'block';
-                    this.elements['ticket-reply-input'].focus();
+                    
+                    // Get chat data from local cache first
+                    const chat = this.chats[clientId];
+                    if (chat && chat.clientInfo) {
+                        this.elements['ticket-client-name'].textContent = chat.clientInfo.name || 'Anonymous';
+                        this.elements['ticket-client-email'].textContent = chat.clientInfo.email || 'No email';
+                        
+                        const status = chat.status || 'active';
+                        const statusElement = document.getElementById('ticket-status');
+                        if (statusElement) {
+                            statusElement.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+                            statusElement.className = `chat-status status-${status}`;
+                        }
+                        
+                        // Update resolve button text
+                        const resolveBtn = document.getElementById('resolve-ticket');
+                        if (resolveBtn) {
+                            resolveBtn.textContent = status === 'resolved' ? 'Reopen Chat' : 'Mark Resolved';
+                        }
+                    }
+
+                    // Try WebSocket first for real-time data
+                    let websocketSuccess = false;
+                    if (this.chatSocket && this.chatSocket.isConnected) {
+                        console.log('Requesting history via WebSocket for:', clientId);
+                        websocketSuccess = this.chatSocket.sendMessage({
+                            type: 'get_chat_history',
+                            clientId: clientId
+                        });
+                        
+                        // Set timeout for WebSocket response
+                        setTimeout(() => {
+                            if (!this.historyLoaded) {
+                                console.log('WebSocket timeout, falling back to REST API');
+                                this.loadChatHistoryViaAPI(clientId);
+                            }
+                        }, 3000); // 3 second timeout
+                    } else {
+                        console.log('WebSocket not connected, using REST API');
+                        await this.loadChatHistoryViaAPI(clientId);
+                    }
+
+                    // Focus input after a short delay
+                    setTimeout(() => {
+                        const input = this.elements['ticket-reply-input'];
+                        if (input) input.focus();
+                    }, 500);
 
                 } catch (error) {
-                    console.error('Error loading chat:', error);
+                    console.error('Error in viewChat:', error);
+                    messagesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i> Error loading chat</div>';
                     this.showNotification('Error loading chat details', 'error');
                 }
             }
 
-            // Send reply to chat ticket
-            async sendTicketReply() {
-                const input = this.elements['ticket-reply-input'];
-                const message = input.value.trim();
-                if (!message || !this.selectedChatId) return;
-
+            // Load chat history via REST API (fallback)
+            async loadChatHistoryViaAPI(clientId) {
                 try {
-                    input.disabled = true;
-                    
-                    const response = await fetch('/api/chat/send', {
-                        method: 'POST',
-                        headers: { 
-                            'Content-Type': 'application/json', 
-                            'CSRF-Token': (document.querySelector('meta[name="csrf-token"]')?.content || '') 
-                        },
-                        body: JSON.stringify({ 
-                            clientId: this.selectedChatId, 
-                            message,
-                            isAdmin: true
-                        }),
-                        credentials: 'include',
+                    console.log('Loading chat history via API for:', clientId);
+                    const response = await fetch(`/api/chat/history/${clientId}`, {
+                        credentials: 'include'
                     });
-
+                    
                     if (response.ok) {
-                        input.value = '';
-                        // Refresh the view to show the new message
-                        this.viewChat(this.selectedChatId);
-                        this.showNotification('Message sent successfully', 'success');
+                        const messages = await response.json();
+                        this.renderChatMessages(messages || []);
+                        this.historyLoaded = true;
                     } else {
-                        throw new Error('Failed to send message');
+                        throw new Error(`API error: ${response.status}`);
                     }
                 } catch (error) {
-                    console.error('Error sending message:', error);
-                    this.showNotification('Failed to send reply', 'error');
-                } finally {
-                    input.disabled = false;
+                    console.error('API fallback failed:', error);
+                    const messagesContainer = this.elements['ticket-messages'];
+                    if (messagesContainer) {
+                        messagesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i> Failed to load messages</div>';
+                    }
+                }
+            }
+
+            // Render chat messages in the modal
+            renderChatMessages(messages) {
+                const container = this.elements['ticket-messages'];
+                if (!container) {
+                    console.error('Messages container not found');
+                    return;
+                }
+                
+                // Clear loading state
+                this.setLoadingState(false);
+                this.historyLoaded = true;
+                
+                if (!messages || messages.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No messages yet. Start the conversation!</div>';
+                    return;
+                }
+                
+                try {
+                    // Sort by timestamp
+                    const sortedMessages = [...messages].sort((a, b) => 
+                        new Date(a.timestamp) - new Date(b.timestamp)
+                    );
+                    
+                    container.innerHTML = ''; // Clear previous content
+                    
+                    sortedMessages.forEach(message => {
+                        this.addMessageToUI(message);
+                    });
+                    
+                    // Scroll to bottom
+                    container.scrollTop = container.scrollHeight;
+                    
+                } catch (error) {
+                    console.error('Error rendering messages:', error);
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i> Error displaying messages</div>';
+                }
+            }
+
+            // Add a single message to the UI
+            addMessageToUI(message) {
+                const container = this.elements['ticket-messages'];
+                if (!container) return;
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${message.isAdmin ? 'admin' : 'client'}`;
+                
+                const time = new Date(message.timestamp).toLocaleTimeString([], { 
+                    hour: '2-digit', minute: '2-digit' 
+                });
+                
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">
+                        <i class="fas ${message.isAdmin ? 'fa-user-shield' : 'fa-user'}"></i>
+                    </div>
+                    <div class="message-bubble">
+                        <div class="message-text">${Utils.escapeHtml(message.message || '')}</div>
+                        <div class="message-info">
+                            <span class="message-time">${time}</span>
+                            ${message.isAdmin ? '<span class="message-status"><i class="fas fa-check"></i> Sent</span>' : ''}
+                        </div>
+                    </div>
+                `;
+                
+                // If there's an empty state message, remove it
+                const emptyState = container.querySelector('.empty-state');
+                if (emptyState) {
+                    emptyState.remove();
+                }
+
+                container.appendChild(messageDiv);
+                
+                // Auto-scroll to bottom if near the bottom
+                const isNearBottom = container.scrollHeight - container.clientHeight <= container.scrollTop + 100;
+                if (isNearBottom) {
+                    container.scrollTop = container.scrollHeight;
                 }
             }
 
@@ -3706,7 +4200,9 @@
                 this.elements.detailView.style.display = 'block';
             }
 
-            // Delete submission
+            // =================================================================
+            // START: FIX 2 - DASHBOARD STATS UPDATE
+            // =================================================================
             async deleteSubmission(id) {
                 if (!confirm('Are you sure you want to delete this submission?')) return;
                 
@@ -3725,7 +4221,11 @@
                         this.submissions = this.submissions.filter(s => s.id != id);
                         this.filterAndSortSubmissions();
                         this.renderSubmissions();
-                        this.loadStats();
+                        
+                        // --- FIX: Explicitly update the stats display after loading ---
+                        await this.loadStats(); // Wait for stats to be loaded
+                        this.updateDashboard(); // Now re-render the dashboard components
+                        // --- END FIX ---
                     } else {
                         this.showNotification('Error deleting submission', 'error');
                     }
@@ -3734,6 +4234,9 @@
                     this.showNotification('Error deleting submission', 'error');
                 }
             }
+            // =================================================================
+            // END: FIX 2
+            // =================================================================
 
             // Clear all data
             async clearAllData() {
@@ -3969,6 +4472,47 @@
                 }, 5000);
             }
 
+            // Update connection status indicator
+            updateConnectionStatus(status) {
+                const statusElement = this.elements['connectionStatus'];
+                if (!statusElement) return;
+                
+                statusElement.className = `connection-status ${status}`;
+                
+                let icon = 'fa-circle';
+                let text = status.charAt(0).toUpperCase() + status.slice(1);
+                
+                switch(status) {
+                    case 'connected':
+                        icon = 'fa-check-circle';
+                        break;
+                    case 'disconnected':
+                        icon = 'fa-times-circle';
+                        break;
+                    case 'error':
+                        icon = 'fa-exclamation-circle';
+                        break;
+                    case 'connecting':
+                        icon = 'fa-sync-alt fa-spin';
+                        text = 'Connecting...';
+                        break;
+                }
+                
+                statusElement.innerHTML = `<i class="fas ${icon}"></i> ${text}`;
+                statusElement.style.display = 'block';
+            }
+
+            // Set loading state for modal
+            setLoadingState(loading) {
+                this.isLoading = loading;
+                
+                // Disable/enable all modal buttons during loading
+                const modalButtons = document.querySelectorAll('#chat-ticket-modal button');
+                modalButtons.forEach(button => {
+                    button.disabled = loading;
+                });
+            }
+
             // UI state management
             showLoginForm() {
                 if (this.elements['login-section']) this.elements['login-section'].style.display = 'flex';
@@ -4000,7 +4544,7 @@
                 if (this.elements.weekSubmissions) this.elements.weekSubmissions.textContent = Utils.formatNumber(stats.week || 0);
                 if (this.elements.activeChats) {
                     const active = (typeof stats.activeChats === 'number') ? stats.activeChats : 'N/A';
-                 this.elements.activeChats.textContent = Utils.formatNumber(active || 0);
+                   this.elements.activeChats.textContent = Utils.formatNumber(active || 0);
                 }
             }
 
@@ -4008,88 +4552,6 @@
             updateLastRefreshed() {
                 if (this.elements.lastRefreshed) {
                     this.elements.lastRefreshed.textContent = `Last refreshed: ${new Date().toLocaleTimeString()}`;
-                }
-            }
-        }
-
-        // Admin WebSocket Class
-        class AdminSocket {
-            constructor(adminPanel) {
-                this.adminPanel = adminPanel;
-                this.ws = null;
-                this.isConnected = false;
-                this.reconnectTimeout = null;
-                this.sessionId = DeviceManager.getSessionId();
-                this.connect();
-            }
-
-            connect() {
-                if (this.ws) {
-                    try { this.ws.close(); } catch (e) {}
-                }
-                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-                const wsUrl = `${protocol}//${window.location.host}`;
-                
-                try {
-                    this.ws = new WebSocket(wsUrl);
-
-                    this.ws.onopen = () => {
-                        console.log('Admin WebSocket connected.');
-                        this.isConnected = true;
-                        this.adminPanel.showNotification('Connected to chat server', 'success');
-                        
-                        // Identify as admin
-                        this.ws.send(JSON.stringify({
-                            type: 'identify',
-                            isAdmin: true,
-                            sessionId: this.sessionId,
-                            name: 'Admin'
-                        }));
-                    };
-
-                    this.ws.onmessage = (event) => {
-                        try {
-                            const data = JSON.parse(event.data);
-                            // When a new message comes in from a client, the server sends a 'chat' message.
-                            // We can use this to trigger a refresh of the ticket list.
-                            if (data.type === 'chat' && !data.isAdmin) {
-                                console.log('Received client message, reloading chats.');
-                                this.adminPanel.loadChats();
-                                this.adminPanel.showNotification(`New message from ${data.name || 'client'}`, 'info');
-                            }
-                        } catch (e) {
-                            console.error('Error processing admin socket message', e);
-                        }
-                    };
-
-                    this.ws.onclose = () => {
-                        console.log('Admin WebSocket disconnected. Attempting to reconnect...');
-                        this.isConnected = false;
-                        this.adminPanel.showNotification('Chat connection lost. Reconnecting...', 'error');
-                        this.reconnect();
-                    };
-
-                    this.ws.onerror = (error) => {
-                        console.error('Admin WebSocket error:', error);
-                        this.isConnected = false;
-                        this.adminPanel.showNotification('Chat connection error', 'error');
-                    };
-                } catch (error) {
-                    console.error('WebSocket connection error:', error);
-                    this.reconnect();
-                }
-            }
-
-            reconnect() {
-                if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
-                this.reconnectTimeout = setTimeout(() => this.connect(), 5000); // Reconnect every 5 seconds
-            }
-
-            disconnect() {
-                if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
-                if (this.ws) {
-                    this.ws.onclose = null; // prevent reconnecting on manual disconnect
-                    this.ws.close();
                 }
             }
         }
