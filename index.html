@@ -16,8 +16,8 @@
   <meta name="geo.placename" content="Bischofsheim">
   <meta name="geo.position" content="49.9939;8.3669">
 
-  <!-- FIX: Added a comprehensive Content-Security-Policy to allow all necessary external resources -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https://placehold.co https://images.unsplash.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' ws: wss: https://generativelanguage.googleapis.com;">
+  <!-- SECURITY FIX: Updated Content-Security-Policy to only allow connections to our own server (self) and WebSocket (ws: wss:). The direct Google API endpoint has been removed. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https://placehold.co https://images.unsplash.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' ws: wss:;">
 
   <!-- PERFORMANCE: Preload critical resources -->
   <link rel="preload" as="image" href="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
@@ -1083,18 +1083,8 @@
         };
 
         const generateChecklist = async (serviceName) => {
-             // IMPORTANT: This API key has been inserted for you.
-            const apiKey = "AIzaSyCDZyuRTh9rKRMo-PGN-Xx21FcAvJQSn1I"; 
-
-            if (!apiKey) {
-                console.error("Gemini API key is missing.");
-                checklistLoader.style.display = 'none';
-                checklistError.textContent = "Configuration error: The Gemini API key has not been set up.";
-                checklistError.classList.remove('hidden');
-                return;
-            }
-
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            // SECURITY FIX: API calls are now routed through our secure backend proxy.
+            const apiUrl = '/api/gemini';
             
             const userQuery = `Act as a professional cleaning expert from AJK Cleaning Company. Generate a comprehensive cleaning checklist for a typical '${serviceName}' service. The checklist should be well-organized, easy to follow, and formatted in Markdown with headings (like '# Kitchen') and bullet points (like '* Wipe countertops').`;
 
@@ -1178,18 +1168,9 @@
             setTimeout(() => tipResultContainer.classList.remove('opacity-0'), 10);
             tipResultText.classList.add('hidden');
             tipResultLoader.style.display = 'flex';
-
-            const apiKey = "AIzaSyCDZyuRTh9rKRMo-PGN-Xx21FcAvJQSn1I"; 
             
-            if (!apiKey) {
-                console.error("Gemini API key is missing.");
-                tipResultLoader.style.display = 'none';
-                tipResultText.textContent = "Configuration error: The Gemini API key has not been set up.";
-                tipResultText.classList.remove('hidden');
-                return;
-            }
-
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            // SECURITY FIX: API calls are now routed through our secure backend proxy.
+            const apiUrl = '/api/gemini';
             const userQuery = `You are a friendly cleaning expert from AJK Cleaning Company in Germany. Provide a quick, eco-friendly cleaning tip for tackling "${challenge}" in a "${room}". Keep it under 50 words and make it easy to follow.`;
 
             try {
@@ -1249,11 +1230,11 @@
                 faqItem.className = 'faq-item bg-white p-5 rounded-lg shadow-sm border border-gray-200 animate-fade-in-up';
                 faqItem.style.animationDelay = `${0.3 + index * 0.1}s`;
                 faqItem.innerHTML = `
-                  <div class="faq-question flex justify-between items-center font-semibold text-gray-800">
-                      <p>${item.question}</p>
-                      <i class="fas fa-chevron-down faq-icon text-primary"></i>
-                  </div>
-                  <div class="faq-answer text-gray-600 pt-3">${item.answer}</div>`;
+                    <div class="faq-question flex justify-between items-center font-semibold text-gray-800">
+                        <p>${item.question}</p>
+                        <i class="fas fa-chevron-down faq-icon text-primary"></i>
+                    </div>
+                    <div class="faq-answer text-gray-600 pt-3">${item.answer}</div>`;
                 faqContainer.appendChild(faqItem);
             });
             faqContainer.addEventListener('click', (e) => {

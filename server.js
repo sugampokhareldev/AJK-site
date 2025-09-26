@@ -26,11 +26,21 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 // Trust proxy (CRITICAL for secure cookies)
 app.set('trust proxy', 1);
 
-// Use environment secret or generate one
-const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(64).toString('hex');
-
 // Environment-specific settings
 const isProduction = NODE_ENV === 'production';
+
+// Use environment secret or generate one for development
+let SESSION_SECRET = process.env.SESSION_SECRET;
+if (!SESSION_SECRET) {
+    if (isProduction) {
+        console.error('CRITICAL: SESSION_SECRET is not set in the environment variables for production.');
+        process.exit(1);
+    }
+    // Generate a temporary secret for development only
+    SESSION_SECRET = crypto.randomBytes(64).toString('hex');
+    console.warn('Warning: SESSION_SECRET not set. Using a temporary secret for development.');
+}
+
 
 // Database setup with lowdb
 const DEFAULT_DB_DIR = process.env.DB_DIR || path.join(__dirname, 'data');
