@@ -109,7 +109,7 @@ app.post('/api/gemini', async (req, res) => {
         return res.status(400).json({ error: { message: 'Invalid request body: contents are empty.' } });
     }
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${geminiApiKey}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`;
 
     try {
         const fetch = (await import('node-fetch')).default;
@@ -378,7 +378,7 @@ const wss = new WebSocket.Server({
     }
 });
 
-const allowedOrigins = [
+const allowedOriginsWs = [
     'https://ajk-cleaning.onrender.com',
     'https://ajkcleaners.de',
     'http://ajkcleaners.de',
@@ -488,7 +488,7 @@ async function handleAdminMessage(adminClient, message) {
                 }
             }
             break;
-       
+        
         case 'get_clients':
             const clientList = Array.from(clients.values())
                 .filter(c => !c.isAdmin)
@@ -541,7 +541,7 @@ wss.on('connection', async (ws, request) => {
                      'unknown';
     
     const origin = request.headers.origin;
-    if (origin && !allowedOrigins.includes(origin)) {
+    if (origin && !allowedOriginsWs.includes(origin)) {
         console.log('WebSocket connection from blocked origin:', origin);
         ws.close(1008, 'Origin not allowed');
         return;
@@ -959,14 +959,10 @@ setInterval(cleanupGhostChats, 60 * 60 * 1000);
 
 // ==================== VALIDATION MIDDLEWARE ====================
 const validateFormSubmission = (req, res, next) => {
-  const { name, email, phone, service, message } = req.body;
+  const { name, phone, message } = req.body;
  
-  if (!name || !email || !message) {
-    return res.status(400).json({ success: false, error: 'Name, email, and message are required' });
-  }
- 
-  if (!validator.isEmail(email)) {
-    return res.status(400).json({ success: false, error: 'Invalid email format' });
+  if (!name || !phone || !message) {
+    return res.status(400).json({ success: false, error: 'Name, phone, and message are required' });
   }
  
   if (name.trim().length < 2 || name.trim().length > 100) {
@@ -989,14 +985,15 @@ app.use((req, res, next) => {
     const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'wss' : 'ws';
     const host = req.get('host');
     
+    // FINAL CORRECTED CONTENT SECURITY POLICY
     res.setHeader(
         'Content-Security-Policy',
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.googletagmanager.com https://app.usercentrics.eu; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://www.googletagmanager.com https://app.usercentrics.eu blob:; " +
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; " +
         "img-src 'self' data: https: blob:; " +
         "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; " +
-        `connect-src 'self' ${protocol}://${host} https://api.usercentrics.eu https://privacy-proxy.usercentrics.eu; ` + 
+        `connect-src 'self' ${protocol}://${host} https://api.usercentrics.eu https://privacy-proxy.usercentrics.eu https://www.google-analytics.com; ` + 
         "frame-src 'self' https://www.google.com https://app.usercentrics.eu;"
     );
     next();
@@ -1120,7 +1117,7 @@ app.post('/api/form/submit', validateFormSubmission, async (req, res) => {
         
         const sanitizedData = {
             name: validator.escape(name.trim()).substring(0, 100),
-            email: validator.normalizeEmail(email) || email,
+            email: email ? validator.normalizeEmail(email) : '',
             phone: phone ? validator.escape(phone.trim()).substring(0, 20) : '',
             service: service ? validator.escape(service.trim()).substring(0, 50) : '',
             message: validator.escape(message.trim()).substring(0, 1000)
@@ -1138,6 +1135,14 @@ app.post('/api/form/submit', validateFormSubmission, async (req, res) => {
         db.data.submissions.push(submission);
         await db.write();
         
+        // This is a placeholder for a real email sending function
+        async function sendEmailNotification(formData) {
+            console.log('--- Sending Email Notification (Simulation) ---');
+            console.log(`To: admin@ajkcleaning.com`);
+            console.log(`Body:\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nService: ${formData.service}\nMessage: ${formData.message}`);
+            console.log('---------------------------------------------');
+        }
+
         try {
             await sendEmailNotification(sanitizedData);
         } catch (emailError) {
@@ -1160,17 +1165,6 @@ app.post('/api/form/submit', validateFormSubmission, async (req, res) => {
     }
 });
 
-async function sendEmailNotification(formData) {
-    console.log('--- Sending Email Notification (Simulation) ---');
-    console.log('To: admin@ajkcleaning.com');
-    console.log('From: no-reply@ajkcleaning.com');
-    console.log('Subject: New Contact Form Submission');
-    console.log(`Body:\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nService: ${formData.service}\nMessage: ${formData.message}`);
-    console.log('---------------------------------------------');
-}
-
-
-// Protected API endpoints
 app.get('/api/submissions', requireAuth, async (req, res) => {
     try {
         await db.read();
@@ -1562,9 +1556,10 @@ app.all('/api/*', (req, res) => {
     res.status(404).json({ error: 'API endpoint not found' });
 });
 
+
+// Final error handling and server start
 app.use((err, req, res, next) => {
     console.error('Server error:', err);
-    
     if (isProduction) {
         res.status(500).json({ error: 'Internal server error' });
     } else {
