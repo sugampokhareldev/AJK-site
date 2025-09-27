@@ -16,8 +16,8 @@
   <meta name="geo.placename" content="Bischofsheim">
   <meta name="geo.position" content="49.9939;8.3669">
 
-  <!-- SECURITY FIX: Updated Content-Security-Policy to allow connections to the server proxy. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https://placehold.co https://images.unsplash.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' ws: wss:;">
+  <!-- SECURITY FIX: Updated Content-Security-Policy to allow connections to Google's API endpoint. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https://placehold.co https://images.unsplash.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' ws: wss: https://generativelanguage.googleapis.com;">
 
   <!-- PERFORMANCE: Preload critical resources -->
   <link rel="preload" as="image" href="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
@@ -226,8 +226,8 @@
   <header id="navbar" class="fixed w-full bg-white/90 z-50 transition-all duration-500 py-3">
     <div class="container mx-auto flex justify-between items-center px-6">
       <a href="#home" class="flex items-center space-x-3" aria-label="AJK Cleaning Company Home">
-        <!-- FIX: Replaced broken local image path with a functional, color-matched placeholder. -->
-        <img src="https://placehold.co/80x80/e0f2fe/1e40af?text=AJK" alt="AJK Cleaning Company Logo" class="h-16 w-16 sm:h-20 sm:w-20 rounded-lg logo transition-transform duration-300 object-contain" width="80" height="80" loading="eager">
+        <!-- FIX: Replaced local image path with a placeholder to prevent broken images. -->
+        <img src="https://placehold.co/80x80/1e40af/ffffff?text=AJK" alt="AJK Cleaning Company Logo" class="h-16 w-16 sm:h-20 sm:w-20 rounded-lg logo transition-transform duration-300 object-contain" width="80" height="80" loading="eager">
         <span class="font-bold text-lg sm:text-xl text-primary transition-all duration-300">AJK Cleaning Company</span>
       </a>
       
@@ -594,10 +594,30 @@
 
   <!-- Full, Un-minified Custom Script with Fixes -->
   <script>
-    // --- Main Application Logic ---
     document.addEventListener('DOMContentLoaded', function() {
         
-        // --- Caching for Common API Queries ---
+        // --- 🛠️ FIX: Moved markdownToHtml to a shared scope ---
+        const markdownToHtml = (markdown) => {
+            if (!markdown) return '';
+            return markdown
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+                .split('\n')
+                .map(line => line.trim())
+                .filter(line => line)
+                .map(line => {
+                    if (line.startsWith('## ')) return `<h4>${line.substring(3)}</h4>`;
+                    if (line.startsWith('# ')) return `<h3>${line.substring(2)}</h3>`;
+                    if (line.startsWith('* ') || line.startsWith('- ')) return `<li>${line.substring(2)}</li>`;
+                    return `<p>${line}</p>`;
+                })
+                .join('')
+                .replace(/<li>/g, '<ul><li>').replace(/(<\/li>(?!<li>))/g, '</li></ul>')
+                .replace(/<\/ul><ul>/g, '');
+        };
+
+        // --- 💾 FIX 5: Response Caching for Common Queries ---
         const responseCache = new Map();
         const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
@@ -616,7 +636,7 @@
             return result;
         };
 
-        // --- Client-Side API Function with Timeout & Payload Correction ---
+        // --- ⚡ FIX 3: Client-Side API Timeout & Payload Correction ---
         const callGeminiAPI = async (chatHistory, systemInstruction) => {
             const apiUrl = '/api/gemini';
             
@@ -675,7 +695,7 @@
             }
         };
         
-        // --- Modified callGeminiAPI with caching ---
+        // --- 💾 FIX 5: Modified callGeminiAPI with caching ---
         const callGeminiAPICached = async (chatHistory, systemInstruction, useCache = false) => {
             if (!useCache) {
                 return callGeminiAPI(chatHistory, systemInstruction);
@@ -712,21 +732,21 @@
             getSystemInstruction() {
               return `You are "Alex", a friendly and helpful AI assistant for AJK Cleaning Company, a professional cleaning service in Bischofsheim, Germany. Your goal is to answer user questions accurately based on the following information and encourage them to get a quote. If the user expresses frustration or asks to speak to a person, you MUST respond with: "I understand. If you'd like to speak with a member of our team, please click the person icon in the top right of the chat. I'm here to help with any other questions!".
 
-                **Company Information:**
-                - **Name:** AJK Cleaning Company
-                - **Services:** Residential Cleaning, Commercial Cleaning, Deep Cleaning, Move-In/Move-Out Cleaning.
-                - **Service Area:** Bischofsheim, Ginsheim-Gustavsburg, Mainz, Wiesbaden, and surrounding areas within a 25km radius.
-                - **Key Features:** Fully insured and bonded, uses eco-friendly products, satisfaction guaranteed, trained professionals.
-                - **Contact:** Phone: +49 176 61852286, Email: rajau691@gmail.com
-                - **Hours:** Monday - Saturday, 8:00am - 6:00pm.
-                - **Pricing:** You cannot give exact prices. For quotes, you MUST direct users to the contact form or phone number.
+                  **Company Information:**
+                  - **Name:** AJK Cleaning Company
+                  - **Services:** Residential Cleaning, Commercial Cleaning, Deep Cleaning, Move-In/Move-Out Cleaning.
+                  - **Service Area:** Bischofsheim, Ginsheim-Gustavsburg, Mainz, Wiesbaden, and surrounding areas within a 25km radius.
+                  - **Key Features:** Fully insured and bonded, uses eco-friendly products, satisfaction guaranteed, trained professionals.
+                  - **Contact:** Phone: +49 176 61852286, Email: rajau691@gmail.com
+                  - **Hours:** Monday - Saturday, 8:00am - 6:00pm.
+                  - **Pricing:** You cannot give exact prices. For quotes, you MUST direct users to the contact form or phone number.
 
-                **Your Persona & Rules:**
-                1.  Be friendly, polite, and professional. Use emojis where appropriate.
-                2.  Keep your answers concise and easy to understand (under 70 words).
-                3.  Base your answers ONLY on the information provided.
-                4.  If asked for information not listed, politely state that you don't have that detail and provide the company's contact info.
-                5.  Format responses with Markdown (bolding, lists).`;
+                  **Your Persona & Rules:**
+                  1.  Be friendly, polite, and professional. Use emojis where appropriate.
+                  2.  Keep your answers concise and easy to understand (under 70 words).
+                  3.  Base your answers ONLY on the information provided.
+                  4.  If asked for information not listed, politely state that you don't have that detail and provide the company's contact info.
+                  5.  Format responses with Markdown (bolding, lists).`;
             }
             
             init() {
@@ -840,6 +860,7 @@
                 this.scrollToBottom();
             }
 
+            // --- 🔄 FIX 4: Loading State Improvements ---
             async sendMessage() {
                 const chatInput = document.getElementById('chat-input-enhanced');
                 const messageText = chatInput.value.trim();
@@ -872,7 +893,7 @@
                         
                         this.chatHistory.push({ role: 'model', parts: [{ text: botResponse }] });
                         this.saveMessages();
-                        this.displayMessage(this.markdownToHtml(botResponse), 'admin', 'Alex', true);
+                        this.displayMessage(markdownToHtml(botResponse), 'admin', 'Alex', true);
                     } catch (error) {
                         console.error('Gemini Chatbot Error:', error);
                         const errorMsg = error.message.includes('timeout') 
@@ -927,14 +948,14 @@
                         }
                         
                         if (data.type === 'chat') {
-                            this.displayMessage(this.markdownToHtml(data.message), data.isAdmin ? 'admin' : 'user', data.name || 'Support', true);
+                            this.displayMessage(markdownToHtml(data.message), data.isAdmin ? 'admin' : 'user', data.name || 'Support', true);
                         } else if (data.type === 'system') {
                             this.displayMessage(data.message, 'system', 'System');
                         } else if (data.type === 'history') {
                             const messagesContainer = document.getElementById('chat-messages');
                             messagesContainer.innerHTML = ''; // Clear before loading history
                             data.messages.forEach(msg => {
-                               this.displayMessage(this.markdownToHtml(msg.message), msg.isAdmin ? 'admin' : 'user', msg.name, true);
+                               this.displayMessage(markdownToHtml(msg.message), msg.isAdmin ? 'admin' : 'user', msg.name, true);
                             });
                         } else if (data.type === 'typing') {
                             this.showTypingIndicator(data.isTyping, data.name || 'Support');
@@ -1004,7 +1025,7 @@
                 setTimeout(() => {
                     const welcomeMessage = "Hello! I'm Alex, the AI assistant for AJK Cleaning. How can I help you today? You can ask me about our services, service areas, or for cleaning tips! 😊";
                     this.chatHistory.push({ role: 'model', parts: [{ text: welcomeMessage }]});
-                    this.displayMessage(this.markdownToHtml(welcomeMessage), 'admin', 'Alex', true);
+                    this.displayMessage(markdownToHtml(welcomeMessage), 'admin', 'Alex', true);
                 }, 1000);
                 
                 if (this.ws && this.ws.readyState === WebSocket.OPEN) {
@@ -1056,7 +1077,7 @@
                         
                         const welcomeMessage = "Hello! I'm Alex, the AI assistant for AJK Cleaning. How can I help you today? You can ask me about our services, service areas, or for cleaning tips! 😊";
                         this.chatHistory.push({ role: 'model', parts: [{ text: welcomeMessage }]});
-                        this.displayMessage(this.markdownToHtml(welcomeMessage), 'admin', 'Alex', true);
+                        this.displayMessage(markdownToHtml(welcomeMessage), 'admin', 'Alex', true);
                     }
                 } else if (this.isLiveChatActive) {
                     document.getElementById('chat-header-title').textContent = 'Live Support';
@@ -1108,26 +1129,6 @@
                 const div = document.createElement('div');
                 div.textContent = text;
                 return div.innerHTML;
-            }
-
-            markdownToHtml(markdown) {
-                if (!markdown) return '';
-                return markdown
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                    .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
-                    .split('\n')
-                    .map(line => line.trim())
-                    .filter(line => line)
-                    .map(line => {
-                        if (line.startsWith('## ')) return `<h4>${line.substring(3)}</h4>`;
-                        if (line.startsWith('# ')) return `<h3>${line.substring(2)}</h3>`;
-                        if (line.startsWith('* ') || line.startsWith('- ')) return `<li>${line.substring(2)}</li>`;
-                        return `<p>${line}</p>`;
-                    })
-                    .join('')
-                    .replace(/<li>/g, '<ul><li>').replace(/(<\/li>(?!<li>))/g, '</li></ul>')
-                    .replace(/<\/ul><ul>/g, '');
             }
         }
         
