@@ -993,7 +993,7 @@ app.use((req, res, next) => {
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; " +
         "img-src 'self' data: https: blob:; " +
         "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; " +
-        `connect-src 'self' ${protocol}://${host} https://api.usercentrics.eu https://privacy-proxy.usercentrics.eu https://www.google-analytics.com; ` + 
+        `connect-src 'self' ${protocol}://${host} https://api.usercentrics.eu https://privacy-proxy.usercentrics.eu https://www.google-analytics.com https://consent-api.service.consent.usercentrics.eu; ` + 
         "frame-src 'self' https://www.google.com https://app.usercentrics.eu;"
     );
     next();
@@ -1135,7 +1135,6 @@ app.post('/api/form/submit', validateFormSubmission, async (req, res) => {
         db.data.submissions.push(submission);
         await db.write();
         
-        // This is a placeholder for a real email sending function
         async function sendEmailNotification(formData) {
             console.log('--- Sending Email Notification (Simulation) ---');
             console.log(`To: admin@ajkcleaning.com`);
@@ -1617,3 +1616,4 @@ initializeDB().then(() => {
     console.error('Failed to initialize and start server:', err);
     process.exit(1);
 });
+
