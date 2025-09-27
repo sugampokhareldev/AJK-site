@@ -55,7 +55,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 
     <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.googletagmanager.com https://app.usercentrics.eu; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https://placehold.co https://images.unsplash.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' ws: wss: https://api.usercentrics.eu;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.googletagmanager.com https://app.usercentrics.eu; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https://placehold.co https://images.unsplash.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' ws: wss: https://api.usercentrics.eu https://privacy-proxy.usercentrics.eu; frame-src 'self' https://www.google.com https://app.usercentrics.eu;">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -294,7 +294,7 @@
     <header id="navbar" class="fixed w-full bg-white/90 z-50 transition-all duration-500 py-3">
         <div class="container mx-auto flex justify-between items-center px-6">
             <a href="#home" class="flex items-center space-x-3" aria-label="AJK Cleaning Company Home">
-                <img src="https://placehold.co/80x80/1e40af/ffffff?text=AJK" alt="AJK Cleaning Company Logo" class="h-16 w-16 sm:h-20 sm:w-20 rounded-lg logo transition-transform duration-300 object-contain" width="80" height="80" loading="eager">
+                <img src="images/logo.jpg" alt="AJK Cleaning Company Logo" class="h-16 w-16 sm:h-20 sm:w-20 rounded-lg logo transition-transform duration-300 object-contain" width="80" height="80" loading="eager">
                 <span class="font-bold text-lg sm:text-xl text-primary transition-all duration-300" data-translate="companyName">AJK Cleaning Company</span>
             </a>
             
@@ -528,16 +528,7 @@
                     
                     <!-- 5. Google My Business Integration: Map -->
                     <div class="mt-6 rounded-lg overflow-hidden border shadow-md">
-                        <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2561.921323321551!2d8.364331677093558!3d49.99390237149793!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47bd94f114c0228d%3A0xb3a82a739d73b05a!2sBahnhofstra%C3%9Fe%205%2C%2065474%20Bischofsheim%2C%20Germany!5e0!3m2!1sen!2snp!4v1727448015519!5m2!1sen!2snp" 
-                            width="100%" 
-                            height="300" 
-                            style="border:0;" 
-                            allowfullscreen="" 
-                            loading="lazy" 
-                            referrerpolicy="no-referrer-when-downgrade"
-                            title="AJK Cleaning Company Location Map">
-                        </iframe>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3333.3437002182854!2d8.356986576530165!3d49.99001767150799!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47bd99f5e82f18e9%3A0x40cfb0ac711244f6!2sAJK%20Cleaning%20Service!5e1!3m2!1sen!2snp!4v1758990313764!5m2!1sen!2snp" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="AJK Cleaning Company Location Map"></iframe>
                     </div>
                 </div>
                 <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.2s;">
