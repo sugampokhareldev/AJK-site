@@ -54,8 +54,7 @@ const db = new Low(adapter, { submissions: [], admin_users: [], offline_messages
 
 
 // =================================================================
-// MIDDLEWARE SETUP - CRITICAL FIX
-// BodyParser and CORS must be configured BEFORE the API routes are defined.
+// MIDDLEWARE SETUP
 // =================================================================
 app.use(cors({
     origin: function (origin, callback) {
@@ -84,11 +83,11 @@ app.use(cors({
 }));
 app.options('*', cors());
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
-app.use(bodyParser.json({ limit: '10mb' })); // This line parses JSON bodies
+app.use(bodyParser.json({ limit: '10mb' }));
 
 
 // =================================================================
-// SECURE GEMINI API PROXY - CORRECTED VERSION
+// SECURE GEMINI API PROXY
 // =================================================================
 app.post('/api/gemini', async (req, res) => {
     const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -113,12 +112,10 @@ app.post('/api/gemini', async (req, res) => {
     try {
         const fetch = (await import('node-fetch')).default;
         
-        // Build the payload for Gemini API
         const geminiPayload = {
             contents: contents
         };
 
-        // Add system instruction if provided
         if (systemInstruction) {
             geminiPayload.systemInstruction = systemInstruction;
         }
@@ -140,7 +137,6 @@ app.post('/api/gemini', async (req, res) => {
         res.json(data);
     } catch (error) {
         console.error('Error proxying request to Gemini API:', error);
-        // Provide a more specific error message to help diagnose connection issues.
         res.status(500).json({ error: { message: `The server encountered an error while trying to contact the AI service. Details: ${error.message}` } });
     }
 });
@@ -151,7 +147,7 @@ app.post('/api/gemini', async (req, res) => {
 
 // ==================== WEBSOCKET CHAT SERVER ====================
 const clients = new Map();
-const adminSessions = new Map(); // Track admin sessions
+const adminSessions = new Map();
 const chatHistory = [];
 const connectionQuality = new Map();
 
@@ -183,8 +179,8 @@ async function persistChatMessage(clientId, message) {
   }
 }
 
-// Function to store offline messages
-function storeOfflineMessage(clientId, message) {
+// Function to store offline messages for ADMINS
+function storeAdminOfflineMessage(clientId, message) {
   if (!db.data.offline_messages) {
     db.data.offline_messages = {};
   }
@@ -202,7 +198,7 @@ function storeOfflineMessage(clientId, message) {
 }
 
 // Function to deliver offline messages when admin connects
-function deliverOfflineMessages() {
+function deliverAdminOfflineMessages() {
   if (!db.data.offline_messages) return;
  
   Object.keys(db.data.offline_messages).forEach(clientId => {
@@ -220,34 +216,21 @@ function deliverOfflineMessages() {
 
 function broadcastToAll(message, sourceSessionId = null, excludeClientId = null) {
     clients.forEach(c => {
-        if (excludeClientId && c.id === excludeClientId) {
-            return;
-        }
+        if (excludeClientId && c.id === excludeClientId) return;
         
         if (message.isAdmin) {
             if (c.id === message.clientId && c.ws.readyState === WebSocket.OPEN) {
-                try {
-                    c.ws.send(JSON.stringify(message));
-                } catch (error) {
-                    console.error('Error sending message to client:', error);
-                }
+                try { c.ws.send(JSON.stringify(message)); } 
+                catch (error) { console.error('Error sending message to client:', error); }
             }
-            
             if (c.isAdmin && c.ws.readyState === WebSocket.OPEN) {
-                try {
-                    c.ws.send(JSON.stringify(message));
-                } catch (error) {
-                    console.error('Error sending message to admin:', error);
-                }
+                try { c.ws.send(JSON.stringify(message)); }
+                catch (error) { console.error('Error sending message to admin:', error); }
             }
-        }
-        else {
+        } else {
             if (c.isAdmin && c.ws.readyState === WebSocket.OPEN) {
-                try {
-                    c.ws.send(JSON.stringify(message));
-                } catch (error) {
-                    console.error('Error sending message to admin:', error);
-                }
+                try { c.ws.send(JSON.stringify(message)); }
+                catch (error) { console.error('Error sending message to admin:', error); }
             }
         }
     });
@@ -257,11 +240,7 @@ function notifyAdmin(type, payload, targetSessionId = null) {
     clients.forEach(client => {
         if (client.isAdmin && client.ws.readyState === WebSocket.OPEN) {
             try {
-                client.ws.send(JSON.stringify({
-                    type: type,
-                    payload: payload,
-                    timestamp: new Date().toISOString()
-                }));
+                client.ws.send(JSON.stringify({ type, payload, timestamp: new Date().toISOString() }));
             } catch (error) {
                 console.error('Error notifying admin:', error);
             }
@@ -269,33 +248,41 @@ function notifyAdmin(type, payload, targetSessionId = null) {
     });
 }
 
-function sendToClient(clientId, messageText, sourceSessionId = null) {
+// FIX: This function now handles offline message persistence.
+async function sendToClient(clientId, messageText, sourceSessionId = null) {
     const client = clients.get(clientId);
+    const adminMessage = {
+        id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+        type: 'chat',
+        message: messageText,
+        name: 'Support',
+        timestamp: new Date().toISOString(),
+        isAdmin: true,
+        clientId: clientId,
+        sessionId: sourceSessionId
+    };
+
+    chatHistory.push(adminMessage);
+
+    // If client is online, send directly via WebSocket
     if (client && client.ws.readyState === WebSocket.OPEN) {
-        const adminMessage = {
-            id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
-            type: 'chat',
-            message: messageText,
-            name: 'Support',
-            timestamp: new Date().toISOString(),
-            isAdmin: true,
-            clientId: clientId,
-            sessionId: sourceSessionId
-        };
-        
-        chatHistory.push(adminMessage);
-        
         try {
             client.ws.send(JSON.stringify(adminMessage));
-            persistChatMessage(clientId, adminMessage);
-            return true;
+            await persistChatMessage(clientId, adminMessage);
+            return { success: true, status: 'delivered' };
         } catch (error) {
-            console.error('Error sending message to client:', error);
-            return false;
+            console.error('Error sending message to client, will attempt to save:', error);
+            await persistChatMessage(clientId, adminMessage);
+            return { success: true, status: 'saved_after_error' };
         }
+    } else {
+        // If client is offline, just save the message to the database
+        await persistChatMessage(clientId, adminMessage);
+        console.log(`Client ${clientId} is offline. Message saved.`);
+        return { success: true, status: 'saved_offline' };
     }
-    return false;
 }
+
 
 function sendChatReset(clientId) {
     const client = clients.get(clientId);
@@ -450,7 +437,7 @@ async function handleAdminConnection(ws, request) {
         message: 'Admin connection established'
     }));
 
-    deliverOfflineMessages();
+    deliverAdminOfflineMessages();
 
     notifyAdmin(`Admin connected`, { name: 'Admin', sessionId });
 }
@@ -490,8 +477,8 @@ async function handleAdminMessage(adminClient, message) {
             
         case 'admin_message':
             if (message.clientId && message.message) {
-                const success = sendToClient(message.clientId, message.message, adminClient.sessionId);
-                if (!success) {
+                const { success, status } = await sendToClient(message.clientId, message.message, adminClient.sessionId);
+                if (status === 'saved_offline') {
                     adminClient.ws.send(JSON.stringify({
                         type: 'info',
                         message: 'Client is offline. Message saved for delivery.'
@@ -720,7 +707,7 @@ wss.on('connection', async (ws, request) => {
                     });
                     
                     if (!adminOnline) {
-                        storeOfflineMessage(clientId, chatMessage);
+                        storeAdminOfflineMessage(clientId, chatMessage);
                     } else {
                         broadcastToAll(chatMessage);
                     }
@@ -1007,7 +994,7 @@ app.use((req, res, next) => {
         "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com; " +
         "img-src 'self' data: https: blob:; " +
         "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; " +
-        `connect-src 'self' ${protocol}://${host} https://generativelanguage.googleapis.com; ` + // Added Gemini API endpoint
+        `connect-src 'self' ${protocol}://${host} https://generativelanguage.googleapis.com; ` + 
         "frame-src 'self';"
     );
     next();
@@ -1143,18 +1130,16 @@ app.post('/api/form/submit', validateFormSubmission, async (req, res) => {
             ...sanitizedData,
             submitted_at: new Date().toISOString(),
             ip: req.ip || req.connection.remoteAddress || 'unknown',
-            status: 'new' // Track submission status
+            status: 'new' 
         };
         
         db.data.submissions.push(submission);
         await db.write();
         
-        // Attempt to send email notification
         try {
             await sendEmailNotification(sanitizedData);
         } catch (emailError) {
             console.error('Email notification failed:', emailError);
-            // Don't fail the request if email fails
         }
         
         notifyAdmin('new_submission', {
@@ -1174,8 +1159,6 @@ app.post('/api/form/submit', validateFormSubmission, async (req, res) => {
 });
 
 async function sendEmailNotification(formData) {
-    // This is a placeholder. Implement your email sending logic here
-    // using a service like Nodemailer, SendGrid, Mailgun, etc.
     console.log('--- Sending Email Notification (Simulation) ---');
     console.log('To: admin@ajkcleaning.com');
     console.log('From: no-reply@ajkcleaning.com');
@@ -1302,31 +1285,11 @@ app.post('/api/chat/send', requireAuth, async (req, res) => {
         return res.status(400).json({ success: false, error: 'Client ID and message are required' });
     }
 
-    const sent = sendToClient(clientId, message);
-    if (sent) {
+    const { success, status } = await sendToClient(clientId, message);
+    if (status === 'delivered') {
         return res.json({ success: true, message: 'Message sent successfully' });
-    }
-
-    try {
-        const adminMessage = {
-            id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
-            type: 'chat',
-            message: message,
-            name: 'Support',
-            timestamp: new Date().toISOString(),
-            isAdmin: true,
-            clientId: clientId,
-            queued: true
-        };
-
-        await persistChatMessage(clientId, adminMessage);
-        
-        try { broadcastToAll(adminMessage); } catch (_) {}
-        
+    } else {
         return res.json({ success: true, message: 'Client offline. Message saved.' });
-    } catch (e) {
-        console.error('Error saving offline message via REST:', e);
-        return res.status(500).json({ success: false, error: 'Failed to save message' });
     }
 });
 
@@ -1384,29 +1347,24 @@ app.delete('/api/chats/:clientId', requireAuth, async (req, res) => {
         db.data.chats = db.data.chats || {};
         
         if (db.data.chats[clientId]) {
-            // COMPLETELY remove the chat data from the database
             delete db.data.chats[clientId];
             
-            // Also clean up any pending offline messages if they exist
             if (db.data.offline_messages && db.data.offline_messages[clientId]) {
                 delete db.data.offline_messages[clientId];
             }
             
             await db.write();
 
-            // Send reset notification to the client if they are currently online
             const liveClient = clients.get(clientId);
             if (liveClient && liveClient.ws && liveClient.ws.readyState === WebSocket.OPEN) {
                 try {
-                    // Send a specific 'chat_reset' message to the client
                     liveClient.ws.send(JSON.stringify({
                         type: 'chat_reset',
                         message: 'Chat session has been reset by admin. You are now connected to AI assistant.',
                         timestamp: new Date().toISOString(),
-                        resetToAI: true // A flag for the client to handle this state
+                        resetToAI: true
                     }));
                     
-                    // Wait a moment for the message to be sent, then close the connection
                     setTimeout(() => {
                         try {
                             liveClient.ws.close(1000, 'Chat reset by admin');
@@ -1419,7 +1377,6 @@ app.delete('/api/chats/:clientId', requireAuth, async (req, res) => {
                 }
             }
             
-            // Clean up in-memory data (chat history and active client list)
             for (let i = chatHistory.length - 1; i >= 0; i--) {
                 if (chatHistory[i].clientId === clientId) {
                     chatHistory.splice(i, 1);
