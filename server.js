@@ -140,7 +140,8 @@ app.post('/api/gemini', async (req, res) => {
         res.json(data);
     } catch (error) {
         console.error('Error proxying request to Gemini API:', error);
-        res.status(500).json({ error: { message: 'An internal error occurred while contacting the AI service.' } });
+        // Provide a more specific error message to help diagnose connection issues.
+        res.status(500).json({ error: { message: `The server encountered an error while trying to contact the AI service. Details: ${error.message}` } });
     }
 });
 // =================================================================
