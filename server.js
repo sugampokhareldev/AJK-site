@@ -15,6 +15,7 @@ const { Low } = require('lowdb');
 const { JSONFile } = require('lowdb/node');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
+const compression = require('compression'); // Performance FIX: Add compression
 
 // Use memory store for sessions to avoid file system issues on Render
 const MemoryStore = require('memorystore')(session);
@@ -56,6 +57,7 @@ const db = new Low(adapter, { submissions: [], admin_users: [], offline_messages
 // =================================================================
 // MIDDLEWARE SETUP
 // =================================================================
+app.use(compression()); // Performance FIX: Enable compression for all responses
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);

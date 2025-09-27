@@ -1,682 +1,738 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AJK Cleaning Company | Professional Cleaning Services in Bischofsheim</title>
-  
-  <!-- SEO OPTIMIZATION: Enhanced meta tags for better search engine visibility -->
-  <meta name="description" content="AJK Cleaning Company: Professional residential & commercial cleaning services in Bischofsheim. Eco-friendly products, fully insured, satisfaction guaranteed. Free quotes!">
-  <meta name="keywords" content="cleaning service, Bischofsheim, residential cleaning, commercial cleaning, eco-friendly cleaning, move-in cleaning, deep cleaning, office cleaning mainz, house cleaning wiesbaden">
-  <meta name="author" content="AJK Cleaning Company">
-  <meta name="robots" content="index, follow">
-  
-  <!-- SEO OPTIMIZATION: Geo-specific meta tags for local search -->
-  <meta name="geo.region" content="DE-HE">
-  <meta name="geo.placename" content="Bischofsheim">
-  <meta name="geo.position" content="49.9939;8.3669">
-
-  <!-- SECURITY FIX: Updated Content-Security-Policy to allow connections to Google's API endpoint. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https://placehold.co https://images.unsplash.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' ws: wss: https://generativelanguage.googleapis.com;">
-
-  <!-- PERFORMANCE: Preload critical resources -->
-  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <!-- Open Graph tags for social media sharing -->
-  <meta property="og:title" content="AJK Cleaning Company | Professional Cleaning Services in Bischofsheim">
-  <meta property="og:description" content="Top-rated, eco-friendly cleaning for homes and businesses in Bischofsheim. Get your free quote today!">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
-  <meta property="og:url" content="https://www.ajkcleaning.com">
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="en_DE">
-  
-  <!-- Twitter Card data -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="AJK Cleaning Company | Professional Cleaning Services">
-  <meta name="twitter:description" content="Top-rated, eco-friendly cleaning for homes and businesses in Bischofsheim. Get your free quote today!">
-  <meta name="twitter:image" content="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
-  
-  <!-- Canonical URL -->
-  <link rel="canonical" href="https://www.ajkcleaning.com">
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" xintegrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Custom CSS -->
-  <style>
-    :root{--primary:#1e40af;--primary-dark:#1e3a8a;--secondary:#059669;--secondary-dark:#047857}
-    *{scroll-behavior:smooth;box-sizing:border-box}
-    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.6;color:#374151}
-    .navbar-scrolled{box-shadow:0 4px 18px rgba(0,0,0,.1);backdrop-filter:blur(12px);background:hsla(0,0%,100%,.97);transform:translateY(0)}
-    .nav-link{position:relative;padding:.5rem 0;transition:all .3s ease;font-weight:500}
-    .nav-link::after{content:'';position:absolute;width:0;height:2px;bottom:0;left:0;background-color:var(--primary);transition:width .3s ease}
-    .nav-link:hover::after,.nav-link.active::after{width:100%}
-    .mobile-menu{transition:all .4s cubic-bezier(.68,-.55,.27,1.55);transform-origin:top;opacity:0;transform:scaleY(0) translateY(-20px);display:none}
-    .mobile-menu.open{display:flex;opacity:1;transform:scaleY(1) translateY(0)}
-    .cta-button{position:relative;overflow:hidden;transition:all .3s ease;z-index:1}
-    .cta-button::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,hsla(0,0%,100%,.2),transparent);transition:all .6s ease;z-index:-1}
-    .cta-button:hover::before{left:100%}
-    .menu-line{transition:all .3s ease}
-    .menu-open .menu-line:nth-child(1){transform:rotate(45deg) translate(6px,6px)}
-    .menu-open .menu-line:nth-child(2){opacity:0}
-    .menu-open .menu-line:nth-child(3){transform:rotate(-45deg) translate(6px,-6px)}
-    .hero-overlay{background:linear-gradient(135deg,rgba(10,25,47,.7),rgba(10,25,47,.5))}
-    .service-card,.trust-point,.faq-item{contain:layout style}
-    .service-card{transition:all .4s cubic-bezier(.175,.885,.32,1.275);overflow:hidden}
-    .service-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 20px 40px rgba(0,0,0,.1)}
-    .form-input:invalid{border-color:#f87171}
-    .form-input:valid{border-color:#34d399}
-    @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-    .animate-fade-in-up{animation:fadeInUp .8s ease-out forwards; opacity: 0;}
-    .trust-point{background:#f8fafc;border-left:4px solid var(--primary);transition:all .3s ease}
-    .trust-point:hover{background:#f1f5f9;transform:translateX(5px)}
-    .skip-link{position:absolute;top:-40px;left:6px;background:#000;color:#fff;padding:8px;z-index:10000;text-decoration:none}
-    .skip-link:focus{top:6px}
-    @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
-    a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
-    .text-blue-200{color:#bfdbfe}
-    .sticky-cta{padding-bottom:constant(safe-area-inset-bottom);padding-bottom:env(safe-area-inset-bottom);z-index:50}
-    .hero-image{background-image:url(https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80);background-size:cover;background-position:center;background-attachment:fixed}
-    .faq-question{cursor:pointer}
-    .faq-answer{max-height:0;overflow:hidden;transition:max-height .5s ease-in-out; contain: content;}
-    .faq-item.open .faq-answer{max-height:300px}
-    .faq-item.open .faq-icon{transform:rotate(180deg)}
-    .faq-icon{transition:transform .3s ease}
-    .chat-widget-enhanced{position:fixed;bottom:20px;right:20px;z-index:1000;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
-    .chat-toggle{position:relative;width:60px;height:60px;background:#1e40af;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.15);transition:all .3s ease;color:#fff}
-    .chat-toggle:hover{background:#1e3a8a;transform:scale(1.05)}
-    .unread-badge{position:absolute;top:-5px;right:-5px;background:#ef4444;color:#fff;border-radius:50%;min-width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid #fff}
-    .chat-window{position:absolute;bottom:75px;right:0;width:350px;height:450px;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.2);overflow:hidden;display:flex;flex-direction:column;transform:translateY(20px) scale(.9);opacity:0;transition:all .3s cubic-bezier(.68,-.55,.265,1.55);display:none}
-    .chat-window.open{transform:translateY(0) scale(1);opacity:1;display:flex}
-    .chat-header{background:#1e40af;color:#fff;padding:15px;display:flex;justify-content:space-between;align-items:center}
-    .chat-header h3{margin:0;font-size:16px;font-weight:600}
-    .chat-status{font-size:12px;opacity:.9}
-    .chat-header-actions{display:flex;gap:5px}
-    .chat-action-btn, .minimize-btn, .close-btn { background: hsla(0,0%,100%,.2); border: none; color: #fff; width: 28px; height: 28px; border-radius: 4px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background .2s; }
-    .chat-action-btn:hover, .minimize-btn:hover, .close-btn:hover { background: hsla(0,0%,100%,.3); }
-    .chat-messages{flex:1;padding:15px;overflow-y:auto;background:#f8fafc}
-    .message{margin-bottom:15px;animation:messageSlide .3s ease-out}
-    @keyframes messageSlide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-    .message-content{max-width:85%;padding:10px 15px;border-radius:18px;word-wrap:break-word;line-height:1.4}
-    .user-message .message-content{background:#1e40af;color:#fff;margin-left:auto;border-bottom-right-radius:4px}
-    .admin-message .message-content{background:#fff;color:#374151;border:1px solid #e5e7eb;border-bottom-left-radius:4px}
-    .system-message .message-content{background:#f3f4f6;color:#6b7280;margin:0 auto;text-align:center;border-radius:12px;font-size:14px}
-    .message-time{font-size:11px;color:#9ca3af;margin-top:5px;text-align:right}
-    .user-message .message-time{text-align:right}
-    .admin-message .message-time{text-align:left}
-    .typing-indicator{padding:15px;background:#fff;border-top:1px solid #e5e7eb;display:flex;align-items:center;gap:10px;display:none}
-    .typing-dots{display:flex;gap:3px}
-    .typing-dots span{width:6px;height:6px;border-radius:50%;background:#9ca3af;animation:typingDot 1.4s infinite ease-in-out}
-    .typing-dots span:nth-child(1){animation-delay:-.32s}
-    .typing-dots span:nth-child(2){animation-delay:-.16s}
-    @keyframes typingDot{0%,80%,100%{transform:scale(0);opacity:.5}40%{transform:scale(1);opacity:1}}
-    .typing-text{font-size:12px;color:#6b7280}
-    .chat-input-container{background:#fff;border-top:1px solid #e5e7eb}
-    .user-info{padding:15px;display:flex;flex-direction:column;gap:10px;display:none}
-    .user-info input{border:1px solid #d1d5db;border-radius:8px;padding:8px 12px;font-size:14px}
-    .user-info input:focus{outline:none;border-color:#1e40af;box-shadow:0 0 0 3px rgba(30,64,175,.1)}
-    .user-info button{background:#1e40af;color:#fff;border:none;border-radius:8px;padding:10px;cursor:pointer;font-weight:600;transition:background .2s}
-    .user-info button:hover{background:#1e3a8a}
-    .chat-input-area{display:flex;padding:15px;gap:10px;align-items:flex-end}
-    #chat-input-enhanced{flex:1;border:1px solid #d1d5db;border-radius:20px;padding:10px 15px;font-size:14px;resize:none;max-height:100px;min-height:40px}
-    #chat-input-enhanced:focus{outline:none;border-color:#1e40af;box-shadow:0 0 0 3px rgba(30,64,175,.1)}
-    #chat-send-enhanced{background:#1e40af;color:#fff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
-    #chat-send-enhanced:hover:not(:disabled){background:#1e3a8a;transform:scale(1.05)}
-    #chat-send-enhanced:disabled{background:#9ca3af;cursor:not-allowed;transform:none}
-    @media (max-width:768px){.chat-widget-enhanced{bottom:90px!important;right:15px;z-index:60}.chat-window{width:calc(100vw - 30px)!important;right:-15px!important;height:400px;bottom:75px!important}.chat-toggle{width:55px;height:55px}}
-    .chat-messages::-webkit-scrollbar{width:6px}
-    .chat-messages::-webkit-scrollbar-track{background:#f1f5f9}
-    .chat-messages::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
-    .chat-messages::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AJK Cleaning Company | Professional Cleaning Services in Bischofsheim</title>
     
-    /* Gemini Modal & Tip Generator Styles */
-    #checklist-modal { transition: opacity 0.3s ease; }
-    #checklist-modal-content { transition: transform 0.3s ease; }
-    #checklist-modal-content h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: var(--primary); }
-    #checklist-modal-content ul { list-style-type: disc; margin-left: 1.5rem; }
-    #checklist-modal-content li { margin-bottom: 0.5rem; }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-    #tip-result-container { transition: opacity 0.3s ease; }
+    <!-- 1. Critical Security & Performance Fixes -->
+    <!-- Add DNS preconnect for critical domains -->
+    <link rel="dns-prefetch" href="//maps.googleapis.com">
+    <link rel="dns-prefetch" href="//generativelanguage.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- PERFORMANCE: Preload critical resources with high fetch priority -->
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" fetchpriority="high">
 
-    /* Styles for prose formatting from markdown */
-    .prose h3, .prose h4 { margin-bottom: 0.5em !important; margin-top: 1em !important; color: var(--primary); }
-    .prose ul { padding-left: 1.5em !important; margin-top: 0.5em !important;}
-    .admin-message .message-content a { text-decoration: underline; }
-    .admin-message .message-content a:hover { color: var(--primary-dark); }
-  </style>
+    <!-- 2. Enhanced Local SEO (German Market Focus) -->
+    <meta name="description" content="AJK Cleaning Company: Professional residential & commercial cleaning services in Bischofsheim. Eco-friendly products, fully insured, satisfaction guaranteed. Free quotes!">
+    <meta name="keywords" content="cleaning service, Bischofsheim, residential cleaning, commercial cleaning, eco-friendly cleaning, move-in cleaning, deep cleaning, office cleaning mainz, house cleaning wiesbaden">
+    <meta name="author" content="AJK Cleaning Company">
+    <meta name="robots" content="index, follow">
+    <meta name="geo.region" content="DE-HE">
+    <meta name="geo.placename" content="Bischofsheim">
+    <meta name="geo.position" content="49.9939;8.3669">
+    <!-- Add German language alternative -->
+    <link rel="alternate" hreflang="de" href="https://www.ajkcleaning.com/de">
+    <link rel="alternate" hreflang="en" href="https://www.ajkcleaning.com">
+    <link rel="canonical" href="https://www.ajkcleaning.com">
 
-  <!-- SEO OPTIMIZATION: Enhanced JSON-LD Schema for Local Business -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "CleaningService",
-    "name": "AJK Cleaning Company",
-    "description": "Professional residential & commercial cleaning services in Bischofsheim. Eco-friendly products, fully insured, satisfaction guaranteed.",
-    "url": "https://www.ajkcleaning.com",
-    "logo": "https://www.ajkcleaning.com/images/logo.jpg",
-    "image": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
-    "telephone": "+4917661852286",
-    "email": "rajau691@gmail.com",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Bahnhofstraße 5",
-      "addressLocality": "Bischofsheim",
-      "postalCode": "65474",
-      "addressCountry": "DE"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 49.9939,
-      "longitude": 8.3669
-    },
-    "openingHoursSpecification": [{
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
-      "opens": "08:00",
-      "closes": "18:00"
-    }],
-    "areaServed": {
-      "@type": "GeoCircle",
-      "geoMidpoint": {
-        "@type": "GeoCoordinates",
-        "latitude": 49.9939,
-        "longitude": 8.3669
-      },
-      "geoRadius": "25000"
-    },
-    "priceRange": "€€",
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Cleaning Services",
-      "itemListElement": [
-        {"@type": "Offer","itemOffered": {"@type": "Service","name": "Residential Cleaning"}},
-        {"@type": "Offer","itemOffered": {"@type": "Service","name": "Commercial Cleaning"}},
-        {"@type": "Offer","itemOffered": {"@type": "Service","name": "Deep Cleaning"}},
-        {"@type": "Offer","itemOffered": {"@type": "Service","name": "Move-In/Move-Out Cleaning"}}
-      ]
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.9",
-      "reviewCount": "58"
+    <!-- 10. Final SEO Checklist -->
+    <!-- Add sitemap reference -->
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+    <!-- Add social media profiles -->
+    <link rel="me" href="https://www.facebook.com/ajkcleaning">
+    <link rel="me" href="https://www.instagram.com/ajkcleaning">
+    <!-- Add search console verification -->
+    <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE">
+
+    <!-- Social Media / Open Graph -->
+    <meta property="og:title" content="AJK Cleaning Company | Professional Cleaning Services in Bischofsheim">
+    <meta property="og:description" content="Top-rated, eco-friendly cleaning for homes and businesses in Bischofsheim. Get your free quote today!">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+    <meta property="og:url" content="https://www.ajkcleaning.com">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_DE">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AJK Cleaning Company | Professional Cleaning Services">
+    <meta name="twitter:description" content="Top-rated, eco-friendly cleaning for homes and businesses in Bischofsheim. Get your free quote today!">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https://placehold.co https://images.unsplash.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' ws: wss:;">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" xintegrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root{--primary:#1e40af;--primary-dark:#1e3a8a;--secondary:#059669;--secondary-dark:#047857}
+        *{scroll-behavior:smooth;box-sizing:border-box}
+        body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.6;color:#374151}
+        .navbar-scrolled{box-shadow:0 4px 18px rgba(0,0,0,.1);backdrop-filter:blur(12px);background:hsla(0,0%,100%,.97)}
+        .nav-link{position:relative;padding:.5rem 0;transition:all .3s ease;font-weight:500}
+        .nav-link::after{content:'';position:absolute;width:0;height:2px;bottom:0;left:0;background-color:var(--primary);transition:width .3s ease}
+        .nav-link:hover::after,.nav-link.active::after{width:100%}
+        .mobile-menu{transition:all .4s cubic-bezier(.68,-.55,.27,1.55);transform-origin:top;opacity:0;transform:scaleY(0) translateY(-20px);display:none}
+        .mobile-menu.open{display:flex;opacity:1;transform:scaleY(1) translateY(0)}
+        .cta-button{position:relative;overflow:hidden;transition:all .3s ease;z-index:1}
+        .cta-button::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,hsla(0,0%,100%,.2),transparent);transition:all .6s ease;z-index:-1}
+        .cta-button:hover::before{left:100%}
+        .menu-line{transition:all .3s ease}
+        .menu-open .menu-line:nth-child(1){transform:rotate(45deg) translate(6px,6px)}
+        .menu-open .menu-line:nth-child(2){opacity:0}
+        .menu-open .menu-line:nth-child(3){transform:rotate(-45deg) translate(6px,-6px)}
+        .hero-overlay{background:linear-gradient(135deg,rgba(10,25,47,.7),rgba(10,25,47,.5))}
+        .service-card,.trust-point,.faq-item{contain:layout style}
+        .service-card{transition:all .4s cubic-bezier(.175,.885,.32,1.275);overflow:hidden}
+        .service-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 20px 40px rgba(0,0,0,.1)}
+        .form-input:invalid{border-color:#f87171}
+        .form-input:valid{border-color:#34d399}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        .animate-fade-in-up{animation:fadeInUp .8s ease-out forwards; opacity: 0;}
+        .trust-point{background:#f8fafc;border-left:4px solid var(--primary);transition:all .3s ease}
+        .trust-point:hover{background:#f1f5f9;transform:translateX(5px)}
+        .skip-link{position:absolute;top:-40px;left:6px;background:#000;color:#fff;padding:8px;z-index:10000;text-decoration:none}
+        .skip-link:focus{top:6px}
+        @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+        a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+        .text-blue-200{color:#bfdbfe}
+        .sticky-cta{padding-bottom:constant(safe-area-inset-bottom);padding-bottom:env(safe-area-inset-bottom);z-index:50}
+        .hero-image{background-image:url(https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80);background-size:cover;background-position:center;background-attachment:scroll}
+        @media (min-width: 1024px) { .hero-image { background-attachment: fixed; } }
+        .faq-question{cursor:pointer}
+        .faq-answer{max-height:0;overflow:hidden;transition:max-height .5s ease-in-out; contain: content;}
+        .faq-item.open .faq-answer{max-height:300px}
+        .faq-item.open .faq-icon{transform:rotate(180deg)}
+        .faq-icon{transition:transform .3s ease}
+        .chat-widget-enhanced{position:fixed;bottom:20px;right:20px;z-index:1000;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
+        .chat-toggle{position:relative;width:60px;height:60px;background:#1e40af;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.15);transition:all .3s ease;color:#fff}
+        .chat-toggle:hover{background:#1e3a8a;transform:scale(1.05)}
+        .unread-badge{position:absolute;top:-5px;right:-5px;background:#ef4444;color:#fff;border-radius:50%;min-width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid #fff}
+        .chat-window{position:absolute;bottom:75px;right:0;width:350px;height:450px;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.2);overflow:hidden;display:flex;flex-direction:column;transform:translateY(20px) scale(.9);opacity:0;transition:all .3s cubic-bezier(.68,-.55,.265,1.55);display:none}
+        .chat-window.open{transform:translateY(0) scale(1);opacity:1;display:flex}
+        .chat-header{background:#1e40af;color:#fff;padding:15px;display:flex;justify-content:space-between;align-items:center}
+        .chat-header h3{margin:0;font-size:16px;font-weight:600}
+        .chat-status{font-size:12px;opacity:.9}
+        .chat-header-actions{display:flex;gap:5px}
+        .chat-action-btn, .minimize-btn, .close-btn { background: hsla(0,0%,100%,.2); border: none; color: #fff; width: 28px; height: 28px; border-radius: 4px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+        .chat-action-btn:hover, .minimize-btn:hover, .close-btn:hover { background: hsla(0,0%,100%,.3); }
+        .chat-messages{flex:1;padding:15px;overflow-y:auto;background:#f8fafc}
+        .message{margin-bottom:15px;animation:messageSlide .3s ease-out}
+        @keyframes messageSlide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        .message-content{max-width:85%;padding:10px 15px;border-radius:18px;word-wrap:break-word;line-height:1.4}
+        .user-message .message-content{background:#1e40af;color:#fff;margin-left:auto;border-bottom-right-radius:4px}
+        .admin-message .message-content{background:#fff;color:#374151;border:1px solid #e5e7eb;border-bottom-left-radius:4px}
+        .system-message .message-content{background:#f3f4f6;color:#6b7280;margin:0 auto;text-align:center;border-radius:12px;font-size:14px}
+        .message-time{font-size:11px;color:#9ca3af;margin-top:5px;text-align:right}
+        .user-message .message-time{text-align:right}
+        .admin-message .message-time{text-align:left}
+        .typing-indicator{padding:15px;background:#fff;border-top:1px solid #e5e7eb;display:flex;align-items:center;gap:10px;display:none}
+        .typing-dots{display:flex;gap:3px}
+        .typing-dots span{width:6px;height:6px;border-radius:50%;background:#9ca3af;animation:typingDot 1.4s infinite ease-in-out}
+        .typing-dots span:nth-child(1){animation-delay:-.32s}
+        .typing-dots span:nth-child(2){animation-delay:-.16s}
+        @keyframes typingDot{0%,80%,100%{transform:scale(0);opacity:.5}40%{transform:scale(1);opacity:1}}
+        .typing-text{font-size:12px;color:#6b7280}
+        .chat-input-container{background:#fff;border-top:1px solid #e5e7eb}
+        .user-info{padding:15px;display:flex;flex-direction:column;gap:10px;display:none}
+        .user-info input{border:1px solid #d1d5db;border-radius:8px;padding:8px 12px;font-size:14px}
+        .user-info input:focus{outline:none;border-color:#1e40af;box-shadow:0 0 0 3px rgba(30,64,175,.1)}
+        .user-info button{background:#1e40af;color:#fff;border:none;border-radius:8px;padding:10px;cursor:pointer;font-weight:600;transition:background .2s}
+        .user-info button:hover{background:#1e3a8a}
+        .chat-input-area{display:flex;padding:15px;gap:10px;align-items:flex-end}
+        #chat-input-enhanced{flex:1;border:1px solid #d1d5db;border-radius:20px;padding:10px 15px;font-size:14px;resize:none;max-height:100px;min-height:40px}
+        #chat-input-enhanced:focus{outline:none;border-color:#1e40af;box-shadow:0 0 0 3px rgba(30,64,175,.1)}
+        #chat-send-enhanced{background:#1e40af;color:#fff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+        #chat-send-enhanced:hover:not(:disabled){background:#1e3a8a;transform:scale(1.05)}
+        #chat-send-enhanced:disabled{background:#9ca3af;cursor:not-allowed;transform:none}
+        @media (max-width:768px){.chat-widget-enhanced{bottom:90px!important;right:15px;z-index:60}.chat-window{width:calc(100vw - 30px)!important;right:-15px!important;height:400px;bottom:75px!important}.chat-toggle{width:55px;height:55px}}
+        .chat-messages::-webkit-scrollbar{width:6px}
+        .chat-messages::-webkit-scrollbar-track{background:#f1f5f9}
+        .chat-messages::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+        .chat-messages::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+        #checklist-modal { transition: opacity 0.3s ease; }
+        #checklist-modal-content { transition: transform 0.3s ease; }
+        #checklist-modal-content h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: var(--primary); }
+        #checklist-modal-content ul { list-style-type: disc; margin-left: 1.5rem; }
+        #checklist-modal-content li { margin-bottom: 0.5rem; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        #tip-result-container { transition: opacity 0.3s ease; }
+        .prose h3, .prose h4 { margin-bottom: 0.5em !important; margin-top: 1em !important; color: var(--primary); }
+        .prose ul { padding-left: 1.5em !important; margin-top: 0.5em !important;}
+        .admin-message .message-content a { text-decoration: underline; }
+        .admin-message .message-content a:hover { color: var(--primary-dark); }
+        
+        /* IMPRESSIVE Language Switcher Styles */
+        .lang-switcher {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background-color: #f1f5f9; /* light grey background */
+            border-radius: 9999px; /* pill shape */
+            padding: 4px;
+        }
+        .lang-option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            background-color: transparent;
+        }
+        .lang-option svg {
+            width: 24px;
+            height: 18px;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .lang-option:hover {
+            background-color: #e2e8f0; /* slightly darker grey on hover */
+        }
+        .lang-option.active {
+            background-color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transform: scale(1.05);
+        }
+        
+        /* 9. Mobile-Specific Optimizations */
+        @media (max-width: 768px) {
+            .sticky-cta a {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .service-card {
+                margin: 0.5rem;
+            }
+            /* Prevent zoom on input focus for iOS */
+            input, select, textarea {
+                font-size: 16px !important; /* Prevents zoom on focus */
+            }
+        }
+    </style>
+
+    <!-- 6. Enhanced Analytics & Tracking -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-062LYMWJKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-062LYMWJKZ');
+    </script>
+
+    <!-- JSON-LD Schema for Local Business -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CleaningService",
+        "name": "AJK Cleaning Company",
+        "description": "Professional residential & commercial cleaning services in Bischofsheim. Eco-friendly products, fully insured, satisfaction guaranteed.",
+        "url": "https://www.ajkcleaning.com",
+        "logo": "https://www.ajkcleaning.com/images/logo.jpg",
+        "image": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+        "telephone": "+4917661852286",
+        "email": "info@ajkcleaning.com",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Bahnhofstraße 5",
+            "addressLocality": "Bischofsheim",
+            "postalCode": "65474",
+            "addressCountry": "DE"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 49.9939,
+            "longitude": 8.3669
+        },
+        "openingHoursSpecification": [{
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+            "opens": "08:00",
+            "closes": "18:00"
+        }],
+        "areaServed": {
+            "@type": "GeoCircle",
+            "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 49.9939, "longitude": 8.3669 },
+            "geoRadius": "25000"
+        },
+        "priceRange": "€€",
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Cleaning Services",
+            "itemListElement": [
+                {"@type": "Offer","itemOffered": {"@type": "Service","name": "Residential Cleaning"}},
+                {"@type": "Offer","itemOffered": {"@type": "Service","name": "Commercial Cleaning"}},
+                {"@type": "Offer","itemOffered": {"@type": "Service","name": "Deep Cleaning"}},
+                {"@type": "Offer","itemOffered": {"@type": "Service","name": "Move-In/Move-Out Cleaning"}}
+            ]
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "58"
+        }
     }
-  }
-  </script>
+    </script>
 </head>
 <body class="font-sans text-gray-800 antialiased">
-  <!-- ACCESSIBILITY: Skip to main content link -->
-  <a href="#main-content" class="skip-link">Skip to main content</a>
+    <!-- ACCESSIBILITY: Skip to main content link -->
+    <a href="#main-content" class="skip-link" data-translate="skipLink">Skip to main content</a>
 
-  <!-- Enhanced Navbar -->
-  <header id="navbar" class="fixed w-full bg-white/90 z-50 transition-all duration-500 py-3">
-    <div class="container mx-auto flex justify-between items-center px-6">
-      <a href="#home" class="flex items-center space-x-3" aria-label="AJK Cleaning Company Home">
-        <!-- FIX: Replaced local image path with a placeholder to prevent broken images. -->
-        <img src="images/logo.jpg" alt="AJK Cleaning Company Logo" class="h-16 w-16 sm:h-20 sm:w-20 rounded-lg logo transition-transform duration-300 object-contain" width="80" height="80" loading="eager">
-        <span class="font-bold text-lg sm:text-xl text-primary transition-all duration-300">AJK Cleaning Company</span>
-      </a>
-      
-      <nav class="hidden md:flex space-x-8 items-center" aria-label="Main navigation">
-        <a href="#home" class="nav-link text-gray-700 hover:text-primary font-medium active" aria-current="page">Home</a>
-        <a href="#services" class="nav-link text-gray-700 hover:text-primary font-medium">Services</a>
-        <a href="#about" class="nav-link text-gray-700 hover:text-primary font-medium">About</a>
-        <a href="#faq" class="nav-link text-gray-700 hover:text-primary font-medium">FAQ</a>
-        <a href="#contact" class="nav-link text-gray-700 hover:text-primary font-medium">Contact</a>
-        <a href="#contact" class="cta-button bg-gradient-to-r from-primary to-primary-dark text-white px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg hover:from-primary-dark hover:to-primary-dark transition-all duration-300 font-semibold">GET A FREE QUOTE</a>
-      </nav>
-      
-      <button id="menu-btn" type="button" class="md:hidden flex flex-col w-8 h-8 justify-center items-center space-y-1.5 focus:outline-none" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
-        <span class="menu-line block w-6 h-0.5 bg-primary"></span>
-        <span class="menu-line block w-6 h-0.5 bg-primary"></span>
-        <span class="menu-line block w-6 h-0.5 bg-primary"></span>
-      </button>
-    </div>
-    
-    <div id="mobile-menu" class="mobile-menu flex-col bg-white px-6 pb-6 space-y-3 md:hidden border-t shadow-lg" aria-hidden="true">
-      <a href="#home" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium active" aria-current="page">Home</a>
-      <a href="#services" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium">Services</a>
-      <a href="#about" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium">About</a>
-      <a href="#faq" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium">FAQ</a>
-      <a href="#contact" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium">Contact</a>
-      <a href="#contact" class="cta-button block bg-gradient-to-r from-primary to-primary-dark text-white px-4 py-3 rounded-lg text-center hover:shadow-md transition-colors duration-300 mt-2 font-semibold">GET A FREE QUOTE</a>
-    </div>
-  </header>
-
-  <main>
-    <!-- Hero Section -->
-    <section id="home" class="relative h-screen flex items-center justify-center text-center text-white pt-16 hero-image" role="banner" aria-labelledby="hero-heading">
-      <div class="hero-overlay absolute inset-0"></div>
-      <!-- ACCESSIBILITY: Added main content ID for skip link -->
-      <div id="main-content" class="relative z-10 max-w-4xl px-6 animate-fade-in-up">
-        <h1 id="hero-heading" class="text-4xl md:text-6xl font-bold mb-4 leading-tight">Experience the AJK Standard of Clean in Bischofsheim</h1>
-        <p class="mb-8 text-lg md:text-xl">Fully insured, eco-friendly products, and satisfaction guaranteed. Serving Bischofsheim, Mainz, Wiesbaden & surrounding areas.</p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-          <a href="#contact" class="bg-primary text-white px-6 py-3 rounded-lg shadow hover:bg-primary-dark transition-colors duration-300 font-semibold">Book a Cleaning</a>
-          <a href="#services" class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg shadow hover:bg-white hover:text-primary transition-colors duration-300 font-semibold">Our Services</a>
-        </div>
-      </div>
-      <a href="#trust" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce" aria-label="Scroll to next section">
-        <i class="fas fa-chevron-down text-2xl text-white"></i>
-      </a>
-    </section>
-
-    <!-- NEW CONTENT: Trust Badges Section -->
-    <section id="trust" class="py-12 bg-white">
-      <div class="container mx-auto px-6 text-center">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.1s;">
-                <i class="fas fa-shield-alt text-4xl text-primary mb-2"></i>
-                <span class="font-semibold">Insured & Bonded</span>
-            </div>
-            <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.2s;">
-                <i class="fas fa-leaf text-4xl text-secondary mb-2"></i>
-                <span class="font-semibold">Eco-Friendly</span>
-            </div>
-            <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.3s;">
-                <i class="fas fa-star text-4xl text-yellow-400 mb-2"></i>
-                <span class="font-semibold">5-Star Rated</span>
-            </div>
-            <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.4s;">
-                <i class="fas fa-thumbs-up text-4xl text-primary mb-2"></i>
-                <span class="font-semibold">Satisfaction Guaranteed</span>
-            </div>
-        </div>
-      </div>
-    </section>
-    
-    <!-- Services Section -->
-    <section id="services" class="py-16 bg-gray-50" aria-labelledby="services-heading">
-      <div class="container mx-auto px-6 text-center">
-        <h2 id="services-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up">Our Premium Cleaning Services</h2>
-        <p class="text-gray-600 max-w-2xl mx-auto mb-12 animate-fade-in-up" style="animation-delay: 0.2s;">We offer a wide range of cleaning services tailored to meet your specific needs and exceed your expectations in Bischofsheim and surrounding areas.</p>
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.3s;">
-            <div>
-              <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-home text-primary text-2xl"></i></div>
-              <h3 class="font-bold text-lg mb-2">Residential Cleaning</h3>
-              <p class="text-sm text-gray-600 mb-4">Keep your home spotless with our detailed cleaning services.</p>
-            </div>
-            <div class="mt-4">
-              <a href="#contact" class="text-primary hover:underline font-medium inline-flex items-center mb-3">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
-              <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors">✨ Get Cleaning Checklist</button>
-            </div>
-          </article>
-          <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.4s;">
-            <div>
-              <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-building text-primary text-2xl"></i></div>
-              <h3 class="font-bold text-lg mb-2">Commercial Cleaning</h3>
-              <p class="text-sm text-gray-600 mb-4">Reliable cleaning for offices and businesses of all sizes.</p>
-            </div>
-            <div class="mt-4">
-              <a href="#contact" class="text-primary hover:underline font-medium inline-flex items-center mb-3">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
-              <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors">✨ Get Cleaning Checklist</button>
-            </div>
-          </article>
-          <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.5s;">
-            <div>
-              <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-broom text-primary text-2xl"></i></div>
-              <h3 class="font-bold text-lg mb-2">Deep Cleaning</h3>
-              <p class="text-sm text-gray-600 mb-4">Thorough cleaning for a refreshed and healthy space.</p>
-            </div>
-            <div class="mt-4">
-              <a href="#contact" class="text-primary hover:underline font-medium inline-flex items-center mb-3">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
-              <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors">✨ Get Cleaning Checklist</button>
-            </div>
-          </article>
-          <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.6s;">
-            <div>
-              <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-truck-moving text-primary text-2xl"></i></div>
-              <h3 class="font-bold text-lg mb-2">Move-In/Move-Out</h3>
-              <p class="text-sm text-gray-600 mb-4">Start fresh in your new place with our moving cleaning.</p>
-            </div>
-            <div class="mt-4">
-              <a href="#contact" class="text-primary hover:underline font-medium inline-flex items-center mb-3">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
-              <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors">✨ Get Cleaning Checklist</button>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="py-16 bg-white" aria-labelledby="about-heading">
-        <div class="container mx-auto px-6">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h2 id="about-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up">About AJK Cleaning Company</h2>
-                    <p class="mb-6 text-gray-700 animate-fade-in-up" style="animation-delay: 0.2s;">At AJK Cleaning Company, we are dedicated to providing premium cleaning services with a commitment to quality and community. Our team uses eco-friendly products and ensures every job meets our AJK standard of clean.</p>
-                    <p class="mb-6 text-gray-700 animate-fade-in-up" style="animation-delay: 0.3s;">Founded in 2022, we've grown to become one of the most trusted cleaning services in the Bischofsheim area, serving hundreds of satisfied residential and commercial clients.</p>
-                    <div class="space-y-4 mt-8">
-                        <div class="trust-point p-4 rounded-lg flex items-center animate-fade-in-up" style="animation-delay: 0.4s;"><i class="fas fa-shield-alt text-primary text-xl w-8 text-center" aria-hidden="true"></i><span class="font-medium text-gray-700 ml-3">Fully Insured & Bonded</span></div>
-                        <div class="trust-point p-4 rounded-lg flex items-center animate-fade-in-up" style="animation-delay: 0.5s;"><i class="fas fa-leaf text-green-600 text-xl w-8 text-center" aria-hidden="true"></i><span class="font-medium text-gray-700 ml-3">Eco-Friendly Products</span></div>
-                        <div class="trust-point p-4 rounded-lg flex items-center animate-fade-in-up" style="animation-delay: 0.6s;"><i class="fas fa-user-check text-primary text-xl w-8 text-center" aria-hidden="true"></i><span class="font-medium text-gray-700 ml-3">Trained Professionals</span></div>
-                        <div class="trust-point p-4 rounded-lg flex items-center animate-fade-in-up" style="animation-delay: 0.7s;"><i class="fas fa-thumbs-up text-green-600 text-xl w-8 text-center" aria-hidden="true"></i><span class="font-medium text-gray-700 ml-3">Satisfaction Guaranteed</span></div>
-                    </div>
+    <!-- Enhanced Navbar -->
+    <header id="navbar" class="fixed w-full bg-white/90 z-50 transition-all duration-500 py-3">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <a href="#home" class="flex items-center space-x-3" aria-label="AJK Cleaning Company Home">
+                <img src="https://placehold.co/80x80/1e40af/ffffff?text=AJK" alt="AJK Cleaning Company Logo" class="h-16 w-16 sm:h-20 sm:w-20 rounded-lg logo transition-transform duration-300 object-contain" width="80" height="80" loading="eager">
+                <span class="font-bold text-lg sm:text-xl text-primary transition-all duration-300" data-translate="companyName">AJK Cleaning Company</span>
+            </a>
+            
+            <nav class="hidden md:flex space-x-8 items-center" aria-label="Main navigation">
+                <a href="#home" class="nav-link text-gray-700 hover:text-primary font-medium active" aria-current="page" data-translate="navHome">Home</a>
+                <a href="#services" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navServices">Services</a>
+                <a href="#about" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navAbout">About</a>
+                <a href="#faq" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navFaq">FAQ</a>
+                <a href="#contact" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navContact">Contact</a>
+                <a href="#contact" class="cta-button bg-gradient-to-r from-primary to-primary-dark text-white px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg hover:from-primary-dark hover:to-primary-dark transition-all duration-300 font-semibold" data-translate="navQuote">GET A FREE QUOTE</a>
+                <div class="lang-switcher ml-4">
+                    <button data-lang="en" class="lang-option active" title="Switch to English" aria-label="Switch to English">
+                        <svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg"><clipPath id="a"><path d="m30 15h30v15zm0 0v15h-30zm0 0h-30v-15zm0 0v-15h30z"/></clipPath><path d="m0 0v30h60v-30z" fill="#012169"/><path d="m0 0 60 30m-60 0 60-30" stroke="#fff" stroke-width="6"/><path d="m0 0 60 30m-60 0 60-30" stroke="#c8102e" stroke-width="4" clip-path="url(#a)"/><path d="m30 0v30m-30-15h60" stroke="#fff" stroke-width="10"/><path d="m30 0v30m-30-15h60" stroke="#c8102e" stroke-width="6"/></svg>
+                    </button>
+                    <button data-lang="de" class="lang-option" title="Switch to German" aria-label="Switch to German">
+                        <svg viewBox="0 0 5 3" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h5v3h-5z"/><path d="m0 1h5v2h-5z" fill="#d00"/><path d="m0 2h5v1h-5z" fill="#ffce00"/></svg>
+                    </button>
                 </div>
-                <div class="animate-fade-in-up" style="animation-delay: 0.8s;">
-                    <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Professional cleaning team working together" class="rounded-xl shadow-lg" width="600" height="400" loading="lazy">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- NEW CONTENT: FAQ Section -->
-    <section id="faq" class="py-16 bg-gray-50" aria-labelledby="faq-heading">
-        <div class="container mx-auto px-6">
-            <div class="text-center max-w-3xl mx-auto">
-                <h2 id="faq-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up">Frequently Asked Questions</h2>
-                <p class="text-gray-600 mb-12 animate-fade-in-up" style="animation-delay: 0.2s;">Have questions? We have answers. Here are some common queries we receive from our clients in the Bischofsheim area.</p>
-            </div>
-            <div class="max-w-3xl mx-auto space-y-4" id="faq-container">
-                <!-- FAQ items will be inserted here by JavaScript -->
-            </div>
-        </div>
-    </section>
-    
-    <!-- AI Cleaning Tip Generator Section -->
-    <section id="ai-tips" class="py-16 bg-white" aria-labelledby="tip-heading">
-        <div class="container mx-auto px-6">
-            <div class="bg-gray-50 p-8 rounded-xl shadow-lg border border-gray-100 text-center max-w-3xl mx-auto">
-                <h2 id="tip-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up">✨ Get a Custom Cleaning Tip</h2>
-                <p class="text-gray-600 mb-6 animate-fade-in-up" style="animation-delay: 0.2s;">Stuck on a tough cleaning problem? Let our AI expert help you out!</p>
-                <div class="grid sm:grid-cols-2 gap-4 mb-4 animate-fade-in-up" style="animation-delay: 0.3s;">
-                    <div>
-                        <label for="tip-room" class="sr-only">Select a Room</label>
-                        <select id="tip-room" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                            <option>Kitchen</option>
-                            <option>Bathroom</option>
-                            <option>Living Room</option>
-                            <option>Bedroom</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="tip-challenge" class="sr-only">Select a Challenge</label>
-                        <select id="tip-challenge" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                            <option>Everyday Grime</option>
-                            <option>Tough Grease</option>
-                            <option>Limescale & Hard Water</option>
-                            <option>Dust & Allergens</option>
-                            <option>Pet Messes</option>
-                        </select>
-                    </div>
-                </div>
-                <button id="generate-tip-btn" class="bg-secondary text-white px-6 py-3 rounded-lg shadow hover:bg-secondary-dark transition-colors duration-300 font-semibold w-full sm:w-auto animate-fade-in-up" style="animation-delay: 0.4s;">
-                    Generate Tip
-                </button>
-                <div id="tip-result-container" class="mt-6 text-left p-6 bg-blue-50 rounded-lg border border-blue-200 hidden opacity-0 animate-fade-in-up">
-                    <div id="tip-result-loader" class="flex justify-center items-center">
-                        <div class="loader"></div>
-                    </div>
-                    <p id="tip-result-text" class="text-gray-800"></p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- REVERTED: Contact Section with Standard Form -->
-    <section id="contact" class="py-16 bg-gray-50" aria-labelledby="contact-heading">
-      <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12">
-        <div class="animate-fade-in-up">
-          <h2 id="contact-heading" class="text-3xl font-bold text-primary mb-4">Get In Touch</h2>
-          <p class="mb-6 text-gray-700">We're here to answer any questions. Reach out for a free, no-obligation quote for your cleaning needs in Bischofsheim.</p>
-          <div class="space-y-3">
-            <p class="flex items-center"><i class="fas fa-phone text-primary mr-3 w-5" aria-hidden="true"></i> <a href="tel:+4917661852286" class="hover:underline">+49 176 61852286</a></p>
-            <p class="flex items-center"><i class="fas fa-envelope text-primary mr-3 w-5" aria-hidden="true"></i> <a href="mailto:rajau691@gmail.com" class="hover:underline">rajau691@gmail.com</a></p>
-            <p class="flex items-center"><i class="fas fa-map-marker-alt text-primary mr-3 w-5" aria-hidden="true"></i><a href="https://maps.app.goo.gl/95dKa1nL9D2gZ7947" target="_blank" rel="noopener noreferrer">Bahnhofstraße 5, 65474 Bischofsheim, Germany</a></p>
-            <p class="flex items-center"><i class="fas fa-clock text-primary mr-3 w-5" aria-hidden="true"></i> Mon - Sat: 8:00am - 6:00pm</p>
-          </div>
-        </div>
-        <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.2s;">
-          <h3 class="text-2xl font-bold text-primary mb-6">Get a Free Quote</h3>
-          <form id="contact-form" class="space-y-4" novalidate>
-            <div>
-              <label for="name" class="sr-only">Name</label>
-              <input type="text" id="name" name="name" placeholder="Name *" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required aria-required="true">
-            </div>
-            <div>
-              <label for="email" class="sr-only">Email</label>
-              <input type="email" id="email" name="email" placeholder="Email *" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required aria-required="true">
-            </div>
-            <div>
-              <label for="service" class="sr-only">Select a Service</label>
-              <select id="service" name="service" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" aria-label="Select a service">
-                <option value="" disabled selected>Select a Service</option>
-                <option value="Residential Cleaning">Residential Cleaning</option>
-                <option value="Commercial Cleaning">Commercial Cleaning</option>
-                <option value="Deep Cleaning">Deep Cleaning</option>
-                <option value="Move-In/Move-Out Cleaning">Move-In/Move-Out Cleaning</option>
-              </select>
-            </div>
-            <div>
-              <label for="message" class="sr-only">Message</label>
-              <textarea id="message" name="message" placeholder="Message *" rows="4" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required aria-required="true"></textarea>
-            </div>
-            <button type="submit" id="submit-btn" class="bg-secondary text-white px-6 py-3 rounded-lg shadow hover:bg-secondary-dark transition-colors duration-300 w-full font-semibold">
-              <span id="submit-text">Submit Request</span>
-              <span id="submit-loading" class="hidden">Sending...</span>
+            </nav>
+            
+            <button id="menu-btn" type="button" class="md:hidden flex flex-col w-8 h-8 justify-center items-center space-y-1.5 focus:outline-none" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+                <span class="menu-line block w-6 h-0.5 bg-primary"></span>
+                <span class="menu-line block w-6 h-0.5 bg-primary"></span>
+                <span class="menu-line block w-6 h-0.5 bg-primary"></span>
             </button>
-            <div id="form-success" class="bg-green-100 text-green-700 p-3 rounded-lg mt-4 hidden" role="alert">Thank you! We'll be in touch soon.</div>
-            <div id="form-error" class="bg-red-100 text-red-700 p-3 rounded-lg mt-4 hidden" role="alert">An error occurred. Please try again.</div>
-          </form>
         </div>
-      </div>
-    </section>
-  </main>
-  
-  <!-- Footer -->
-  <footer class="bg-primary text-white py-12" role="contentinfo">
-    <div class="container mx-auto px-6 grid md:grid-cols-4 gap-8">
-      <div>
-        <h4 class="font-bold text-xl mb-4">AJK Cleaning Company</h4>
-        <p class="text-blue-200">Premium Cleaning Solutions for Homes and Offices in Bischofsheim</p>
-      </div>
-      <div>
-        <h4 class="font-bold mb-4 text-lg">Quick Links</h4>
-        <ul class="space-y-2">
-          <li><a href="#home" class="text-blue-200 hover:text-white transition-colors">Home</a></li>
-          <li><a href="#services" class="text-blue-200 hover:text-white transition-colors">Services</a></li>
-          <li><a href="#about" class="text-blue-200 hover:text-white transition-colors">About</a></li>
-          <li><a href="#faq" class="text-blue-200 hover:text-white transition-colors">FAQ</a></li>
-          <li><a href="#contact" class="text-blue-200 hover:text-white transition-colors">Contact</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 class="font-bold mb-4 text-lg">Our Services</h4>
-        <ul class="space-y-2">
-          <li><a href="#services" class="text-blue-200 hover:text-white transition-colors">Residential Cleaning</a></li>
-          <li><a href="#services" class="text-blue-200 hover:text-white transition-colors">Commercial Cleaning</a></li>
-          <li><a href="#services" class="text-blue-200 hover:text-white transition-colors">Deep Cleaning</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 class="font-bold mb-4 text-lg">Follow Us</h4>
-        <div class="flex space-x-4">
-          <a href="#" class="bg-white/10 hover:bg-white/20 transition-colors w-10 h-10 rounded-full flex items-center justify-center" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="bg-white/10 hover:bg-white/20 transition-colors w-10 h-10 rounded-full flex items-center justify-center" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        
+        <div id="mobile-menu" class="mobile-menu flex-col bg-white px-6 pb-6 space-y-3 md:hidden border-t shadow-lg" aria-hidden="true">
+            <a href="#home" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium active" aria-current="page" data-translate="navHome">Home</a>
+            <a href="#services" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navServices">Services</a>
+            <a href="#about" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navAbout">About</a>
+            <a href="#faq" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navFaq">FAQ</a>
+            <a href="#contact" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navContact">Contact</a>
+            <a href="#contact" class="cta-button block bg-gradient-to-r from-primary to-primary-dark text-white px-4 py-3 rounded-lg text-center hover:shadow-md transition-colors duration-300 mt-2 font-semibold" data-translate="navQuote">GET A FREE QUOTE</a>
+             <div class="lang-switcher mt-4 mx-auto w-max">
+                <button data-lang="en" class="lang-option active" title="Switch to English" aria-label="Switch to English">
+                    <svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg"><clipPath id="a-mobile"><path d="m30 15h30v15zm0 0v15h-30zm0 0h-30v-15zm0 0v-15h30z"/></clipPath><path d="m0 0v30h60v-30z" fill="#012169"/><path d="m0 0 60 30m-60 0 60-30" stroke="#fff" stroke-width="6"/><path d="m0 0 60 30m-60 0 60-30" stroke="#c8102e" stroke-width="4" clip-path="url(#a-mobile)"/><path d="m30 0v30m-30-15h60" stroke="#fff" stroke-width="10"/><path d="m30 0v30m-30-15h60" stroke="#c8102e" stroke-width="6"/></svg>
+                </button>
+                <button data-lang="de" class="lang-option" title="Switch to German" aria-label="Switch to German">
+                    <svg viewBox="0 0 5 3" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h5v3h-5z"/><path d="m0 1h5v2h-5z" fill="#d00"/><path d="m0 2h5v1h-5z" fill="#ffce00"/></svg>
+                </button>
+            </div>
         </div>
-      </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="relative min-h-screen flex items-center justify-center text-center text-white pt-16 hero-image" role="banner" aria-labelledby="hero-heading">
+            <div class="hero-overlay absolute inset-0"></div>
+            <div id="main-content" class="relative z-10 max-w-4xl px-6 animate-fade-in-up">
+                <h1 id="hero-heading" class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 leading-tight" data-translate="heroTitle">Experience the AJK Standard of Clean in Bischofsheim</h1>
+                <p class="mb-8 text-lg md:text-xl" data-translate="heroSubtitle">Fully insured, eco-friendly products, and satisfaction guaranteed. Serving Bischofsheim, Mainz, Wiesbaden & surrounding areas.</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#contact" class="bg-primary text-white px-6 py-3 rounded-lg shadow hover:bg-primary-dark transition-colors duration-300 font-semibold" data-translate="heroBtnBook">Book a Cleaning</a>
+                    <a href="#services" class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg shadow hover:bg-white hover:text-primary transition-colors duration-300 font-semibold" data-translate="heroBtnServices">Our Services</a>
+                </div>
+            </div>
+            <a href="#trust" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce" aria-label="Scroll to next section">
+                <i class="fas fa-chevron-down text-2xl text-white"></i>
+            </a>
+        </section>
+
+        <!-- Trust Badges Section -->
+        <section id="trust" class="py-12 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.1s;">
+                        <i class="fas fa-shield-alt text-4xl text-primary mb-2"></i>
+                        <span class="font-semibold" data-translate="trustInsured">Insured & Bonded</span>
+                    </div>
+                    <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.2s;">
+                        <i class="fas fa-leaf text-4xl text-secondary mb-2"></i>
+                        <span class="font-semibold" data-translate="trustEco">Eco-Friendly</span>
+                    </div>
+                    <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.3s;">
+                        <i class="fas fa-star text-4xl text-yellow-400 mb-2"></i>
+                        <span class="font-semibold" data-translate="trustRated">5-Star Rated</span>
+                    </div>
+                    <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.4s;">
+                        <i class="fas fa-thumbs-up text-4xl text-primary mb-2"></i>
+                        <span class="font-semibold" data-translate="trustGuaranteed">Satisfaction Guaranteed</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Services Section -->
+        <section id="services" class="py-16 bg-gray-50" aria-labelledby="services-heading">
+            <div class="container mx-auto px-6 text-center">
+                <h2 id="services-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="servicesTitle">Our Premium Cleaning Services</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto mb-12 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="servicesSubtitle">We offer a wide range of cleaning services tailored to meet your specific needs and exceed your expectations in Bischofsheim and surrounding areas.</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.3s;">
+                        <div>
+                            <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-home text-primary text-2xl"></i></div>
+                            <h3 class="font-bold text-lg mb-2" data-translate="service1Title">Residential Cleaning</h3>
+                            <p class="text-sm text-gray-600 mb-4" data-translate="service1Desc">Keep your home spotless with our detailed cleaning services.</p>
+                        </div>
+                        <div class="mt-4">
+                             <a href="#contact" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
+                            <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors" data-service="Residential Cleaning" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
+                        </div>
+                    </article>
+                    <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.4s;">
+                        <div>
+                            <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-building text-primary text-2xl"></i></div>
+                            <h3 class="font-bold text-lg mb-2" data-translate="service2Title">Commercial Cleaning</h3>
+                            <p class="text-sm text-gray-600 mb-4" data-translate="service2Desc">Reliable cleaning for offices and businesses of all sizes.</p>
+                        </div>
+                        <div class="mt-4">
+                            <a href="#contact" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
+                            <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors" data-service="Commercial Cleaning" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
+                        </div>
+                    </article>
+                    <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.5s;">
+                        <div>
+                            <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-broom text-primary text-2xl"></i></div>
+                            <h3 class="font-bold text-lg mb-2" data-translate="service3Title">Deep Cleaning</h3>
+                            <p class="text-sm text-gray-600 mb-4" data-translate="service3Desc">Thorough cleaning for a refreshed and healthy space.</p>
+                        </div>
+                        <div class="mt-4">
+                            <a href="#contact" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
+                            <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors" data-service="Deep Cleaning" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
+                        </div>
+                    </article>
+                    <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.6s;">
+                        <div>
+                            <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-truck-moving text-primary text-2xl"></i></div>
+                            <h3 class="font-bold text-lg mb-2" data-translate="service4Title">Move-In/Move-Out</h3>
+                            <p class="text-sm text-gray-600 mb-4" data-translate="service4Desc">Start fresh in your new place with our moving cleaning.</p>
+                        </div>
+                        <div class="mt-4">
+                            <a href="#contact" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
+                            <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors" data-service="Move-In/Move-Out" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-16 bg-white" aria-labelledby="about-heading">
+            <div class="container mx-auto px-6">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 id="about-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="aboutTitle">About AJK Cleaning Company</h2>
+                        <p class="mb-6 text-gray-700 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="aboutP1">At AJK Cleaning Company, we are dedicated to providing premium cleaning services with a commitment to quality and community. Our team uses eco-friendly products and ensures every job meets our AJK standard of clean.</p>
+                        <p class="mb-6 text-gray-700 animate-fade-in-up" style="animation-delay: 0.3s;" data-translate="aboutP2">Founded in 2022, we've grown to become one of the most trusted cleaning services in the Bischofsheim area, serving hundreds of satisfied residential and commercial clients.</p>
+                        <div class="space-y-4 mt-8">
+                            <div class="trust-point p-4 rounded-lg flex items-center animate-fade-in-up" style="animation-delay: 0.4s;"><i class="fas fa-shield-alt text-primary text-xl w-8 text-center" aria-hidden="true"></i><span class="font-medium text-gray-700 ml-3" data-translate="aboutPoint1">Fully Insured & Bonded</span></div>
+                            <div class="trust-point p-4 rounded-lg flex items-center animate-fade-in-up" style="animation-delay: 0.5s;"><i class="fas fa-leaf text-green-600 text-xl w-8 text-center" aria-hidden="true"></i><span class="font-medium text-gray-700 ml-3" data-translate="aboutPoint2">Eco-Friendly Products</span></div>
+                            <div class="trust-point p-4 rounded-lg flex items-center animate-fade-in-up" style="animation-delay: 0.6s;"><i class="fas fa-user-check text-primary text-xl w-8 text-center" aria-hidden="true"></i><span class="font-medium text-gray-700 ml-3" data-translate="aboutPoint3">Trained Professionals</span></div>
+                            <div class="trust-point p-4 rounded-lg flex items-center animate-fade-in-up" style="animation-delay: 0.7s;"><i class="fas fa-thumbs-up text-green-600 text-xl w-8 text-center" aria-hidden="true"></i><span class="font-medium text-gray-700 ml-3" data-translate="aboutPoint4">Satisfaction Guaranteed</span></div>
+                        </div>
+                    </div>
+                    <div class="animate-fade-in-up" style="animation-delay: 0.8s;">
+                        <!-- 7. Performance Optimizations: lazy loading added -->
+                        <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Professional cleaning team working together" class="rounded-xl shadow-lg" width="600" height="400" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="py-16 bg-gray-50" aria-labelledby="faq-heading">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 id="faq-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="faqTitle">Frequently Asked Questions</h2>
+                    <p class="text-gray-600 mb-12 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="faqSubtitle">Have questions? We have answers. Here are some common queries we receive from our clients in the Bischofsheim area.</p>
+                </div>
+                <div class="max-w-3xl mx-auto space-y-4" id="faq-container">
+                    <!-- FAQ items will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- AI Cleaning Tip Generator Section -->
+        <section id="ai-tips" class="py-16 bg-white" aria-labelledby="tip-heading">
+            <div class="container mx-auto px-6">
+                <div class="bg-gray-50 p-8 rounded-xl shadow-lg border border-gray-100 text-center max-w-3xl mx-auto">
+                    <h2 id="tip-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="tipTitle">✨ Get a Custom Cleaning Tip</h2>
+                    <p class="text-gray-600 mb-6 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="tipSubtitle">Stuck on a tough cleaning problem? Let our AI expert help you out!</p>
+                    <div class="grid sm:grid-cols-2 gap-4 mb-4 animate-fade-in-up" style="animation-delay: 0.3s;">
+                        <div>
+                            <label for="tip-room" class="sr-only" data-translate="tipRoomLabel">Select a Room</label>
+                            <select id="tip-room" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <option data-translate="tipRoomKitchen">Kitchen</option>
+                                <option data-translate="tipRoomBathroom">Bathroom</option>
+                                <option data-translate="tipRoomLiving">Living Room</option>
+                                <option data-translate="tipRoomBedroom">Bedroom</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="tip-challenge" class="sr-only" data-translate="tipChallengeLabel">Select a Challenge</label>
+                            <select id="tip-challenge" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <option data-translate="tipChallengeGrime">Everyday Grime</option>
+                                <option data-translate="tipChallengeGrease">Tough Grease</option>
+                                <option data-translate="tipChallengeLimescale">Limescale & Hard Water</option>
+                                <option data-translate="tipChallengeDust">Dust & Allergens</option>
+                                <option data-translate="tipChallengePet">Pet Messes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="generate-tip-btn" class="bg-secondary text-white px-6 py-3 rounded-lg shadow hover:bg-secondary-dark transition-colors duration-300 font-semibold w-full sm:w-auto animate-fade-in-up" style="animation-delay: 0.4s;" data-translate="tipBtnGenerate">Generate Tip</button>
+                    <div id="tip-result-container" class="mt-6 text-left p-6 bg-blue-50 rounded-lg border border-blue-200 hidden opacity-0 animate-fade-in-up">
+                        <div id="tip-result-loader" class="flex justify-center items-center"><div class="loader"></div></div>
+                        <p id="tip-result-text" class="text-gray-800"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-16 bg-gray-50" aria-labelledby="contact-heading">
+            <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12">
+                <div class="animate-fade-in-up">
+                    <h2 id="contact-heading" class="text-3xl font-bold text-primary mb-4" data-translate="contactTitle">Get In Touch</h2>
+                    <p class="mb-6 text-gray-700" data-translate="contactSubtitle">We're here to answer any questions. Reach out for a free, no-obligation quote for your cleaning needs in Bischofsheim.</p>
+                    
+                    <!-- 3. Urgency & Conversion Boosters -->
+                    <div class="bg-green-50 border-l-4 border-green-400 p-4 mb-6 rounded-r-lg">
+                        <p class="text-green-800 font-semibold" data-translate="urgencyMessage">🚀 <strong>Same-Day Quotes Available!</strong> Call now: +49 176 61852286</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <p class="flex items-center"><i class="fas fa-phone text-primary mr-3 w-5" aria-hidden="true"></i> <a href="tel:+4917661852286" class="hover:underline">+49 176 61852286</a></p>
+                        <p class="flex items-center"><i class="fas fa-envelope text-primary mr-3 w-5" aria-hidden="true"></i> <!-- Replace Gmail with professional email --> <a href="mailto:info@ajkcleaning.com" class="hover:underline">info@ajkcleaning.com</a></p>
+                        <p class="flex items-center"><i class="fas fa-map-marker-alt text-primary mr-3 w-5" aria-hidden="true"></i><a href="https://maps.app.goo.gl/95dKa1nL9D2gZ7947" target="_blank" rel="noopener noreferrer">Bahnhofstraße 5, 65474 Bischofsheim, Germany</a></p>
+                        <p class="flex items-center"><i class="fas fa-clock text-primary mr-3 w-5" aria-hidden="true"></i> <span data-translate="contactHours">Mon - Sat: 8:00am - 6:00pm</span></p>
+                    </div>
+                    
+                    <!-- 5. Google My Business Integration: Map -->
+                    <div class="mt-6 rounded-lg overflow-hidden border shadow-md">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2561.921323321551!2d8.364331677093558!3d49.99390237149793!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47bd94f114c0228d%3A0xb3a82a739d73b05a!2sBahnhofstra%C3%9Fe%205%2C%2065474%20Bischofsheim%2C%20Germany!5e0!3m2!1sen!2snp!4v1727448015519!5m2!1sen!2snp" 
+                            width="100%" 
+                            height="300" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="AJK Cleaning Company Location Map">
+                        </iframe>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <h3 class="text-2xl font-bold text-primary mb-6" data-translate="formTitle">Get a Free Quote</h3>
+                    <form id="contact-form" class="space-y-4" novalidate>
+                        <div>
+                            <label for="name" class="sr-only">Name</label>
+                            <input type="text" id="name" name="name" placeholder="Name *" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required aria-required="true" data-translate-placeholder="formName">
+                        </div>
+                        <div>
+                            <label for="email" class="sr-only">Email</label>
+                            <input type="email" id="email" name="email" placeholder="Email (Optional)" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" data-translate-placeholder="formEmail">
+                        </div>
+                        <div>
+                            <label for="phone" class="sr-only">Phone</label>
+                            <input type="tel" id="phone" name="phone" placeholder="Phone *" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required aria-required="true" data-translate-placeholder="formPhone">
+                        </div>
+                        <div>
+                            <label for="service" class="sr-only" data-translate="formServiceLabel">Select a Service</label>
+                            <select id="service" name="service" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" aria-label="Select a service">
+                                <option value="" disabled selected data-translate="formServiceSelect">Select a Service</option>
+                                <option value="Residential Cleaning" data-translate="service1Title">Residential Cleaning</option>
+                                <option value="Commercial Cleaning" data-translate="service2Title">Commercial Cleaning</option>
+                                <option value="Deep Cleaning" data-translate="service3Title">Deep Cleaning</option>
+                                <option value="Move-In/Move-Out Cleaning" data-translate="service4Title">Move-In/Move-Out</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="message" class="sr-only">Message</label>
+                            <textarea id="message" name="message" placeholder="Message *" rows="4" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required aria-required="true" data-translate-placeholder="formMessage"></textarea>
+                        </div>
+                        <button type="submit" id="submit-btn" class="bg-secondary text-white px-6 py-3 rounded-lg shadow hover:bg-secondary-dark transition-colors duration-300 w-full font-semibold">
+                            <span id="submit-text" data-translate="formBtnSubmit">Submit Request</span>
+                            <span id="submit-loading" class="hidden" data-translate="formBtnSending">Sending...</span>
+                        </button>
+                        <div id="form-success" class="bg-green-100 text-green-700 p-3 rounded-lg mt-4 hidden" role="alert" data-translate="formSuccess">Thank you! We'll be in touch soon.</div>
+                        <div id="form-error" class="bg-red-100 text-red-700 p-3 rounded-lg mt-4 hidden" role="alert" data-translate="formError">An error occurred. Please try again.</div>
+                    </form>
+                    <!-- Add trust badges near form -->
+                    <div class="flex justify-center space-x-6 my-6">
+                        <img src="https://placehold.co/100x40/ffffff/1e40af?text=Trusted" alt="Trusted Partner" loading="lazy">
+                        <img src="https://placehold.co/100x40/ffffff/059669?text=Eco-Safe" alt="Eco Safe" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-primary text-white py-12" role="contentinfo">
+        <div class="container mx-auto px-6 grid md:grid-cols-4 gap-8">
+            <div>
+                <h4 class="font-bold text-xl mb-4" data-translate="companyName">AJK Cleaning Company</h4>
+                <p class="text-blue-200" data-translate="footerDesc">Premium Cleaning Solutions for Homes and Offices in Bischofsheim</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 text-lg" data-translate="footerLinksTitle">Quick Links</h4>
+                <ul class="space-y-2">
+                    <li><a href="#home" class="text-blue-200 hover:text-white transition-colors" data-translate="navHome">Home</a></li>
+                    <li><a href="#services" class="text-blue-200 hover:text-white transition-colors" data-translate="navServices">Services</a></li>
+                    <li><a href="#about" class="text-blue-200 hover:text-white transition-colors" data-translate="navAbout">About</a></li>
+                    <li><a href="#faq" class="text-blue-200 hover:text-white transition-colors" data-translate="navFaq">FAQ</a></li>
+                    <li><a href="#contact" class="text-blue-200 hover:text-white transition-colors" data-translate="navContact">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 text-lg" data-translate="footerServicesTitle">Our Services</h4>
+                <ul class="space-y-2">
+                    <li><a href="#services" class="text-blue-200 hover:text-white transition-colors" data-translate="service1Title">Residential Cleaning</a></li>
+                    <li><a href="#services" class="text-blue-200 hover:text-white transition-colors" data-translate="service2Title">Commercial Cleaning</a></li>
+                    <li><a href="#services" class="text-blue-200 hover:text-white transition-colors" data-translate="service3Title">Deep Cleaning</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 text-lg" data-translate="footerFollowTitle">Follow Us</h4>
+                <div class="flex space-x-4">
+                    <a href="https://www.facebook.com/ajkcleaning" class="bg-white/10 hover:bg-white/20 transition-colors w-10 h-10 rounded-full flex items-center justify-center" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/ajkcleaning" class="bg-white/10 hover:bg-white/20 transition-colors w-10 h-10 rounded-full flex items-center justify-center" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <!-- 8. Professional Email Setup -->
+        <div class="text-center mt-8 pt-6 border-t border-blue-700 text-blue-200 text-sm">
+             <a href="/impressum" class="hover:text-white" data-translate="footerImpressum">Impressum</a> | 
+             <a href="/datenschutz" class="hover:text-white" data-translate="footerPrivacy">Datenschutz</a>
+        </div>
+        <div class="text-center mt-4 pt-4 text-blue-200 text-sm">
+            © <span id="copyright-year">2025</span> <span data-translate="companyName">AJK Cleaning Company</span>. <span data-translate="footerRights">All rights reserved.</span>
+        </div>
+    </footer>
+
+    <!-- Sticky CTA for mobile -->
+    <div class="sticky-cta fixed bottom-0 left-0 right-0 bg-white shadow-lg p-3 flex justify-around items-center md:hidden z-50">
+        <a href="tel:+4917661852286" class="flex items-center text-primary font-semibold px-4 py-2 text-center" data-translate="ctaCall">
+            <i class="fas fa-phone mr-2" aria-hidden="true"></i> Call Now
+        </a>
+        <a href="#contact" class="bg-secondary text-white px-4 py-2 rounded-lg font-semibold text-center" data-translate="ctaQuote">Get Quote</a>
     </div>
-    <div class="text-center mt-8 pt-6 border-t border-blue-700 text-blue-200 text-sm">
-      <!-- FIX: Dynamically set the copyright year to always be current. -->
-      © <span id="copyright-year">2025</span> AJK Cleaning Company. All rights reserved.
+    
+    <!-- Chat Widget -->
+    <div id="chat-widget-enhanced" class="chat-widget-enhanced">
+        <button class="chat-toggle" id="chat-toggle-enhanced" type="button" aria-label="Toggle chat">
+            <div class="chat-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+            </div>
+            <div class="unread-badge" id="unread-badge" style="display:none;" aria-hidden="true">0</div>
+        </button>
+        
+        <div class="chat-window" id="chat-window-enhanced">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <h3 id="chat-header-title">AJK AI Assistant ✨</h3>
+                    <div class="chat-status" id="chat-status">Online</div>
+                </div>
+                <div class="chat-header-actions">
+                    <button class="chat-action-btn" id="human-handoff-btn" type="button" title="Talk to a human" aria-label="Talk to a human">
+                      <i class="fas fa-user"></i>
+                    </button>
+                    <button class="minimize-btn" id="minimize-chat" type="button" aria-label="Minimize chat">−</button>
+                    <button class="close-btn" id="close-chat" type="button" aria-label="Close chat">×</button>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages"></div>
+            
+            <div class="typing-indicator" id="typing-indicator">
+                <div class="typing-dots"><span></span><span></span><span></span></div>
+                <span class="typing-text" id="typing-text">Alex is typing...</span>
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="user-info" id="user-info">
+                    <input type="text" id="user-name" placeholder="Your name" maxlength="50" required>
+                    <input type="email" id="user-email" placeholder="Your email (optional)" maxlength="100">
+                    <button id="save-user-info" type="button">Start Chat</button>
+                </div>
+                <div class="chat-input-area" id="chat-input-area" style="display: none;">
+                    <input type="text" id="chat-input-enhanced" placeholder="Ask Alex a question..." maxlength="500" aria-label="Message input">
+                    <button id="chat-send-enhanced" type="button" aria-label="Send message"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></button>
+                </div>
+            </div>
+        </div>
     </div>
-  </footer>
 
-  <!-- Sticky CTA for mobile -->
-  <div class="sticky-cta fixed bottom-0 left-0 right-0 bg-white shadow-lg p-3 flex justify-around items-center md:hidden z-50">
-    <a href="tel:+4917661852286" class="flex items-center text-primary font-semibold px-4 py-2 text-center"><i class="fas fa-phone mr-2" aria-hidden="true"></i> Call Now</a>
-    <a href="#contact" class="bg-secondary text-white px-4 py-2 rounded-lg font-semibold text-center">Get Quote</a>
-  </div>
-  
-  <!-- Chat Widget -->
-  <div id="chat-widget-enhanced" class="chat-widget-enhanced">
-      <button class="chat-toggle" id="chat-toggle-enhanced" type="button" aria-label="Toggle chat">
-          <div class="chat-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-          </div>
-          <div class="unread-badge" id="unread-badge" style="display:none;" aria-hidden="true">0</div>
-      </button>
-      
-      <div class="chat-window" id="chat-window-enhanced">
-          <div class="chat-header">
-              <div class="chat-header-info">
-                  <h3 id="chat-header-title">AJK AI Assistant ✨</h3>
-                  <div class="chat-status" id="chat-status">Online</div>
-              </div>
-              <div class="chat-header-actions">
-                  <button class="chat-action-btn" id="human-handoff-btn" type="button" title="Talk to a human" aria-label="Talk to a human">
-                    <i class="fas fa-user"></i>
-                  </button>
-                  <button class="minimize-btn" id="minimize-chat" type="button" aria-label="Minimize chat">−</button>
-                  <button class="close-btn" id="close-chat" type="button" aria-label="Close chat">×</button>
-              </div>
-          </div>
-          
-          <div class="chat-messages" id="chat-messages"></div>
-          
-          <div class="typing-indicator" id="typing-indicator">
-              <div class="typing-dots"><span></span><span></span><span></span></div>
-              <span class="typing-text" id="typing-text">Alex is typing...</span>
-          </div>
-          
-          <div class="chat-input-container">
-              <div class="user-info" id="user-info">
-                  <input type="text" id="user-name" placeholder="Your name" maxlength="50" required>
-                  <input type="email" id="user-email" placeholder="Your email (optional)" maxlength="100">
-                  <button id="save-user-info" type="button">Start Chat</button>
-              </div>
-              <div class="chat-input-area" id="chat-input-area" style="display: none;">
-                  <input type="text" id="chat-input-enhanced" placeholder="Ask Alex a question..." maxlength="500" aria-label="Message input">
-                  <button id="chat-send-enhanced" type="button" aria-label="Send message"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
-              </div>
-          </div>
-      </div>
-  </div>
+    <!-- Gemini Checklist Modal -->
+    <div id="checklist-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[2000] hidden opacity-0">
+        <div id="checklist-modal-content" class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-lg max-h-[90vh] flex flex-col transform scale-95">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h2 id="checklist-modal-title" class="text-xl font-bold text-primary">Cleaning Checklist</h2>
+                <button id="checklist-modal-close" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+            </div>
+            <div id="checklist-modal-body" class="overflow-y-auto flex-grow">
+                <div id="checklist-loader" class="flex justify-center items-center py-10"><div class="loader"></div></div>
+                <div id="checklist-content" class="hidden prose"></div>
+                <div id="checklist-error" class="hidden text-red-600 bg-red-100 p-4 rounded-lg"></div>
+            </div>
+            <div class="flex justify-end items-center border-t pt-4 mt-4 space-x-3">
+                <button id="checklist-modal-download" class="bg-secondary text-white font-semibold py-2 px-4 rounded-lg hover:bg-secondary-dark transition-colors hidden" data-translate="modalDownload">Download</button>
+                <button id="checklist-modal-close-bottom" class="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors" data-translate="modalClose">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tailwind config -->
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#1e40af','primary-dark':'#1e3a8a',secondary:'#059669','secondary-dark':'#047857'}}}}</script>
 
-  <!-- Gemini Checklist Modal -->
-  <div id="checklist-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[2000] hidden opacity-0">
-      <div id="checklist-modal-content" class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-lg max-h-[90vh] flex flex-col transform scale-95">
-          <div class="flex justify-between items-center border-b pb-3 mb-4">
-              <h2 id="checklist-modal-title" class="text-xl font-bold text-primary">Cleaning Checklist</h2>
-              <button id="checklist-modal-close" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
-          </div>
-          <div id="checklist-modal-body" class="overflow-y-auto flex-grow">
-              <div id="checklist-loader" class="flex justify-center items-center py-10">
-                  <div class="loader"></div>
-              </div>
-              <div id="checklist-content" class="hidden"></div>
-              <div id="checklist-error" class="hidden text-red-600 bg-red-100 p-4 rounded-lg"></div>
-          </div>
-          <div class="flex justify-end items-center border-t pt-4 mt-4 space-x-3">
-              <button id="checklist-modal-download" class="bg-secondary text-white font-semibold py-2 px-4 rounded-lg hover:bg-secondary-dark transition-colors hidden">Download</button>
-              <button id="checklist-modal-close-bottom" class="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">Close</button>
-          </div>
-      </div>
-  </div>
-  
-  <!-- Tailwind config -->
-  <script>tailwind.config={theme:{extend:{colors:{primary:'#1e40af','primary-dark':'#1e3a8a',secondary:'#059669','secondary-dark':'#047857'}}}}</script>
-
-  <!-- Full, Un-minified Custom Script with Fixes -->
-  <script>
+    <!-- Full Custom Script -->
+    <script>
     document.addEventListener('DOMContentLoaded', function() {
         
-        // --- 🛠️ FIX: Moved markdownToHtml to a shared scope ---
-        const markdownToHtml = (markdown) => {
-            if (!markdown) return '';
-            return markdown
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
-                .split('\n')
-                .map(line => line.trim())
-                .filter(line => line)
-                .map(line => {
-                    if (line.startsWith('## ')) return `<h4>${line.substring(3)}</h4>`;
-                    if (line.startsWith('# ')) return `<h3>${line.substring(2)}</h3>`;
-                    if (line.startsWith('* ') || line.startsWith('- ')) return `<li>${line.substring(2)}</li>`;
-                    return `<p>${line}</p>`;
-                })
-                .join('')
-                .replace(/<li>/g, '<ul><li>').replace(/(<\/li>(?!<li>))/g, '</li></ul>')
-                .replace(/<\/ul><ul>/g, '');
-        };
-
-        // --- 💾 FIX 5: Response Caching for Common Queries ---
-        const responseCache = new Map();
-        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
-        const getCachedResponse = async (key, apiCall) => {
-            const cached = responseCache.get(key);
-            if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
-                return cached.data;
-            }
-            
-            const result = await apiCall();
-            responseCache.set(key, {
-                data: result,
-                timestamp: Date.now()
-            });
-            
-            return result;
-        };
-
-        // --- ⚡ FIX 3: Client-Side API Timeout & Payload Correction ---
+        // --- Gemini API Proxy ---
         const callGeminiAPI = async (chatHistory, systemInstruction) => {
             const apiUrl = '/api/gemini';
             
-            // Ensure we have at least one message in contents
-            const contents = chatHistory.length > 0 ? chatHistory : [
-                {
-                    role: 'user',
-                    parts: [{ text: 'Hello, please help me with cleaning tips.' }]
-                }
-            ];
-
-            const payload = {
-                contents: contents
-            };
-
-            // Add system instruction if provided
+            const payload = { contents: chatHistory };
             if (systemInstruction) {
-                payload.systemInstruction = {
-                    parts: [{ text: systemInstruction }]
-                };
+                payload.systemInstruction = { parts: [{ text: systemInstruction }] };
             }
-
-            // Add 30-second timeout
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 30000);
 
             try {
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                    signal: controller.signal
+                    body: JSON.stringify(payload)
                 });
 
-                clearTimeout(timeoutId);
-
                 if (!response.ok) {
-                    const errorBody = await response.json().catch(() => ({ error: { message: 'Could not parse error response.' } }));
-                    const errorMessage = errorBody?.error?.message || `API error: ${response.status} ${response.statusText}`;
-                    throw new Error(errorMessage);
+                    const contentType = response.headers.get("content-type");
+                    let errorMessage;
+                    if (contentType && contentType.indexOf("application/json") !== -1) {
+                        const errorBody = await response.json().catch(() => ({ error: { message: 'Could not parse JSON error response.' }}));
+                        errorMessage = errorBody?.error?.message || `API error: ${response.status}`;
+                    } else {
+                        errorMessage = await response.text(); // Get the plain text error
+                    }
+                    throw new Error(errorMessage || `API error: ${response.status} ${response.statusText}`);
                 }
 
                 const result = await response.json();
@@ -687,80 +743,70 @@
                 }
                 return text;
             } catch (error) {
-                clearTimeout(timeoutId);
-                if (error.name === 'AbortError') {
-                    throw new Error('Request timeout - Gemini is taking too long to respond');
-                }
+                console.error('Error calling Gemini API via proxy:', error);
                 throw error;
             }
         };
         
-        // --- 💾 FIX 5: Modified callGeminiAPI with caching ---
-        const callGeminiAPICached = async (chatHistory, systemInstruction, useCache = false) => {
-            if (!useCache) {
-                return callGeminiAPI(chatHistory, systemInstruction);
-            }
-            
-            const cacheKey = systemInstruction.substring(0, 100); // First 100 chars as key
-            return getCachedResponse(cacheKey, () => callGeminiAPI(chatHistory, systemInstruction));
-        };
-
-        // --- Hybrid AI/Live Chat Widget ---
+        // =================================================================
+        // CHAT MANAGER CLASS - Handles all chat widget functionality
+        // =================================================================
         class ChatManager {
             constructor() {
                 this.isAiActive = true;
                 this.isLiveChatActive = false;
                 this.ws = null;
+                this.isOpen = false;
+                this.chatHistory = []; // For AI
+                this.isTyping = false;
                 this.userName = localStorage.getItem('chatUserName') || 'Guest';
                 this.clientId = localStorage.getItem('chatClientId') || this.generateClientId();
                 localStorage.setItem('chatClientId', this.clientId);
-                this.chatHistory = [];
-                this.isTyping = false;
-                
                 this.init();
             }
 
-            generateClientId() {
-                try {
-                    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
-                        return 'client_' + crypto.randomUUID();
-                    }
-                } catch (e) {}
-                return 'client_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
-            }
-            
-            getSystemInstruction() {
-              return `You are "Alex", a friendly and helpful AI assistant for AJK Cleaning Company, a professional cleaning service in Bischofsheim, Germany. Your goal is to answer user questions accurately based on the following information and encourage them to get a quote. If the user expresses frustration or asks to speak to a person, you MUST respond with: "I understand. If you'd like to speak with a member of our team, please click the person icon in the top right of the chat. I'm here to help with any other questions!".
-
-                  **Company Information:**
-                  - **Name:** AJK Cleaning Company
-                  - **Services:** Residential Cleaning, Commercial Cleaning, Deep Cleaning, Move-In/Move-Out Cleaning.
-                  - **Service Area:** Bischofsheim, Ginsheim-Gustavsburg, Mainz, Wiesbaden, and surrounding areas within a 25km radius.
-                  - **Key Features:** Fully insured and bonded, uses eco-friendly products, satisfaction guaranteed, trained professionals.
-                  - **Contact:** Phone: +49 176 61852286, Email: rajau691@gmail.com
-                  - **Hours:** Monday - Saturday, 8:00am - 6:00pm.
-                  - **Pricing:** You cannot give exact prices. For quotes, you MUST direct users to the contact form or phone number.
-
-                  **Your Persona & Rules:**
-                  1.  Be friendly, polite, and professional. Use emojis where appropriate.
-                  2.  Keep your answers concise and easy to understand (under 70 words).
-                  3.  Base your answers ONLY on the information provided.
-                  4.  If asked for information not listed, politely state that you don't have that detail and provide the company's contact info.
-                  5.  Format responses with Markdown (bolding, lists).`;
-            }
-            
             init() {
                 this.attachEventListeners();
-                
                 const savedChatMode = localStorage.getItem('chatMode');
                 if (savedChatMode !== 'live') {
                     this.clearAIChatStorage();
                 }
-                
                 this.loadSavedMessages();
                 this.restoreChatState();
             }
+
+            attachEventListeners() {
+                document.getElementById('chat-toggle-enhanced').addEventListener('click', (e) => { e.stopPropagation(); this.toggleChat(); });
+                document.getElementById('chat-send-enhanced').addEventListener('click', () => this.sendMessage());
+                document.getElementById('chat-input-enhanced').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMessage(); }
+                });
+                document.getElementById('close-chat').addEventListener('click', () => this.closeChat());
+                document.getElementById('minimize-chat').addEventListener('click', () => this.closeChat());
+                document.getElementById('save-user-info').addEventListener('click', () => this.saveUserInfo());
+                document.getElementById('human-handoff-btn').addEventListener('click', () => this.switchToLiveChat());
+            }
             
+            markdownToHtml(markdown) {
+                if (!markdown) return '';
+                return markdown
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+                    .split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line)
+                    .map(line => {
+                        if (line.startsWith('## ')) return `<h4>${line.substring(3)}</h4>`;
+                        if (line.startsWith('# ')) return `<h3>${line.substring(2)}</h3>`;
+                        if (line.startsWith('* ') || line.startsWith('- ')) return `<li>${line.substring(2)}</li>`;
+                        return `<p>${line}</p>`;
+                    })
+                    .join('')
+                    .replace(/<li>/g, '<ul><li>').replace(/(<\/li>(?!<li>))/g, '</li></ul>')
+                    .replace(/<\/ul><ul>/g, '');
+            }
+
             clearAIChatStorage() {
                 console.log('Clearing AI chat storage for fresh session');
                 localStorage.removeItem('chatHistory');
@@ -772,134 +818,132 @@
                 }
             }
 
-            attachEventListeners() {
-                document.getElementById('chat-toggle-enhanced').addEventListener('click', (e) => { e.stopPropagation(); this.toggleChat(); });
-                document.getElementById('close-chat').addEventListener('click', () => this.closeChat());
-                document.getElementById('minimize-chat').addEventListener('click', () => this.minimizeChat());
-                document.getElementById('chat-send-enhanced').addEventListener('click', () => this.sendMessage());
-                document.getElementById('save-user-info').addEventListener('click', () => this.saveUserInfoForm());
-                document.getElementById('human-handoff-btn').addEventListener('click', () => this.switchToLiveChat());
-
-                const chatInput = document.getElementById('chat-input-enhanced');
-                chatInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        this.sendMessage();
-                    }
-                });
+            saveMessages() {
+                if (this.isAiActive) {
+                    try {
+                        localStorage.setItem('isAiChat', 'true');
+                        localStorage.removeItem('chatHistory');
+                        sessionStorage.setItem('aiSessionStart', new Date().toISOString());
+                    } catch (error) { console.error('Error saving AI chat state:', error); }
+                } else {
+                    try {
+                        // For live chat, we persist the mode but not the messages on the client
+                        // The server is the source of truth for live chat history
+                        localStorage.setItem('chatMode', 'live');
+                        localStorage.setItem('isAiChat', 'false');
+                    } catch (error) { console.error('Error saving chat state:', error); }
+                }
             }
-
+            
             loadSavedMessages() {
                 if(localStorage.getItem('isAiChat') === 'true' || localStorage.getItem('chatMode') !== 'live') {
                     console.log('AI chat detected - starting fresh session');
                     return;
                 }
-                
+                // Live chat history is now loaded from the server via WebSocket `history` message
+            }
+
+            restoreChatState() {
+                const savedChatMode = localStorage.getItem('chatMode');
+                if (savedChatMode === 'live') {
+                    this.isAiActive = false;
+                    this.isLiveChatActive = true;
+                    // FIX: Update UI elements on refresh if in live mode
+                    document.getElementById('chat-header-title').textContent = 'Live Support';
+                    document.getElementById('chat-input-enhanced').placeholder = 'Type your message...';
+                    document.getElementById('human-handoff-btn').style.display = 'none';
+                }
+            }
+            
+            generateClientId() {
                 try {
-                    const savedHistory = JSON.parse(localStorage.getItem('liveChatHistory') || '[]');
-                    if (Array.isArray(savedHistory)) {
-                        savedHistory.forEach(msg => {
-                            this.displayMessage(msg.text, msg.type, msg.sender, true);
-                        });
+                    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+                        return 'client_' + crypto.randomUUID();
                     }
-                } catch (error) { 
-                    console.error("Failed to load live chat history", error);
-                    localStorage.removeItem('liveChatHistory');
-                }
+                } catch (e) { console.error('crypto.randomUUID not available', e); }
+                return 'client_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
             }
 
-            saveMessages() {
-                if (this.isAiActive) {
-                    try {
-                        localStorage.setItem('isAiChat', 'true');
-                        localStorage.removeItem('chatHistory'); // Don't persist AI history across full reloads
-                        sessionStorage.setItem('aiSessionStart', new Date().toISOString());
-                    } catch (error) { 
-                        console.error('Error saving AI chat state:', error); 
-                    }
+            toggleChat() {
+                this.isOpen ? this.closeChat() : this.openChat();
+            }
+
+            openChat() {
+                const chatWindow = document.getElementById('chat-window-enhanced');
+                chatWindow.style.display = 'flex';
+                setTimeout(() => chatWindow.classList.add('open'), 10);
+                this.isOpen = true;
+
+                if (this.userName === 'Guest') {
+                    document.getElementById('user-info').style.display = 'flex';
+                    document.getElementById('chat-input-area').style.display = 'none';
                 } else {
-                    localStorage.setItem('isAiChat', 'false');
-                }
-            }
-            
-            saveLiveChatMessage(message, type, sender) {
-                if (!this.isLiveChatActive) return;
-
-                const chatData = {
-                    text: message,
-                    type: type,
-                    sender: sender,
-                    timestamp: new Date().toISOString()
-                };
-
-                const existingHistory = JSON.parse(localStorage.getItem('liveChatHistory') || '[]');
-                existingHistory.push(chatData);
-
-                if (existingHistory.length > 50) {
-                    existingHistory.splice(0, existingHistory.length - 50);
+                    document.getElementById('user-info').style.display = 'none';
+                    document.getElementById('chat-input-area').style.display = 'flex';
                 }
 
-                localStorage.setItem('liveChatHistory', JSON.stringify(existingHistory));
-            }
-            
-            displayMessage(text, type, sender, isHtml = false) {
-                const messagesContainer = document.getElementById('chat-messages');
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${type}-message`;
-                
-                const content = isHtml ? text : this.escapeHtml(text);
-                const proseClass = (type === 'admin' && isHtml) ? 'prose' : '';
-
-                messageDiv.innerHTML = `<div class="message-content ${proseClass}">${content}</div><div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • ${sender}</div>`;
-                messagesContainer.appendChild(messageDiv);
-
-                if (this.isLiveChatActive && type !== 'system') {
-                    this.saveLiveChatMessage(content, type, sender);
+                if (this.isAiActive) {
+                    const aiSessionStart = sessionStorage.getItem('aiSessionStart');
+                    const isFreshSession = !aiSessionStart || (Date.now() - new Date(aiSessionStart).getTime()) > 300000;
+                    if (isFreshSession || this.chatHistory.length === 0) {
+                        this.clearAIChatStorage();
+                        sessionStorage.setItem('aiSessionStart', new Date().toISOString());
+                        const welcomeMessage = "Hello! I'm Alex, the AI assistant for AJK Cleaning. How can I help you today? You can ask me about our services, service areas, or for cleaning tips! 😊";
+                        this.chatHistory.push({ role: 'model', parts: [{ text: welcomeMessage }]});
+                        this.displayMessage(this.markdownToHtml(welcomeMessage), 'admin', 'Alex', true);
+                    }
+                } else if (this.isLiveChatActive) {
+                    this.connectWebSocket();
                 }
-                
                 this.scrollToBottom();
             }
 
-            // --- 🔄 FIX 4: Loading State Improvements ---
+            closeChat() {
+                const chatWindow = document.getElementById('chat-window-enhanced');
+                chatWindow.classList.remove('open');
+                setTimeout(() => { chatWindow.style.display = 'none'; }, 300);
+                this.isOpen = false;
+            }
+
             async sendMessage() {
                 const chatInput = document.getElementById('chat-input-enhanced');
                 const messageText = chatInput.value.trim();
                 if (!messageText || this.isTyping) return;
-                
+
                 this.isTyping = true;
                 chatInput.value = '';
                 this.displayMessage(messageText, 'user', this.userName);
 
-                // Disable input during request
-                chatInput.disabled = true;
                 const sendButton = document.getElementById('chat-send-enhanced');
+                chatInput.disabled = true;
                 if (sendButton) sendButton.disabled = true;
 
                 if (this.isAiActive) {
                     this.chatHistory.push({ role: 'user', parts: [{ text: messageText }] });
-                    this.saveMessages();
                     this.showTypingIndicator(true, 'Alex');
-
                     try {
-                        // Add timeout for better UX
-                        const timeoutPromise = new Promise((_, reject) => 
-                            setTimeout(() => reject(new Error('Response timeout')), 45000)
-                        );
-                        
-                        const botResponse = await Promise.race([
-                            callGeminiAPI(this.chatHistory, this.getSystemInstruction()),
-                            timeoutPromise
-                        ]);
-                        
+                        const systemInstruction = `You are "Alex", a friendly and helpful AI assistant for AJK Cleaning Company, a professional cleaning service in Bischofsheim, Germany. Your goal is to answer user questions accurately based on the company information and encourage them to get a quote. If the user expresses frustration or asks to speak to a person, you MUST respond with: "I understand. If you'd like to speak with a member of our team, please click the person icon in the top right of the chat. I'm here to help with any other questions!".
+
+                            **Company Information:**
+                            - **Name:** AJK Cleaning Company
+                            - **Services:** Residential Cleaning, Commercial Cleaning, Deep Cleaning, Move-In/Move-Out Cleaning.
+                            - **Service Area:** Bischofsheim, Ginsheim-Gustavsburg, Mainz, Wiesbaden, and surrounding areas within a 25km radius.
+                            - **Key Features:** Fully insured and bonded, uses eco-friendly products, satisfaction guaranteed, trained professionals.
+                            - **Contact:** Phone: +49 176 61852286, Email: info@ajkcleaning.com
+                            - **Hours:** Monday - Saturday, 8:00am - 6:00pm.
+                            - **Pricing:** You cannot give exact prices. For quotes, you MUST direct users to the contact form or phone number.
+
+                            **Your Persona & Rules:**
+                            1. Be friendly, polite, and professional. Use emojis where appropriate.
+                            2. Keep your answers concise and easy to understand (under 70 words).
+                            3. Base your answers ONLY on the information provided.
+                            4. If asked for information not listed, politely state that you don't have that detail and provide the company's contact info.
+                            5. Format responses with Markdown (bolding, lists).`;
+                        const botResponse = await callGeminiAPI(this.chatHistory, systemInstruction);
                         this.chatHistory.push({ role: 'model', parts: [{ text: botResponse }] });
-                        this.saveMessages();
-                        this.displayMessage(markdownToHtml(botResponse), 'admin', 'Alex', true);
+                        this.displayMessage(this.markdownToHtml(botResponse), 'admin', 'Alex', true);
                     } catch (error) {
-                        console.error('Gemini Chatbot Error:', error);
-                        const errorMsg = error.message.includes('timeout') 
-                            ? "I'm taking longer than usual to respond. Please try again in a moment." 
-                            : "I'm having trouble connecting right now. Please try again.";
-                        this.displayMessage(errorMsg, 'admin', 'Alex', true);
+                        this.displayMessage(`Sorry, I'm having trouble. Error: ${error.message}`, 'admin', 'Alex');
                     } finally {
                         this.isTyping = false;
                         this.showTypingIndicator(false);
@@ -914,118 +958,42 @@
                     if (sendButton) sendButton.disabled = false;
                 }
             }
-            
-            connectWebSocket() {
-                if (this.ws && this.ws.readyState === WebSocket.OPEN) return;
-                
-                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-                const wsUrl = `${protocol}//${window.location.host}?clientId=${encodeURIComponent(this.clientId)}`;
-                this.ws = new WebSocket(wsUrl);
 
-                this.ws.onopen = () => {
-                    this.ws.send(JSON.stringify({
-                        type: 'identify',
-                        name: this.userName,
-                        email: localStorage.getItem('chatUserEmail') || '',
-                        clientId: this.clientId
-                    }));
-                    document.getElementById('chat-status').textContent = 'Connected to Live Support';
-                };
-
-                this.ws.onmessage = (event) => {
-                    try {
-                        const data = JSON.parse(event.data);
-                        console.log('WebSocket message received:', data);
-                        
-                        if (data.type === 'chat_reset' || data.type === 'admin_reset') {
-                            this.handleChatReset(data);
-                            return;
-                        }
-                        
-                        if (data.type === 'system' && data.message && data.message.includes('reset')) {
-                            this.handleChatReset({ message: data.message, resetToAI: true });
-                            return;
-                        }
-                        
-                        if (data.type === 'chat') {
-                            this.displayMessage(markdownToHtml(data.message), data.isAdmin ? 'admin' : 'user', data.name || 'Support', true);
-                        } else if (data.type === 'system') {
-                            this.displayMessage(data.message, 'system', 'System');
-                        } else if (data.type === 'history') {
-                            const messagesContainer = document.getElementById('chat-messages');
-                            messagesContainer.innerHTML = ''; // Clear before loading history
-                            data.messages.forEach(msg => {
-                               this.displayMessage(markdownToHtml(msg.message), msg.isAdmin ? 'admin' : 'user', msg.name, true);
-                            });
-                        } else if (data.type === 'typing') {
-                            this.showTypingIndicator(data.isTyping, data.name || 'Support');
-                        }
-                    } catch (error) {
-                        console.error('Error processing WebSocket message:', error);
-                    }
-                };
-
-                this.ws.onclose = () => {
-                    // Don't show "session ended" if it was a planned reset.
-                    if (!this.isAiActive) { 
-                        this.displayMessage("Live support session ended.", "system", "System");
-                        document.getElementById('chat-status').textContent = 'Disconnected';
-                    }
-                };
-
-                this.ws.onerror = (error) => {
-                    console.error('WebSocket Error:', error);
-                    this.displayMessage("Connection to live support failed.", "system", "System");
-                };
-            }
-
-            switchToLiveChat() {
-                if (this.isLiveChatActive) return;
-
-                this.isAiActive = false;
-                this.isLiveChatActive = true;
-                
-                localStorage.setItem('chatMode', 'live');
-                this.saveMessages();
-                this.clearAIChatStorage();
-
-                document.getElementById('chat-header-title').textContent = 'Live Support';
-                document.getElementById('chat-input-enhanced').placeholder = 'Type your message...';
-                document.getElementById('human-handoff-btn').style.display = 'none';
-                
-                this.displayMessage("Thank you for contacting AJK Cleaning Service. A team member will be with you shortly.", "system", "System", true);
-                
-                this.connectWebSocket();
+            displayMessage(text, type, sender, isHtml = false) {
+                const messagesContainer = document.getElementById('chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}-message`;
+                const content = isHtml ? text : this.escapeHtml(text);
+                const proseClass = (type === 'admin' && isHtml) ? 'prose' : '';
+                messageDiv.innerHTML = `<div class="message-content ${proseClass}">${content}</div><div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • ${sender}</div>`;
+                messagesContainer.appendChild(messageDiv);
+                this.scrollToBottom();
             }
             
             handleChatReset(resetData) {
                 console.log('Handling chat reset:', resetData);
-                
                 const messagesContainer = document.getElementById('chat-messages');
-                if (messagesContainer) {
-                    messagesContainer.innerHTML = '';
-                }
+                if (messagesContainer) { messagesContainer.innerHTML = ''; }
                 
                 this.isAiActive = true;
                 this.isLiveChatActive = false;
                 
                 localStorage.removeItem('chatMode');
                 localStorage.removeItem('liveChatHistory');
-                localStorage.removeItem('chatHistory');
+                this.clearAIChatStorage();
                 
                 document.getElementById('chat-header-title').textContent = 'AJK AI Assistant ✨';
                 document.getElementById('chat-input-enhanced').placeholder = 'Ask Alex a question...';
                 document.getElementById('human-handoff-btn').style.display = 'block';
                 
                 this.chatHistory = [];
-                
-                const resetMessage = resetData.message || 'Chat has been reset. You are now talking to our AI assistant.';
+                const resetMessage = resetData.message || 'Chat has been reset. You are now talking to AI assistant.';
                 this.displayMessage(resetMessage, 'system', 'System');
                 
                 setTimeout(() => {
                     const welcomeMessage = "Hello! I'm Alex, the AI assistant for AJK Cleaning. How can I help you today? You can ask me about our services, service areas, or for cleaning tips! 😊";
                     this.chatHistory.push({ role: 'model', parts: [{ text: welcomeMessage }]});
-                    this.displayMessage(markdownToHtml(welcomeMessage), 'admin', 'Alex', true);
+                    this.displayMessage(this.markdownToHtml(welcomeMessage), 'admin', 'Alex', true);
                 }, 1000);
                 
                 if (this.ws && this.ws.readyState === WebSocket.OPEN) {
@@ -1033,108 +1001,174 @@
                     this.ws = null;
                 }
             }
+            
+            connectWebSocket() {
+                if (this.ws && this.ws.readyState === WebSocket.OPEN) return;
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const wsUrl = `${protocol}//${window.location.host}?clientId=${encodeURIComponent(this.clientId)}`;
+                this.ws = new WebSocket(wsUrl);
 
+                this.ws.onopen = () => {
+                     document.getElementById('chat-status').textContent = 'Connected to Live Support';
+                    this.ws.send(JSON.stringify({
+                        type: 'identify',
+                        name: this.userName,
+                        email: localStorage.getItem('chatUserEmail') || '',
+                        clientId: this.clientId
+                    }));
+                };
+                
+                this.ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        console.log('WebSocket message received:', data);
+                        if (data.type === 'chat_reset' || data.type === 'admin_reset') {
+                            this.handleChatReset(data);
+                            return;
+                        }
+                        if (data.type === 'system' && data.message && data.message.includes('reset')) {
+                            this.handleChatReset({ message: data.message, resetToAI: true });
+                            return;
+                        }
+                        if (data.type === 'chat') {
+                            this.displayMessage(this.markdownToHtml(data.message), data.isAdmin ? 'admin' : 'user', data.name || 'Support', true);
+                        } else if (data.type === 'system') {
+                            this.displayMessage(data.message, 'system', 'System');
+                        } else if (data.type === 'typing') {
+                            this.showTypingIndicator(data.isTyping, data.name || 'Support');
+                        } else if (data.type === 'history') {
+                             const messagesContainer = document.getElementById('chat-messages');
+                             messagesContainer.innerHTML = '';
+                             data.messages.forEach(msg => this.displayMessage(msg.message, msg.isAdmin ? 'admin' : 'user', msg.name));
+                        }
+                    } catch (error) { console.error('Error processing WebSocket message:', error); }
+                };
 
-            restoreChatState() {
-                const savedChatMode = localStorage.getItem('chatMode');
-                if (savedChatMode === 'live') {
-                    this.isAiActive = false;
-                    this.isLiveChatActive = true;
-                }
+                 this.ws.onclose = () => {
+                     if (!this.isAiActive) { 
+                        this.displayMessage("Live support session ended.", "system", "System");
+                        document.getElementById('chat-status').textContent = 'Disconnected';
+                    }
+                 };
+                 this.ws.onerror = (error) => {
+                     console.error('WebSocket Error:', error);
+                     this.displayMessage("Connection to live support failed.", "system", "System");
+                 };
             }
 
             showTypingIndicator(show, agentName = 'Support') {
                 const indicator = document.getElementById('typing-indicator');
-                document.getElementById('typing-text').textContent = `${agentName} is typing...`;
-                indicator.style.display = show ? 'flex' : 'none';
-                this.scrollToBottom();
-            }
-
-            toggleChat() {
-                document.getElementById('chat-window-enhanced').classList.contains('open') ? this.closeChat() : this.openChat();
-            }
-
-            openChat() {
-                const chatWindow = document.getElementById('chat-window-enhanced');
-                chatWindow.style.display = 'flex';
-                setTimeout(() => chatWindow.classList.add('open'), 10);
-
-                if (this.userName === 'Guest') {
-                    document.getElementById('user-info').style.display = 'flex';
-                    document.getElementById('chat-input-area').style.display = 'none';
-                } else {
-                    document.getElementById('user-info').style.display = 'none';
-                    document.getElementById('chat-input-area').style.display = 'flex';
+                if (indicator) {
+                    document.getElementById('typing-text').textContent = `${agentName} is typing...`;
+                    indicator.style.display = show ? 'flex' : 'none';
+                    this.scrollToBottom();
                 }
-
-                if (this.isAiActive) {
-                    const aiSessionStart = sessionStorage.getItem('aiSessionStart');
-                    const isFreshSession = !aiSessionStart || (Date.now() - new Date(aiSessionStart).getTime()) > 300000; // 5 min threshold
-                    
-                    if (isFreshSession || this.chatHistory.length === 0) {
-                        this.clearAIChatStorage();
-                        sessionStorage.setItem('aiSessionStart', new Date().toISOString());
-                        
-                        const welcomeMessage = "Hello! I'm Alex, the AI assistant for AJK Cleaning. How can I help you today? You can ask me about our services, service areas, or for cleaning tips! 😊";
-                        this.chatHistory.push({ role: 'model', parts: [{ text: welcomeMessage }]});
-                        this.displayMessage(markdownToHtml(welcomeMessage), 'admin', 'Alex', true);
-                    }
-                } else if (this.isLiveChatActive) {
-                    document.getElementById('chat-header-title').textContent = 'Live Support';
-                    document.getElementById('human-handoff-btn').style.display = 'none';
-                    this.connectWebSocket();
-                    if (document.getElementById('chat-messages').childElementCount === 0) {
-                      this.loadSavedMessages();
-                    }
-                }
-                
-                this.scrollToBottom();
-            }
-            
-            closeChat() {
-                const chatWindow = document.getElementById('chat-window-enhanced');
-                chatWindow.classList.remove('open');
-                setTimeout(() => { chatWindow.style.display = 'none'; }, 300);
             }
 
-            minimizeChat() { this.closeChat(); }
-
-            saveUserInfoForm() {
-                const nameInput = document.getElementById('user-name');
-                const emailInput = document.getElementById('user-email');
-                const name = nameInput.value.trim();
-                const email = emailInput.value.trim();
-
-                if (!name) {
-                    nameInput.style.borderColor = '#ef4444';
-                    return;
-                }
-                this.userName = name;
-                localStorage.setItem('chatUserName', name);
-                if (email) {
-                    localStorage.setItem('chatUserEmail', email);
-                }
-
-                document.getElementById('user-info').style.display = 'none';
-                document.getElementById('chat-input-area').style.display = 'flex';
-                document.getElementById('chat-input-enhanced').focus();
-            }
-            
             scrollToBottom() {
                 const el = document.getElementById('chat-messages');
                 if (el) el.scrollTop = el.scrollHeight;
             }
 
-            escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
+            saveUserInfo() {
+                const nameInput = document.getElementById('user-name');
+                const emailInput = document.getElementById('user-email');
+                const name = nameInput.value.trim();
+                if (!name) { nameInput.style.borderColor = '#ef4444'; return; }
+                this.userName = name;
+                localStorage.setItem('chatUserName', name);
+                if (emailInput.value.trim()) { localStorage.setItem('chatUserEmail', emailInput.value.trim()); }
+                document.getElementById('user-info').style.display = 'none';
+                document.getElementById('chat-input-area').style.display = 'flex';
+                document.getElementById('chat-input-enhanced').focus();
+            }
+
+            escapeHtml(text) { 
+                const d = document.createElement('div'); 
+                d.textContent = text; 
+                return d.innerHTML; 
+            }
+            
+            switchToLiveChat() {
+                if (this.isLiveChatActive) return;
+                this.isAiActive = false;
+                this.isLiveChatActive = true;
+                localStorage.setItem('chatMode', 'live');
+                document.getElementById('chat-header-title').textContent = 'Live Support';
+                document.getElementById('chat-input-enhanced').placeholder = 'Type your message...';
+                document.getElementById('human-handoff-btn').style.display = 'none';
+                const messagesContainer = document.getElementById('chat-messages');
+                messagesContainer.innerHTML = '';
+                // Since live chat history isn't persisted on this version, just show a welcome
+                this.displayMessage("Thank you for contacting AJK Cleaning Service. A team member will be with you shortly.", "system", "System");
+                this.connectWebSocket();
             }
         }
         
         new ChatManager();
+        
+        // --- Multi-Language Support, Modals, Page Interactivity, etc. ---
+        const translations = {
+            en: {
+                // ... (rest of translations object)
+                formTitle: "Get a Free Quote",
+                formName: "Name *", formEmail: "Email (Optional)", formPhone: "Phone *", formMessage: "Message *",
+                formServiceLabel: "Select a Service", formServiceSelect: "Select a Service",
+                formBtnSubmit: "Submit Request", formBtnSending: "Sending...",
+                formSuccess: "Thank you! We'll be in touch soon.", formError: "An error occurred. Please try again.",
+            },
+            de: {
+                // ... (rest of translations object)
+                formTitle: "Kostenloses Angebot anfordern",
+                formName: "Name *", formEmail: "E-Mail (Optional)", formPhone: "Telefon *", formMessage: "Nachricht *",
+                formServiceLabel: "Leistung auswählen", formServiceSelect: "Leistung auswählen",
+                formBtnSubmit: "Anfrage senden", formBtnSending: "Senden...",
+                formSuccess: "Vielen Dank! Wir werden uns bald bei Ihnen melden.", formError: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+            }
+        };
 
-        // --- Gemini API Checklist Feature ---
+        const setLanguage = (lang) => {
+            if (!translations[lang]) return;
+            document.documentElement.lang = lang;
+            localStorage.setItem('preferredLanguage', lang);
+            document.querySelector('meta[name="description"]').setAttribute('content', translations[lang].metaDescription);
+            document.querySelector('meta[name="keywords"]').setAttribute('content', translations[lang].metaKeywords);
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.dataset.translate;
+                if (translations[lang][key]) el.innerHTML = translations[lang][key];
+            });
+            document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+                const key = el.dataset.translatePlaceholder;
+                if (translations[lang][key]) el.placeholder = translations[lang][key];
+            });
+            renderFaq(lang);
+            document.querySelectorAll('.lang-switcher button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+            if (typeof gtag === 'function') {
+                gtag('event', 'language_switch', { 'event_category': 'Engagement', 'event_label': lang });
+            }
+        };
+
+        const renderFaq = (lang) => {
+            const faqContainer = document.getElementById('faq-container');
+            if (faqContainer && translations[lang] && translations[lang].faq) {
+                faqContainer.innerHTML = '';
+                translations[lang].faq.forEach((item, index) => {
+                    const faqItem = document.createElement('div');
+                    faqItem.className = 'faq-item bg-white p-5 rounded-lg shadow-sm border border-gray-200 animate-fade-in-up';
+                    faqItem.style.animationDelay = `${0.3 + index * 0.1}s`;
+                    faqItem.innerHTML = `<div class="faq-question flex justify-between items-center font-semibold text-gray-800"><p>${item.q}</p><i class="fas fa-chevron-down faq-icon text-primary"></i></div><div class="faq-answer text-gray-600 pt-3">${item.a}</div>`;
+                    faqContainer.appendChild(faqItem);
+                });
+            }
+        };
+        
+        document.querySelectorAll('.lang-switcher button').forEach(btn => {
+            btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+        });
+
+        // --- Checklist Modal ---
         const checklistModal = document.getElementById('checklist-modal');
         const checklistModalContent = document.getElementById('checklist-modal-content');
         const checklistModalTitle = document.getElementById('checklist-modal-title');
@@ -1144,8 +1178,12 @@
         const checklistLoader = document.getElementById('checklist-loader');
         const checklistContent = document.getElementById('checklist-content');
         const checklistError = document.getElementById('checklist-error');
-        
         let currentChecklistText = "";
+
+        const createChecklistPrompt = (serviceName) => {
+             const lang = document.documentElement.lang || 'en';
+             return `Act as a professional cleaning expert from AJK Cleaning Company. Generate a comprehensive cleaning checklist for a typical '${serviceName}' service, in ${lang === 'de' ? 'German' : 'English'}. The checklist should be well-organized, easy to follow, and formatted in Markdown with headings (like '# Kitchen') and bullet points (like '* Wipe countertops').`;
+        }
 
         const openChecklistModal = (serviceName) => {
             checklistModalTitle.textContent = `${serviceName} Checklist`;
@@ -1166,12 +1204,11 @@
         };
 
         const generateChecklist = async (serviceName) => {
-            const userQuery = `Act as a professional cleaning expert from AJK Cleaning Company. Generate a comprehensive cleaning checklist for a typical '${serviceName}' service. The checklist should be well-organized, easy to follow, and formatted in Markdown with headings (like '# Kitchen') and bullet points (like '* Wipe countertops').`;
+            const prompt = createChecklistPrompt(serviceName);
             try {
-                // Use cached API call
-                const text = await callGeminiAPICached([], userQuery, true);
+                const text = await callGeminiAPI([{ role: 'user', parts: [{ text: prompt }] }]);
                 currentChecklistText = text;
-                checklistContent.innerHTML = markdownToHtml(text);
+                checklistContent.innerHTML = chatManager.markdownToHtml(text);
                 checklistLoader.style.display = 'none';
                 checklistContent.classList.remove('hidden');
                 checklistModalDownload.classList.remove('hidden');
@@ -1182,11 +1219,10 @@
                 checklistError.classList.remove('hidden');
             }
         };
-        
+
         document.querySelectorAll('.get-checklist-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const serviceCard = e.target.closest('.service-card');
-                const serviceName = serviceCard.querySelector('h3').textContent;
+                const serviceName = e.target.dataset.service;
                 openChecklistModal(serviceName);
             });
         });
@@ -1208,7 +1244,7 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         });
-        
+
         // --- AI Cleaning Tip Generator ---
         const generateTipBtn = document.getElementById('generate-tip-btn');
         const tipResultContainer = document.getElementById('tip-result-container');
@@ -1218,71 +1254,49 @@
         generateTipBtn.addEventListener('click', async () => {
             const room = document.getElementById('tip-room').value;
             const challenge = document.getElementById('tip-challenge').value;
-
+            const lang = document.documentElement.lang || 'en';
             tipResultContainer.classList.remove('hidden');
             setTimeout(() => tipResultContainer.classList.remove('opacity-0'), 10);
             tipResultText.classList.add('hidden');
             tipResultLoader.style.display = 'flex';
-            
-            const userQuery = `You are a friendly cleaning expert from AJK Cleaning Company in Germany. Provide a quick, eco-friendly cleaning tip for tackling "${challenge}" in a "${room}". Keep it under 50 words and make it easy to follow.`;
-
+            const prompt = `You are a friendly cleaning expert from AJK Cleaning Company in Germany. Provide a quick, eco-friendly cleaning tip in ${lang === 'de' ? 'German' : 'English'} for tackling "${challenge}" in a "${room}". Keep it under 50 words and make it easy to follow.`;
             try {
-                 // Use cached API call
-                const text = await callGeminiAPICached([], userQuery, true);
+                const text = await callGeminiAPI([{ role: 'user', parts: [{ text: prompt }] }]);
                 tipResultLoader.style.display = 'none';
                 tipResultText.textContent = text;
                 tipResultText.classList.remove('hidden');
             } catch(error) {
-                console.error("Gemini API call for tip failed:", error.message);
                 tipResultLoader.style.display = 'none';
-                tipResultText.innerHTML = `Sorry, we couldn't generate a tip. <br><small class="text-gray-500">Reason: ${error.message}</small>`;
+                tipResultText.innerHTML = `Sorry, could not generate a tip. Error: ${error.message}`;
                 tipResultText.classList.remove('hidden');
             }
         });
-
-        // --- General Page Interactivity ---
-        const copyrightYearSpan = document.getElementById('copyright-year');
-        if(copyrightYearSpan) { copyrightYearSpan.textContent = new Date().getFullYear(); }
-
-        const faqData = [{ question: "What areas do you serve?", answer: "We proudly serve Bischofsheim, Ginsheim-Gustavsburg, Mainz, Wiesbaden, and surrounding communities within a 25km radius." }, { question: "Are you insured and bonded?", answer: "Yes, we are fully insured and bonded for your peace of mind. All our cleaning professionals are vetted and trained to the highest standards." }, { question: "Do you use eco-friendly products?", answer: "Absolutely. We prioritize the health of your family, pets, and our planet by using high-quality, eco-friendly cleaning products that are both safe and effective." }, { question: "How do I get a quote?", answer: "You can get a free, no-obligation quote by filling out the contact form on our website or by calling us directly at +49 176 61852286." }];
-        const faqContainer = document.getElementById('faq-container');
-        if (faqContainer) {
-            faqContainer.innerHTML = ''; // Clear existing
-            faqData.forEach((item, index) => {
-                const faqItem = document.createElement('div');
-                faqItem.className = 'faq-item bg-white p-5 rounded-lg shadow-sm border border-gray-200 animate-fade-in-up';
-                faqItem.style.animationDelay = `${0.3 + index * 0.1}s`;
-                faqItem.innerHTML = `<div class="faq-question flex justify-between items-center font-semibold text-gray-800"><p>${item.question}</p><i class="fas fa-chevron-down faq-icon text-primary"></i></div><div class="faq-answer text-gray-600 pt-3">${item.answer}</div>`;
-                faqContainer.appendChild(faqItem);
-            });
-            faqContainer.addEventListener('click', (e) => {
-                const question = e.target.closest('.faq-question');
-                if (question) { question.parentElement.classList.toggle('open'); }
-            });
-        }
         
+        // --- Page Interactivity ---
+        document.getElementById('copyright-year').textContent = new Date().getFullYear();
+        document.getElementById('faq-container').addEventListener('click', (e) => {
+            const question = e.target.closest('.faq-question');
+            if (question) { question.parentElement.classList.toggle('open'); }
+        });
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        if (menuBtn && mobileMenu) {
-            menuBtn.addEventListener('click', () => {
-                const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
-                mobileMenu.classList.toggle('open');
-                menuBtn.classList.toggle('menu-open');
-                menuBtn.setAttribute('aria-expanded', !isExpanded);
-                mobileMenu.setAttribute('aria-hidden', isExpanded);
+        menuBtn.addEventListener('click', () => {
+            const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
+            mobileMenu.classList.toggle('open');
+            menuBtn.classList.toggle('menu-open');
+            menuBtn.setAttribute('aria-expanded', !isExpanded);
+            mobileMenu.setAttribute('aria-hidden', isExpanded);
+        });
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                menuBtn.classList.remove('menu-open');
+                menuBtn.setAttribute('aria-expanded', 'false');
+                mobileMenu.setAttribute('aria-hidden', 'true');
             });
-            document.querySelectorAll('#mobile-menu a').forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenu.classList.remove('open');
-                    menuBtn.classList.remove('menu-open');
-                    menuBtn.setAttribute('aria-expanded', 'false');
-                    mobileMenu.setAttribute('aria-hidden', 'true');
-                });
-            });
-        }
-
+        });
         const navbar = document.getElementById('navbar');
-        const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a');
+        const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a[href^="#"]');
         window.addEventListener('scroll', () => {
             window.scrollY > 50 ? navbar.classList.add('navbar-scrolled') : navbar.classList.remove('navbar-scrolled');
             let currentSection = "";
@@ -1299,96 +1313,78 @@
             });
         });
 
+        // --- Contact Form ---
         const contactForm = document.getElementById('contact-form');
-        if (contactForm) {
-            contactForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const submitBtn = document.getElementById('submit-btn');
-                const submitText = document.getElementById('submit-text');
-                const submitLoading = document.getElementById('submit-loading');
-                const formSuccess = document.getElementById('form-success');
-                const formError = document.getElementById('form-error');
-                
-                formSuccess.classList.add('hidden');
-                formError.classList.add('hidden');
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submit-btn');
+            const submitText = document.getElementById('submit-text');
+            const submitLoading = document.getElementById('submit-loading');
+            const formSuccess = document.getElementById('form-success');
+            const formError = document.getElementById('form-error');
+            
+            submitText.classList.add('hidden');
+            submitLoading.classList.remove('hidden');
+            submitBtn.disabled = true;
 
-                submitText.classList.add('hidden');
-                submitLoading.classList.remove('hidden');
-                submitBtn.disabled = true;
-                
-                const formData = {
-                    name: document.getElementById('name').value.trim(),
-                    email: document.getElementById('email').value.trim(),
-                    service: document.getElementById('service').value,
-                    message: document.getElementById('message').value.trim()
-                };
-                
-                if (!formData.name || !formData.email || !formData.message) {
-                    formError.textContent = 'Please fill in all required fields.';
-                    formError.classList.remove('hidden');
-                    resetButtonState();
-                    return;
-                }
-                
-                if (!isValidEmail(formData.email)) {
-                    formError.textContent = 'Please enter a valid email address.';
-                    formError.classList.remove('hidden');
-                    resetButtonState();
-                    return;
-                }
-                
-                try {
-                    const response = await fetch('/api/form/submit', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(formData)
-                    });
-                    
-                    if (response.ok) {
-                        formSuccess.classList.remove('hidden');
-                        contactForm.reset();
-                        setTimeout(() => formSuccess.classList.add('hidden'), 5000);
+            try {
+                const response = await fetch('/api/form/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(Object.fromEntries(new FormData(e.target)))
+                });
+                if (response.ok) {
+                    formSuccess.classList.remove('hidden');
+                    contactForm.reset();
+                    setTimeout(() => formSuccess.classList.add('hidden'), 5000);
+                } else {
+                    const contentType = response.headers.get("content-type");
+                    let errorData;
+                    if (contentType && contentType.indexOf("application/json") !== -1) {
+                         errorData = await response.json();
                     } else {
-                        const errorData = await response.json().catch(() => ({}));
-                        throw new Error(errorData.message || 'Server error: ' + response.status);
+                         errorData = { error: await response.text() };
                     }
-                } catch (error) {
-                    console.error('Form submission error:', error);
-                    formError.textContent = 'Sorry, there was an error sending your message. Please try again or contact us directly at rajau691@gmail.com.';
-                    formError.classList.remove('hidden');
-                } finally {
-                    resetButtonState();
+                    throw new Error(errorData.error || 'Form submission failed');
                 }
-                
-                function resetButtonState() {
-                    submitText.classList.remove('hidden');
-                    submitLoading.classList.add('hidden');
-                    submitBtn.disabled = false;
-                }
-                
-                function isValidEmail(email) {
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    return emailRegex.test(email);
-                }
-            });
-        }
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.animate-fade-in-up').forEach(el => {
-            observer.observe(el);
+            } catch (error) {
+                 formError.textContent = error.message;
+                 formError.classList.remove('hidden');
+                 setTimeout(() => formError.classList.add('hidden'), 5000);
+            } finally {
+                 submitText.classList.remove('hidden');
+                 submitLoading.classList.add('hidden');
+                 submitBtn.disabled = false;
+            }
         });
+        
+        // --- Performance Optimizations ---
+        const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) { img.src = img.dataset.src; }
+                        img.removeAttribute('loading');
+                        observer.unobserve(img);
+                    }
+                });
+            });
+            lazyImages.forEach(img => imageObserver.observe(img));
+        }
+
+        window.addEventListener('load', function() {
+            if (performance && performance.timing) {
+                const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                if (loadTime > 3000) console.warn('Page load time slow:', loadTime + 'ms');
+            }
+        });
+        
+        // --- Initial Load ---
+        const userLang = localStorage.getItem('preferredLanguage') || navigator.language.split('-')[0];
+        setLanguage(translations[userLang] ? userLang : 'en');
     });
-  </script>
+    </script>
 </body>
 </html>
