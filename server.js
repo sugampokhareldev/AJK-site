@@ -52,6 +52,41 @@ if (!fs.existsSync(dbDir)) {
 const adapter = new JSONFile(dbPath);
 const db = new Low(adapter, { submissions: [], admin_users: [], offline_messages: {}, chats: {} });
 
+
+// =================================================================
+// MIDDLEWARE SETUP - CRITICAL FIX
+// BodyParser and CORS must be configured BEFORE the API routes are defined.
+// =================================================================
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        
+        const allowedOrigins = [
+            'https://ajkcleaners.de',
+            'https://www.ajkcleaners.de',
+            'https://ajk-cleaning.onrender.com',
+            'http://localhost:3000',
+            'http://127.0.0.1:3000',
+            'http://localhost:3001',
+            'http://127.0.0.1:3001'
+        ];
+        
+        if (allowedOrigins.indexOf(origin) !== -1 || (origin && origin.includes('localhost'))) {
+            callback(null, true);
+        } else {
+            console.log('CORS blocked origin:', origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Set-Cookie']
+}));
+app.options('*', cors());
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+app.use(bodyParser.json({ limit: '10mb' })); // This line parses JSON bodies
+
+
 // =================================================================
 // SECURE GEMINI API PROXY
 // =================================================================
@@ -63,46 +98,27 @@ app.post('/api/gemini', async (req, res) => {
         return res.status(500).json({ error: { message: 'The AI service is not configured correctly. Please contact support.' } });
     }
     
-    // 🚨 FIX 1: Express Body Parsing Error
-    if (!req.body) {
-        return res.status(400).json({ error: { message: 'Request body is required' } });
+    // With body-parser middleware now correctly placed, req.body will be populated.
+    if (!req.body || !req.body.contents) {
+        return res.status(400).json({ error: { message: 'Request body is required and must contain "contents"' } });
     }
 
-    const contents = req.body.contents || [];
-    const systemInstruction = req.body.systemInstruction;
+    const { contents } = req.body;
     
-    if (!contents || contents.length === 0) {
-        return res.status(400).json({ error: { message: 'Invalid request body: contents are missing.' } });
+    if (contents.length === 0) {
+        return res.status(400).json({ error: { message: 'Invalid request body: contents are empty.' } });
     }
 
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${geminiApiKey}`;
 
-    // ⚡ FIX 2: Gemini API Timeout Protection
-    const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Gemini API timeout after 25 seconds')), 25000)
-    );
-
     try {
         const fetch = (await import('node-fetch')).default;
         
-        const apiPromise = fetch(apiUrl, {
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents,
-                generationConfig: {
-                    maxOutputTokens: 500, // Limit response length for speed
-                    temperature: 0.7
-                }
-            })
+            body: JSON.stringify({ contents })
         });
-        
-        const response = await Promise.race([apiPromise, timeoutPromise]);
-
-        if (!(response instanceof (await import('node-fetch')).Response)) {
-             // This case is for when the timeout promise wins
-             throw new Error('Gemini API timeout after 25 seconds');
-        }
 
         const data = await response.json();
 
@@ -115,9 +131,6 @@ app.post('/api/gemini', async (req, res) => {
         res.json(data);
     } catch (error) {
         console.error('Error proxying request to Gemini API:', error);
-        if (error.message.includes('timeout')) {
-            return res.status(504).json({ error: { message: 'Gemini API timeout - please try again' } });
-        }
         res.status(500).json({ error: { message: 'An internal error occurred while contacting the AI service.' } });
     }
 });
@@ -973,37 +986,6 @@ const validateFormSubmission = (req, res, next) => {
 };
 // ==================== END VALIDATION MIDDLEWARE ====================
 
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
-        
-        const allowedOrigins = [
-            'https://ajkcleaners.de',
-            'https://www.ajkcleaners.de',
-            'https://ajk-cleaning.onrender.com',
-            'http://localhost:3000',
-            'http://127.0.0.1:3000',
-            'http://localhost:3001',
-            'http://127.0.0.1:3001'
-        ];
-        
-        if (allowedOrigins.indexOf(origin) !== -1 || (origin && origin.includes('localhost'))) {
-            callback(null, true);
-        } else {
-            console.log('CORS blocked origin:', origin);
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Set-Cookie']
-}));
-
-app.options('*', cors());
-
-app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
-app.use(bodyParser.json({ limit: '10mb' }));
-
 app.use((req, res, next) => {
     const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'wss' : 'ws';
     const host = req.get('host');
@@ -1383,9 +1365,6 @@ app.get('/api/chats', requireAuth, async (req, res) => {
   }
 });
 
-// =================================================================
-// FIX 6: ADMIN CHAT DELETION - Reset client chat and notify user (INTEGRATED)
-// =================================================================
 app.delete('/api/chats/:clientId', requireAuth, async (req, res) => {
     const clientId = req.params.clientId;
     
