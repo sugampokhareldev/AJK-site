@@ -109,7 +109,6 @@ app.post('/api/gemini', async (req, res) => {
         return res.status(400).json({ error: { message: 'Invalid request body: contents are empty.' } });
     }
 
-    // FIX: Updated to the correct and current model name
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiApiKey}`;
 
     try {
@@ -956,7 +955,8 @@ wss.on('close', () => {
 
 setTimeout(cleanupGhostChats, 5000);
 setInterval(cleanupGhostChats, 60 * 60 * 1000);
-// ==================== END VALIDATION MIDDLEWARE ====================
+
+// ==================== END WEBSOCKET CHAT SERVER ====================
 
 app.use((req, res, next) => {
     const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'wss' : 'ws';
@@ -1014,6 +1014,30 @@ const loginLimiter = rateLimit({
 
 app.use('/api/admin/login', loginLimiter);
 // ==================== END RATE LIMITING ====================
+
+
+// ==================== VALIDATION MIDDLEWARE (MOVED) ====================
+const validateFormSubmission = (req, res, next) => {
+  const { name, phone, message } = req.body;
+ 
+  if (!name || !phone || !message) {
+    return res.status(400).json({ success: false, error: 'Name, phone, and message are required' });
+  }
+ 
+  if (name.trim().length < 2 || name.trim().length > 100) {
+    return res.status(400).json({ success: false, error: 'Name must be between 2 and 100 characters' });
+  }
+ 
+  if (message.trim().length < 10 || message.trim().length > 1000) {
+    return res.status(400).json({ success: false, error: 'Message must be between 10 and 1000 characters' });
+  }
+ 
+  if (phone && !validator.isMobilePhone(phone, 'any')) {
+    return res.status(400).json({ success: false, error: 'Invalid phone number format' });
+  }
+ 
+  next();
+};
 
 async function initializeDB() {
     try {

@@ -57,8 +57,6 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 
-    <!-- REMOVED: Redundant Content Security Policy meta tag. Now handled by server.js -->
-
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -298,7 +296,6 @@
         }
     }
     </script>
-    <script id="usercentrics-cmp" src="https://app.usercentrics.eu/browser-ui/latest/loader.js" data-settings-id="8b2vYJAM6JTPCf" async></script>
 </head>
 <body class="font-sans text-gray-800 antialiased">
     <!-- ACCESSIBILITY: Skip to main content link -->
@@ -1116,20 +1113,134 @@
         // --- Multi-Language Support, Modals, Page Interactivity, etc. ---
         const translations = {
             en: {
-                // ... (rest of translations object)
+                // Meta
+                metaDescription: "AJK Cleaning Company: Professional residential & commercial cleaning services in Bischofsheim. Eco-friendly products, fully insured, satisfaction guaranteed. Free quotes!",
+                metaKeywords: "cleaning service, Bischofsheim, residential cleaning, commercial cleaning, eco-friendly cleaning, move-in cleaning, deep cleaning, office cleaning mainz, house cleaning wiesbaden",
+                // General
+                companyName: "AJK Cleaning Company",
+                skipLink: "Skip to main content",
+                // Nav
+                navHome: "Home", navServices: "Services", navAbout: "About", navFaq: "FAQ", navContact: "Contact", navQuote: "GET A FREE QUOTE",
+                // Hero
+                heroTitle: "Experience the AJK Standard of Clean in Bischofsheim",
+                heroSubtitle: "Fully insured, eco-friendly products, and satisfaction guaranteed. Serving Bischofsheim, Mainz, Wiesbaden & surrounding areas.",
+                heroBtnBook: "Book a Cleaning", heroBtnServices: "Our Services",
+                // Trust
+                trustInsured: "Insured & Bonded", trustEco: "Eco-Friendly", trustRated: "5-Star Rated", trustGuaranteed: "Satisfaction Guaranteed",
+                // Services
+                servicesTitle: "Our Premium Cleaning Services",
+                servicesSubtitle: "We offer a wide range of cleaning services tailored to meet your specific needs and exceed your expectations in Bischofsheim and surrounding areas.",
+                service1Title: "Residential Cleaning", service1Desc: "Keep your home spotless with our detailed cleaning services.",
+                service2Title: "Commercial Cleaning", service2Desc: "Reliable cleaning for offices and businesses of all sizes.",
+                service3Title: "Deep Cleaning", service3Desc: "Thorough cleaning for a refreshed and healthy space.",
+                service4Title: "Move-In/Move-Out", service4Desc: "Start fresh in your new place with our moving cleaning.",
+                serviceLearnMore: "Learn More", serviceBtnChecklist: "✨ Get Cleaning Checklist",
+                // About
+                aboutTitle: "About AJK Cleaning Company",
+                aboutP1: "At AJK Cleaning Company, we are dedicated to providing premium cleaning services with a commitment to quality and community. Our team uses eco-friendly products and ensures every job meets our AJK standard of clean.",
+                aboutP2: "Founded in 2022, we've grown to become one of the most trusted cleaning services in the Bischofsheim area, serving hundreds of satisfied residential and commercial clients.",
+                aboutPoint1: "Fully Insured & Bonded", aboutPoint2: "Eco-Friendly Products", aboutPoint3: "Trained Professionals", aboutPoint4: "Satisfaction Guaranteed",
+                // FAQ
+                faqTitle: "Frequently Asked Questions",
+                faqSubtitle: "Have questions? We have answers. Here are some common queries we receive from our clients in the Bischofsheim area.",
+                faq: [
+                    { q: "What areas do you serve?", a: "We proudly serve Bischofsheim, Ginsheim-Gustavsburg, Mainz, Wiesbaden, and surrounding communities within a 25km radius." },
+                    { q: "Are you insured and bonded?", a: "Yes, we are fully insured and bonded for your peace of mind. All our cleaning professionals are vetted and trained to the highest standards." },
+                    { q: "Do you use eco-friendly products?", a: "Absolutely. We prioritize the health of your family, pets, and our planet by using high-quality, eco-friendly cleaning products that are both safe and effective." },
+                    { q: "How do I get a quote?", a: "You can get a free, no-obligation quote by filling out the contact form on our website or by calling us directly at +49 176 61852286." }
+                ],
+                // AI Tips
+                tipTitle: "✨ Get a Custom Cleaning Tip",
+                tipSubtitle: "Stuck on a tough cleaning problem? Let our AI expert help you out!",
+                tipRoomLabel: "Select a Room", tipChallengeLabel: "Select a Challenge",
+                tipRoomKitchen: "Kitchen", tipRoomBathroom: "Bathroom", tipRoomLiving: "Living Room", tipRoomBedroom: "Bedroom",
+                tipChallengeGrime: "Everyday Grime", tipChallengeGrease: "Tough Grease", tipChallengeLimescale: "Limescale & Hard Water", tipChallengeDust: "Dust & Allergens", tipChallengePet: "Pet Messes",
+                tipBtnGenerate: "Generate Tip",
+                // Contact
+                contactTitle: "Get In Touch",
+                contactSubtitle: "We're here to answer any questions. Reach out for a free, no-obligation quote for your cleaning needs in Bischofsheim.",
+                urgencyMessage: "🚀 <strong>Same-Day Quotes Available!</strong> Call now: +49 176 61852286",
+                contactHours: "Mon - Sat: 8:00am - 6:00pm",
+                gmbTitle: "Google Reviews", gmbRating: "4.9/5 from 58 reviews",
+                // Form
                 formTitle: "Get a Free Quote",
                 formName: "Name *", formEmail: "Email (Optional)", formPhone: "Phone *", formMessage: "Message *",
                 formServiceLabel: "Select a Service", formServiceSelect: "Select a Service",
                 formBtnSubmit: "Submit Request", formBtnSending: "Sending...",
                 formSuccess: "Thank you! We'll be in touch soon.", formError: "An error occurred. Please try again.",
+                // Footer
+                footerDesc: "Premium Cleaning Solutions for Homes and Offices in Bischofsheim",
+                footerLinksTitle: "Quick Links", footerServicesTitle: "Our Services", footerFollowTitle: "Follow Us",
+                footerImpressum: "Impressum", footerPrivacy: "Datenschutz", footerRights: "All rights reserved.",
+                // CTA
+                ctaCall: "Call Now", ctaQuote: "Get Quote",
+                // Modal
+                modalDownload: "Download", modalClose: "Close"
             },
             de: {
-                // ... (rest of translations object)
+                // Meta
+                metaDescription: "AJK Reinigungsfirma: Professionelle Wohnungs- & Gewerbereinigung in Bischofsheim. Umweltfreundliche Produkte, voll versichert, Zufriedenheitsgarantie. Kostenloses Angebot!",
+                metaKeywords: "Reinigungsfirma Bischofsheim, Gebäudereinigung Mainz, Putzfirma Wiesbaden, Hausreinigung, Büroreinigung, Umzugsreinigung, Reinigungsdienst, Reinigungsservice",
+                // General
+                companyName: "AJK Reinigungsfirma",
+                skipLink: "Zum Hauptinhalt springen",
+                // Nav
+                navHome: "Startseite", navServices: "Leistungen", navAbout: "Über uns", navFaq: "FAQ", navContact: "Kontakt", navQuote: "GRATIS ANGEBOT",
+                // Hero
+                heroTitle: "Erleben Sie den AJK-Reinigungsstandard in Bischofsheim",
+                heroSubtitle: "Voll versichert, umweltfreundliche Produkte und Zufriedenheitsgarantie. Wir bedienen Bischofsheim, Mainz, Wiesbaden & Umgebung.",
+                heroBtnBook: "Reinigung buchen", heroBtnServices: "Unsere Leistungen",
+                // Trust
+                trustInsured: "Versichert & gebunden", trustEco: "Umweltfreundlich", trustRated: "5-Sterne-Bewertung", trustGuaranteed: "Zufriedenheitsgarantie",
+                // Services
+                servicesTitle: "Unsere Premium-Reinigungsdienste",
+                servicesSubtitle: "Wir bieten eine breite Palette von Reinigungsdiensten an, die auf Ihre spezifischen Bedürfnisse zugeschnitten sind und Ihre Erwartungen in Bischofsheim und Umgebung übertreffen.",
+                service1Title: "Wohnungsreinigung", service1Desc: "Halten Sie Ihr Zuhause mit unseren detaillierten Reinigungsdiensten makellos.",
+                service2Title: "Gewerbereinigung", service2Desc: "Zuverlässige Reinigung für Büros und Unternehmen jeder Größe.",
+                service3Title: "Grundreinigung", service3Desc: "Gründliche Reinigung für einen erfrischten und gesunden Raum.",
+                service4Title: "Umzugsreinigung", service4Desc: "Starten Sie frisch in Ihrem neuen Zuhause mit unserer Umzugsreinigung.",
+                serviceLearnMore: "Mehr erfahren", serviceBtnChecklist: "✨ Reinigungs-Checkliste erhalten",
+                // About
+                aboutTitle: "Über AJK Reinigungsfirma",
+                aboutP1: "Bei der AJK Reinigungsfirma widmen wir uns der Bereitstellung erstklassiger Reinigungsdienste mit einem Bekenntnis zu Qualität und Gemeinschaft. Unser Team verwendet umweltfreundliche Produkte und stellt sicher, dass jeder Auftrag unserem AJK-Reinigungsstandard entspricht.",
+                aboutP2: "Gegründet im Jahr 2022, sind wir zu einem der vertrauenswürdigsten Reinigungsdienste in der Region Bischofsheim herangewachsen und bedienen Hunderte zufriedener Privat- und Geschäftskunden.",
+                aboutPoint1: "Voll versichert & gebunden", aboutPoint2: "Umweltfreundliche Produkte", aboutPoint3: "Geschulte Fachkräfte", aboutPoint4: "Zufriedenheitsgarantie",
+                // FAQ
+                faqTitle: "Häufig gestellte Fragen",
+                faqSubtitle: "Haben Sie Fragen? Wir haben Antworten. Hier sind einige häufige Anfragen, die wir von unseren Kunden im Raum Bischofsheim erhalten.",
+                 faq: [
+                    { q: "Welche Gebiete bedienen Sie?", a: "Wir bedienen stolz Bischofsheim, Ginsheim-Gustavsburg, Mainz, Wiesbaden und umliegende Gemeinden in einem Radius von 25 km." },
+                    { q: "Sind Sie versichert und gebunden?", a: "Ja, wir sind zu Ihrer Sicherheit voll versichert und gebunden. Alle unsere Reinigungskräfte werden überprüft und auf höchstem Niveau geschult." },
+                    { q: "Verwenden Sie umweltfreundliche Produkte?", a: "Absolut. Wir legen Wert auf die Gesundheit Ihrer Familie, Ihrer Haustiere und unseres Planeten, indem wir hochwertige, umweltfreundliche Reinigungsprodukte verwenden, die sowohl sicher als auch wirksam sind." },
+                    { q: "Wie erhalte ich ein Angebot?", a: "Sie können ein kostenloses, unverbindliches Angebot erhalten, indem Sie das Kontaktformular auf unserer Website ausfüllen oder uns direkt unter +49 176 61852286 anrufen." }
+                ],
+                // AI Tips
+                tipTitle: "✨ Holen Sie sich einen individuellen Reinigungstipp",
+                tipSubtitle: "Stecken Sie bei einem hartnäckigen Reinigungsproblem fest? Lassen Sie sich von unserem KI-Experten helfen!",
+                tipRoomLabel: "Wählen Sie einen Raum", tipChallengeLabel: "Wählen Sie eine Herausforderung",
+                tipRoomKitchen: "Küche", tipRoomBathroom: "Badezimmer", tipRoomLiving: "Wohnzimmer", tipRoomBedroom: "Schlafzimmer",
+                tipChallengeGrime: "Alltäglicher Schmutz", tipChallengeGrease: "Hartnäckiges Fett", tipChallengeLimescale: "Kalk & hartes Wasser", tipChallengeDust: "Staub & Allergene", tipChallengePet: "Haustier-Schmutz",
+                tipBtnGenerate: "Tipp generieren",
+                // Contact
+                contactTitle: "Kontakt aufnehmen",
+                contactSubtitle: "Wir sind hier, um alle Fragen zu beantworten. Kontaktieren Sie uns für ein kostenloses, unverbindliches Angebot für Ihre Reinigungsbedürfnisse in Bischofsheim.",
+                urgencyMessage: "🚀 <strong>Angebote noch am selben Tag verfügbar!</strong> Rufen Sie jetzt an: +49 176 61852286",
+                contactHours: "Mo - Sa: 8:00 - 18:00 Uhr",
+                gmbTitle: "Google Bewertungen", gmbRating: "4.9/5 aus 58 Bewertungen",
+                // Form
                 formTitle: "Kostenloses Angebot anfordern",
                 formName: "Name *", formEmail: "E-Mail (Optional)", formPhone: "Telefon *", formMessage: "Nachricht *",
                 formServiceLabel: "Leistung auswählen", formServiceSelect: "Leistung auswählen",
                 formBtnSubmit: "Anfrage senden", formBtnSending: "Senden...",
                 formSuccess: "Vielen Dank! Wir werden uns bald bei Ihnen melden.", formError: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+                // Footer
+                footerDesc: "Premium-Reinigungslösungen für Haushalte und Büros in Bischofsheim",
+                footerLinksTitle: "Schnell-Links", footerServicesTitle: "Unsere Leistungen", footerFollowTitle: "Folgen Sie uns",
+                footerImpressum: "Impressum", footerPrivacy: "Datenschutz", footerRights: "Alle Rechte vorbehalten.",
+                 // CTA
+                ctaCall: "Jetzt anrufen", ctaQuote: "Angebot anfordern",
+                // Modal
+                modalDownload: "Herunterladen", modalClose: "Schließen"
             }
         };
 
@@ -1394,3 +1505,4 @@
     </script>
 </body>
 </html>
+
