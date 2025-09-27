@@ -62,22 +62,47 @@ app.post('/api/gemini', async (req, res) => {
         console.error('Gemini API key is not configured on the server.');
         return res.status(500).json({ error: { message: 'The AI service is not configured correctly. Please contact support.' } });
     }
+    
+    // 🚨 FIX 1: Express Body Parsing Error
+    if (!req.body) {
+        return res.status(400).json({ error: { message: 'Request body is required' } });
+    }
 
-    const { contents } = req.body;
-
-    if (!contents) {
-        return res.status(400).json({ error: { message: 'Invalid request body.' } });
+    const contents = req.body.contents || [];
+    const systemInstruction = req.body.systemInstruction;
+    
+    if (!contents || contents.length === 0) {
+        return res.status(400).json({ error: { message: 'Invalid request body: contents are missing.' } });
     }
 
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${geminiApiKey}`;
 
+    // ⚡ FIX 2: Gemini API Timeout Protection
+    const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Gemini API timeout after 25 seconds')), 25000)
+    );
+
     try {
         const fetch = (await import('node-fetch')).default;
-        const response = await fetch(apiUrl, {
+        
+        const apiPromise = fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents })
+            body: JSON.stringify({
+                contents,
+                generationConfig: {
+                    maxOutputTokens: 500, // Limit response length for speed
+                    temperature: 0.7
+                }
+            })
         });
+        
+        const response = await Promise.race([apiPromise, timeoutPromise]);
+
+        if (!(response instanceof (await import('node-fetch')).Response)) {
+             // This case is for when the timeout promise wins
+             throw new Error('Gemini API timeout after 25 seconds');
+        }
 
         const data = await response.json();
 
@@ -90,6 +115,9 @@ app.post('/api/gemini', async (req, res) => {
         res.json(data);
     } catch (error) {
         console.error('Error proxying request to Gemini API:', error);
+        if (error.message.includes('timeout')) {
+            return res.status(504).json({ error: { message: 'Gemini API timeout - please try again' } });
+        }
         res.status(500).json({ error: { message: 'An internal error occurred while contacting the AI service.' } });
     }
 });

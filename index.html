@@ -597,9 +597,27 @@
     // --- Main Application Logic ---
     document.addEventListener('DOMContentLoaded', function() {
         
-        // --- Gemini API Call Helper ---
+        // --- 💾 FIX 5: Response Caching for Common Queries ---
+        const responseCache = new Map();
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+        const getCachedResponse = async (key, apiCall) => {
+            const cached = responseCache.get(key);
+            if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
+                return cached.data;
+            }
+            
+            const result = await apiCall();
+            responseCache.set(key, {
+                data: result,
+                timestamp: Date.now()
+            });
+            
+            return result;
+        };
+
+        // --- ⚡ FIX 3: Client-Side API Timeout ---
         const callGeminiAPI = async (chatHistory, systemInstruction) => {
-            // FIX: Route API calls through the secure server proxy
             const apiUrl = '/api/gemini';
             const payload = {
                 contents: chatHistory,
@@ -607,25 +625,51 @@
                     parts: [{ text: systemInstruction }]
                 },
             };
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
 
-            if (!response.ok) {
-                const errorBody = await response.json().catch(() => ({ error: { message: 'Could not parse error response.' } }));
-                const errorMessage = errorBody?.error?.message || `API error: ${response.status} ${response.statusText}`;
-                throw new Error(errorMessage);
+            // Add 30-second timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    const errorBody = await response.json().catch(() => ({ error: { message: 'Could not parse error response.' } }));
+                    const errorMessage = errorBody?.error?.message || `API error: ${response.status} ${response.statusText}`;
+                    throw new Error(errorMessage);
+                }
+
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (!text) {
+                    throw new Error("No content received from Gemini API.");
+                }
+                return text;
+            } catch (error) {
+                clearTimeout(timeoutId);
+                if (error.name === 'AbortError') {
+                    throw new Error('Request timeout - Gemini is taking too long to respond');
+                }
+                throw error;
             }
-
-            const result = await response.json();
-            const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-
-            if (!text) {
-                throw new Error("No content received from Gemini API.");
+        };
+        
+        // --- 💾 FIX 5: Modified callGeminiAPI with caching ---
+        const callGeminiAPICached = async (chatHistory, systemInstruction, useCache = false) => {
+            if (!useCache) {
+                return callGeminiAPI(chatHistory, systemInstruction);
             }
-            return text;
+            
+            const cacheKey = systemInstruction.substring(0, 100); // First 100 chars as key
+            return getCachedResponse(cacheKey, () => callGeminiAPI(chatHistory, systemInstruction));
         };
 
         // --- Hybrid AI/Live Chat Widget ---
@@ -672,9 +716,6 @@
                 5.  Format responses with Markdown (bolding, lists).`;
             }
             
-            // =================================================================
-            // FIX 8: AI CHAT PERSISTENCE - MODIFIED: ChatManager initialization
-            // =================================================================
             init() {
                 this.attachEventListeners();
                 
@@ -687,9 +728,6 @@
                 this.restoreChatState();
             }
             
-            // =================================================================
-            // FIX 8: AI CHAT PERSISTENCE - NEW METHOD: Clear AI chat storage
-            // =================================================================
             clearAIChatStorage() {
                 console.log('Clearing AI chat storage for fresh session');
                 localStorage.removeItem('chatHistory');
@@ -718,9 +756,6 @@
                 });
             }
 
-            // =================================================================
-            // FIX 8: AI CHAT PERSISTENCE - MODIFIED: Load messages logic
-            // =================================================================
             loadSavedMessages() {
                 if(localStorage.getItem('isAiChat') === 'true' || localStorage.getItem('chatMode') !== 'live') {
                     console.log('AI chat detected - starting fresh session');
@@ -740,9 +775,6 @@
                 }
             }
 
-            // =================================================================
-            // FIX 8: AI CHAT PERSISTENCE - MODIFIED: Save messages logic
-            // =================================================================
             saveMessages() {
                 if (this.isAiActive) {
                     try {
@@ -795,6 +827,7 @@
                 this.scrollToBottom();
             }
 
+            // --- 🔄 FIX 4: Loading State Improvements ---
             async sendMessage() {
                 const chatInput = document.getElementById('chat-input-enhanced');
                 const messageText = chatInput.value.trim();
@@ -804,26 +837,48 @@
                 chatInput.value = '';
                 this.displayMessage(messageText, 'user', this.userName);
 
+                // Disable input during request
+                chatInput.disabled = true;
+                const sendButton = document.getElementById('chat-send-enhanced');
+                if (sendButton) sendButton.disabled = true;
+
                 if (this.isAiActive) {
                     this.chatHistory.push({ role: 'user', parts: [{ text: messageText }] });
                     this.saveMessages();
                     this.showTypingIndicator(true, 'Alex');
 
                     try {
-                        const botResponse = await callGeminiAPI(this.chatHistory, this.getSystemInstruction());
+                        // Add timeout for better UX
+                        const timeoutPromise = new Promise((_, reject) => 
+                            setTimeout(() => reject(new Error('Response timeout')), 45000)
+                        );
+                        
+                        const botResponse = await Promise.race([
+                            callGeminiAPI(this.chatHistory, this.getSystemInstruction()),
+                            timeoutPromise
+                        ]);
+                        
                         this.chatHistory.push({ role: 'model', parts: [{ text: botResponse }] });
                         this.saveMessages();
                         this.displayMessage(this.markdownToHtml(botResponse), 'admin', 'Alex', true);
                     } catch (error) {
                         console.error('Gemini Chatbot Error:', error);
-                        this.displayMessage("I'm sorry, I'm having a little trouble connecting right now. Please try again in a moment.", 'admin', 'Alex', true);
+                        const errorMsg = error.message.includes('timeout') 
+                            ? "I'm taking longer than usual to respond. Please try again in a moment." 
+                            : "I'm having trouble connecting right now. Please try again.";
+                        this.displayMessage(errorMsg, 'admin', 'Alex', true);
                     } finally {
                         this.isTyping = false;
                         this.showTypingIndicator(false);
+                        chatInput.disabled = false;
+                        if (sendButton) sendButton.disabled = false;
+                        chatInput.focus();
                     }
                 } else if (this.isLiveChatActive && this.ws && this.ws.readyState === WebSocket.OPEN) {
                     this.ws.send(JSON.stringify({ type: 'chat', text: messageText, name: this.userName }));
                     this.isTyping = false;
+                    chatInput.disabled = false;
+                    if (sendButton) sendButton.disabled = false;
                 }
             }
             
@@ -844,9 +899,6 @@
                     document.getElementById('chat-status').textContent = 'Connected to Live Support';
                 };
 
-                // =================================================================
-                // FIX 7: CLIENT-SIDE CHAT RESET HANDLING - MODIFIED: WebSocket onmessage
-                // =================================================================
                 this.ws.onmessage = (event) => {
                     try {
                         const data = JSON.parse(event.data);
@@ -913,9 +965,6 @@
                 this.connectWebSocket();
             }
             
-            // =================================================================
-            // FIX 7: CLIENT-SIDE CHAT RESET HANDLING - NEW METHOD: handleChatReset
-            // =================================================================
             handleChatReset(resetData) {
                 console.log('Handling chat reset:', resetData);
                 
@@ -972,9 +1021,6 @@
                 document.getElementById('chat-window-enhanced').classList.contains('open') ? this.closeChat() : this.openChat();
             }
 
-            // =================================================================
-            // FIX 9: ENHANCED OPEN CHAT - MODIFIED: openChat method
-            // =================================================================
             openChat() {
                 const chatWindow = document.getElementById('chat-window-enhanced');
                 chatWindow.style.display = 'flex';
@@ -1005,7 +1051,7 @@
                     document.getElementById('human-handoff-btn').style.display = 'none';
                     this.connectWebSocket();
                     if (document.getElementById('chat-messages').childElementCount === 0) {
-                       this.loadSavedMessages();
+                      this.loadSavedMessages();
                     }
                 }
                 
@@ -1109,8 +1155,8 @@
         const generateChecklist = async (serviceName) => {
             const userQuery = `Act as a professional cleaning expert from AJK Cleaning Company. Generate a comprehensive cleaning checklist for a typical '${serviceName}' service. The checklist should be well-organized, easy to follow, and formatted in Markdown with headings (like '# Kitchen') and bullet points (like '* Wipe countertops').`;
             try {
-                // Pass empty history for this single-turn task
-                const text = await callGeminiAPI([], userQuery);
+                // Use cached API call
+                const text = await callGeminiAPICached([], userQuery, true);
                 currentChecklistText = text;
                 checklistContent.innerHTML = markdownToHtml(text);
                 checklistLoader.style.display = 'none';
@@ -1168,8 +1214,8 @@
             const userQuery = `You are a friendly cleaning expert from AJK Cleaning Company in Germany. Provide a quick, eco-friendly cleaning tip for tackling "${challenge}" in a "${room}". Keep it under 50 words and make it easy to follow.`;
 
             try {
-                 // Pass empty history for this single-turn task
-                const text = await callGeminiAPI([], userQuery);
+                 // Use cached API call
+                const text = await callGeminiAPICached([], userQuery, true);
                 tipResultLoader.style.display = 'none';
                 tipResultText.textContent = text;
                 tipResultText.classList.remove('hidden');
