@@ -16,8 +16,8 @@
   <meta name="geo.placename" content="Bischofsheim">
   <meta name="geo.position" content="49.9939;8.3669">
 
-  <!-- SECURITY FIX: Updated Content-Security-Policy to allow connections to Google's API endpoint. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https://placehold.co https://images.unsplash.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' ws: wss: https://generativelanguage.googleapis.com;">
+  <!-- SECURITY FIX: Updated Content-Security-Policy to allow connections to the server proxy. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https://placehold.co https://images.unsplash.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' ws: wss:;">
 
   <!-- PERFORMANCE: Preload critical resources -->
   <link rel="preload" as="image" href="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
@@ -226,8 +226,8 @@
   <header id="navbar" class="fixed w-full bg-white/90 z-50 transition-all duration-500 py-3">
     <div class="container mx-auto flex justify-between items-center px-6">
       <a href="#home" class="flex items-center space-x-3" aria-label="AJK Cleaning Company Home">
-        <!-- FIX: Replaced local image path with a placeholder to prevent broken images. -->
-        <img src="images/logo.jpg" alt="AJK Cleaning Company Logo" class="h-16 w-16 sm:h-20 sm:w-20 rounded-lg logo transition-transform duration-300 object-contain" width="80" height="80" loading="eager">
+        <!-- FIX: Replaced broken local image path with a functional, color-matched placeholder. -->
+        <img src="https://placehold.co/80x80/e0f2fe/1e40af?text=AJK" alt="AJK Cleaning Company Logo" class="h-16 w-16 sm:h-20 sm:w-20 rounded-lg logo transition-transform duration-300 object-contain" width="80" height="80" loading="eager">
         <span class="font-bold text-lg sm:text-xl text-primary transition-all duration-300">AJK Cleaning Company</span>
       </a>
       
@@ -597,7 +597,7 @@
     // --- Main Application Logic ---
     document.addEventListener('DOMContentLoaded', function() {
         
-        // --- 💾 FIX 5: Response Caching for Common Queries ---
+        // --- Caching for Common API Queries ---
         const responseCache = new Map();
         const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
@@ -616,15 +616,28 @@
             return result;
         };
 
-        // --- ⚡ FIX 3: Client-Side API Timeout ---
+        // --- Client-Side API Function with Timeout & Payload Correction ---
         const callGeminiAPI = async (chatHistory, systemInstruction) => {
             const apiUrl = '/api/gemini';
+            
+            // Ensure we have at least one message in contents
+            const contents = chatHistory.length > 0 ? chatHistory : [
+                {
+                    role: 'user',
+                    parts: [{ text: 'Hello, please help me with cleaning tips.' }]
+                }
+            ];
+
             const payload = {
-                contents: chatHistory,
-                systemInstruction: {
-                    parts: [{ text: systemInstruction }]
-                },
+                contents: contents
             };
+
+            // Add system instruction if provided
+            if (systemInstruction) {
+                payload.systemInstruction = {
+                    parts: [{ text: systemInstruction }]
+                };
+            }
 
             // Add 30-second timeout
             const controller = new AbortController();
@@ -662,7 +675,7 @@
             }
         };
         
-        // --- 💾 FIX 5: Modified callGeminiAPI with caching ---
+        // --- Modified callGeminiAPI with caching ---
         const callGeminiAPICached = async (chatHistory, systemInstruction, useCache = false) => {
             if (!useCache) {
                 return callGeminiAPI(chatHistory, systemInstruction);
@@ -827,7 +840,6 @@
                 this.scrollToBottom();
             }
 
-            // --- 🔄 FIX 4: Loading State Improvements ---
             async sendMessage() {
                 const chatInput = document.getElementById('chat-input-enhanced');
                 const messageText = chatInput.value.trim();

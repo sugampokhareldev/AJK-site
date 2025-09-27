@@ -88,7 +88,7 @@ app.use(bodyParser.json({ limit: '10mb' })); // This line parses JSON bodies
 
 
 // =================================================================
-// SECURE GEMINI API PROXY
+// SECURE GEMINI API PROXY - CORRECTED VERSION
 // =================================================================
 app.post('/api/gemini', async (req, res) => {
     const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -98,12 +98,11 @@ app.post('/api/gemini', async (req, res) => {
         return res.status(500).json({ error: { message: 'The AI service is not configured correctly. Please contact support.' } });
     }
     
-    // With body-parser middleware now correctly placed, req.body will be populated.
     if (!req.body || !req.body.contents) {
         return res.status(400).json({ error: { message: 'Request body is required and must contain "contents"' } });
     }
 
-    const { contents } = req.body;
+    const { contents, systemInstruction } = req.body;
     
     if (contents.length === 0) {
         return res.status(400).json({ error: { message: 'Invalid request body: contents are empty.' } });
@@ -114,10 +113,20 @@ app.post('/api/gemini', async (req, res) => {
     try {
         const fetch = (await import('node-fetch')).default;
         
+        // Build the payload for Gemini API
+        const geminiPayload = {
+            contents: contents
+        };
+
+        // Add system instruction if provided
+        if (systemInstruction) {
+            geminiPayload.systemInstruction = systemInstruction;
+        }
+
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents })
+            body: JSON.stringify(geminiPayload)
         });
 
         const data = await response.json();
@@ -489,7 +498,7 @@ async function handleAdminMessage(adminClient, message) {
                 }
             }
             break;
-        
+       
         case 'get_clients':
             const clientList = Array.from(clients.values())
                 .filter(c => !c.isAdmin)
