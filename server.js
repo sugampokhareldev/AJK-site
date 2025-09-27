@@ -992,12 +992,12 @@ app.use((req, res, next) => {
     res.setHeader(
         'Content-Security-Policy',
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; " +
-        "style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com; " +
+        "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.googletagmanager.com https://app.usercentrics.eu; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; " +
         "img-src 'self' data: https: blob:; " +
         "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; " +
-        `connect-src 'self' ${protocol}://${host} https://generativelanguage.googleapis.com; ` + 
-        "frame-src 'self';"
+        `connect-src 'self' ${protocol}://${host} https://api.usercentrics.eu https://privacy-proxy.usercentrics.eu; ` + 
+        "frame-src 'self' https://www.google.com https://app.usercentrics.eu;"
     );
     next();
 });
