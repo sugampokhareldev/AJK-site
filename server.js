@@ -15,7 +15,10 @@ const { Low } = require('lowdb');
 const { JSONFile } = require('lowdb/node');
 const validator = require('validator');
 const rateLimit = require('express-rate-limit');
-const compression = require('compression'); // Performance FIX: Add compression
+const compression = require('compression');
+const cookieParser = require('cookie-parser');
+const csrf = require('csurf');
+const geoip = require('geoip-lite'); // Added for analytics
 
 // Use memory store for sessions to avoid file system issues on Render
 const MemoryStore = require('memorystore')(session);
@@ -51,13 +54,49 @@ if (!fs.existsSync(dbDir)) {
 }
 
 const adapter = new JSONFile(dbPath);
-const db = new Low(adapter, { submissions: [], admin_users: [], offline_messages: {}, chats: {} });
+// Added 'analytics_events' to the database structure
+const db = new Low(adapter, { submissions: [], admin_users: [], offline_messages: {}, chats: {}, analytics_events: [] });
+
+// =================================================================
+// DATABASE CACHING
+// =================================================================
+const dbCache = new Map();
+const CACHE_TTL = 30000; // 30 seconds
+
+async function cachedRead(key, fetchFn) {
+    const cached = dbCache.get(key);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+        return cached.data;
+    }
+
+    const data = await fetchFn();
+    dbCache.set(key, { data, timestamp: Date.now() });
+
+    // Cleanup old cache entries
+    if (dbCache.size > 50) {
+        const oldestKey = Array.from(dbCache.keys())[0];
+        dbCache.delete(oldestKey);
+    }
+
+    return data;
+}
+
+function clearCache(key = null) {
+    if (key) {
+        dbCache.delete(key);
+    } else {
+        dbCache.clear();
+    }
+}
+// =================================================================
+// END OF DATABASE CACHING
+// =================================================================
 
 
 // =================================================================
 // MIDDLEWARE SETUP
 // =================================================================
-app.use(compression()); // Performance FIX: Enable compression for all responses
+app.use(compression());
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
@@ -81,11 +120,77 @@ app.use(cors({
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Set-Cookie']
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Set-Cookie', 'CSRF-Token', 'X-CSRF-Token']
 }));
 app.options('*', cors());
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 app.use(bodyParser.json({ limit: '10mb' }));
+app.use(cookieParser());
+
+// ENHANCEMENT: Add detailed request logging
+app.use((req, res, next) => {
+    const start = Date.now();
+    const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    
+    res.on('finish', () => {
+        const duration = Date.now() - start;
+        console.log(`${new Date().toISOString()} | ${clientIP} | ${req.method} ${req.url} | ${res.statusCode} | ${duration}ms`);
+    });
+    
+    next();
+});
+
+app.use(session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: new MemoryStore({
+        checkPeriod: 86400000
+    }),
+    cookie: { 
+        secure: isProduction,
+        httpOnly: true,
+        sameSite: isProduction ? 'none' : 'lax',
+        maxAge: 24 * 60 * 60 * 1000
+    }
+}));
+
+
+// =================================================================
+// CSRF PROTECTION SETUP (FIXED)
+// =================================================================
+const csrfProtection = csrf({ cookie: true });
+
+// Conditionally apply CSRF protection. Public POST endpoints are excluded.
+app.use((req, res, next) => {
+    // Added /api/analytics/track to the exclusion list for public tracking
+    const excludedRoutes = ['/api/form/submit', '/api/gemini', '/api/analytics/track'];
+    if (excludedRoutes.includes(req.path)) {
+        return next();
+    }
+    csrfProtection(req, res, next);
+});
+
+// Middleware to handle CSRF token errors
+app.use((err, req, res, next) => {
+    if (err.code === 'EBADCSRFTOKEN') {
+        console.warn('CSRF Token Validation Failed for request:', req.method, req.path);
+        res.status(403).json({ 
+            error: 'Invalid CSRF token. Please refresh the page and try again.',
+            code: 'INVALID_CSRF_TOKEN' 
+        });
+    } else {
+        next(err);
+    }
+});
+
+// Provide a dedicated endpoint for the frontend to fetch the CSRF token
+app.get('/api/csrf-token', (req, res) => {
+    res.json({ csrfToken: req.csrfToken() });
+});
+// =================================================================
+// END OF CSRF SETUP
+// =================================================================
 
 
 // =================================================================
@@ -109,7 +214,6 @@ app.post('/api/gemini', async (req, res) => {
         return res.status(400).json({ error: { message: 'Invalid request body: contents are empty.' } });
     }
 
-    // FIX: Reverted to the stable and correct v1beta model name
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${geminiApiKey}`;
 
     try {
@@ -251,7 +355,6 @@ function notifyAdmin(type, payload, targetSessionId = null) {
     });
 }
 
-// FIX: This function now handles offline message persistence.
 async function sendToClient(clientId, messageText, sourceSessionId = null) {
     const client = clients.get(clientId);
     const adminMessage = {
@@ -267,7 +370,6 @@ async function sendToClient(clientId, messageText, sourceSessionId = null) {
 
     chatHistory.push(adminMessage);
 
-    // If client is online, send directly via WebSocket
     if (client && client.ws.readyState === WebSocket.OPEN) {
         try {
             client.ws.send(JSON.stringify(adminMessage));
@@ -279,7 +381,6 @@ async function sendToClient(clientId, messageText, sourceSessionId = null) {
             return { success: true, status: 'saved_after_error' };
         }
     } else {
-        // If client is offline, just save the message to the database
         await persistChatMessage(clientId, adminMessage);
         console.log(`Client ${clientId} is offline. Message saved.`);
         return { success: true, status: 'saved_offline' };
@@ -336,31 +437,31 @@ function broadcastToClients(messageText, sourceSessionId = null) {
 }
 
 async function cleanupGhostChats() {
-    try {
-        await db.read();
-        const chats = db.data.chats || {};
-        let removedCount = 0;
-        
-        Object.keys(chats).forEach(clientId => {
-            const chat = chats[clientId];
-            if (chat && 
-                chat.clientInfo && 
-                chat.clientInfo.name === 'Guest' && 
-                (!chat.messages || chat.messages.length === 0) &&
-                new Date(chat.clientInfo.firstSeen) < new Date(Date.now() - 24 * 60 * 60 * 1000)) {
-                
-                delete chats[clientId];
-                removedCount++;
-            }
-        });
-        
-        if (removedCount > 0) {
-            await db.write();
-            console.log(`Cleaned up ${removedCount} ghost chats`);
+  try {
+    await db.read();
+    const chats = db.data.chats || {};
+    let removedCount = 0;
+    
+    Object.keys(chats).forEach(clientId => {
+        const chat = chats[clientId];
+        if (chat && 
+            chat.clientInfo && 
+            chat.clientInfo.name === 'Guest' && 
+            (!chat.messages || chat.messages.length === 0) &&
+            new Date(chat.clientInfo.firstSeen) < new Date(Date.now() - 24 * 60 * 60 * 1000)) {
+            
+            delete chats[clientId];
+            removedCount++;
         }
-    } catch (e) {
-        console.error('Error cleaning up ghost chats:', e);
+    });
+    
+    if (removedCount > 0) {
+        await db.write();
+        console.log(`Cleaned up ${removedCount} ghost chats`);
     }
+  } catch (e) {
+    console.error('Error cleaning up ghost chats:', e);
+  }
 }
 
 const wss = new WebSocket.Server({ 
@@ -389,26 +490,48 @@ const allowedOriginsWs = [
     'http://127.0.0.1:3001'
 ];
 
+// REPLACED with secure version
 async function handleAdminConnection(ws, request) {
     const url = new URL(request.url, `http://${request.headers.host}`);
     const sessionId = url.searchParams.get('sessionId');
-    
+
     if (!sessionId) {
+        console.warn('Admin WebSocket connection attempt without session ID');
         ws.close(1008, 'Session ID required');
         return;
     }
-    
+
     const sessionData = adminSessions.get(sessionId);
-    if (!sessionData) {
-        ws.close(1008, 'Invalid admin session');
+    if (!sessionData || !sessionData.authenticated) {
+        console.warn(`Invalid admin session attempted: ${sessionId}`);
+        ws.close(1008, 'Invalid or unauthenticated admin session');
         return;
     }
-    
+
+    // IP validation for security
+    const clientIP = request.socket.remoteAddress;
+    if (sessionData.ip && sessionData.ip !== clientIP) {
+        console.warn(`IP mismatch for admin session ${sessionId}. Expected: ${sessionData.ip}, Got: ${clientIP}`);
+        ws.close(1008, 'Session security violation - IP mismatch');
+        return;
+    }
+
+    // Check session age
+    const sessionAge = Date.now() - new Date(sessionData.loginTime).getTime();
+    const MAX_SESSION_AGE = 24 * 60 * 60 * 1000; // 24 hours
+    if (sessionAge > MAX_SESSION_AGE) {
+        console.warn(`Expired admin session attempted: ${sessionId}`);
+        adminSessions.delete(sessionId);
+        ws.close(1008, 'Session expired');
+        return;
+    }
+
+    // Rest of existing code...
     const clientId = 'admin_' + sessionId;
     const client = {
         ws,
         isAdmin: true,
-        name: 'Admin',
+        name: sessionData.username || 'Admin',
         id: clientId,
         sessionId: sessionId,
         joined: new Date().toISOString()
@@ -437,13 +560,14 @@ async function handleAdminConnection(ws, request) {
     
     ws.send(JSON.stringify({
         type: 'admin_identified',
-        message: 'Admin connection established'
+        message: 'Admin connection established',
+        username: sessionData.username
     }));
 
     deliverAdminOfflineMessages();
-
-    notifyAdmin(`Admin connected`, { name: 'Admin', sessionId });
+    notifyAdmin('admin_connected', { name: sessionData.username, sessionId });
 }
+
 
 async function handleAdminMessage(adminClient, message) {
     switch (message.type) {
@@ -667,7 +791,7 @@ wss.on('connection', async (ws, request) => {
                 return;
             }
             
-            client.lastActivity = new Date().toISOString();
+            client.lastActive = new Date().toISOString();
             
             switch (message.type) {
                 case 'chat':
@@ -904,6 +1028,30 @@ function cleanupAdminSessions() {
     });
 }
 
+function cleanupStaleConnections() {
+    const now = Date.now();
+    const STALE_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+    
+    clients.forEach((client, clientId) => {
+        if (!client.lastActive) return;
+        
+        const timeSinceActivity = now - new Date(client.lastActive).getTime();
+        if (timeSinceActivity > STALE_TIMEOUT) {
+            console.log(`Cleaning up stale connection: ${clientId}`);
+            try {
+                client.ws.close(1000, 'Connection stale');
+            } catch (e) {
+                console.error('Error closing stale connection:', e);
+            }
+            clients.delete(clientId);
+            connectionQuality.delete(clientId);
+        }
+    });
+}
+
+setInterval(cleanupStaleConnections, 60 * 1000);
+
+
 const heartbeatInterval = setInterval(() => {
     wss.clients.forEach((ws) => {
         if (ws.isAlive === false) {
@@ -961,47 +1109,20 @@ app.use((req, res, next) => {
     const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'wss' : 'ws';
     const host = req.get('host');
     
-    // FINAL CORRECTED CONTENT SECURITY POLICY
     res.setHeader(
         'Content-Security-Policy',
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://www.googletagmanager.com https://app.usercentrics.eu blob:; " +
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://www.googletagmanager.com https://app.usercentrics.eu https://cdn.jsdelivr.net https://cdnjs.cloudflare.com blob:; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; " +
         "img-src 'self' data: https: blob:; " +
         "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; " +
-        `connect-src 'self' ${protocol}://${host} https://api.usercentrics.eu https://privacy-proxy.usercentrics.eu https://www.google-analytics.com https://consent-api.service.consent.usercentrics.eu; ` + 
+        `connect-src 'self' ${protocol}://${host} https://generativelanguage.googleapis.com https://api.usercentrics.eu https://privacy-proxy.usercentrics.eu https://www.google-analytics.com https://consent-api.service.consent.usercentrics.eu; ` + 
         "frame-src 'self' https://www.google.com https://app.usercentrics.eu;"
     );
     next();
 });
 
-app.use(session({
-    secret: SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    store: new MemoryStore({
-        checkPeriod: 86400000
-    }),
-    cookie: { 
-        secure: isProduction,
-        httpOnly: true,
-        sameSite: isProduction ? 'none' : 'lax',
-        maxAge: 24 * 60 * 60 * 1000
-    }
-}));
-
 // ==================== RATE LIMITING ====================
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: 'Too many requests from this IP, please try again later.',
-  skip: (req) => {
-    return req.path.startsWith('/api/admin') && req.session.authenticated;
-  }
-});
-
-app.use('/api/', apiLimiter);
-
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
@@ -1012,27 +1133,98 @@ const loginLimiter = rateLimit({
 });
 
 app.use('/api/admin/login', loginLimiter);
+
+// NEW Advanced Rate Limiting
+const requestTracker = new Map();
+function advancedRateLimit(maxRequests = 100, windowMs = 15 * 60 * 1000) {
+    return (req, res, next) => {
+        // Skip for authenticated admin users
+        if (req.session && req.session.authenticated) {
+            return next();
+        }
+
+        const ip = req.ip;
+        const now = Date.now();
+
+        if (!requestTracker.has(ip)) {
+            requestTracker.set(ip, []);
+        }
+
+        const requests = requestTracker.get(ip);
+        const recentRequests = requests.filter(time => now - time < windowMs);
+
+        if (recentRequests.length >= maxRequests) {
+            const oldestRequest = Math.min(...recentRequests);
+            const retryAfter = Math.ceil((windowMs - (now - oldestRequest)) / 1000);
+            
+            res.status(429).json({
+                error: 'Too many requests from this IP',
+                retryAfter: retryAfter,
+                limit: maxRequests,
+                window: windowMs / 1000
+            });
+            return;
+        }
+
+        recentRequests.push(now);
+        requestTracker.set(ip, recentRequests);
+
+        // Cleanup old entries periodically
+        if (Math.random() < 0.01) { // 1% chance
+            requestTracker.forEach((times, key) => {
+                const recent = times.filter(time => now - time < windowMs);
+                if (recent.length === 0) {
+                    requestTracker.delete(key);
+                } else {
+                    requestTracker.set(key, recent);
+                }
+            });
+        }
+        
+        next();
+    };
+}
+
+// APPLY to API routes
+app.use('/api/', advancedRateLimit(100, 15 * 60 * 1000));
 // ==================== END RATE LIMITING ====================
 
+const validateEmail = (email) => {
+    return validator.isEmail(email) && email.length <= 254;
+};
+
+const validatePhone = (phone) => {
+    const phoneRegex = /^[+]?[\d\s\-()]{8,20}$/;
+    return phoneRegex.test(phone);
+};
+
 const validateFormSubmission = (req, res, next) => {
-    const { name, phone, message } = req.body;
-   
+    const { name, email, phone, message, preferred_date } = req.body;
+    
     if (!name || !phone || !message) {
       return res.status(400).json({ success: false, error: 'Name, phone, and message are required' });
     }
-   
+    
     if (name.trim().length < 2 || name.trim().length > 100) {
       return res.status(400).json({ success: false, error: 'Name must be between 2 and 100 characters' });
     }
-   
+    
     if (message.trim().length < 10 || message.trim().length > 1000) {
       return res.status(400).json({ success: false, error: 'Message must be between 10 and 1000 characters' });
     }
-   
-    if (phone && !validator.isMobilePhone(phone, 'any')) {
-      return res.status(400).json({ success: false, error: 'Invalid phone number format' });
+    
+    if (phone && !validatePhone(phone)) {
+        return res.status(400).json({ success: false, error: 'Invalid phone number format' });
     }
-   
+
+    if (email && !validateEmail(email)) {
+        return res.status(400).json({ success: false, error: 'Invalid email format' });
+    }
+
+    if (preferred_date && !validator.isISO8601(preferred_date)) {
+        return res.status(400).json({ success: false, error: 'Invalid date format' });
+    }
+    
     next();
 };
 
@@ -1045,12 +1237,13 @@ async function initializeDB() {
         await db.read();
         
         if (!db.data || typeof db.data !== 'object') {
-            db.data = { submissions: [], admin_users: [], offline_messages: {}, chats: {} };
+            db.data = { submissions: [], admin_users: [], offline_messages: {}, chats: {}, analytics_events: [] };
         }
         
         db.data.submissions = db.data.submissions || [];
         db.data.admin_users = db.data.admin_users || [];
         db.data.chats = db.data.chats || {};
+        db.data.analytics_events = db.data.analytics_events || []; // Ensure analytics array exists
         
         const adminUsername = process.env.ADMIN_USERNAME || 'admin';
         const adminPassword = process.env.ADMIN_PASSWORD;
@@ -1080,7 +1273,7 @@ async function initializeDB() {
     } catch (error) {
         console.error('Database initialization error:', error);
         try {
-            db.data = { submissions: [], admin_users: [], offline_messages: {}, chats: {} };
+            db.data = { submissions: [], admin_users: [], offline_messages: {}, chats: {}, analytics_events: [] };
             
             const hash = await bcrypt.hash(process.env.ADMIN_PASSWORD, 12);
             db.data.admin_users.push({
@@ -1109,16 +1302,178 @@ function requireAuth(req, res, next) {
     }
 }
 
+// =================================================================
+// START ANALYTICS ROUTES
+// =================================================================
+app.post('/api/analytics/track', async (req, res) => {
+    try {
+        const { eventType, path, referrer, sessionId } = req.body;
+        
+        if (!eventType) {
+            return res.status(400).json({ error: 'eventType is required.' });
+        }
+
+        const ip = req.ip || req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+        const geo = geoip.lookup(ip);
+
+        const event = {
+            id: crypto.randomUUID(),
+            timestamp: Date.now(),
+            eventType: validator.escape(eventType.substring(0, 50)),
+            path: path ? validator.escape(path.substring(0, 200)) : undefined,
+            referrer: referrer ? validator.escape(referrer.substring(0, 500)) : undefined,
+            sessionId: sessionId ? validator.escape(sessionId.substring(0, 100)) : undefined,
+            ip,
+            country: geo ? geo.country : 'Unknown',
+            userAgent: req.headers['user-agent']
+        };
+
+        db.data.analytics_events.push(event);
+        await db.write();
+        clearCache('analytics');
+
+        res.status(202).json({ success: true });
+    } catch (err) {
+        console.error('Analytics tracking error:', err);
+        res.status(500).json({ success: false });
+    }
+});
+
+app.get('/api/analytics', requireAuth, async (req, res) => {
+    try {
+        const analyticsData = await cachedRead('analytics', async () => {
+            await db.read();
+            const events = db.data.analytics_events || [];
+            const now = Date.now();
+            const last24h = now - (24 * 60 * 60 * 1000);
+            const last7d = now - (7 * 24 * 60 * 60 * 1000);
+            const last5m = now - (5 * 60 * 1000);
+
+            // Filter events for relevant time periods
+            const events24h = events.filter(e => e.timestamp >= last24h);
+            const events7d = events.filter(e => e.timestamp >= last7d);
+
+            // 1. Real-Time Users (unique IPs in last 5 mins)
+            const realtimeUsers = new Set(events.filter(e => e.timestamp >= last5m).map(e => e.ip)).size;
+
+            // 2. Total Visits (pageviews in last 24h)
+            const totalVisits24h = events24h.filter(e => e.eventType === 'pageview').length;
+
+            // 3. Visitors by Country (top 6)
+            const countryCounts = events24h.reduce((acc, event) => {
+                const country = event.country || 'Unknown';
+                acc[country] = (acc[country] || 0) + 1;
+                return acc;
+            }, {});
+            const sortedCountries = Object.entries(countryCounts).sort(([, a], [, b]) => b - a).slice(0, 6);
+            const countryData = {
+                labels: sortedCountries.map(c => c[0]),
+                data: sortedCountries.map(c => c[1])
+            };
+
+            // 4. Traffic Sources
+            const getSource = (referrer) => {
+                if (!referrer) return 'Direct';
+                try {
+                    const url = new URL(referrer);
+                    if (url.hostname.includes('google')) return 'Google';
+                    if (url.hostname.includes('facebook')) return 'Facebook';
+                    if (url.hostname.includes('instagram')) return 'Instagram';
+                    if (url.hostname.includes(req.hostname)) return 'Internal';
+                    return 'Referral';
+                } catch { return 'Direct'; }
+            };
+            const trafficCounts = events24h.reduce((acc, event) => {
+                const source = getSource(event.referrer);
+                acc[source] = (acc[source] || 0) + 1;
+                return acc;
+            }, {});
+            const sortedTraffic = Object.entries(trafficCounts).sort(([, a], [, b]) => b - a).slice(0, 5);
+            const trafficSourceData = {
+                labels: sortedTraffic.map(t => t[0]),
+                data: sortedTraffic.map(t => t[1])
+            };
+
+            // 5. Page Views (Last 7 Days)
+            const pageViewsByDay = {};
+            for (let i = 0; i < 7; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const dayKey = d.toISOString().split('T')[0];
+                pageViewsByDay[dayKey] = 0;
+            }
+            events7d.forEach(event => {
+                if (event.eventType === 'pageview') {
+                    const dayKey = new Date(event.timestamp).toISOString().split('T')[0];
+                    if (pageViewsByDay.hasOwnProperty(dayKey)) {
+                        pageViewsByDay[dayKey]++;
+                    }
+                }
+            });
+            const sortedPageViews = Object.entries(pageViewsByDay).sort((a,b) => new Date(a[0]) - new Date(b[0]));
+            const pageViews7d = {
+                labels: sortedPageViews.map(p => new Date(p[0]).toLocaleDateString('en-US', { weekday: 'short' })),
+                data: sortedPageViews.map(p => p[1])
+            };
+
+            // 6 & 7. Avg. Duration & Bounce Rate
+            const sessions24h = {};
+            events24h.forEach(e => {
+                if (!sessions24h[e.ip]) sessions24h[e.ip] = [];
+                sessions24h[e.ip].push(e.timestamp);
+            });
+            
+            let totalDuration = 0;
+            let bouncedSessions = 0;
+            const activeSessions = Object.values(sessions24h);
+            if (activeSessions.length > 0) {
+                activeSessions.forEach(timestamps => {
+                    if (timestamps.length > 1) {
+                        const duration = Math.max(...timestamps) - Math.min(...timestamps);
+                        totalDuration += duration;
+                    } else {
+                        bouncedSessions++;
+                    }
+                });
+            }
+            const avgDurationMs = activeSessions.length > 0 ? totalDuration / (activeSessions.length - bouncedSessions || 1) : 0;
+            const avgDurationSec = Math.round(avgDurationMs / 1000);
+            const avgDuration = `${Math.floor(avgDurationSec / 60)}m ${avgDurationSec % 60}s`;
+            const bounceRate = activeSessions.length > 0 ? `${Math.round((bouncedSessions / activeSessions.length) * 100)}%` : '0%';
+
+            return {
+                realtimeUsers,
+                totalVisits24h,
+                avgDuration,
+                bounceRate,
+                countryData,
+                trafficSourceData,
+                pageViews7d,
+            };
+        });
+
+        res.json(analyticsData);
+    } catch (err) {
+        console.error('Error fetching analytics data:', err);
+        res.status(500).json({ error: 'Failed to retrieve analytics data.' });
+    }
+});
+// =================================================================
+// END ANALYTICS ROUTES
+// =================================================================
+
 app.post('/api/form/submit', validateFormSubmission, async (req, res) => {
     try {
-        const { name, email, phone, service, message } = req.body;
+        const { name, email, phone, service, message, preferred_date, preferred_time } = req.body;
         
         const sanitizedData = {
             name: validator.escape(name.trim()).substring(0, 100),
             email: email ? validator.normalizeEmail(email) : '',
             phone: phone ? validator.escape(phone.trim()).substring(0, 20) : '',
             service: service ? validator.escape(service.trim()).substring(0, 50) : '',
-            message: validator.escape(message.trim()).substring(0, 1000)
+            message: validator.escape(message.trim()).substring(0, 1000),
+            preferred_date: preferred_date || '',
+            preferred_time: preferred_time ? validator.escape(preferred_time.trim()).substring(0, 50) : ''
         };
         
         await db.read();
@@ -1132,6 +1487,7 @@ app.post('/api/form/submit', validateFormSubmission, async (req, res) => {
         
         db.data.submissions.push(submission);
         await db.write();
+        clearCache('submissions'); // ADDED: Invalidate cache
         
         async function sendEmailNotification(formData) {
             console.log('--- Sending Email Notification (Simulation) ---');
@@ -1164,13 +1520,99 @@ app.post('/api/form/submit', validateFormSubmission, async (req, res) => {
 
 app.get('/api/submissions', requireAuth, async (req, res) => {
     try {
-        await db.read();
-        res.json([...db.data.submissions].reverse());
+        const page = parseInt(req.query.page) || 1;
+        const limit = Math.min(parseInt(req.query.limit) || 10, 100); // Max 100
+        const searchTerm = req.query.search || '';
+        const serviceFilter = req.query.service || '';
+        const dateFilter = req.query.date || '';
+        const sortField = req.query.sortField || 'id';
+        const sortDirection = req.query.sortDirection || 'desc';
+
+        // Use cached data
+        const submissions = await cachedRead('submissions', async () => {
+            await db.read();
+            // FIX: Ensure submissions is always an array to prevent crashes
+            return (db.data && Array.isArray(db.data.submissions)) ? db.data.submissions : [];
+        });
+
+        // Apply filters
+        let filtered = [...submissions];
+
+        if (searchTerm) {
+            const search = searchTerm.toLowerCase();
+            filtered = filtered.filter(s =>
+                 (s.name && s.name.toLowerCase().includes(search)) ||
+                 (s.email && s.email.toLowerCase().includes(search)) ||
+                 (s.phone && s.phone.toLowerCase().includes(search)) ||
+                 (s.service && s.service.toLowerCase().includes(search)) ||
+                 (s.message && s.message.toLowerCase().includes(search))
+            );
+        }
+
+        if (serviceFilter) {
+            filtered = filtered.filter(s => s.service === serviceFilter);
+        }
+
+        if (dateFilter) {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+            switch(dateFilter) {
+                case 'today':
+                    filtered = filtered.filter(s => new Date(s.submitted_at) >= today);
+                    break;
+                case 'week':
+                    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    filtered = filtered.filter(s => new Date(s.submitted_at) >= weekAgo);
+                    break;
+                case 'month':
+                    const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                    filtered = filtered.filter(s => new Date(s.submitted_at) >= monthAgo);
+                    break;
+            }
+        }
+
+        // Apply sorting
+        filtered.sort((a, b) => {
+            let valueA, valueB;
+            if (sortField === 'date') {
+                valueA = new Date(a.submitted_at).getTime();
+                valueB = new Date(b.submitted_at).getTime();
+            } else {
+                valueA = a[sortField] || '';
+                valueB = b[sortField] || '';
+            }
+
+            if (typeof valueA === 'string') {
+                return sortDirection === 'asc'
+                         ? valueA.localeCompare(valueB)
+                         : valueB.localeCompare(valueA);
+            } else {
+                return sortDirection === 'asc' ? valueA - valueB : valueB - valueA;
+            }
+        });
+
+        const total = filtered.length;
+        const offset = (page - 1) * limit;
+        const paginated = filtered.slice(offset, offset + limit);
+
+        res.json({
+            data: paginated,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit),
+                hasNext: offset + limit < total,
+                hasPrev: page > 1
+            }
+        });
     } catch (err) {
-        console.error('Database error:', err);
-        res.status(500).json({ error: 'Database error' });
+        console.error('Error fetching submissions:', err);
+        res.status(500).json({ error: 'Server error while loading submissions.' });
     }
 });
+
 
 app.get('/api/submissions/:id', requireAuth, async (req, res) => {
     const id = parseInt(req.params.id);
@@ -1181,15 +1623,17 @@ app.get('/api/submissions/:id', requireAuth, async (req, res) => {
     
     try {
         await db.read();
-        const submission = db.data.submissions.find(s => s.id === id);
+        // FIX: Added robust check for submissions array
+        const submissions = (db.data && Array.isArray(db.data.submissions)) ? db.data.submissions : [];
+        const submission = submissions.find(s => s.id === id);
         
         if (!submission) {
             return res.status(404).json({ error: 'Submission not found' });
         }
         res.json(submission);
     } catch (err) {
-        console.error('Database error:', err);
-        res.status(500).json({ error: 'Database error' });
+        console.error('Error fetching submission details:', err);
+        res.status(500).json({ error: 'Database error while fetching details' });
     }
 });
 
@@ -1202,25 +1646,91 @@ app.delete('/api/submissions/:id', requireAuth, async (req, res) => {
     
     try {
         await db.read();
-        const initialLength = db.data.submissions.length;
-        db.data.submissions = db.data.submissions.filter(s => s.id !== id);
+        // FIX: Added robust check for submissions array
+        const submissions = (db.data && Array.isArray(db.data.submissions)) ? db.data.submissions : [];
+        const initialLength = submissions.length;
+        db.data.submissions = submissions.filter(s => s.id !== id);
         
         if (db.data.submissions.length === initialLength) {
             return res.status(404).json({ error: 'Submission not found' });
         }
         
         await db.write();
+        clearCache('submissions'); // ADDED: Invalidate cache
         res.json({ success: true, message: 'Submission deleted successfully' });
     } catch (err) {
-        console.error('Database error:', err);
-        res.status(500).json({ error: 'Database error' });
+        console.error('Error deleting submission:', err);
+        res.status(500).json({ error: 'Database error during deletion' });
+    }
+});
+
+
+app.post('/api/submissions/bulk-delete', requireAuth, async (req, res) => {
+    const { ids } = req.body;
+    
+    if (!Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ error: 'No submission IDs provided' });
+    }
+    
+    try {
+        await db.read();
+        const submissions = (db.data && Array.isArray(db.data.submissions)) ? db.data.submissions : [];
+        const initialLength = submissions.length;
+        const idsToDelete = ids.map(id => parseInt(id, 10));
+        db.data.submissions = submissions.filter(s => !idsToDelete.includes(s.id));
+        const deletedCount = initialLength - db.data.submissions.length;
+        
+        await db.write();
+        clearCache('submissions');
+        res.json({ 
+            success: true, 
+            message: `${deletedCount} submissions deleted successfully`,
+            deleted: deletedCount
+        });
+    } catch (err) {
+        console.error('Bulk delete error:', err);
+        res.status(500).json({ error: 'Database error during bulk delete' });
+    }
+});
+
+app.get('/api/submissions/export', requireAuth, async (req, res) => {
+    try {
+        await db.read();
+        const submissions = db.data.submissions || [];
+        
+        const headers = ['ID', 'Name', 'Email', 'Phone', 'Service', 'Preferred Date', 'Preferred Time', 'Message', 'Date'];
+        const csvRows = [headers.join(',')];
+        
+        submissions.forEach(sub => {
+            const row = [
+                sub.id,
+                `"${(sub.name || '').replace(/"/g, '""')}"`,
+                sub.email || '',
+                sub.phone || '',
+                `"${(sub.service || '').replace(/"/g, '""')}"`,
+                sub.preferred_date || '',
+                `"${(sub.preferred_time || '').replace(/"/g, '""')}"`,
+                `"${(sub.message || '').replace(/"/g, '""')}"`,
+                new Date(sub.submitted_at).toISOString()
+            ];
+            csvRows.push(row.join(','));
+        });
+        
+        const csv = csvRows.join('\n');
+        
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', `attachment; filename=submissions-${Date.now()}.csv`);
+        res.send(csv);
+    } catch (err) {
+        console.error('Export error:', err);
+        res.status(500).json({ error: 'Export failed' });
     }
 });
 
 app.get('/api/statistics', requireAuth, async (req, res) => {
     try {
         await db.read();
-        const submissions = db.data.submissions;
+        const submissions = db.data.submissions || [];
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -1448,16 +1958,26 @@ app.get('/api/chats/:clientId', requireAuth, async (req, res) => {
   }
 });
 
-app.get('/api/health', (req, res) => {
+app.get('/api/health/detailed', (req, res) => {
+    const memoryUsage = process.memoryUsage();
+    const uptime = process.uptime();
+    
     res.json({
         status: 'OK',
         timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        environment: NODE_ENV,
-        database: db ? 'Connected' : 'Disconnected',
-        websocket: {
-            clients: clients.size,
-            messages: chatHistory.length
+        uptime: Math.floor(uptime),
+        memory: {
+            used: Math.round(memoryUsage.heapUsed / 1024 / 1024) + 'MB',
+            total: Math.round(memoryUsage.heapTotal / 1024 / 1024) + 'MB'
+        },
+        connections: {
+            websocket: clients.size,
+            admin: Array.from(clients.values()).filter(c => c.isAdmin).length,
+            users: Array.from(clients.values()).filter(c => !c.isAdmin).length
+        },
+        database: {
+            submissions: db.data.submissions?.length || 0,
+            chats: Object.keys(db.data.chats || {}).length
         }
     });
 });
@@ -1526,6 +2046,40 @@ app.get('/api/admin/status', (req, res) => {
     res.json({ authenticated: !!req.session.authenticated });
 });
 
+app.get('/api/admin/backup', requireAuth, async (req, res) => {
+    try {
+        const backupDir = path.join(__dirname, 'backups');
+        if (!fs.existsSync(backupDir)) {
+            fs.mkdirSync(backupDir, { recursive: true });
+        }
+        
+        const backupFile = path.join(backupDir, `backup-${Date.now()}.json`);
+        await db.read();
+        
+        fs.writeFileSync(backupFile, JSON.stringify(db.data, null, 2));
+        
+        const files = fs.readdirSync(backupDir)
+            .filter(f => f.startsWith('backup-'))
+            .sort()
+            .reverse();
+            
+        if (files.length > 10) {
+            files.slice(10).forEach(f => {
+                fs.unlinkSync(path.join(backupDir, f));
+            });
+        }
+        
+        res.json({ 
+            success: true, 
+            message: `Backup created: ${path.basename(backupFile)}`,
+            file: path.basename(backupFile)
+        });
+    } catch (err) {
+        console.error('Backup error:', err);
+        res.status(500).json({ error: 'Backup failed' });
+    }
+});
+
 app.use(express.static(path.join(__dirname), {
     setHeaders: (res, filePath) => {
         if (filePath.endsWith('.css')) res.setHeader('Content-Type', 'text/css');
@@ -1541,12 +2095,42 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// FIXED: Generate and inject CSRF token for admin pages
 app.get(['/admin', '/admin/login'], (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin.html'));
+    const csrfToken = req.csrfToken();
+    
+    try {
+        const adminHtmlPath = path.join(__dirname, 'admin.html');
+        if (!fs.existsSync(adminHtmlPath)) {
+             console.error("admin.html not found at:", adminHtmlPath);
+             return res.status(500).send("<h1>Error: Admin interface file not found.</h1><p>Please ensure 'admin.html' exists in the root directory.</p>");
+        }
+        const adminHtml = fs.readFileSync(adminHtmlPath, 'utf8');
+        
+        // Inject CSRF token into the meta tag AND a global JavaScript variable for easy access
+        const injectedHtml = adminHtml
+            .replace(
+                '<meta name="csrf-token" content="">', // Specifically target the empty placeholder
+                `<meta name="csrf-token" content="${csrfToken}">\n    <script>window.CSRF_TOKEN = "${csrfToken}";</script>`
+            );
+            
+        res.send(injectedHtml);
+    } catch (error) {
+        console.error("Could not read or process admin.html file:", error);
+        res.status(500).send("<h1>Error loading admin page. Check server logs for details.</h1>");
+    }
 });
 
 app.get('/chat', (req, res) => {
     res.sendFile(path.join(__dirname, 'chat.html'));
+});
+
+app.get('/impressum', (req, res) => {
+    res.sendFile(path.join(__dirname, 'impressum.html'));
+});
+
+app.get('/datenschutz', (req, res) => {
+    res.sendFile(path.join(__dirname, 'datenschutz.html'));
 });
 
 app.all('/api/*', (req, res) => {
@@ -1614,4 +2198,3 @@ initializeDB().then(() => {
     console.error('Failed to initialize and start server:', err);
     process.exit(1);
 });
-

@@ -585,5 +585,74 @@
     "client_c461b0c7-bad8-4e3e-af05-65dceb74b03f": [],
     "client_bea3250d-07ad-4420-8ac5-aa0067c276a6": [],
     "client_cbfa855a-a2b3-4ea4-82c7-2dfae3b59691": []
-  }
+  },
+  "customer_interactions": [],
+  "settings": {
+    "notifications": {
+      "email": true,
+      "desktop": false,
+      "sound": true
+    },
+    "appearance": {
+      "darkMode": false,
+      "compactView": false
+    }
+  },
+  "analytics_events": [
+    {
+      "id": "5016a2c2-ba2b-4394-a24c-e047db8db1d9",
+      "timestamp": 1759168456221,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759168456171_dc5hpf6h0",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "3b48fade-cb70-43b1-8205-0ac604d007fb",
+      "timestamp": 1759168483589,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759168456171_dc5hpf6h0",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "0b965026-3f48-4b26-904a-a95e02c5c412",
+      "timestamp": 1759168525030,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759168524989_hwphc9o9l",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "37013a97-e5f1-439f-8c41-aa8731aa241d",
+      "timestamp": 1759170144896,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759170144817_sw3q0mswx",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "eeb4e6fd-68c2-4ff3-9965-c80b16058821",
+      "timestamp": 1759170148493,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759170148454_4n9yt2khw",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    }
+  ]
 }
