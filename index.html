@@ -976,7 +976,9 @@
         const callGeminiAPI = async (chatHistory, systemInstruction) => {
             const apiUrl = '/api/gemini';
             const payload = { contents: chatHistory };
-            if (systemInstruction) { payload.systemInstruction = systemInstruction; }
+            if (systemInstruction) {
+                payload.systemInstruction = { parts: [{ text: systemInstruction }] };
+            }
             try {
                 const response = await fetch(apiUrl, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
