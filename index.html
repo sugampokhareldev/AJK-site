@@ -5,19 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AJK Cleaning Company | Professional Cleaning Services in Bischofsheim</title>
     
-    <!-- Usercentrics CMP -->
     <script id="usercentrics-cmp" src="https://app.usercentrics.eu/browser-ui/latest/loader.js" data-settings-id="8b2vYJAM6JTPCf" async></script>
 
-    <!-- 1. Critical Security & Performance Fixes -->
-    <!-- Add DNS preconnect for critical domains -->
     <link rel="dns-prefetch" href="//maps.googleapis.com">
     <link rel="dns-prefetch" href="//generativelanguage.googleapis.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- PERFORMANCE: Preload critical resources with high fetch priority -->
     <link rel="preload" as="image" href="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" fetchpriority="high">
 
-    <!-- 2. Enhanced Local SEO (German Market Focus) -->
     <meta name="description" content="AJK Cleaning Company: Professional residential & commercial cleaning services in Bischofsheim. Eco-friendly products, fully insured, satisfaction guaranteed. Free quotes!">
     <meta name="keywords" content="cleaning service, Bischofsheim, residential cleaning, commercial cleaning, eco-friendly cleaning, move-in cleaning, deep cleaning, office cleaning mainz, house cleaning wiesbaden">
     <meta name="author" content="AJK Cleaning Company">
@@ -25,21 +20,15 @@
     <meta name="geo.region" content="DE-HE">
     <meta name="geo.placename" content="Bischofsheim">
     <meta name="geo.position" content="49.9939;8.3669">
-    <!-- Add German language alternative -->
     <link rel="alternate" hreflang="de" href="https://www.ajkcleaning.com/de">
     <link rel="alternate" hreflang="en" href="https://www.ajkcleaning.com">
     <link rel="canonical" href="https://www.ajkcleaners.de">
 
-    <!-- 10. Final SEO Checklist -->
-    <!-- Add sitemap reference -->
     <link rel="sitemap" type="application/xml" href="/sitemap.xml">
-    <!-- Add social media profiles -->
     <link rel="me" href="https://www.facebook.com/ajkcleaning">
     <link rel="me" href="https://www.instagram.com/ajkcleaning">
-    <!-- Add search console verification -->
     <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE">
 
-    <!-- Social Media / Open Graph -->
     <meta property="og:title" content="AJK Cleaning Company | Professional Cleaning Services in Bischofsheim">
     <meta property="og:description" content="Top-rated, eco-friendly cleaning for homes and businesses in Bischofsheim. Get your free quote today!">
     <meta property="og:image" content="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
@@ -51,30 +40,31 @@
     <meta name="twitter:description" content="Top-rated, eco-friendly cleaning for homes and businesses in Bischofsheim. Get your free quote today!">
     <meta name="twitter:image" content="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
 
-    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="images/logo.jpg">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" xintegrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Custom CSS -->
     <style>
         :root{--primary:#1e40af;--primary-dark:#1e3a8a;--secondary:#059669;--secondary-dark:#047857}
         *{scroll-behavior:smooth;box-sizing:border-box}
         body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.6;color:#374151}
-        .navbar-scrolled{box-shadow:0 4px 18px rgba(0,0,0,.1);backdrop-filter:blur(12px);background:hsla(0,0%,100%,.97)}
+        #navbar { transition: background-color 0.3s, box-shadow 0.3s, backdrop-filter 0.3s; }
+        .navbar-scrolled{box-shadow:0 4px 18px rgba(0,0,0,.1);backdrop-filter:blur(12px);background-color:hsla(0,0%,100%,.97)}
         .nav-link{position:relative;padding:.5rem 0;transition:all .3s ease;font-weight:500}
         .nav-link::after{content:'';position:absolute;width:0;height:2px;bottom:0;left:0;background-color:var(--primary);transition:width .3s ease}
         .nav-link:hover::after,.nav-link.active::after{width:100%}
+        #navbar:not(.navbar-scrolled) .nav-link { color: #D1D5DB; }
+        #navbar:not(.navbar-scrolled) .nav-link:hover, #navbar:not(.navbar-scrolled) .nav-link.active { color: #FFF; }
+        #navbar:not(.navbar-scrolled) .nav-link::after { background-color: #FFF; }
+        #navbar:not(.navbar-scrolled) #company-name { color: #FFF; }
+        #navbar:not(.navbar-scrolled) .menu-line { background-color: #FFF; }
         .mobile-menu{transition:all .4s cubic-bezier(.68,-.55,.27,1.55);transform-origin:top;opacity:0;transform:scaleY(0) translateY(-20px);display:none}
         .mobile-menu.open{display:flex;opacity:1;transform:scaleY(1) translateY(0)}
         .cta-button{position:relative;overflow:hidden;transition:all .3s ease;z-index:1}
@@ -88,8 +78,12 @@
         .service-card,.trust-point,.faq-item{contain:layout style}
         .service-card{transition:all .4s cubic-bezier(.175,.885,.32,1.275);overflow:hidden}
         .service-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 20px 40px rgba(0,0,0,.1)}
-        .form-input:invalid{border-color:#f87171}
-        .form-input:valid{border-color:#34d399}
+        .form-input { transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+        .form-input.invalid { border-color: #f87171 !important; }
+        .form-input.valid { border-color: #34d399 !important; }
+        #submit-btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
+        .char-counter { font-size: 0.8rem; text-align: right; color: #6b7280; margin-top: 4px; height: 1rem; transition: color 0.2s; }
+        .char-counter.invalid { color: #ef4444; }
         @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
         .animate-fade-in-up{animation:fadeInUp .8s ease-out forwards; opacity: 0;}
         .trust-point{background:#f8fafc;border-left:4px solid var(--primary);transition:all .3s ease}
@@ -168,155 +162,139 @@
         .admin-message .message-content a { text-decoration: underline; }
         .admin-message .message-content a:hover { color: var(--primary-dark); }
         
-        /* IMPRESSIVE Language Switcher Styles */
-        .lang-switcher {
-            position: relative;
-            display: flex;
-            align-items: center;
-            background-color: #f1f5f9; /* light grey background */
-            border-radius: 9999px; /* pill shape */
-            padding: 4px;
-        }
-        .lang-option {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 6px;
-            border-radius: 9999px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            background-color: transparent;
-        }
-        .lang-option svg {
-            width: 24px;
-            height: 18px;
-            border-radius: 3px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .lang-option:hover {
-            background-color: #e2e8f0; /* slightly darker grey on hover */
-        }
-        .lang-option.active {
-            background-color: #ffffff;
-            border-color: var(--primary);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transform: scale(1.05);
-        }
+        .lang-switcher{position:relative;display:flex;align-items:center;background-color:#f1f5f9;border-radius:9999px;padding:4px}
+        .lang-option{display:flex;align-items:center;justify-content:center;padding:6px;border-radius:9999px;cursor:pointer;transition:all .3s ease;border:2px solid transparent;background-color:transparent}
+        .lang-option svg{width:24px;height:18px;border-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+        .lang-option:hover{background-color:#e2e8f0}
+        .lang-option.active{background-color:#ffffff;border-color:var(--primary);box-shadow:0 2px 5px rgba(0,0,0,0.1);transform:scale(1.05)}
         
-        /* 9. Mobile-Specific Optimizations */
         @media (max-width: 768px) {
-            .sticky-cta a {
-                min-height: 44px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .service-card {
-                margin: 0.5rem;
-            }
-            /* Prevent zoom on input focus for iOS */
-            input, select, textarea {
-                font-size: 16px !important; /* Prevents zoom on focus */
-            }
+            .sticky-cta a { min-height: 44px; display: flex; align-items: center; justify-content: center; }
+            .service-card { margin: 0.5rem; }
+            input, select, textarea { font-size: 16px !important; }
         }
-        /* Testimonial card style */
-        .testimonial-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .testimonial-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        .stars .fa-star {
-            color: #f59e0b; /* amber-500 */
-        }
+        .testimonial-card{transition:transform 0.3s ease, box-shadow 0.3s ease}
+        .testimonial-card:hover{transform:translateY(-5px);box-shadow:0 10px 20px rgba(0,0,0,0.1)}
+        .stars .fa-star{color:#f59e0b}
 
-        /* Before/After Gallery */
-        .gallery-container {
-            display: grid;
-            gap: 1rem;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        }
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-        .gallery-item:hover img {
-            transform: scale(1.05);
-        }
-        .gallery-label {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0,0,0,0.6);
-            color: white;
-            padding: 0.75rem;
-            text-align: center;
-            font-weight: 600;
-            transition: opacity 0.3s ease;
-        }
-        
-        /* Calculator Slider styles */
-        input[type=range] {
-            -webkit-appearance: none; /* FIX: Added vendor prefix */
-            appearance: none; /* Added standard property for compatibility */
-            width: 100%;
-            background: transparent;
-        }
-
-        input[type=range]:focus {
-            outline: none;
-        }
-
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 8px;
-            cursor: pointer;
-            background: #d1d5db;
-            border-radius: 5px;
-        }
-
-        input[type=range]::-webkit-slider-thumb {
-            height: 20px;
-            width: 20px;
-            border-radius: 50%;
-            background: var(--primary);
-            cursor: pointer;
+        /* --- MODERN SLIDER STYLES --- */
+        .styled-slider {
             -webkit-appearance: none;
-            margin-top: -6px;
+            appearance: none;
+            width: 100%;
+            height: 6px; /* Slightly thinner track */
+            background: #e5e7eb; /* Light gray track */
+            border-radius: 9999px; /* Pill-shaped track */
+            outline: none;
+            transition: background 0.3s;
+            cursor: pointer;
         }
-
-        input[type=range]:focus::-webkit-slider-runnable-track {
-            background: #9ca3af;
+        .styled-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px; /* Larger thumb */
+            height: 24px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 4px solid white; /* White border for a "floating" effect */
+            box-shadow: 0 2px 6px rgba(30, 64, 175, 0.3); /* Softer shadow */
+            cursor: grab;
+            transition: transform 0.2s cubic-bezier(.175,.885,.32,1.275), box-shadow 0.2s ease;
         }
-
+        .styled-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 2px 6px rgba(30, 64, 175, 0.3);
+            cursor: grab;
+            transition: transform 0.2s cubic-bezier(.175,.885,.32,1.275), box-shadow 0.2s ease;
+        }
+        .styled-slider:active::-webkit-slider-thumb {
+            transform: scale(1.15); /* Pop effect on click */
+            cursor: grabbing;
+            box-shadow: 0 4px 10px rgba(30, 64, 175, 0.4);
+        }
+        .styled-slider:active::-moz-range-thumb {
+            transform: scale(1.15);
+            cursor: grabbing;
+            box-shadow: 0 4px 10px rgba(30, 64, 175, 0.4);
+        }
+        .styled-slider:focus-visible::-webkit-slider-thumb {
+            outline: 3px solid rgba(30, 64, 175, 0.5);
+            outline-offset: 2px;
+        }
+        .styled-slider:focus-visible::-moz-range-thumb {
+            outline: 3px solid rgba(30, 64, 175, 0.5);
+            outline-offset: 2px;
+        }
+        .comparison-table {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 1px;
+            background-color: #e5e7eb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .comparison-table > div {
+            background-color: white;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+        }
+        .comparison-table .table-header {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+        .comparison-table .feature-name {
+            font-weight: 500;
+        }
+        .comparison-table .check-mark {
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--secondary);
+        }
+        @media (max-width: 640px) {
+            .comparison-table {
+                grid-template-columns: 1fr;
+            }
+            .comparison-table .table-header { display: none; }
+            .comparison-table > div {
+                grid-column: 1 / -1 !important;
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                gap: 0.5rem;
+            }
+            .comparison-table > div:not(.feature-cell) {
+                border-top: 1px solid #e5e7eb;
+                padding-left: 1.5rem;
+            }
+             .comparison-table .feature-cell {
+                grid-column: 1 / -1;
+                background-color: #f9fafb;
+                font-weight: 600;
+                padding-top: 1rem;
+            }
+            .comparison-table .check-mark::before {
+                content: attr(data-label);
+                font-size: 0.875rem;
+                color: #6b7280;
+                font-weight: 400;
+                margin-right: auto;
+            }
+        }
     </style>
 
-    <!-- 6. Enhanced Analytics & Tracking -->
-    <!-- FIX: Google Consent Mode v2 Default Settings -->
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('consent', 'default', {
-            'analytics_storage': 'denied',
-            'ad_storage': 'denied',
-            'ad_user_data': 'denied',
-            'ad_personalization': 'denied',
-            'wait_for_update': 500
+            'analytics_storage': 'denied', 'ad_storage': 'denied', 'ad_user_data': 'denied',
+            'ad_personalization': 'denied', 'wait_for_update': 500
         });
     </script>
-    
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-062LYMWJKZ"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -325,7 +303,6 @@
       gtag('config', 'G-062LYMWJKZ');
     </script>
 
-    <!-- JSON-LD Schema for Local Business -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -338,22 +315,14 @@
         "telephone": "+4917661852286",
         "email": "info@ajkcleaning.com",
         "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "Bahnhofstraße 5",
-            "addressLocality": "Bischofsheim",
-            "postalCode": "65474",
-            "addressCountry": "DE"
+            "@type": "PostalAddress", "streetAddress": "Bahnhofstraße 5", "addressLocality": "Bischofsheim",
+            "postalCode": "65474", "addressCountry": "DE"
         },
-        "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": 49.9939,
-            "longitude": 8.3669
-        },
+        "geo": { "@type": "GeoCoordinates", "latitude": 49.9939, "longitude": 8.3669 },
         "openingHoursSpecification": [{
             "@type": "OpeningHoursSpecification",
             "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
-            "opens": "08:00",
-            "closes": "18:00"
+            "opens": "08:00", "closes": "18:00"
         }],
         "areaServed": {
             "@type": "GeoCircle",
@@ -362,8 +331,7 @@
         },
         "priceRange": "€€",
         "hasOfferCatalog": {
-            "@type": "OfferCatalog",
-            "name": "Cleaning Services",
+            "@type": "OfferCatalog", "name": "Cleaning Services",
             "itemListElement": [
                 {"@type": "Offer","itemOffered": {"@type": "Service","name": "Residential Cleaning"}},
                 {"@type": "Offer","itemOffered": {"@type": "Service","name": "Commercial Cleaning"}},
@@ -371,31 +339,25 @@
                 {"@type": "Offer","itemOffered": {"@type": "Service","name": "Move-In/Move-Out Cleaning"}}
             ]
         },
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.9",
-            "reviewCount": "58"
-        }
+        "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "58" }
     }
     </script>
 </head>
 <body class="font-sans text-gray-800 antialiased">
-    <!-- ACCESSIBILITY: Skip to main content link -->
     <a href="#main-content" class="skip-link" data-translate="skipLink">Skip to main content</a>
 
-    <!-- Enhanced Navbar -->
-    <header id="navbar" class="fixed w-full bg-white/90 z-50 transition-all duration-500 py-3">
+    <header id="navbar" class="fixed w-full z-50 transition-all duration-500">
         <div class="container mx-auto flex justify-between items-center px-6">
             <a href="#home" class="flex items-center space-x-3" aria-label="AJK Cleaning Company Home">
-                <img src="images/logo.jpg" alt="AJK Cleaning Company Logo" class="h-16 w-16 sm:h-20 sm:w-20 rounded-lg logo transition-transform duration-300 object-contain" width="80" height="80" loading="eager">
-                <span class="font-bold text-lg sm:text-xl text-primary transition-all duration-300" data-translate="companyName">AJK Cleaning Company</span>
+                <img src="images/logo.jpg" alt="AJK Cleaning Company Logo" class="h-24 w-24 sm:h-32 sm:w-32 rounded-lg logo transition-transform duration-300 object-contain" width="128" height="128" loading="eager">
+                <span id="company-name" class="font-bold text-lg sm:text-xl text-primary transition-colors duration-300" data-translate="companyName">AJK Cleaning Company</span>
             </a>
             
-            <nav class="hidden md:flex space-x-8 items-center" aria-label="Main navigation">
+            <nav class="hidden md:flex space-x-8 items-center py-4" aria-label="Main navigation">
                 <a href="#home" class="nav-link text-gray-700 hover:text-primary font-medium active" aria-current="page" data-translate="navHome">Home</a>
                 <a href="#services" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navServices">Services</a>
                 <a href="#about" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navAbout">About</a>
-                <a href="#testimonials" class="nav-link text-gray-700 hover:text-primary font-medium">Testimonials</a>
+                <a href="#testimonials" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navTestimonials">Testimonials</a>
                 <a href="#faq" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navFaq">FAQ</a>
                 <a href="#contact" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navContact">Contact</a>
                 <a href="#contact" class="cta-button bg-gradient-to-r from-primary to-primary-dark text-white px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg hover:from-primary-dark hover:to-primary-dark transition-all duration-300 font-semibold" data-translate="navQuote">GET A FREE QUOTE</a>
@@ -409,8 +371,7 @@
                 </div>
             </nav>
             
-            <!-- Mobile controls wrapper -->
-            <div class="flex items-center md:hidden">
+            <div class="flex items-center md:hidden py-4">
                 <div class="lang-switcher mr-2">
                     <button data-lang="en" class="lang-option active" title="Switch to English" aria-label="Switch to English">
                         <svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg"><clipPath id="a-mobile-header"><path d="m30 15h30v15zm0 0v15h-30zm0 0h-30v-15zm0 0v-15h30z"/></clipPath><path d="m0 0v30h60v-30z" fill="#012169"/><path d="m0 0 60 30m-60 0 60-30" stroke="#fff" stroke-width="6"/><path d="m0 0 60 30m-60 0 60-30" stroke="#c8102e" stroke-width="4" clip-path="url(#a-mobile-header)"/><path d="m30 0v30m-30-15h60" stroke="#fff" stroke-width="10"/><path d="m30 0v30m-30-15h60" stroke="#c8102e" stroke-width="6"/></svg>
@@ -431,7 +392,7 @@
             <a href="#home" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium active" aria-current="page" data-translate="navHome">Home</a>
             <a href="#services" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navServices">Services</a>
             <a href="#about" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navAbout">About</a>
-            <a href="#testimonials" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium">Testimonials</a>
+            <a href="#testimonials" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navTestimonials">Testimonials</a>
             <a href="#faq" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navFaq">FAQ</a>
             <a href="#contact" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navContact">Contact</a>
             <a href="#contact" class="cta-button block bg-gradient-to-r from-primary to-primary-dark text-white px-4 py-3 rounded-lg text-center hover:shadow-md transition-colors duration-300 mt-2 font-semibold" data-translate="navQuote">GET A FREE QUOTE</a>
@@ -439,18 +400,16 @@
     </header>
 
     <main>
-        <!-- Hero Section -->
         <section id="home" class="relative min-h-screen flex items-center justify-center text-center text-white pt-16 hero-image" role="banner" aria-labelledby="hero-heading">
             <div class="hero-overlay absolute inset-0"></div>
             <div id="main-content" class="relative z-10 max-w-4xl px-6 animate-fade-in-up">
                 <h1 id="hero-heading" class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 leading-tight" data-translate="heroTitle">Experience the AJK Standard of Clean in Bischofsheim</h1>
                 <p class="mb-8 text-lg md:text-xl" data-translate="heroSubtitle">Fully insured, eco-friendly products, and satisfaction guaranteed. Serving Bischofsheim, Mainz, Wiesbaden & surrounding areas.</p>
-                <!-- Urgency Element -->
                 <div class="mb-6 bg-white/20 backdrop-blur-sm p-2 rounded-lg inline-block text-white font-semibold">
                     Next available slot: <span class="font-bold text-yellow-300">This Friday!</span>
                 </div>
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="#contact" class="bg-primary text-white px-6 py-3 rounded-lg shadow hover:bg-primary-dark transition-colors duration-300 font-semibold" data-translate="heroBtnBook">Book a Cleaning</a>
+                    <a href="#contact" class="bg-primary text-white px-6 py-3 rounded-lg shadow hover:bg-primary-dark transition-colors duration-300 font-semibold" data-translate="heroBtnBook">Request a Cleaning</a>
                     <a href="#services" class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg shadow hover:bg-white hover:text-primary transition-colors duration-300 font-semibold" data-translate="heroBtnServices">Our Services</a>
                 </div>
             </div>
@@ -459,7 +418,6 @@
             </a>
         </section>
 
-        <!-- Seasonal Offer Banner -->
         <section id="offer" class="bg-secondary text-white py-4 text-center">
             <div class="container mx-auto px-6">
                 <p class="font-semibold text-lg animate-fade-in-up">
@@ -468,16 +426,10 @@
             </div>
         </section>
 
-
-        <!-- Trust Badges Section -->
         <section id="trust" class="py-12 bg-white">
             <div class="container mx-auto px-6 text-center">
-                 <h2 class="text-2xl font-bold text-primary mb-8 animate-fade-in-up">Trusted By Your Neighbors & Fully Certified</h2>
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-8 items-center">
-                    <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.1s;">
-                        <i class="fas fa-shield-alt text-4xl text-primary mb-2"></i>
-                        <span class="font-semibold" data-translate="trustInsured">Insured & Bonded</span>
-                    </div>
+                 <h2 class="text-2xl font-bold text-primary mb-8 animate-fade-in-up" data-translate="trustTitle">Trusted By Your Neighbors & Fully Certified</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 items-center max-w-4xl mx-auto">
                     <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.2s;">
                         <i class="fas fa-leaf text-4xl text-secondary mb-2"></i>
                         <span class="font-semibold" data-translate="trustEco">Eco-Friendly</span>
@@ -490,14 +442,10 @@
                         <i class="fas fa-thumbs-up text-4xl text-primary mb-2"></i>
                         <span class="font-semibold" data-translate="trustGuaranteed">Satisfaction Guaranteed</span>
                     </div>
-                    <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.5s;">
-                         <img src="https://placehold.co/120x50/ffffff/374151?text=Insurer+Logo" alt="Insurance Partner Logo" class="h-12 grayscale opacity-75 hover:grayscale-0 hover:opacity-100 transition-all">
-                    </div>
                 </div>
             </div>
         </section>
         
-        <!-- Services Section -->
         <section id="services" class="py-16 bg-gray-50" aria-labelledby="services-heading">
             <div class="container mx-auto px-6 text-center">
                 <h2 id="services-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="servicesTitle">Our Premium Cleaning Services</h2>
@@ -510,7 +458,7 @@
                             <p class="text-sm text-gray-600 mb-4" data-translate="service1Desc">Keep your home spotless with our detailed cleaning services.</p>
                         </div>
                         <div class="mt-4">
-                             <a href="#contact" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
+                             <a href="#comparison" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
                             <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors" data-service="Residential Cleaning" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
                         </div>
                     </article>
@@ -532,7 +480,7 @@
                             <p class="text-sm text-gray-600 mb-4" data-translate="service3Desc">Thorough cleaning for a refreshed and healthy space.</p>
                         </div>
                         <div class="mt-4">
-                            <a href="#contact" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
+                            <a href="#comparison" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
                             <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors" data-service="Deep Cleaning" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
                         </div>
                     </article>
@@ -543,21 +491,119 @@
                             <p class="text-sm text-gray-600 mb-4" data-translate="service4Desc">Start fresh in your new place with our moving cleaning.</p>
                         </div>
                         <div class="mt-4">
-                            <a href="#contact" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
+                            <a href="#comparison" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
                             <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors" data-service="Move-In/Move-Out" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
                         </div>
                     </article>
                 </div>
             </div>
         </section>
+
+        <section id="how-it-works" class="py-16 bg-white" aria-labelledby="how-it-works-heading">
+            <div class="container mx-auto px-6 text-center">
+                <h2 id="how-it-works-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="howitworksTitle">Our Simple 3-Step Process</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto mb-12 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="howitworksSubtitle">Getting your space professionally cleaned has never been easier.</p>
+                <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                    <!-- Step 1 -->
+                    <div class="flex flex-col items-center animate-fade-in-up" style="animation-delay: 0.3s;">
+                        <div class="flex items-center justify-center w-20 h-20 rounded-full bg-blue-100 text-primary text-3xl font-bold mb-4">1</div>
+                        <h3 class="font-bold text-xl mb-2" data-translate="howitworksStep1Title">Request a Quote</h3>
+                        <p class="text-gray-600" data-translate="howitworksStep1Desc">Fill out our quick contact form or give us a call to tell us about your cleaning needs.</p>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="flex flex-col items-center animate-fade-in-up" style="animation-delay: 0.4s;">
+                         <div class="flex items-center justify-center w-20 h-20 rounded-full bg-blue-100 text-primary text-3xl font-bold mb-4">2</div>
+                        <h3 class="font-bold text-xl mb-2" data-translate="howitworksStep2Title">We Clean Your Space</h3>
+                        <p class="text-gray-600" data-translate="howitworksStep2Desc">Our professional, vetted team arrives on time with eco-friendly supplies to make your home sparkle.</p>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="flex flex-col items-center animate-fade-in-up" style="animation-delay: 0.5s;">
+                         <div class="flex items-center justify-center w-20 h-20 rounded-full bg-blue-100 text-primary text-3xl font-bold mb-4">3</div>
+                        <h3 class="font-bold text-xl mb-2" data-translate="howitworksStep3Title">Enjoy the Freshness</h3>
+                        <p class="text-gray-600" data-translate="howitworksStep3Desc">Come back to a spotless, fresh-smelling space and enjoy your free time.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="comparison" class="py-16 bg-gray-50" aria-labelledby="comparison-heading">
+            <div class="container mx-auto px-6">
+                 <div class="text-center max-w-3xl mx-auto">
+                    <h2 id="comparison-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="comparisonTitle">Compare Our Cleaning Packages</h2>
+                    <p class="text-gray-600 mb-12 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="comparisonSubtitle">Find the perfect service for your needs. Contact us for a custom quote for commercial spaces.</p>
+                </div>
+
+                <div class="comparison-table max-w-5xl mx-auto animate-fade-in-up" style="animation-delay: 0.3s;">
+                    <!-- Headers -->
+                    <div class="table-header feature-name" data-translate="comparisonHeaderFeature">Feature</div>
+                    <div class="table-header" data-translate="service1Title">Residential Cleaning</div>
+                    <div class="table-header" data-translate="service3Title">Deep Cleaning</div>
+                    <div class="table-header" data-translate="service4Title">Move-In/Move-Out</div>
+
+                    <!-- Row 1 -->
+                    <div class="feature-cell feature-name" data-translate="featureDust">Dust all surfaces</div>
+                    <div class="check-mark" data-label="Residential">✓</div>
+                    <div class="check-mark" data-label="Deep">✓</div>
+                    <div class="check-mark" data-label="Move-Out">✓</div>
+
+                    <!-- Row 2 -->
+                    <div class="feature-cell feature-name" data-translate="featureVacuum">Vacuum & Mop Floors</div>
+                    <div class="check-mark" data-label="Residential">✓</div>
+                    <div class="check-mark" data-label="Deep">✓</div>
+                    <div class="check-mark" data-label="Move-Out">✓</div>
+                    
+                    <!-- Row 3 -->
+                    <div class="feature-cell feature-name" data-translate="featureWipeKitchen">Wipe Kitchen Counters</div>
+                    <div class="check-mark" data-label="Residential">✓</div>
+                    <div class="check-mark" data-label="Deep">✓</div>
+                    <div class="check-mark" data-label="Move-Out">✓</div>
+
+                    <!-- Row 4 -->
+                    <div class="feature-cell feature-name" data-translate="featureCleanBathrooms">Clean & Sanitize Bathrooms</div>
+                    <div class="check-mark" data-label="Residential">✓</div>
+                    <div class="check-mark" data-label="Deep">✓</div>
+                    <div class="check-mark" data-label="Move-Out">✓</div>
+
+                     <!-- Row 5 -->
+                    <div class="feature-cell feature-name" data-translate="featureBaseboards">Wipe Skirting Boards</div>
+                    <div class="check-mark" data-label="Residential"></div>
+                    <div class="check-mark" data-label="Deep">✓</div>
+                    <div class="check-mark" data-label="Move-Out">✓</div>
+                    
+                    <!-- Row 6 -->
+                    <div class="feature-cell feature-name" data-translate="featureAppliances">Clean Appliance Exteriors</div>
+                    <div class="check-mark" data-label="Residential">✓</div>
+                    <div class="check-mark" data-label="Deep">✓</div>
+                    <div class="check-mark" data-label="Move-Out">✓</div>
+
+                    <!-- Row 7 -->
+                    <div class="feature-cell feature-name" data-translate="featureOven">Clean Inside Oven</div>
+                    <div class="check-mark" data-label="Residential"></div>
+                    <div class="check-mark" data-label="Deep">✓</div>
+                    <div class="check-mark" data-label="Move-Out">✓</div>
+
+                    <!-- Row 8 -->
+                    <div class="feature-cell feature-name" data-translate="featureFridge">Clean Inside Fridge</div>
+                    <div class="check-mark" data-label="Residential"></div>
+                    <div class="check-mark" data-label="Deep">✓</div>
+                    <div class="check-mark" data-label="Move-Out">✓</div>
+
+                     <!-- Row 9 -->
+                    <div class="feature-cell feature-name" data-translate="featureCabinets">Clean Inside Cabinets</div>
+                    <div class="check-mark" data-label="Residential"></div>
+                    <div class="check-mark" data-label="Deep"></div>
+                    <div class="check-mark" data-label="Move-Out">✓</div>
+                </div>
+
+            </div>
+        </section>
         
-        <!-- Service Area Section -->
-        <section id="service-area" class="py-16 bg-gray-50" aria-labelledby="area-heading">
+        <section id="service-area" class="py-16 bg-white" aria-labelledby="area-heading">
              <div class="container mx-auto px-6">
                 <div class="grid md:grid-cols-2 gap-12 items-center">
                     <div class="animate-fade-in-up">
-                         <h2 id="area-heading" class="text-3xl font-bold text-primary mb-4">Proudly Serving the Rhine-Main Area</h2>
-                         <p class="mb-6 text-gray-700">We provide reliable, high-quality cleaning services to homes and businesses in the following areas:</p>
+                         <h2 id="area-heading" class="text-3xl font-bold text-primary mb-4" data-translate="areaTitle">Proudly Serving the Rhine-Main Area</h2>
+                         <p class="mb-6 text-gray-700" data-translate="areaSubtitle">We provide reliable, high-quality cleaning services to homes and businesses in the following areas:</p>
                          <ul class="grid grid-cols-2 gap-2 text-gray-700">
                              <li class="flex items-center"><i class="fas fa-map-marker-alt text-secondary mr-2"></i>Bischofsheim</li>
                              <li class="flex items-center"><i class="fas fa-map-marker-alt text-secondary mr-2"></i>Mainz</li>
@@ -571,11 +617,7 @@
                      <div class="animate-fade-in-up rounded-xl shadow-lg overflow-hidden" style="animation-delay: 0.2s;">
                         <iframe 
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d164160.0388909893!2d8.140733519398858!3d50.0213192453508!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47bd9a250c6f5d87%3A0x422d4d510db1ba0!2sMainz!5e0!3m2!1sen!2sde!4v1664456345678!5m2!1sen!2sde" 
-                            width="100%" 
-                            height="400" 
-                            style="border:0;" 
-                            allowfullscreen="" 
-                            loading="lazy" 
+                            width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" 
                             referrerpolicy="no-referrer-when-downgrade"
                             title="Service area map for AJK Cleaning including Mainz, Wiesbaden, and Bischofsheim">
                         </iframe>
@@ -584,9 +626,7 @@
             </div>
         </section>
 
-
-        <!-- Why Choose Us Section -->
-        <section id="about" class="py-16 bg-white" aria-labelledby="about-heading">
+        <section id="about" class="py-16 bg-gray-50" aria-labelledby="about-heading">
             <div class="container mx-auto px-6">
                 <div class="grid md:grid-cols-2 gap-12 items-center">
                     <div>
@@ -601,19 +641,16 @@
                         </div>
                     </div>
                     <div class="animate-fade-in-up" style="animation-delay: 0.8s;">
-                        <!-- 7. Performance Optimizations: lazy loading added -->
                         <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Professional cleaning team working together" class="rounded-xl shadow-lg" width="600" height="400" loading="lazy">
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Testimonials Section -->
-        <section id="testimonials" class="py-16 bg-gray-50">
+        <section id="testimonials" class="py-16 bg-white">
             <div class="container mx-auto px-6 text-center">
-                <h2 class="text-3xl font-bold text-primary mb-4 animate-fade-in-up">What Our Customers Say</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto mb-6 animate-fade-in-up" style="animation-delay: 0.1s;">We're proud of our 5-star reputation. Here's what some of our clients have to say.</p>
-                <!-- GMB Rating Display -->
+                <h2 class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="testimonialsTitle">What Our Customers Say</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto mb-6 animate-fade-in-up" style="animation-delay: 0.1s;" data-translate="testimonialsSubtitle">We're proud of our 5-star reputation. Here's what some of our clients have to say.</p>
                 <div class="flex justify-center items-center gap-2 mb-12 animate-fade-in-up" style="animation-delay: 0.2s;">
                       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png" alt="Google Logo" class="h-6">
                       <span class="font-semibold text-lg text-gray-700">Google Rating</span>
@@ -625,30 +662,21 @@
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-8 mt-8">
-                    <!-- Testimonial 1 -->
                     <div class="testimonial-card bg-white p-8 rounded-lg shadow-md animate-fade-in-up" style="animation-delay: 0.3s;">
                         <img src="https://placehold.co/80x80/e0e7ff/374151?text=A" class="w-20 h-20 mx-auto rounded-full -mt-16 border-4 border-white" alt="Customer avatar">
-                        <div class="stars my-4">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
+                        <div class="stars my-4"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                         <p class="text-gray-600 italic">"AJK Cleaning did an amazing job on our move-out clean. The apartment was spotless and we got our full deposit back. Highly recommend!"</p>
                         <p class="mt-4 font-semibold text-primary">- Maria S. from Mainz</p>
                     </div>
-                    <!-- Testimonial 2 -->
                     <div class="testimonial-card bg-white p-8 rounded-lg shadow-md animate-fade-in-up" style="animation-delay: 0.4s;">
                         <img src="https://placehold.co/80x80/e0e7ff/374151?text=B" class="w-20 h-20 mx-auto rounded-full -mt-16 border-4 border-white" alt="Customer avatar">
-                        <div class="stars my-4">
-                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
+                        <div class="stars my-4"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                         <p class="text-gray-600 italic">"Reliable, professional, and thorough. Our office has never looked better. The team is friendly and always on time. Five stars!"</p>
                         <p class="mt-4 font-semibold text-primary">- Thomas K. from Wiesbaden</p>
                     </div>
-                    <!-- Testimonial 3 -->
                     <div class="testimonial-card bg-white p-8 rounded-lg shadow-md animate-fade-in-up" style="animation-delay: 0.5s;">
                         <img src="https://placehold.co/80x80/e0e7ff/374151?text=C" class="w-20 h-20 mx-auto rounded-full -mt-16 border-4 border-white" alt="Customer avatar">
-                        <div class="stars my-4">
-                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
+                        <div class="stars my-4"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                         <p class="text-gray-600 italic">"I love coming home after AJK has been there. They pay attention to the little details and use products that are safe for my kids and pets."</p>
                         <p class="mt-4 font-semibold text-primary">- Julia R. from Bischofsheim</p>
                     </div>
@@ -656,25 +684,21 @@
             </div>
         </section>
 
-        <!-- FAQ Section -->
-        <section id="faq" class="py-16 bg-white" aria-labelledby="faq-heading">
+        <section id="faq" class="py-16 bg-gray-50" aria-labelledby="faq-heading">
             <div class="container mx-auto px-6">
                 <div class="text-center max-w-3xl mx-auto">
                     <h2 id="faq-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="faqTitle">Frequently Asked Questions</h2>
                     <p class="text-gray-600 mb-12 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="faqSubtitle">Have questions? We have answers. Here are some common queries we receive from our clients in the Bischofsheim area.</p>
                 </div>
-                <div class="max-w-3xl mx-auto space-y-4" id="faq-container">
-                    <!-- FAQ items will be inserted here by JavaScript -->
-                </div>
+                <div class="max-w-3xl mx-auto space-y-4" id="faq-container"></div>
             </div>
         </section>
 
-        <!-- Instant Estimate Calculator -->
-        <section id="calculator" class="py-16 bg-gray-50" aria-labelledby="calculator-heading">
+        <section id="calculator" class="py-16 bg-white" aria-labelledby="calculator-heading">
             <div class="container mx-auto px-6 max-w-3xl">
                  <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 text-center animate-fade-in-up">
-                      <h2 id="calculator-heading" class="text-3xl font-bold text-primary mb-2">Get an Instant Estimate</h2>
-                      <p class="text-gray-600 mb-8">This is an estimate only. A final quote will be provided after consultation.</p>
+                      <h2 id="calculator-heading" class="text-3xl font-bold text-primary mb-2" data-translate="calculatorTitle">Get an Instant Estimate</h2>
+                      <p class="text-gray-600 mb-8" data-translate="calculatorSubtitle">This is an estimate only. A final quote will be provided after consultation.</p>
                       
                       <div class="space-y-6 text-left">
                             <div>
@@ -687,35 +711,33 @@
                                 </select>
                             </div>
                             
-                            <!-- Residential Inputs -->
                             <div id="residential-inputs">
                                 <div class="space-y-6">
                                     <div>
-                                        <div class="flex justify-between items-center">
+                                        <div class="flex justify-between items-center mb-2">
                                             <label for="calc-bedrooms" class="font-semibold text-gray-700">Bedrooms</label>
-                                            <span id="bedrooms-value" class="font-bold text-primary text-lg">3</span>
+                                            <span id="bedrooms-value" class="font-bold text-primary bg-blue-100 py-1 px-3 rounded-full text-sm">3</span>
                                         </div>
-                                        <input type="range" id="calc-bedrooms" min="1" max="6" value="3" class="w-full mt-2">
+                                        <input type="range" id="calc-bedrooms" min="1" max="6" value="3" class="w-full styled-slider">
                                     </div>
                                     <div>
-                                        <div class="flex justify-between items-center">
+                                        <div class="flex justify-between items-center mb-2">
                                             <label for="calc-bathrooms" class="font-semibold text-gray-700">Bathrooms</label>
-                                            <span id="bathrooms-value" class="font-bold text-primary text-lg">2</span>
+                                            <span id="bathrooms-value" class="font-bold text-primary bg-blue-100 py-1 px-3 rounded-full text-sm">2</span>
                                         </div>
-                                        <input type="range" id="calc-bathrooms" min="1" max="4" value="2" class="w-full mt-2">
+                                        <input type="range" id="calc-bathrooms" min="1" max="4" value="2" class="w-full styled-slider">
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Commercial Inputs -->
                             <div id="commercial-inputs" class="hidden">
                                 <div class="space-y-6">
                                     <div>
-                                        <div class="flex justify-between items-center">
-                                            <label for="calc-sqm" class="font-semibold text-gray-700">Area (in square meters)</label>
-                                            <span id="sqm-value" class="font-bold text-primary text-lg">100</span>
+                                        <div class="flex justify-between items-center mb-2">
+                                            <label for="calc-sqm" class="font-semibold text-gray-700">Area (m²)</label>
+                                            <span id="sqm-value" class="font-bold text-primary bg-blue-100 py-1 px-3 rounded-full text-sm">100</span>
                                         </div>
-                                        <input type="range" id="calc-sqm" min="20" max="500" value="100" step="10" class="w-full mt-2">
+                                        <input type="range" id="calc-sqm" min="20" max="500" value="100" step="10" class="w-full styled-slider">
                                     </div>
                                     <div>
                                          <label for="calc-frequency" class="font-semibold text-gray-700">Cleaning Frequency</label>
@@ -731,37 +753,32 @@
                       </div>
                       
                       <div class="mt-8 text-center">
-                          <p class="text-2xl font-bold text-gray-800">Estimated Price:</p>
+                          <p class="text-2xl font-bold text-gray-800" data-translate="calculatorResultTitle">Estimated Price:</p>
                           <p id="estimate-result" class="text-4xl font-bold text-secondary mt-2">€250 - €300</p>
-                          <p class="text-sm text-gray-500 mt-2">Based on a one-time cleaning</p>
+                          <p class="text-sm text-gray-500 mt-2" data-translate="calculatorResultSubtitle">Based on a one-time cleaning</p>
                       </div>
                  </div>
             </div>
         </section>
         
-        <!-- AI Cleaning Tip Generator Section -->
-        <section id="ai-tips" class="py-16 bg-white" aria-labelledby="tip-heading">
+        <section id="ai-tips" class="py-16 bg-gray-50" aria-labelledby="tip-heading">
             <div class="container mx-auto px-6">
-                <div class="bg-gray-50 p-8 rounded-xl shadow-lg border border-gray-100 text-center max-w-3xl mx-auto">
-                    <h2 id="tip-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="tipTitle">✨ Get a Custom Cleaning Tip</h2>
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 text-center max-w-3xl mx-auto">
+                    <h2 id="tip-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="tipTitle">✨ Get a Pro Cleaning Tip</h2>
                     <p class="text-gray-600 mb-6 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="tipSubtitle">Stuck on a tough cleaning problem? Let our AI expert help you out!</p>
                     <div class="grid sm:grid-cols-2 gap-4 mb-4 animate-fade-in-up" style="animation-delay: 0.3s;">
                         <div>
                             <label for="tip-room" class="sr-only" data-translate="tipRoomLabel">Select a Room</label>
                             <select id="tip-room" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                                <option data-translate="tipRoomKitchen">Kitchen</option>
-                                <option data-translate="tipRoomBathroom">Bathroom</option>
-                                <option data-translate="tipRoomLiving">Living Room</option>
-                                <option data-translate="tipRoomBedroom">Bedroom</option>
+                                <option data-translate="tipRoomKitchen">Kitchen</option> <option data-translate="tipRoomBathroom">Bathroom</option>
+                                <option data-translate="tipRoomLiving">Living Room</option> <option data-translate="tipRoomBedroom">Bedroom</option>
                             </select>
                         </div>
                         <div>
                             <label for="tip-challenge" class="sr-only" data-translate="tipChallengeLabel">Select a Challenge</label>
                             <select id="tip-challenge" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                                <option data-translate="tipChallengeGrime">Everyday Grime</option>
-                                <option data-translate="tipChallengeGrease">Tough Grease</option>
-                                <option data-translate="tipChallengeLimescale">Limescale & Hard Water</option>
-                                <option data-translate="tipChallengeDust">Dust & Allergens</option>
+                                <option data-translate="tipChallengeGrime">Everyday Grime</option> <option data-translate="tipChallengeGrease">Tough Grease</option>
+                                <option data-translate="tipChallengeLimescale">Limescale & Hard Water</option> <option data-translate="tipChallengeDust">Dust & Allergens</option>
                                 <option data-translate="tipChallengePet">Pet Messes</option>
                             </select>
                         </div>
@@ -775,31 +792,24 @@
             </div>
         </section>
 
-        <!-- Contact Section -->
-        <section id="contact" class="py-16 bg-gray-50" aria-labelledby="contact-heading">
+        <section id="contact" class="py-16 bg-white" aria-labelledby="contact-heading">
             <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12">
                 <div class="animate-fade-in-up">
                     <h2 id="contact-heading" class="text-3xl font-bold text-primary mb-4" data-translate="contactTitle">Get In Touch</h2>
                     <p class="mb-6 text-gray-700" data-translate="contactSubtitle">We're here to answer any questions. Reach out for a free, no-obligation quote for your cleaning needs in Bischofsheim.</p>
-                    
                     <div class="space-y-3">
                         <p class="flex items-center"><i class="fas fa-phone text-primary mr-3 w-5" aria-hidden="true"></i> <a href="tel:+4917661852286" class="hover:underline">+49 176 61852286</a></p>
-                        <p class="flex items-center"><i class="fas fa-envelope text-primary mr-3 w-5" aria-hidden="true"></i> <!-- Replace Gmail with professional email --> <a href="mailto:info@ajkcleaners.de" class="hover:underline">info@ajkcleaners.de</a></p>
+                        <p class="flex items-center"><i class="fas fa-envelope text-primary mr-3 w-5" aria-hidden="true"></i> <a href="mailto:info@ajkcleaners.de" class="hover:underline">info@ajkcleaners.de</a></p>
                         <p class="flex items-center"><i class="fas fa-map-marker-alt text-primary mr-3 w-5" aria-hidden="true"></i><a href="https://maps.app.goo.gl/95dKa1nL9D2gZ7947" target="_blank" rel="noopener noreferrer">Bahnhofstraße 5, 65474 Bischofsheim, Germany</a></p>
                         <p class="flex items-center"><i class="fas fa-clock text-primary mr-3 w-5" aria-hidden="true"></i> <span data-translate="contactHours">Mon - Sat: 8:00am - 6:00pm</span></p>
                     </div>
-                    
-                    <!-- 5. Google My Business Integration: Map -->
                     <div class="mt-6 rounded-lg overflow-hidden border shadow-md">
                         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3333.3437002182854!2d8.356986576530165!3d49.99001767150799!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47bd99f5e82f18e9%3A0x40cfb0ac711244f6!2sAJK%20Cleaning%20Service!5e1!3m2!1sen!2snp!4v1758990313764!5m2!1sen!2snp" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="AJK Cleaning Company Location Map"></iframe>
                     </div>
                 </div>
                 <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.2s;">
-                    <h3 class="text-2xl font-bold text-primary mb-2" data-translate="formTitle">Request a Booking or Quote</h3>
-                    <!-- Urgency Element -->
-                    <div class="text-sm text-center mb-6 text-secondary font-semibold">
-                         <i class="fas fa-fire"></i> Booked 3 times this week!
-                    </div>
+                    <h3 class="text-2xl font-bold text-primary mb-2" data-translate="formTitle">Request Your Free Quote</h3>
+                    <div class="text-sm text-center mb-6 text-secondary font-semibold"><i class="fas fa-fire"></i> Booked 3 times this week!</div>
                     <form id="contact-form" class="space-y-4" novalidate>
                         <div class="grid sm:grid-cols-2 gap-4">
                             <div>
@@ -833,15 +843,14 @@
                              <div>
                                 <label for="preferred-time" class="sr-only">Preferred Time</label>
                                  <select id="preferred-time" name="preferred_time" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" aria-label="Preferred Time">
-                                      <option>Morning (8am-12pm)</option>
-                                      <option>Afternoon (12pm-4pm)</option>
-                                      <option>Flexible</option>
+                                      <option>Morning (8am-12pm)</option> <option>Afternoon (12pm-4pm)</option> <option>Flexible</option>
                                  </select>
                             </div>
                         </div>
                         <div>
                             <label for="message" class="sr-only">Message</label>
-                            <textarea id="message" name="message" placeholder="Message *" rows="4" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required aria-required="true" data-translate-placeholder="formMessage"></textarea>
+                            <textarea id="message" name="message" placeholder="Message *" rows="4" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required aria-required="true" data-translate-placeholder="formMessage" minlength="10" maxlength="1000"></textarea>
+                            <div id="char-counter" class="char-counter">0 / 1000</div>
                         </div>
                         <button type="submit" id="submit-btn" class="bg-secondary text-white px-6 py-3 rounded-lg shadow hover:bg-secondary-dark transition-colors duration-300 w-full font-semibold">
                             <span id="submit-text" data-translate="formBtnSubmit">Submit Request</span>
@@ -855,7 +864,6 @@
         </section>
     </main>
     
-    <!-- Footer -->
     <footer class="bg-primary text-white py-12" role="contentinfo">
         <div class="container mx-auto px-6 grid md:grid-cols-4 gap-8">
             <div>
@@ -868,7 +876,7 @@
                     <li><a href="#home" class="text-blue-200 hover:text-white transition-colors" data-translate="navHome">Home</a></li>
                     <li><a href="#services" class="text-blue-200 hover:text-white transition-colors" data-translate="navServices">Services</a></li>
                     <li><a href="#about" class="text-blue-200 hover:text-white transition-colors" data-translate="navAbout">About</a></li>
-                    <li><a href="#testimonials" class="text-blue-200 hover:text-white transition-colors">Testimonials</a></li>
+                    <li><a href="#testimonials" class="text-blue-200 hover:text-white transition-colors" data-translate="navTestimonials">Testimonials</a></li>
                     <li><a href="#faq" class="text-blue-200 hover:text-white transition-colors" data-translate="navFaq">FAQ</a></li>
                     <li><a href="#contact" class="text-blue-200 hover:text-white transition-colors" data-translate="navContact">Contact</a></li>
                 </ul>
@@ -889,17 +897,15 @@
                 </div>
             </div>
         </div>
-        <!-- 8. Professional Email Setup -->
         <div class="text-center mt-8 pt-6 border-t border-blue-700 text-blue-200 text-sm">
              <a href="/impressum" class="hover:text-white" data-translate="footerImpressum">Impressum</a> | 
-             <a href="/datenschutz" class="hover:text-white" data-translate="footerPrivacy">Datenschutz</a>
+             <a href="/datenschutz" class="hover:text-white" data-translate="footerPrivacy">Data Protection</a>
         </div>
         <div class="text-center mt-4 pt-4 text-blue-200 text-sm">
             © <span id="copyright-year">2025</span> <span data-translate="companyName">AJK Cleaning Company</span>. <span data-translate="footerRights">All rights reserved.</span>
         </div>
     </footer>
 
-    <!-- Sticky CTA for mobile -->
     <div class="sticky-cta fixed bottom-0 left-0 right-0 bg-white shadow-lg p-3 flex justify-around items-center md:hidden z-50">
         <a href="tel:+4917661852286" class="flex items-center text-primary font-semibold px-4 py-2 text-center" data-translate="ctaCall">
             <i class="fas fa-phone mr-2" aria-hidden="true"></i> Call Now
@@ -907,15 +913,11 @@
         <a href="#contact" class="bg-secondary text-white px-4 py-2 rounded-lg font-semibold text-center" data-translate="ctaQuote">Get Quote</a>
     </div>
     
-    <!-- Chat Widget -->
     <div id="chat-widget-enhanced" class="chat-widget-enhanced">
         <button class="chat-toggle" id="chat-toggle-enhanced" type="button" aria-label="Toggle chat">
-            <div class="chat-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-            </div>
+            <div class="chat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
             <div class="unread-badge" id="unread-badge" style="display:none;" aria-hidden="true">0</div>
         </button>
-        
         <div class="chat-window" id="chat-window-enhanced">
             <div class="chat-header">
                 <div class="chat-header-info">
@@ -923,21 +925,16 @@
                     <div class="chat-status" id="chat-status"><span>Typically replies in 2 minutes</span></div>
                 </div>
                 <div class="chat-header-actions">
-                    <button class="chat-action-btn" id="human-handoff-btn" type="button" title="Talk to a human" aria-label="Talk to a human">
-                      <i class="fas fa-user"></i>
-                    </button>
+                    <button class="chat-action-btn" id="human-handoff-btn" type="button" title="Talk to a human" aria-label="Talk to a human"><i class="fas fa-user"></i></button>
                     <button class="minimize-btn" id="minimize-chat" type="button" aria-label="Minimize chat">−</button>
                     <button class="close-btn" id="close-chat" type="button" aria-label="Close chat">×</button>
                 </div>
             </div>
-            
             <div class="chat-messages" id="chat-messages"></div>
-            
             <div class="typing-indicator" id="typing-indicator">
                 <div class="typing-dots"><span></span><span></span><span></span></div>
                 <span class="typing-text" id="typing-text">Alex is typing...</span>
             </div>
-            
             <div class="chat-input-container">
                 <div class="user-info" id="user-info">
                     <input type="text" id="user-name" placeholder="Your name" maxlength="50" required>
@@ -952,12 +949,11 @@
         </div>
     </div>
 
-    <!-- Gemini Checklist Modal -->
     <div id="checklist-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[2000] hidden opacity-0">
         <div id="checklist-modal-content" class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-lg max-h-[90vh] flex flex-col transform scale-95">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
                 <h2 id="checklist-modal-title" class="text-xl font-bold text-primary">Cleaning Checklist</h2>
-                <button id="checklist-modal-close" class="text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+                <button id="checklist-modal-close" class="text-gray-500 hover:text-gray-800 text-2xl">×</button>
             </div>
             <div id="checklist-modal-body" class="overflow-y-auto flex-grow">
                 <div id="checklist-loader" class="flex justify-center items-center py-10"><div class="loader"></div></div>
@@ -971,35 +967,26 @@
         </div>
     </div>
     
-    <!-- Tailwind config -->
     <script>tailwind.config={theme:{extend:{colors:{primary:'#1e40af','primary-dark':'#1e3a8a',secondary:'#059669','secondary-dark':'#047857'}}}}</script>
 
-    <!-- Full Custom Script -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         
         // --- Gemini API Proxy ---
         const callGeminiAPI = async (chatHistory, systemInstruction) => {
-            const apiUrl = '/api/gemini'; // Use the server's proxy endpoint
+            const apiUrl = '/api/gemini';
             const payload = { contents: chatHistory };
-            if (systemInstruction) {
-                payload.systemInstruction = systemInstruction;
-            }
-
+            if (systemInstruction) { payload.systemInstruction = systemInstruction; }
             try {
                 const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
                 const result = await response.json();
-
                 if (!response.ok) {
                     const errorMessage = result?.error?.message || `API error: ${response.status}`;
                     throw new Error(errorMessage);
                 }
-                
                 const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
                 if (!text) {
                     const finishReason = result.candidates?.[0]?.finishReason;
@@ -1009,7 +996,6 @@
                     throw new Error("No content received from AI.");
                 }
                 return text;
-
             } catch (error) {
                 console.error('Error calling server-side Gemini proxy:', error);
                 throw error;
@@ -1017,7 +1003,7 @@
         };
         
         // =================================================================
-        // CHAT MANAGER CLASS - Handles all chat widget functionality
+        // CHAT MANAGER CLASS
         // =================================================================
         class ChatManager {
             constructor() {
@@ -1037,13 +1023,10 @@
                     this.isAiActive = true;
                     this.isLiveChatActive = false;
                 }
-
                 this.init();
             }
 
-            init() {
-                this.attachEventListeners();
-            }
+            init() { this.attachEventListeners(); }
 
             attachEventListeners() {
                 document.getElementById('chat-toggle-enhanced').addEventListener('click', () => this.toggleChat());
@@ -1058,60 +1041,36 @@
             }
 
             connect() {
-                if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-                    console.log('WebSocket already connected.');
-                    return;
-                }
-
-                const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+                if (this.ws && this.ws.readyState === WebSocket.OPEN) { return; }
+                const protocol = window.location.protocol === 'https' ? 'wss' : 'ws';
                 const wsUrl = `${protocol}://${window.location.host}?clientId=${this.clientId}`;
-                
-                console.log(`Connecting to WebSocket at ${wsUrl}`);
                 this.ws = new WebSocket(wsUrl);
-
                 this.ws.onopen = () => {
-                    console.log('WebSocket connection established.');
                     this.displayMessage('You are connected to live support.', 'system', 'System');
                     this.sendIdentification();
                 };
-
                 this.ws.onmessage = (event) => {
                     try {
                         const data = JSON.parse(event.data);
-                        console.log('Received message:', data);
-
                         switch(data.type) {
-                            case 'chat':
-                                this.displayMessage(data.message, data.isAdmin ? 'admin' : 'user', data.name);
-                                break;
+                            case 'chat': this.displayMessage(data.message, data.isAdmin ? 'admin' : 'user', data.name); break;
                             case 'history':
-                                document.getElementById('chat-messages').innerHTML = ''; // Clear existing messages
-                                data.messages.forEach(msg => {
-                                     this.displayMessage(msg.message, msg.isAdmin ? 'admin' : 'user', msg.isAdmin ? 'Support' : this.userName);
-                                });
+                                document.getElementById('chat-messages').innerHTML = '';
+                                data.messages.forEach(msg => { this.displayMessage(msg.message, msg.isAdmin ? 'admin' : 'user', msg.isAdmin ? 'Support' : this.userName); });
                                 this.scrollToBottom();
                                 break;
-                            case 'system':
-                                this.displayMessage(data.message, 'system', 'System');
-                                break;
-                            case 'chat_reset':
-                                 this.handleChatReset();
-                                 break;
+                            case 'system': this.displayMessage(data.message, 'system', 'System'); break;
+                            case 'chat_reset': this.handleChatReset(); break;
                         }
-                    } catch (error) {
-                        console.error("Error parsing incoming WebSocket message:", error);
-                    }
+                    } catch (error) { console.error("Error parsing incoming WebSocket message:", error); }
                 };
-                
                 this.ws.onerror = (error) => {
                     console.error('WebSocket error:', error);
                     this.displayMessage('Connection error. Please try refreshing the page.', 'system', 'System');
                 };
-
                 this.ws.onclose = () => {
-                    console.log('WebSocket connection closed.');
                     if (this.isLiveChatActive) {
-                        this.displayMessage('You have been disconnected. We will attempt to reconnect shortly.', 'system', 'System');
+                        this.displayMessage('You have been disconnected.', 'system', 'System');
                         document.getElementById('chat-header-title').textContent = 'Live Chat - Disconnected';
                     }
                     this.ws = null;
@@ -1125,15 +1084,11 @@
                 this.isLiveChatActive = false;
                 document.getElementById('human-handoff-btn').disabled = false;
                 document.getElementById('chat-header-title').textContent = 'AJK AI Assistant ✨';
-                
-                if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-                    this.ws.close();
-                }
-
+                if (this.ws && this.ws.readyState === WebSocket.OPEN) { this.ws.close(); }
                 setTimeout(() => {
                      document.getElementById('chat-messages').innerHTML = '';
                      this.chatHistory = [];
-                     const welcomeMessage = "Hello! I'm Alex, the AI assistant for AJK Cleaning. How can I help you today? You can ask me about our services, service areas, or for cleaning tips! 😊";
+                     const welcomeMessage = "Hello! I'm Alex, the AI assistant for AJK Cleaning. How can I help you today?";
                      this.chatHistory.push({ role: 'model', parts: [{ text: welcomeMessage }]});
                      this.displayMessage(this.markdownToHtml(welcomeMessage), 'admin', 'Alex', true);
                 }, 1000);
@@ -1142,8 +1097,7 @@
             sendIdentification() {
                 if (this.ws && this.ws.readyState === WebSocket.OPEN) {
                     this.ws.send(JSON.stringify({
-                        type: 'identify',
-                        name: this.userName,
+                        type: 'identify', name: this.userName,
                         email: document.getElementById('user-email').value || ''
                     }));
                 }
@@ -1152,33 +1106,24 @@
             markdownToHtml(markdown) {
                  if (!markdown) return '';
                  return markdown
-                       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                       .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')
                        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
-                       .split('\n')
-                       .map(line => line.trim())
-                       .filter(line => line)
+                       .split('\n').map(line => line.trim()).filter(line => line)
                        .map(line => {
                            if (line.startsWith('## ')) return `<h4>${line.substring(3)}</h4>`;
                            if (line.startsWith('# ')) return `<h3>${line.substring(2)}</h3>`;
                            if (line.startsWith('* ') || line.startsWith('- ')) return `<li>${line.substring(2)}</li>`;
                            return `<p>${line}</p>`;
-                       })
-                       .join('')
-                       .replace(/<li>/g, '<ul><li>').replace(/(<\/li>(?!<li>))/g, '</li></ul>')
-                       .replace(/<\/ul><ul>/g, '');
+                       }).join('').replace(/<li>/g, '<ul><li>').replace(/(<\/li>(?!<li>))/g, '</li></ul>').replace(/<\/ul><ul>/g, '');
             }
             
-            toggleChat() {
-                this.isOpen ? this.closeChat() : this.openChat();
-            }
+            toggleChat() { this.isOpen ? this.closeChat() : this.openChat(); }
 
             openChat() {
                 const chatWindow = document.getElementById('chat-window-enhanced');
                 chatWindow.style.display = 'flex';
                 setTimeout(() => chatWindow.classList.add('open'), 10);
                 this.isOpen = true;
-
                 if (this.userName === 'Guest') {
                     document.getElementById('user-info').style.display = 'flex';
                     document.getElementById('chat-input-area').style.display = 'none';
@@ -1186,7 +1131,6 @@
                     document.getElementById('user-info').style.display = 'none';
                     document.getElementById('chat-input-area').style.display = 'flex';
                 }
-
                 if (this.isLiveChatActive) {
                     document.getElementById('chat-header-title').textContent = 'Live Chat with Support';
                     document.getElementById('human-handoff-btn').disabled = true;
@@ -1196,7 +1140,6 @@
                     this.chatHistory.push({ role: 'model', parts: [{ text: welcomeMessage }]});
                     this.displayMessage(this.markdownToHtml(welcomeMessage), 'admin', 'Alex', true);
                 }
-                
                 this.scrollToBottom();
             }
 
@@ -1211,78 +1154,45 @@
                 const chatInput = document.getElementById('chat-input-enhanced');
                 const messageText = chatInput.value.trim();
                 if (!messageText || this.isTyping) return;
-
                 this.isTyping = true;
                 chatInput.value = '';
                 this.displayMessage(messageText, 'user', this.userName);
-
                 const sendButton = document.getElementById('chat-send-enhanced');
                 chatInput.disabled = true;
                 if (sendButton) sendButton.disabled = true;
-
                 if (this.isAiActive) {
                     this.chatHistory.push({ role: 'user', parts: [{ text: messageText }] });
                     this.showTypingIndicator(true, 'Alex');
                     try {
-                        const systemInstruction = `You are "Alex", a friendly and helpful AI assistant for AJK Cleaning Company, a professional cleaning service in Bischofsheim, Germany. Your goal is to answer user questions accurately based on the company information and encourage them to get a quote. 
-
-                            **Company Information:**
-                            - **Name:** AJK Cleaning Company
-                            - **Services:** Residential Cleaning, Commercial Cleaning, Deep Cleaning, Move-In/Move-Out Cleaning.
-                            - **Service Area:** Bischofsheim, Ginsheim-Gustavsburg, Mainz, Wiesbaden, and surrounding areas within a 25km radius.
-                            - **Key Features:** Fully insured and bonded, uses eco-friendly products, satisfaction guaranteed, trained professionals.
-                            - **Contact:** Phone: +49 176 61852286, Email: info@ajkcleaners.de
-                            - **Hours:** Monday - Saturday, 8:00am - 6:00pm.
-                            - **Pricing:** You cannot give exact prices. For quotes, you MUST direct users to the contact form or phone number.
-
-                            **Your Persona & Rules:**
-                            1. Be friendly, polite, and professional. Use emojis where appropriate.
-                            2. Keep your answers concise and easy to understand (under 70 words).
-                            3. Base your answers ONLY on the information provided.
-                            4. If asked for information not listed, politely state that you don't have that detail and provide the company's contact info.
-                            5. Format responses with Markdown (bolding, lists).`;
+                        const systemInstruction = `You are "Alex", a friendly and helpful AI assistant for AJK Cleaning Company, a professional cleaning service in Bischofsheim, Germany. Your goal is to answer user questions accurately based on the company information and encourage them to get a quote. **Company Information:** - **Name:** AJK Cleaning Company - **Services:** Residential Cleaning, Commercial Cleaning, Deep Cleaning, Move-In/Move-Out Cleaning. - **Service Area:** Bischofsheim, Ginsheim-Gustavsburg, Mainz, Wiesbaden, and surrounding areas within a 25km radius. - **Key Features:** Fully insured and bonded, uses eco-friendly products, satisfaction guaranteed, trained professionals. - **Contact:** Phone: +49 176 61852286, Email: info@ajkcleaners.de - **Hours:** Monday - Saturday, 8:00am - 6:00pm. - **Pricing:** You cannot give exact prices. For quotes, you MUST direct users to the contact form or phone number. **Your Persona & Rules:** 1. Be friendly, polite, and professional. Use emojis where appropriate. 2. Keep your answers concise and easy to understand (under 70 words). 3. Base your answers ONLY on the information provided. 4. If asked for information not listed, politely state that you don't have that detail and provide the company's contact info. 5. Format responses with Markdown (bolding, lists).`;
                         const botResponse = await callGeminiAPI(this.chatHistory, systemInstruction);
                         this.chatHistory.push({ role: 'model', parts: [{ text: botResponse }] });
                         this.displayMessage(this.markdownToHtml(botResponse), 'admin', 'Alex', true);
                     } catch (error) {
-                        this.displayMessage(`Sorry, I'm having trouble connecting. Please try our contact form or call us directly. Error: ${error.message}`, 'admin', 'Alex');
+                        this.displayMessage(`Sorry, I'm having trouble connecting. Error: ${error.message}`, 'admin', 'Alex');
                     } finally {
-                        this.isTyping = false;
-                        this.showTypingIndicator(false);
-                        chatInput.disabled = false;
-                        if (sendButton) sendButton.disabled = false;
+                        this.isTyping = false; this.showTypingIndicator(false);
+                        chatInput.disabled = false; if (sendButton) sendButton.disabled = false;
                         chatInput.focus();
                     }
                 } else if (this.isLiveChatActive) {
                      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
                         this.ws.send(JSON.stringify({ type: 'chat', message: messageText }));
-                    } else {
-                        this.displayMessage('Not connected to live chat. Please wait or refresh.', 'system', 'System');
-                    }
-                    // For live chat, re-enable the input immediately as we don't wait for a response here
-                    this.isTyping = false; 
-                    chatInput.disabled = false;
-                    if (sendButton) sendButton.disabled = false;
-                    chatInput.focus();
+                    } else { this.displayMessage('Not connected to live chat. Please wait or refresh.', 'system', 'System'); }
+                    this.isTyping = false; chatInput.disabled = false;
+                    if (sendButton) sendButton.disabled = false; chatInput.focus();
                 }
             }
 
             requestHumanHandoff() {
                 if (this.isLiveChatActive) return; 
-
-                this.isAiActive = false;
-                this.isLiveChatActive = true;
+                this.isAiActive = false; this.isLiveChatActive = true;
                 localStorage.setItem('chatMode', 'live'); 
-                
                 document.getElementById('human-handoff-btn').disabled = true;
                 document.getElementById('chat-header-title').textContent = 'Live Chat with Support';
-
-                this.displayMessage("You're being connected to a human agent. Please wait a moment.", 'system', 'System');
-                
-                // This will establish the connection. The `onopen` handler will take care of the rest.
+                this.displayMessage("You're being connected to a human agent. Please wait.", 'system', 'System');
                 this.connect(); 
             }
-
 
             displayMessage(text, type, sender, isHtml = false) {
                 const messagesContainer = document.getElementById('chat-messages');
@@ -1314,21 +1224,17 @@
                 const emailInput = document.getElementById('user-email');
                 const name = nameInput.value.trim();
                 const email = emailInput.value.trim();
-
                 if (!name) { nameInput.style.borderColor = '#ef4444'; return; }
                 this.userName = name;
                 localStorage.setItem('chatUserName', name);
                 if(email) localStorage.setItem('chatUserEmail', email);
-
                 document.getElementById('user-info').style.display = 'none';
                 document.getElementById('chat-input-area').style.display = 'flex';
                 document.getElementById('chat-input-enhanced').focus();
             }
 
             escapeHtml(text) { 
-                const d = document.createElement('div'); 
-                d.textContent = text; 
-                return d.innerHTML; 
+                const d = document.createElement('div'); d.textContent = text; return d.innerHTML; 
             }
         }
         
@@ -1337,21 +1243,13 @@
         // --- Multi-Language Support, Modals, Page Interactivity, etc. ---
         const translations = {
             en: {
-                // Meta
-                metaDescription: "AJK Cleaning Company: Professional residential & commercial cleaning services in Bischofsheim. Eco-friendly products, fully insured, satisfaction guaranteed. Free quotes!",
-                metaKeywords: "cleaning service, Bischofsheim, residential cleaning, commercial cleaning, eco-friendly cleaning, move-in cleaning, deep cleaning, office cleaning mainz, house cleaning wiesbaden",
-                // General
-                companyName: "AJK Cleaning Company",
-                skipLink: "Skip to main content",
-                // Nav
-                navHome: "Home", navServices: "Services", navAbout: "About", navFaq: "FAQ", navContact: "Contact", navQuote: "GET A FREE QUOTE",
-                // Hero
+                companyName: "AJK Cleaning Company", skipLink: "Skip to main content",
+                navHome: "Home", navServices: "Services", navAbout: "About", navTestimonials: "Testimonials", navFaq: "FAQ", navContact: "Contact", navQuote: "GET A FREE QUOTE",
                 heroTitle: "Experience the AJK Standard of Clean in Bischofsheim",
                 heroSubtitle: "Fully insured, eco-friendly products, and satisfaction guaranteed. Serving Bischofsheim, Mainz, Wiesbaden & surrounding areas.",
-                heroBtnBook: "Book a Cleaning", heroBtnServices: "Our Services",
-                // Trust
-                trustInsured: "Insured & Bonded", trustEco: "Eco-Friendly", trustRated: "5-Star Rated", trustGuaranteed: "Satisfaction Guaranteed",
-                // Services
+                heroBtnBook: "Request a Cleaning", heroBtnServices: "Our Services",
+                trustTitle: "Trusted By Your Neighbors & Fully Certified",
+                trustEco: "Eco-Friendly", trustRated: "5-Star Rated", trustGuaranteed: "Satisfaction Guaranteed",
                 servicesTitle: "Our Premium Cleaning Services",
                 servicesSubtitle: "We offer a wide range of cleaning services tailored to meet your specific needs and exceed your expectations in Bischofsheim and surrounding areas.",
                 service1Title: "Residential Cleaning", service1Desc: "Keep your home spotless with our detailed cleaning services.",
@@ -1359,12 +1257,34 @@
                 service3Title: "Deep Cleaning", service3Desc: "Thorough cleaning for a refreshed and healthy space.",
                 service4Title: "Move-In/Move-Out", service4Desc: "Start fresh in your new place with our moving cleaning.",
                 serviceLearnMore: "Learn More", serviceBtnChecklist: "✨ Get Cleaning Checklist",
-                // About
+                howitworksTitle: "Our Simple 3-Step Process",
+                howitworksSubtitle: "Getting your space professionally cleaned has never been easier.",
+                howitworksStep1Title: "Request a Quote",
+                howitworksStep1Desc: "Fill out our quick contact form or give us a call to tell us about your cleaning needs.",
+                howitworksStep2Title: "We Clean Your Space",
+                howitworksStep2Desc: "Our professional, vetted team arrives on time with eco-friendly supplies to make your home sparkle.",
+                howitworksStep3Title: "Enjoy the Freshness",
+                howitworksStep3Desc: "Come back to a spotless, fresh-smelling space and enjoy your free time.",
+                comparisonTitle: "Compare Our Cleaning Packages",
+                comparisonSubtitle: "Find the perfect service for your needs. Contact us for a custom quote for commercial spaces.",
+                comparisonHeaderFeature: "Feature",
+                featureDust: "Dust all surfaces",
+                featureVacuum: "Vacuum & Mop Floors",
+                featureWipeKitchen: "Wipe Kitchen Counters",
+                featureCleanBathrooms: "Clean & Sanitize Bathrooms",
+                featureBaseboards: "Wipe Skirting Boards",
+                featureAppliances: "Clean Appliance Exteriors",
+                featureOven: "Clean Inside Oven",
+                featureFridge: "Clean Inside Fridge",
+                featureCabinets: "Clean Inside Cabinets",
+                areaTitle: "Proudly Serving the Rhine-Main Area",
+                areaSubtitle: "We provide reliable, high-quality cleaning services to homes and businesses in the following areas:",
                 aboutTitle: "Why Choose AJK Cleaning?",
                 aboutP1: "At AJK Cleaning Company, we are dedicated to providing premium cleaning services with a commitment to quality and community. Our team uses eco-friendly products and ensures every job meets our AJK standard of clean.",
                 aboutP2: "Founded in 2022, we've grown to become one of the most trusted cleaning services in the Bischofsheim area, serving hundreds of satisfied residential and commercial clients.",
                 aboutPoint1: "Fully Insured & Bonded", aboutPoint2: "Eco-Friendly Products", aboutPoint3: "Trained Professionals", aboutPoint4: "Satisfaction Guaranteed",
-                // FAQ
+                testimonialsTitle: "What Our Customers Say",
+                testimonialsSubtitle: "We're proud of our 5-star reputation. Here's what some of our clients have to say.",
                 faqTitle: "Frequently Asked Questions",
                 faqSubtitle: "Have questions? We have answers. Here are some common queries we receive from our clients in the Bischofsheim area.",
                 faq: [
@@ -1373,93 +1293,101 @@
                     { q: "Do you use eco-friendly products?", a: "Absolutely. We prioritize the health of your family, pets, and our planet by using high-quality, eco-friendly cleaning products that are both safe and effective." },
                     { q: "How do I get a quote?", a: "You can get a free, no-obligation quote by filling out the contact form on our website or by calling us directly at +49 176 61852286." }
                 ],
-                // AI Tips
-                tipTitle: "✨ Get a Custom Cleaning Tip",
+                calculatorTitle: "Get an Instant Estimate",
+                calculatorSubtitle: "This is an estimate only. A final quote will be provided after consultation.",
+                calculatorResultTitle: "Estimated Price:", calculatorResultSubtitle: "Based on a one-time cleaning",
+                tipTitle: "✨ Get a Pro Cleaning Tip",
                 tipSubtitle: "Stuck on a tough cleaning problem? Let our AI expert help you out!",
                 tipRoomLabel: "Select a Room", tipChallengeLabel: "Select a Challenge",
                 tipRoomKitchen: "Kitchen", tipRoomBathroom: "Bathroom", tipRoomLiving: "Living Room", tipRoomBedroom: "Bedroom",
                 tipChallengeGrime: "Everyday Grime", tipChallengeGrease: "Tough Grease", tipChallengeLimescale: "Limescale & Hard Water", tipChallengeDust: "Dust & Allergens", tipChallengePet: "Pet Messes",
                 tipBtnGenerate: "Generate Tip",
-                // Contact
                 contactTitle: "Get In Touch",
                 contactSubtitle: "We're here to answer any questions. Reach out for a free, no-obligation quote for your cleaning needs in Bischofsheim.",
                 contactHours: "Mon - Sat: 8:00am - 6:00pm",
-                // Form
-                formTitle: "Request a Booking or Quote",
+                formTitle: "Request Your Free Quote",
                 formName: "Name *", formEmail: "Email (Optional)", formPhone: "Phone *", formMessage: "Message *",
                 formServiceLabel: "Select a Service", formServiceSelect: "Select a Service",
                 formBtnSubmit: "Submit Request", formBtnSending: "Sending...",
                 formSuccess: "Thank you! We'll be in touch soon.", formError: "An error occurred. Please try again.",
-                // Footer
                 footerDesc: "Premium Cleaning Solutions for Homes and Offices in Bischofsheim",
                 footerLinksTitle: "Quick Links", footerServicesTitle: "Our Services", footerFollowTitle: "Follow Us",
-                footerImpressum: "Impressum", footerPrivacy: "Datenschutz", footerRights: "All rights reserved.",
-                // CTA
+                footerImpressum: "Impressum", footerPrivacy: "Data Protection", footerRights: "All rights reserved.",
                 ctaCall: "Call Now", ctaQuote: "Get Quote",
-                // Modal
                 modalDownload: "Download", modalClose: "Close"
             },
             de: {
-                // Meta
-                metaDescription: "AJK Reinigungsfirma: Professionelle Wohnungs- & Gewerbereinigung in Bischofsheim. Umweltfreundliche Produkte, voll versichert, Zufriedenheitsgarantie. Kostenloses Angebot!",
-                metaKeywords: "Reinigungsfirma Bischofsheim, Gebäudereinigung Mainz, Putzfirma Wiesbaden, Hausreinigung, Büroreinigung, Umzugsreinigung, Reinigungsdienst, Reinigungsservice",
-                // General
-                companyName: "AJK Reinigungsfirma",
-                skipLink: "Zum Hauptinhalt springen",
-                // Nav
-                navHome: "Startseite", navServices: "Leistungen", navAbout: "Über uns", navFaq: "FAQ", navContact: "Kontakt", navQuote: "GRATIS ANGEBOT",
-                // Hero
+                companyName: "AJK Reinigungsfirma", skipLink: "Zum Hauptinhalt springen",
+                navHome: "Startseite", navServices: "Leistungen", navAbout: "Über uns", navTestimonials: "Kundenstimmen", navFaq: "FAQ", navContact: "Kontakt", navQuote: "Kostenloses Angebot",
                 heroTitle: "Erleben Sie den AJK-Reinigungsstandard in Bischofsheim",
-                heroSubtitle: "Voll versichert, umweltfreundliche Produkte und Zufriedenheitsgarantie. Wir bedienen Bischofsheim, Mainz, Wiesbaden & Umgebung.",
-                heroBtnBook: "Reinigung buchen", heroBtnServices: "Unsere Leistungen",
-                // Trust
-                trustInsured: "Versichert & gebunden", trustEco: "Umweltfreundlich", trustRated: "5-Sterne-Bewertung", trustGuaranteed: "Zufriedenheitsgarantie",
-                // Services
+                heroSubtitle: "Voll versichert, umweltfreundliche Produkte und Zufriedenheitsgarantie. Für Sie da in Bischofsheim, Mainz, Wiesbaden und Umgebung.",
+                heroBtnBook: "Reinigung anfragen", heroBtnServices: "Unsere Leistungen",
+                trustTitle: "Von Ihren Nachbarn vertraut & vollständig zertifiziert",
+                trustEco: "Umweltfreundlich", trustRated: "Top bewertet", trustGuaranteed: "Zufriedenheitsgarantie",
                 servicesTitle: "Unsere Premium-Reinigungsdienste",
-                servicesSubtitle: "Wir bieten eine breite Palette von Reinigungsdiensten an, die auf Ihre spezifischen Bedürfnisse zugeschnitten sind und Ihre Erwartungen in Bischofsheim und Umgebung übertreffen.",
-                service1Title: "Wohnungsreinigung", service1Desc: "Halten Sie Ihr Zuhause mit unseren detaillierten Reinigungsdiensten makellos.",
+                servicesSubtitle: "Wir bieten eine breite Palette von Reinigungsdiensten, die darauf zugeschnitten sind, Ihre spezifischen Bedürfnisse zu erfüllen und Ihre Erwartungen in Bischofsheim und Umgebung zu übertreffen.",
+                service1Title: "Haushaltsreinigung", service1Desc: "Halten Sie Ihr Zuhause mit unseren detaillierten Reinigungsdiensten makellos.",
                 service2Title: "Gewerbereinigung", service2Desc: "Zuverlässige Reinigung für Büros und Unternehmen jeder Größe.",
-                service3Title: "Grundreinigung", service3Desc: "Gründliche Reinigung für einen erfrischten und gesunden Raum.",
+                service3Title: "Grundreinigung", service3Desc: "Gründliche Reinigung für ein frisches und gesundes Umfeld.",
                 service4Title: "Umzugsreinigung", service4Desc: "Starten Sie frisch in Ihrem neuen Zuhause mit unserer Umzugsreinigung.",
-                serviceLearnMore: "Mehr erfahren", serviceBtnChecklist: "✨ Reinigungs-Checkliste erhalten",
-                // About
-                aboutTitle: "Warum AJK Reinigung wählen?",
-                aboutP1: "Bei der AJK Reinigungsfirma widmen wir uns der Bereitstellung erstklassiger Reinigungsdienste mit einem Bekenntnis zu Qualität und Gemeinschaft. Unser Team verwendet umweltfreundliche Produkte und stellt sicher, dass jeder Auftrag unserem AJK-Reinigungsstandard entspricht.",
-                aboutP2: "Gegründet im Jahr 2022, sind wir zu einem der vertrauenswürdigsten Reinigungsdienste in der Region Bischofsheim herangewachsen und bedienen Hunderte zufriedener Privat- und Geschäftskunden.",
-                aboutPoint1: "Voll versichert & gebunden", aboutPoint2: "Umweltfreundliche Produkte", aboutPoint3: "Geschulte Fachkräfte", aboutPoint4: "Zufriedenheitsgarantie",
-                // FAQ
+                serviceLearnMore: "Mehr erfahren", serviceBtnChecklist: "✨ Checkliste ansehen",
+                howitworksTitle: "Unser einfacher 3-Schritte-Prozess",
+                howitworksSubtitle: "Die professionelle Reinigung Ihrer Räume war noch nie einfacher.",
+                howitworksStep1Title: "Angebot anfordern",
+                howitworksStep1Desc: "Füllen Sie unser kurzes Kontaktformular aus oder rufen Sie uns an, um uns Ihre Reinigungsanforderungen mitzuteilen.",
+                howitworksStep2Title: "Wir reinigen Ihre Räume",
+                howitworksStep2Desc: "Unser professionelles, geprüftes Team kommt pünktlich mit umweltfreundlichen Mitteln, um Ihr Zuhause zum Strahlen zu bringen.",
+                howitworksStep3Title: "Genießen Sie die Frische",
+                howitworksStep3Desc: "Kehren Sie in einen makellosen, frisch duftenden Raum zurück und genießen Sie Ihre Freizeit.",
+                comparisonTitle: "Vergleichen Sie unsere Reinigungspakete",
+                comparisonSubtitle: "Finden Sie den perfekten Service für Ihre Bedürfnisse. Kontaktieren Sie uns für ein individuelles Angebot für Gewerbeflächen.",
+                comparisonHeaderFeature: "Merkmal",
+                featureDust: "Alle Oberflächen abstauben",
+                featureVacuum: "Böden saugen & wischen",
+                featureWipeKitchen: "Küchenarbeitsplatten abwischen",
+                featureCleanBathrooms: "Badezimmer reinigen & desinfizieren",
+                featureBaseboards: "Fußleisten abwischen",
+                featureAppliances: "Außenseiten von Geräten reinigen",
+                featureOven: "Backofen innen reinigen",
+                featureFridge: "Kühlschrank innen reinigen",
+                featureCabinets: "Schränke innen reinigen",
+                areaTitle: "Wir sind im Rhein-Main-Gebiet für Sie da",
+                areaSubtitle: "Wir bieten zuverlässige, hochwertige Reinigungsdienste für Haushalte und Unternehmen in folgenden Bereichen:",
+                aboutTitle: "Warum Sie AJK Reinigung wählen sollten",
+                aboutP1: "Bei der AJK Reinigungsfirma widmen wir uns der Bereitstellung erstklassiger Reinigungsdienste mit Engagement für Qualität und Gemeinschaft. Unser Team verwendet umweltfreundliche Produkte und stellt sicher, dass jeder Auftrag unserem hohen AJK-Standard entspricht.",
+                aboutP2: "Seit unserer Gründung 2022 sind wir zu einem der vertrauenswürdigsten Reinigungsdienste in der Region Bischofsheim herangewachsen und bedienen Hunderte zufriedener Privat- und Geschäftskunden.",
+                aboutPoint1: "Voll versichert", aboutPoint2: "Umweltfreundliche Produkte", aboutPoint3: "Geschulte Fachkräfte", aboutPoint4: "Zufriedenheitsgarantie",
+                testimonialsTitle: "Was unsere Kunden sagen",
+                testimonialsSubtitle: "Wir sind stolz auf unseren 5-Sterne-Ruf. Das sagen einige unserer Kunden.",
                 faqTitle: "Häufig gestellte Fragen",
-                faqSubtitle: "Haben Sie Fragen? Wir haben Antworten. Hier sind einige häufige Anfragen, die wir von unseren Kunden im Raum Bischofsheim erhalten.",
+                faqSubtitle: "Haben Sie Fragen? Wir haben die Antworten. Hier sind einige häufige Anliegen unserer Kunden aus dem Raum Bischofsheim.",
                  faq: [
-                     { q: "Welche Gebiete bedienen Sie?", a: "Wir bedienen stolz Bischofsheim, Ginsheim-Gustavsburg, Mainz, Wiesbaden und umliegende Gemeinden in einem Radius von 25 km." },
-                     { q: "Sind Sie versichert und gebunden?", a: "Ja, wir sind zu Ihrer Sicherheit voll versichert und gebunden. Alle unsere Reinigungskräfte werden überprüft und auf höchstem Niveau geschult." },
-                     { q: "Verwenden Sie umweltfreundliche Produkte?", a: "Absolut. Wir legen Wert auf die Gesundheit Ihrer Familie, Ihrer Haustiere und unseres Planeten, indem wir hochwertige, umweltfreundliche Reinigungsprodukte verwenden, die sowohl sicher als auch wirksam sind." },
-                     { q: "Wie erhalte ich ein Angebot?", a: "Sie können ein kostenloses, unverbindliches Angebot erhalten, indem Sie das Kontaktformular auf unserer Website ausfüllen oder uns direkt unter +49 176 61852286 anrufen." }
+                     { q: "In welchen Gebieten sind Sie tätig?", a: "Wir sind stolz darauf, Bischofsheim, Ginsheim-Gustavsburg, Mainz, Wiesbaden und umliegende Gemeinden in einem Radius von 25 km zu bedienen." },
+                     { q: "Sind Sie versichert?", a: "Ja, zu Ihrer Sicherheit sind wir voll haftpflichtversichert. Alle unsere Reinigungskräfte werden überprüft und auf höchstem Niveau geschult." },
+                     { q: "Verwenden Sie umweltfreundliche Produkte?", a: "Absolut. Wir legen Wert auf die Gesundheit Ihrer Familie, Haustiere und unseres Planeten, indem wir hochwertige, umweltfreundliche Reinigungsprodukte verwenden." },
+                     { q: "Wie erhalte ich ein Angebot?", a: "Sie erhalten ein kostenloses, unverbindliches Angebot, indem Sie das Kontaktformular auf unserer Website ausfüllen oder uns direkt unter +49 176 61852286 anrufen." }
                  ],
-                // AI Tips
-                tipTitle: "✨ Holen Sie sich einen individuellen Reinigungstipp",
-                tipSubtitle: "Stecken Sie bei einem hartnäckigen Reinigungsproblem fest? Lassen Sie sich von unserem KI-Experten helfen!",
-                tipRoomLabel: "Wählen Sie einen Raum", tipChallengeLabel: "Wählen Sie eine Herausforderung",
+                calculatorTitle: "Sofortige Kostenschätzung",
+                calculatorSubtitle: "Dies ist nur eine Schätzung. Ein endgültiges Angebot wird nach einer Beratung erstellt.",
+                calculatorResultTitle: "Geschätzter Preis:", calculatorResultSubtitle: "Basierend auf einer einmaligen Reinigung",
+                tipTitle: "✨ Profi-Reinigungstipp erhalten",
+                tipSubtitle: "Bei einem hartnäckigen Reinigungsproblem festgefahren? Lassen Sie sich von unserem KI-Experten helfen!",
+                tipRoomLabel: "Raum wählen", tipChallengeLabel: "Problem wählen",
                 tipRoomKitchen: "Küche", tipRoomBathroom: "Badezimmer", tipRoomLiving: "Wohnzimmer", tipRoomBedroom: "Schlafzimmer",
                 tipChallengeGrime: "Alltäglicher Schmutz", tipChallengeGrease: "Hartnäckiges Fett", tipChallengeLimescale: "Kalk & hartes Wasser", tipChallengeDust: "Staub & Allergene", tipChallengePet: "Haustier-Schmutz",
                 tipBtnGenerate: "Tipp generieren",
-                // Contact
                 contactTitle: "Kontakt aufnehmen",
-                contactSubtitle: "Wir sind hier, um alle Fragen zu beantworten. Kontaktieren Sie uns für ein kostenloses, unverbindliches Angebot für Ihre Reinigungsbedürfnisse in Bischofsheim.",
-                contactHours: "Mo - Sa: 8:00 - 18:00 Uhr",
-                // Form
-                formTitle: "Buchung oder Angebot anfragen",
+                contactSubtitle: "Wir beantworten gerne Ihre Fragen. Fordern Sie ein kostenloses, unverbindliches Angebot für Ihren Reinigungsbedarf in Bischofsheim an.",
+                contactHours: "Mo - Sa: 08:00 - 18:00 Uhr",
+                formTitle: "Fordern Sie Ihr kostenloses Angebot an",
                 formName: "Name *", formEmail: "E-Mail (Optional)", formPhone: "Telefon *", formMessage: "Nachricht *",
                 formServiceLabel: "Leistung auswählen", formServiceSelect: "Leistung auswählen",
-                formBtnSubmit: "Anfrage senden", formBtnSending: "Senden...",
+                formBtnSubmit: "Anfrage absenden", formBtnSending: "Senden...",
                 formSuccess: "Vielen Dank! Wir werden uns bald bei Ihnen melden.", formError: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
-                // Footer
                 footerDesc: "Premium-Reinigungslösungen für Haushalte und Büros in Bischofsheim",
-                footerLinksTitle: "Schnell-Links", footerServicesTitle: "Unsere Leistungen", footerFollowTitle: "Folgen Sie uns",
+                footerLinksTitle: "Quick Links", footerServicesTitle: "Unsere Leistungen", footerFollowTitle: "Folgen Sie uns",
                 footerImpressum: "Impressum", footerPrivacy: "Datenschutz", footerRights: "Alle Rechte vorbehalten.",
-                // CTA
                 ctaCall: "Jetzt anrufen", ctaQuote: "Angebot anfordern",
-                // Modal
                 modalDownload: "Herunterladen", modalClose: "Schließen"
             }
         };
@@ -1468,8 +1396,6 @@
             if (!translations[lang]) return;
             document.documentElement.lang = lang;
             localStorage.setItem('preferredLanguage', lang);
-            document.querySelector('meta[name="description"]').setAttribute('content', translations[lang].metaDescription);
-            document.querySelector('meta[name="keywords"]').setAttribute('content', translations[lang].metaKeywords);
             document.querySelectorAll('[data-translate]').forEach(el => {
                 const key = el.dataset.translate;
                 if (translations[lang][key]) el.innerHTML = translations[lang][key];
@@ -1482,9 +1408,6 @@
             document.querySelectorAll('.lang-switcher button').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.lang === lang);
             });
-            if (typeof gtag === 'function') {
-                gtag('event', 'language_switch', { 'event_category': 'Engagement', 'event_label': lang });
-            }
         };
 
         const renderFaq = (lang) => {
@@ -1519,7 +1442,7 @@
 
         const createChecklistPrompt = (serviceName) => {
              const lang = document.documentElement.lang || 'en';
-             return `Act as a professional cleaning expert from AJK Cleaning Company. Generate a comprehensive cleaning checklist for a typical '${serviceName}' service, in ${lang === 'de' ? 'German' : 'English'}. The checklist should be well-organized, easy to follow, and formatted in Markdown with headings (like '# Kitchen') and bullet points (like '* Wipe countertops').`;
+             return `Act as a professional cleaning expert. Generate a comprehensive cleaning checklist for a typical '${serviceName}' service, in ${lang === 'de' ? 'German' : 'English'}. Format in Markdown with headings (like '# Kitchen') and bullet points (like '* Wipe countertops').`;
         }
 
         const openChecklistModal = (serviceName) => {
@@ -1552,34 +1475,26 @@
             } catch (error) {
                 console.error("Gemini API call failed:", error.message);
                 checklistLoader.style.display = 'none';
-                checklistError.innerHTML = `Sorry, we couldn't generate the checklist. <br><small class="text-gray-500">Reason: ${error.message}</small>`;
+                checklistError.innerHTML = `Sorry, we couldn't generate the checklist. <br><small>Reason: ${error.message}</small>`;
                 checklistError.classList.remove('hidden');
             }
         };
 
         document.querySelectorAll('.get-checklist-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const serviceName = e.target.dataset.service;
-                openChecklistModal(serviceName);
-            });
+            btn.addEventListener('click', (e) => openChecklistModal(e.target.dataset.service));
         });
 
         checklistModalClose.addEventListener('click', closeChecklistModal);
         checklistModalCloseBottom.addEventListener('click', closeChecklistModal);
-        checklistModal.addEventListener('click', (e) => {
-            if (e.target === checklistModal) closeChecklistModal();
-        });
+        checklistModal.addEventListener('click', (e) => { if (e.target === checklistModal) closeChecklistModal(); });
         checklistModalDownload.addEventListener('click', () => {
             const blob = new Blob([currentChecklistText], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             const serviceName = checklistModalTitle.textContent.replace(' Checklist', '').toLowerCase().replace(/ /g, '_');
-            a.href = url;
-            a.download = `${serviceName}_checklist.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            a.href = url; a.download = `${serviceName}_checklist.txt`;
+            document.body.appendChild(a); a.click();
+            document.body.removeChild(a); URL.revokeObjectURL(url);
         });
 
         // --- AI Cleaning Tip Generator ---
@@ -1596,7 +1511,7 @@
             setTimeout(() => tipResultContainer.classList.remove('opacity-0'), 10);
             tipResultText.classList.add('hidden');
             tipResultLoader.style.display = 'flex';
-            const prompt = `You are a friendly cleaning expert from AJK Cleaning Company in Germany. Provide a quick, eco-friendly cleaning tip in ${lang === 'de' ? 'German' : 'English'} for tackling "${challenge}" in a "${room}". Keep it under 50 words and make it easy to follow.`;
+            const prompt = `You are a friendly cleaning expert. Provide a quick, eco-friendly cleaning tip in ${lang === 'de' ? 'German' : 'English'} for tackling "${challenge}" in a "${room}". Keep it under 50 words and easy to follow.`;
             try {
                 const text = await callGeminiAPI([{ role: 'user', parts: [{ text: prompt }] }]);
                 tipResultLoader.style.display = 'none';
@@ -1609,62 +1524,50 @@
             }
         });
         
-        // --- Calculator Logic ---
+        // --- IMPROVED: Calculator Logic ---
+        const styledSliders = document.querySelectorAll('.styled-slider');
         const calcService = document.getElementById('calc-service');
         const residentialInputs = document.getElementById('residential-inputs');
         const commercialInputs = document.getElementById('commercial-inputs');
-        const calcBedrooms = document.getElementById('calc-bedrooms');
-        const bedroomsValue = document.getElementById('bedrooms-value');
-        const calcBathrooms = document.getElementById('calc-bathrooms');
-        const bathroomsValue = document.getElementById('bathrooms-value');
-        const calcSqm = document.getElementById('calc-sqm');
-        const sqmValue = document.getElementById('sqm-value');
         const calcFrequency = document.getElementById('calc-frequency');
         const estimateResult = document.getElementById('estimate-result');
+
+        function updateSliderUI(slider) {
+            const valueDisplay = document.getElementById(slider.id.replace('calc-', '') + '-value');
+            if (valueDisplay) {
+                valueDisplay.textContent = slider.value;
+            }
+            const min = slider.min || 0;
+            const max = slider.max || 100;
+            const percent = ((slider.value - min) / (max - min)) * 100;
+            slider.style.background = `linear-gradient(to right, var(--primary) ${percent}%, #e5e7eb ${percent}%)`;
+        }
 
         function updateEstimate() {
             const selectedOption = calcService.options[calcService.selectedIndex];
             const serviceType = selectedOption.dataset.type;
             const serviceBase = parseInt(selectedOption.value);
-            
-            // Show/hide relevant inputs based on service type
-            if (serviceType === 'commercial') {
-                residentialInputs.classList.add('hidden');
-                commercialInputs.classList.remove('hidden');
-            } else { // residential or deep-residential
-                residentialInputs.classList.remove('hidden');
-                commercialInputs.classList.add('hidden');
-            }
-
+            residentialInputs.classList.toggle('hidden', serviceType === 'commercial');
+            commercialInputs.classList.toggle('hidden', serviceType !== 'commercial');
             let price = serviceBase;
-
-            // Calculate price based on visible inputs
             if (serviceType === 'commercial') {
-                const sqm = parseInt(calcSqm.value);
-                const frequencyMultiplier = parseFloat(calcFrequency.value);
-                sqmValue.textContent = sqm;
-                // Commercial pricing logic
-                price += (sqm * 1.5); // Example: €1.5 per sqm
-                price *= frequencyMultiplier;
+                price += (parseInt(document.getElementById('calc-sqm').value) * 1.5);
+                price *= parseFloat(calcFrequency.value);
             } else {
-                const numBedrooms = parseInt(calcBedrooms.value);
-                const numBathrooms = parseInt(calcBathrooms.value);
-                bedroomsValue.textContent = numBedrooms;
-                bathroomsValue.textContent = numBathrooms;
-                // Residential pricing logic
-                price += (numBedrooms * 25) + (numBathrooms * 35);
+                price += (parseInt(document.getElementById('calc-bedrooms').value) * 25) + (parseInt(document.getElementById('calc-bathrooms').value) * 35);
             }
-            
             const lowerBound = Math.round(price * 0.9 / 5) * 5;
             const upperBound = Math.round(price * 1.1 / 5) * 5;
-
             estimateResult.textContent = `€${lowerBound} - €${upperBound}`;
         }
 
-        // Add event listeners to all calculator inputs
-        [calcService, calcBedrooms, calcBathrooms, calcSqm, calcFrequency].forEach(el => {
-            const eventType = el.tagName === 'SELECT' ? 'change' : 'input';
-            el.addEventListener(eventType, updateEstimate);
+        styledSliders.forEach(slider => {
+            slider.addEventListener('input', () => updateSliderUI(slider));
+            updateSliderUI(slider); // Initial update
+        });
+
+        [calcService, calcFrequency, ...styledSliders].forEach(el => {
+            el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', updateEstimate);
         });
         
         // --- Page Interactivity ---
@@ -1691,82 +1594,101 @@
             });
         });
         const navbar = document.getElementById('navbar');
-        const navLinks = document.querySelectorAll('.nav-link, #mobile-menu a[href^="#"]');
+        const navLinks = document.querySelectorAll('nav a');
         window.addEventListener('scroll', () => {
-            window.scrollY > 50 ? navbar.classList.add('navbar-scrolled') : navbar.classList.remove('navbar-scrolled');
+            navbar.classList.toggle('navbar-scrolled', window.scrollY > 50);
             let currentSection = "";
-            document.querySelectorAll('section').forEach(section => {
-                if (section.offsetTop <= window.scrollY + 150) {
-                    currentSection = section.getAttribute('id');
-                }
+            document.querySelectorAll('main > section').forEach(section => {
+                if (section.offsetTop <= window.scrollY + 150) { currentSection = section.id; }
             });
             navLinks.forEach(link => {
                 link.classList.remove('active');
-                if (link.getAttribute('href').substring(1) === currentSection) {
-                    link.classList.add('active');
-                }
+                if (link.getAttribute('href').substring(1) === currentSection) { link.classList.add('active'); }
             });
         });
 
-        // --- Contact Form ---
+        // --- Enhanced Contact Form ---
         const contactForm = document.getElementById('contact-form');
+        const nameInput = document.getElementById('name');
+        const phoneInput = document.getElementById('phone');
+        const messageInput = document.getElementById('message');
+        const charCounter = document.getElementById('char-counter');
+        const submitBtn = document.getElementById('submit-btn');
+
+        const validators = {
+            name: (v) => v.trim().length >= 2,
+            phone: (v) => /^[+]?[\d\s\-()]{8,20}$/.test(v.trim()),
+            message: (v) => v.trim().length >= 10 && v.trim().length <= 1000,
+        };
+
+        const validateField = (field) => {
+            const isValid = validators[field.id] ? validators[field.id](field.value) : true;
+            field.classList.toggle('valid', isValid);
+            field.classList.toggle('invalid', !isValid);
+            checkFormValidity();
+        };
+        
+        const checkFormValidity = () => {
+            submitBtn.disabled = !(validators.name(nameInput.value) && validators.phone(phoneInput.value) && validators.message(messageInput.value));
+        };
+
+        [nameInput, phoneInput, messageInput].forEach(input => {
+            input.addEventListener('input', () => validateField(input));
+        });
+
+        messageInput.addEventListener('input', () => {
+            const len = messageInput.value.length;
+            charCounter.textContent = `${len} / 1000`;
+            charCounter.classList.toggle('invalid', len < 10 || len > 1000);
+        });
+
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const submitBtn = document.getElementById('submit-btn');
+            checkFormValidity();
+            if (submitBtn.disabled) return;
             const submitText = document.getElementById('submit-text');
             const submitLoading = document.getElementById('submit-loading');
             const formSuccess = document.getElementById('form-success');
             const formError = document.getElementById('form-error');
-            
-            submitText.classList.add('hidden');
-            submitLoading.classList.remove('hidden');
-            submitBtn.disabled = true;
-            formSuccess.classList.add('hidden');
-            formError.classList.add('hidden');
-
-            const formData = new FormData(contactForm);
-            const data = Object.fromEntries(formData.entries());
-
+            submitText.classList.add('hidden'); submitLoading.classList.remove('hidden');
+            submitBtn.disabled = true; formSuccess.classList.add('hidden'); formError.classList.add('hidden');
             try {
                 const response = await fetch('/api/form/submit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(Object.fromEntries(new FormData(contactForm).entries()))
                 });
-
-                const result = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(result.error || 'Form submission failed');
-                }
-
-                formSuccess.classList.remove('hidden');
-                contactForm.reset();
-                updateEstimate(); // Reset calculator display
-                setTimeout(() => formSuccess.classList.add('hidden'), 5000);
-
+                if (!response.ok) { throw new Error((await response.json()).error || 'Form submission failed'); }
+                formSuccess.classList.remove('hidden'); contactForm.reset();
+                [nameInput, phoneInput, messageInput].forEach(input => input.classList.remove('valid', 'invalid'));
+                charCounter.textContent = '0 / 1000'; charCounter.classList.remove('invalid');
+                checkFormValidity();
             } catch (error) {
-                console.error('Form submission error:', error);
-                formError.textContent = error.message || 'An error occurred. Please try again.';
-                formError.classList.remove('hidden');
-                setTimeout(() => formError.classList.add('hidden'), 5000);
+                formError.textContent = error.message; formError.classList.remove('hidden');
             } finally {
-                submitText.classList.remove('hidden');
-                submitLoading.classList.add('hidden');
-                submitBtn.disabled = false;
+                submitText.classList.remove('hidden'); submitLoading.classList.add('hidden');
             }
         });
         
+        // --- IMPROVED: Date Picker Logic ---
+        const preferredDateInput = document.getElementById('preferred-date');
+        const today = new Date();
+        const maxDate = new Date();
+        maxDate.setMonth(today.getMonth() + 3);
+
+        // Set the minimum date to today (cannot select past dates)
+        preferredDateInput.min = today.toISOString().split("T")[0];
+        // Set the maximum date to 3 months from now
+        preferredDateInput.max = maxDate.toISOString().split("T")[0];
+
         // --- Initial Load ---
         const userLang = localStorage.getItem('preferredLanguage') || navigator.language.split('-')[0];
         setLanguage(translations[userLang] ? userLang : 'en');
-        updateEstimate(); // Initial calculator run
+        updateEstimate();
+        checkFormValidity();
     });
     </script>
-    <!-- ANALYTICS TRACKING SCRIPT -->
     <script>
       (function() {
-        // Function to generate or retrieve a unique session ID for the user
         function getAnalyticsSessionId() {
           let sessionId = sessionStorage.getItem('ajkAnalyticsSessionId');
           if (!sessionId) {
@@ -1775,36 +1697,16 @@
           }
           return sessionId;
         }
-
-        // Function to send tracking data to the backend
         async function trackEvent(eventType, eventData = {}) {
-          const payload = {
-            eventType: eventType,
-            path: window.location.pathname,
-            referrer: document.referrer || 'direct',
-            sessionId: getAnalyticsSessionId(),
-            ...eventData
-          };
-
+          const payload = { eventType, path: window.location.pathname, referrer: document.referrer || 'direct', sessionId: getAnalyticsSessionId(), ...eventData };
           try {
-            // Use navigator.sendBeacon if available for reliability, otherwise fallback to fetch
             if (navigator.sendBeacon) {
-              const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
-              navigator.sendBeacon('/api/analytics/track', blob);
+              navigator.sendBeacon('/api/analytics/track', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
             } else {
-              await fetch('/api/analytics/track', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-                keepalive: true 
-              });
+              await fetch('/api/analytics/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), keepalive: true });
             }
-          } catch (error) {
-            console.error('Analytics tracking failed:', error);
-          }
+          } catch (error) { console.error('Analytics tracking failed:', error); }
         }
-
-        // Track the initial pageview when the script loads
         trackEvent('pageview');
       })();
     </script>

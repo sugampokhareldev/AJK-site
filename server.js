@@ -19,6 +19,7 @@ const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
 const geoip = require('geoip-lite'); // Added for analytics
+const helmet = require('helmet');
 
 // Use memory store for sessions to avoid file system issues on Render
 const MemoryStore = require('memorystore')(session);
@@ -54,8 +55,11 @@ if (!fs.existsSync(dbDir)) {
 }
 
 const adapter = new JSONFile(dbPath);
-// Added 'analytics_events' to the database structure
 const db = new Low(adapter, { submissions: [], admin_users: [], offline_messages: {}, chats: {}, analytics_events: [] });
+
+// Analytics Batching Setup
+const analyticsQueue = [];
+let isWritingAnalytics = false;
 
 // =================================================================
 // DATABASE CACHING
@@ -97,6 +101,7 @@ function clearCache(key = null) {
 // MIDDLEWARE SETUP
 // =================================================================
 app.use(compression());
+app.use(helmet({ contentSecurityPolicy: false })); // Keep our custom CSP
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
@@ -163,7 +168,6 @@ const csrfProtection = csrf({ cookie: true });
 
 // Conditionally apply CSRF protection. Public POST endpoints are excluded.
 app.use((req, res, next) => {
-    // Added /api/analytics/track to the exclusion list for public tracking
     const excludedRoutes = ['/api/form/submit', '/api/gemini', '/api/analytics/track'];
     if (excludedRoutes.includes(req.path)) {
         return next();
@@ -255,7 +259,6 @@ app.post('/api/gemini', async (req, res) => {
 // ==================== WEBSOCKET CHAT SERVER ====================
 const clients = new Map();
 const adminSessions = new Map();
-const chatHistory = [];
 const connectionQuality = new Map();
 
 // Persist a chat message to LowDB for a given clientId
@@ -311,7 +314,6 @@ function deliverAdminOfflineMessages() {
   Object.keys(db.data.offline_messages).forEach(clientId => {
     const messages = db.data.offline_messages[clientId];
     messages.forEach(msg => {
-      chatHistory.push(msg.message);
       broadcastToAll(msg.message);
     });
     
@@ -368,8 +370,6 @@ async function sendToClient(clientId, messageText, sourceSessionId = null) {
         sessionId: sourceSessionId
     };
 
-    chatHistory.push(adminMessage);
-
     if (client && client.ws.readyState === WebSocket.OPEN) {
         try {
             client.ws.send(JSON.stringify(adminMessage));
@@ -422,8 +422,6 @@ function broadcastToClients(messageText, sourceSessionId = null) {
                 clientId: client.id,
                 sessionId: sourceSessionId
             };
-            
-            chatHistory.push(adminMessage);
             
             try {
                 client.ws.send(JSON.stringify(adminMessage));
@@ -577,20 +575,13 @@ async function handleAdminMessage(adminClient, message) {
                     await db.read();
                     const clientChat = db.data.chats[message.clientId];
                     
-                    const memoryMessages = chatHistory.filter(m => m.clientId === message.clientId);
-                    const persistedMessages = (clientChat && !clientChat.deleted) ? (clientChat.messages || []) : [];
-                    
-                    const allMessages = [...memoryMessages, ...persistedMessages];
-                    const uniqueMessages = allMessages.filter((msg, index, self) => 
-                        index === self.findIndex(m => m.id === msg.id)
-                    );
-                    
-                    uniqueMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                    const messages = (clientChat && !clientChat.deleted) ? (clientChat.messages || []) : [];
+                    messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
                     adminClient.ws.send(JSON.stringify({
                         type: 'chat_history',
                         clientId: message.clientId,
-                        messages: uniqueMessages
+                        messages: messages
                     }));
                 } catch (error) {
                     console.error('Error loading chat history:', error);
@@ -802,16 +793,6 @@ wss.on('connection', async (ws, request) => {
                     
                     const sanitizedText = validator.escape(messageText.trim()).substring(0, 500);
                     
-                    const isDuplicate = chatHistory.some(msg => 
-                        msg.clientId === clientId && 
-                        msg.message === sanitizedText && 
-                        (Date.now() - new Date(msg.timestamp).getTime()) < 1000
-                    );
-                    
-                    if (isDuplicate) {
-                        return;
-                    }
-                    
                     const chatMessage = {
                         id: Date.now() + '-' + Math.random().toString(36).substr(2, 9),
                         type: 'chat',
@@ -823,7 +804,6 @@ wss.on('connection', async (ws, request) => {
                         sessionId: client.sessionId
                     };
                     
-                    chatHistory.push(chatMessage);
                     await persistChatMessage(clientId, chatMessage);
                     
                     let adminOnline = false;
@@ -1305,7 +1285,7 @@ function requireAuth(req, res, next) {
 // =================================================================
 // START ANALYTICS ROUTES
 // =================================================================
-app.post('/api/analytics/track', async (req, res) => {
+app.post('/api/analytics/track', (req, res) => {
     try {
         const { eventType, path, referrer, sessionId } = req.body;
         
@@ -1328,16 +1308,38 @@ app.post('/api/analytics/track', async (req, res) => {
             userAgent: req.headers['user-agent']
         };
 
-        db.data.analytics_events.push(event);
-        await db.write();
-        clearCache('analytics');
-
+        analyticsQueue.push(event);
         res.status(202).json({ success: true });
     } catch (err) {
         console.error('Analytics tracking error:', err);
         res.status(500).json({ success: false });
     }
 });
+
+async function writeAnalyticsBatch() {
+    if (isWritingAnalytics || analyticsQueue.length === 0) {
+        return;
+    }
+
+    isWritingAnalytics = true;
+    const batch = [...analyticsQueue];
+    analyticsQueue.length = 0;
+
+    try {
+        await db.read();
+        db.data.analytics_events.push(...batch);
+        await db.write();
+        clearCache('analytics');
+        console.log(`Wrote ${batch.length} analytics events to the database.`);
+    } catch (err) {
+        console.error('Error writing analytics batch:', err);
+        analyticsQueue.unshift(...batch);
+    } finally {
+        isWritingAnalytics = false;
+    }
+}
+
+setInterval(writeAnalyticsBatch, 30000);
 
 app.get('/api/analytics', requireAuth, async (req, res) => {
     try {
@@ -1760,15 +1762,18 @@ app.get('/api/statistics', requireAuth, async (req, res) => {
     }
 });
 
-app.get('/api/chat/stats', requireAuth, (req, res) => {
+app.get('/api/chat/stats', requireAuth, async (req, res) => {
     const connectedClients = Array.from(clients.values());
     const adminClients = connectedClients.filter(client => client.isAdmin);
     const userClients = connectedClients.filter(client => !client.isAdmin);
     
+    await db.read();
+    const totalMessages = Object.values(db.data.chats || {}).reduce((acc, chat) => acc + (chat.messages ? chat.messages.length : 0), 0);
+
     res.json({
         connectedClients: clients.size,
         activeChats: userClients.length,
-        totalMessages: chatHistory.length,
+        totalMessages: totalMessages,
         adminOnline: adminClients.length,
         admins: adminClients.map(a => ({ name: a.name, joined: a.joined })),
         users: userClients.map(u => ({ 
@@ -1825,10 +1830,19 @@ app.get('/api/chat/history/:clientId', requireAuth, async (req, res) => {
     }
 });
 
-app.get('/api/chat/history', requireAuth, (req, res) => {
-    const limit = parseInt(req.query.limit) || 100;
-    const filteredHistory = chatHistory.slice(-limit);
-    res.json(filteredHistory);
+app.get('/api/chat/history', requireAuth, async (req, res) => {
+    try {
+        await db.read();
+        const allMessages = Object.values(db.data.chats || {})
+            .flatMap(chat => (chat.messages || []).map(msg => ({ ...msg, clientId: chat.clientInfo ? chat.clientInfo.id : 'unknown' }))); // Add clientId for context
+        allMessages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        const limit = parseInt(req.query.limit) || 100;
+        const paginatedMessages = allMessages.slice(0, limit);
+        res.json(paginatedMessages);
+    } catch (error) {
+        console.error('Error fetching all chat history:', error);
+        res.status(500).json({ error: 'Database error' });
+    }
 });
 
 app.get('/api/chats', requireAuth, async (req, res) => {
@@ -1877,12 +1891,6 @@ app.delete('/api/chats/:clientId', requireAuth, async (req, res) => {
                     }, 500);
                 } catch (e) {
                     console.error('Error notifying client of chat reset:', e);
-                }
-            }
-            
-            for (let i = chatHistory.length - 1; i >= 0; i--) {
-                if (chatHistory[i].clientId === clientId) {
-                    chatHistory.splice(i, 1);
                 }
             }
             
@@ -2198,3 +2206,4 @@ initializeDB().then(() => {
     console.error('Failed to initialize and start server:', err);
     process.exit(1);
 });
+
