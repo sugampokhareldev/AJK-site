@@ -1,0 +1,1564 @@
+{
+  "submissions": [
+    {
+      "id": "ecd8cf07-9a69-4d99-98f9-58cef6521e88",
+      "name": "sugam pokharel",
+      "email": "pokharels562@gmail.com",
+      "phone": "",
+      "service": "Commercial Cleaning",
+      "message": "sssssss",
+      "submitted_at": "2025-09-26T10:13:55.826Z",
+      "ip": "127.0.0.1"
+    },
+    {
+      "id": "85cdde72-b934-4276-acc4-6864abc6217d",
+      "name": "sugam pokharel",
+      "email": "pokharels562@gmail.com",
+      "phone": "",
+      "service": "Commercial Cleaning",
+      "message": "sssssssssssssssss",
+      "submitted_at": "2025-09-26T10:23:58.059Z",
+      "ip": "127.0.0.1"
+    }
+  ],
+  "admin_users": [
+    {
+      "id": 1758276883200,
+      "username": "Sanud119@gmail.com",
+      "password_hash": "$2b$12$FL1NE3/cbmptxBzDP.nwD.NaOiT18kUrOPUU8y9JvZx2CzEGtK1rS",
+      "created_at": "2025-09-19T10:14:43.200Z"
+    },
+    {
+      "id": 1758903383390,
+      "username": "admin",
+      "password_hash": "$2b$12$tz8PZHqXzDAic0GBOHnRlek3ql/JzBjHOISz7nATrYX4i9JFI8FB6",
+      "created_at": "2025-09-26T16:16:23.390Z"
+    },
+    {
+      "id": 1759409000172,
+      "email": "Sanudhakal119@gmail.com",
+      "username": "Sanudhakal119",
+      "password_hash": "$2b$12$/tZfPAvaoAH7uBlK6dLdbuEsJ14ps06bvS8n/lIGBbxeLuYCcWqqC",
+      "created_at": "2025-10-02T12:43:20.172Z"
+    }
+  ],
+  "offline_messages": {},
+  "chats": {
+    "client_1758475759027sk1yx7lmj": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-22T04:29:37.614Z",
+        "lastSeen": "2025-09-22T04:36:15.484Z"
+      },
+      "messages": [
+        {
+          "id": "1758515762033-pxskaebik",
+          "message": "sss",
+          "timestamp": "2025-09-22T04:36:02.035Z",
+          "isAdmin": false,
+          "type": "chat"
+        }
+      ],
+      "deleted": true,
+      "deletedAt": "2025-09-22T04:36:19.752Z"
+    },
+    "client_a0b21c91-7e09-4c7b-a7a4-1247cc0b4988": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-22T04:55:23.926Z",
+        "lastSeen": "2025-09-22T04:55:28.673Z"
+      },
+      "messages": [],
+      "deleted": true,
+      "deletedAt": "2025-09-22T04:55:30.432Z"
+    },
+    "client_f421008b-73ce-432a-b954-b258b92c7293": {
+      "clientInfo": {
+        "name": "Durgam",
+        "email": "",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-22T04:55:33.853Z",
+        "lastSeen": "2025-09-22T04:55:58.993Z"
+      },
+      "messages": [
+        {
+          "id": "1758516954208-als1uejs0",
+          "message": "Hi",
+          "timestamp": "2025-09-22T04:55:54.210Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758516954215-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-22T04:55:54.215Z",
+          "isAdmin": false,
+          "type": "system"
+        },
+        {
+          "id": "1758516990364-clithz88m",
+          "message": "hi",
+          "timestamp": "2025-09-22T04:56:30.364Z",
+          "isAdmin": true,
+          "type": "chat"
+        }
+      ],
+      "offlineAutoMessageSent": true,
+      "deleted": true,
+      "deletedAt": "2025-09-22T04:56:46.569Z"
+    },
+    "client_4b73a3e7-9da8-4676-ba0d-d664247f3c67": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "pokharels562@gmail.com",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-22T04:56:50.135Z",
+        "lastSeen": "2025-09-22T05:01:38.936Z"
+      },
+      "messages": [
+        {
+          "id": "1758517260932-xt0kcljkt",
+          "message": "Hi",
+          "timestamp": "2025-09-22T05:01:00.934Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758517260947-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-22T05:01:00.947Z",
+          "isAdmin": false,
+          "type": "system"
+        }
+      ],
+      "offlineAutoMessageSent": true,
+      "deleted": true,
+      "deletedAt": "2025-09-22T05:01:53.000Z"
+    },
+    "client_c25f4be7-fd5b-4cf2-b706-48e5fe7a6ea7": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-22T07:36:05.787Z",
+        "lastSeen": "2025-09-22T07:36:34.583Z"
+      },
+      "messages": [
+        {
+          "id": "1758526587070-cum4kqa3v",
+          "message": "hi",
+          "timestamp": "2025-09-22T07:36:27.071Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758526587078-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-22T07:36:27.078Z",
+          "isAdmin": false,
+          "type": "system"
+        }
+      ],
+      "offlineAutoMessageSent": true,
+      "deleted": true,
+      "deletedAt": "2025-09-22T07:36:38.384Z"
+    },
+    "client_409c6290-7fd4-4244-9940-9bf2b1255b81": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "pokharels562@gmail.com",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-22T07:56:15.154Z",
+        "lastSeen": "2025-09-22T07:56:15.292Z"
+      },
+      "messages": [
+        {
+          "id": "1758527793876-t981qsnmb",
+          "message": "hi",
+          "timestamp": "2025-09-22T07:56:33.876Z",
+          "isAdmin": true,
+          "type": "chat"
+        }
+      ],
+      "deleted": true,
+      "deletedAt": "2025-09-22T07:56:40.513Z"
+    },
+    "client_bf0c9400-9994-4717-b0ff-56a4703c300c": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-22T08:03:30.908Z",
+        "lastSeen": "2025-09-22T08:03:41.264Z"
+      },
+      "messages": [
+        {
+          "id": "1758528227889-h31jvc49w",
+          "message": "hi",
+          "timestamp": "2025-09-22T08:03:47.889Z",
+          "isAdmin": true,
+          "type": "chat"
+        }
+      ],
+      "deleted": true,
+      "deletedAt": "2025-09-22T08:03:59.059Z"
+    },
+    "client_776edf31-4564-4f9a-acfd-00064d5d9bdf": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-22T08:04:15.291Z",
+        "lastSeen": "2025-09-22T08:09:14.895Z"
+      },
+      "messages": [
+        {
+          "id": "1758528558080-x5coql5pe",
+          "message": "hi",
+          "timestamp": "2025-09-22T08:09:18.082Z",
+          "isAdmin": false,
+          "type": "chat"
+        }
+      ],
+      "deleted": true,
+      "deletedAt": "2025-09-22T08:09:28.661Z"
+    },
+    "client_c0ce00ba-69a2-407a-80ce-7cf209927dc2": {
+      "clientInfo": {
+        "name": "zz",
+        "email": "",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-22T08:09:40.652Z",
+        "lastSeen": "2025-09-22T08:33:08.902Z"
+      },
+      "messages": [
+        {
+          "id": "1758528599770-xq6ojdi6m",
+          "message": "a",
+          "timestamp": "2025-09-22T08:09:59.772Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758528599780-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-22T08:09:59.780Z",
+          "isAdmin": false,
+          "type": "system"
+        },
+        {
+          "id": "1758529245622-dsmypt782",
+          "message": "hello",
+          "timestamp": "2025-09-22T08:20:45.624Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758529432580-i3ul9eq7o",
+          "message": "hi",
+          "timestamp": "2025-09-22T08:23:52.582Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758529639521-xaium34mr",
+          "message": "hi",
+          "timestamp": "2025-09-22T08:27:19.523Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758529647167-3yrhtnkx6",
+          "message": "hi",
+          "timestamp": "2025-09-22T08:27:27.167Z",
+          "isAdmin": true,
+          "type": "chat"
+        },
+        {
+          "id": "1758529694755-fmdlqx941",
+          "message": "how may i help you",
+          "timestamp": "2025-09-22T08:28:14.755Z",
+          "isAdmin": true,
+          "type": "chat"
+        },
+        {
+          "id": "1758529751955-xbcwp3v88",
+          "message": "zzz",
+          "timestamp": "2025-09-22T08:29:11.955Z",
+          "isAdmin": true,
+          "type": "chat"
+        }
+      ],
+      "offlineAutoMessageSent": true,
+      "deleted": true,
+      "deletedAt": "2025-09-22T08:33:29.014Z"
+    },
+    "client_c461b0c7-bad8-4e3e-af05-65dceb74b03f": {
+      "clientInfo": {
+        "name": "dd",
+        "email": "",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-22T08:33:32.263Z",
+        "lastSeen": "2025-09-22T11:02:40.056Z"
+      },
+      "messages": [
+        {
+          "id": "1758530017970-mitf29yid",
+          "message": "hi",
+          "timestamp": "2025-09-22T08:33:37.972Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758530029012-6h4yz0eq1",
+          "message": "hi",
+          "timestamp": "2025-09-22T08:33:49.012Z",
+          "isAdmin": true,
+          "type": "chat"
+        },
+        {
+          "id": "1758531241425-bd6988x5y",
+          "message": "hi",
+          "timestamp": "2025-09-22T08:54:01.425Z",
+          "isAdmin": true,
+          "type": "chat"
+        },
+        {
+          "id": "1758531250665-j3gkgvgy6",
+          "message": "yo",
+          "timestamp": "2025-09-22T08:54:10.667Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758531250679-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-22T08:54:10.679Z",
+          "isAdmin": false,
+          "type": "system"
+        },
+        {
+          "id": "1758531455716-7idkxc4wz",
+          "message": "hi i need to book the service",
+          "timestamp": "2025-09-22T08:57:35.718Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758531472702-7delshcfi",
+          "message": "okay please send your details",
+          "timestamp": "2025-09-22T08:57:52.702Z",
+          "isAdmin": true,
+          "type": "chat"
+        }
+      ],
+      "offlineAutoMessageSent": true,
+      "status": "pending",
+      "deleted": true,
+      "deletedAt": "2025-09-22T11:03:49.674Z"
+    },
+    "client_cbfa855a-a2b3-4ea4-82c7-2dfae3b59691": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-22T11:04:03.618Z",
+        "lastSeen": "2025-09-22T11:21:06.283Z"
+      },
+      "messages": [
+        {
+          "id": "1758539056830-2skmekgih",
+          "message": "hi",
+          "timestamp": "2025-09-22T11:04:16.833Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758539056840-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-22T11:04:16.840Z",
+          "isAdmin": false,
+          "type": "system"
+        },
+        {
+          "id": "1758539080793-9toq0uuc2",
+          "message": "hello",
+          "timestamp": "2025-09-22T11:04:40.793Z",
+          "isAdmin": true,
+          "type": "chat"
+        },
+        {
+          "id": "1758539108287-1xcpui3hv",
+          "message": "hi want to book your service",
+          "timestamp": "2025-09-22T11:05:08.290Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758539146676-n6cb58sys",
+          "message": "okay",
+          "timestamp": "2025-09-22T11:05:46.676Z",
+          "isAdmin": true,
+          "type": "chat"
+        },
+        {
+          "id": "1758539789345-cjjy3a0sq",
+          "message": "Can you provide your contact details",
+          "timestamp": "2025-09-22T11:16:29.345Z",
+          "isAdmin": true,
+          "type": "chat"
+        }
+      ],
+      "offlineAutoMessageSent": true,
+      "deleted": true,
+      "deletedAt": "2025-09-22T11:21:10.050Z"
+    },
+    "client_1c5d24d9-2f54-4dc5-aa3e-8d1c061bbaae": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "pokharels562@gmail.com",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-22T11:51:22.275Z",
+        "lastSeen": "2025-09-22T11:51:34.305Z"
+      },
+      "messages": [
+        {
+          "id": "1758541897261-gc4v9ros8",
+          "message": "hello",
+          "timestamp": "2025-09-22T11:51:37.263Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758541897268-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-22T11:51:37.268Z",
+          "isAdmin": false,
+          "type": "system"
+        },
+        {
+          "id": "1758541915339-xx5vzni9h",
+          "message": "hi",
+          "timestamp": "2025-09-22T11:51:55.339Z",
+          "isAdmin": true,
+          "type": "chat"
+        }
+      ],
+      "offlineAutoMessageSent": true,
+      "deleted": true,
+      "deletedAt": "2025-09-22T11:52:01.558Z"
+    },
+    "client_b9010cfd-5d6e-4903-95fc-dd483f150853": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "pokharels562@gmail.com",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-22T12:35:32.280Z",
+        "lastSeen": "2025-09-22T12:36:14.334Z"
+      },
+      "messages": [
+        {
+          "id": "1758544566814-nhs3wa3t8",
+          "message": "s",
+          "timestamp": "2025-09-22T12:36:06.816Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758544566824-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-22T12:36:06.824Z",
+          "isAdmin": false,
+          "type": "system"
+        },
+        {
+          "id": "1758544579044-slacsja2u",
+          "message": "hi",
+          "timestamp": "2025-09-22T12:36:19.044Z",
+          "isAdmin": true,
+          "type": "chat"
+        }
+      ],
+      "status": "active",
+      "offlineAutoMessageSent": true,
+      "deleted": true,
+      "deletedAt": "2025-09-22T12:36:45.848Z"
+    },
+    "client_1758721972728oxaamkphs": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "pokharels562@gmail.com",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-24T13:53:47.665Z",
+        "lastSeen": "2025-09-24T13:54:12.467Z"
+      },
+      "messages": [
+        {
+          "id": "1758722029989-z9gan67ty",
+          "message": "zzz",
+          "timestamp": "2025-09-24T13:53:49.990Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758722029999-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-24T13:53:49.999Z",
+          "isAdmin": false,
+          "type": "system"
+        },
+        {
+          "id": "1758722035720-404h6ojc7",
+          "message": "hi",
+          "timestamp": "2025-09-24T13:53:55.720Z",
+          "isAdmin": true,
+          "type": "chat"
+        },
+        {
+          "id": "1758722046855-akpa8hrn2",
+          "message": "damm",
+          "timestamp": "2025-09-24T13:54:06.855Z",
+          "isAdmin": true,
+          "type": "chat"
+        },
+        {
+          "id": "1758722057823-1gzhilxp6",
+          "message": "hmm",
+          "timestamp": "2025-09-24T13:54:17.825Z",
+          "isAdmin": false,
+          "type": "chat"
+        }
+      ],
+      "status": "active",
+      "offlineAutoMessageSent": true,
+      "deleted": true,
+      "deletedAt": "2025-09-24T13:54:30.452Z"
+    },
+    "client_59c97d3c-7fa3-46f3-bc4d-95bde862a81e": {
+      "clientInfo": {
+        "name": "sugam",
+        "email": "pokharels562@gmail.com",
+        "ip": "127.0.0.1",
+        "firstSeen": "2025-09-24T16:05:41.404Z",
+        "lastSeen": "2025-09-24T16:05:45.450Z"
+      },
+      "messages": [
+        {
+          "id": "1758729948076-6otl98nnc",
+          "message": "hi",
+          "timestamp": "2025-09-24T16:05:48.079Z",
+          "isAdmin": false,
+          "type": "chat"
+        },
+        {
+          "id": "1758729948090-auto",
+          "message": "Thank you for contacting AJK Cleaning! We have received your message and will get back to you shortly. For immediate assistance, please call us at +49-17661852286 or email Rajau691@gmail.com.",
+          "timestamp": "2025-09-24T16:05:48.090Z",
+          "isAdmin": false,
+          "type": "system"
+        }
+      ],
+      "status": "active",
+      "offlineAutoMessageSent": true,
+      "deleted": true,
+      "deletedAt": "2025-09-24T16:05:52.937Z"
+    }
+  },
+  "pending_client_messages": {
+    "client_1758475759027sk1yx7lmj": [],
+    "client_a0b21c91-7e09-4c7b-a7a4-1247cc0b4988": [],
+    "client_f421008b-73ce-432a-b954-b258b92c7293": [],
+    "client_4b73a3e7-9da8-4676-ba0d-d664247f3c67": [],
+    "client_c25f4be7-fd5b-4cf2-b706-48e5fe7a6ea7": [],
+    "client_409c6290-7fd4-4244-9940-9bf2b1255b81": [],
+    "client_1758527764581tvglhmz24": [],
+    "client_17585277885762jkdgmeto": [],
+    "client_1758527797811n8h0ryk36": [],
+    "client_6c303419-7b3d-4306-a4aa-fd356c9573ab": [],
+    "client_bf0c9400-9994-4717-b0ff-56a4703c300c": [],
+    "client_17585282097614u7ifm4ew": [],
+    "client_1758528219357e1pgb03g1": [],
+    "client_1758528231587u3sukzmqy": [],
+    "client_1758528233452qlyvwkqss": [],
+    "client_17585282347331ttphxz8c": [],
+    "client_5dc3a3cc-0178-4f36-863f-6c59b3bf3e11": [],
+    "client_776edf31-4564-4f9a-acfd-00064d5d9bdf": [],
+    "client_afc40d67-ccb4-46f1-a2f1-c7c468335338": [],
+    "client_c0ce00ba-69a2-407a-80ce-7cf209927dc2": [],
+    "client_c461b0c7-bad8-4e3e-af05-65dceb74b03f": [],
+    "client_bea3250d-07ad-4420-8ac5-aa0067c276a6": [],
+    "client_cbfa855a-a2b3-4ea4-82c7-2dfae3b59691": []
+  },
+  "customer_interactions": [],
+  "settings": {
+    "notifications": {
+      "email": true,
+      "desktop": false,
+      "sound": true
+    },
+    "appearance": {
+      "darkMode": false,
+      "compactView": false
+    }
+  },
+  "analytics_events": [
+    {
+      "id": "5016a2c2-ba2b-4394-a24c-e047db8db1d9",
+      "timestamp": 1759168456221,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759168456171_dc5hpf6h0",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "3b48fade-cb70-43b1-8205-0ac604d007fb",
+      "timestamp": 1759168483589,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759168456171_dc5hpf6h0",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "0b965026-3f48-4b26-904a-a95e02c5c412",
+      "timestamp": 1759168525030,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759168524989_hwphc9o9l",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "37013a97-e5f1-439f-8c41-aa8731aa241d",
+      "timestamp": 1759170144896,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759170144817_sw3q0mswx",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "eeb4e6fd-68c2-4ff3-9965-c80b16058821",
+      "timestamp": 1759170148493,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759170148454_4n9yt2khw",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "b7fa820c-699a-4d72-a62e-098d23580e6e",
+      "timestamp": 1759200513319,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759200512637_m06r1jedj",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "1f28eb2d-82f8-4a9d-a192-6a30fb7ff07b",
+      "timestamp": 1759206651471,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759206651410_r8gow86nw",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "47e7332b-bbae-45e0-bdc3-70c789daf03a",
+      "timestamp": 1759226667354,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759226667312_wxv3zzdfn",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "405f8bd6-7cf8-4cc8-bfb1-634b4987d4aa",
+      "timestamp": 1759226672292,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759226672191_mz1zypg3e",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "d2d4221a-ccdc-4b04-9987-f62adb2e7e1c",
+      "timestamp": 1759228229046,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759228229009_bbj4tr3e0",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "0c4f49d0-a6bb-44fe-b7a1-d14d1d09ba61",
+      "timestamp": 1759228238853,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759228238588_21u1oaioc",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "2b2d673d-9588-47df-a8fe-a7f5b14d1794",
+      "timestamp": 1759230637517,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759230636624_7wol4eyyp",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "864cba68-bd15-4d4b-aeb2-f5db03ba494b",
+      "timestamp": 1759231662801,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759230636624_7wol4eyyp",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "630bda02-4afc-4c0c-b8d5-a339d8690b01",
+      "timestamp": 1759232594853,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759230636624_7wol4eyyp",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "4f5faab7-f3c1-44b6-9a2d-2c27db0f22fa",
+      "timestamp": 1759234154206,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759234154168_wtjorxqaj",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "7ddbcbdd-0aa5-4f21-bb38-845dd61ed177",
+      "timestamp": 1759235118131,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759235118103_u0n2wwrp4",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "baa82c59-c302-4aba-bbb3-50a53697f376",
+      "timestamp": 1759239698380,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759239698310_o1ma79e2c",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "5e31deb4-4681-406a-9283-cdabb70a5b97",
+      "timestamp": 1759239757396,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759239757370_z82w29751",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "33de45ee-bf2a-4b23-9c09-a78c1ff83fde",
+      "timestamp": 1759242103636,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759239757370_z82w29751",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "e0808c33-dcd7-41e2-a21f-d242c87d8a19",
+      "timestamp": 1759243738682,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759239757370_z82w29751",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "4973314a-f1e6-4fd7-b576-bd9ee4c0db1a",
+      "timestamp": 1759244012526,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759239757370_z82w29751",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "c8c53ae7-595d-4a4c-ab01-cace4440f2e6",
+      "timestamp": 1759244040936,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759239757370_z82w29751",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "4fbfc798-ee4a-49fe-8262-9ece7cff9fe5",
+      "timestamp": 1759244057527,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759239757370_z82w29751",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "dda35d56-6df1-4562-b6d6-024cfbf3b2bb",
+      "timestamp": 1759244067169,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759239757370_z82w29751",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "8dce5719-1e50-48ea-8851-d864f9076a65",
+      "timestamp": 1759244069434,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759239757370_z82w29751",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "0011fdbf-5ab8-4e9c-b210-0abd9cfa6d01",
+      "timestamp": 1759244084010,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759239757370_z82w29751",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "13be54df-e2a0-4f53-a465-65fe40d5a8cb",
+      "timestamp": 1759244299616,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759239757370_z82w29751",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "dea1a04b-e23b-4a19-8850-106e20bde94a",
+      "timestamp": 1759245587397,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759245587358_xffdp1k99",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "8ee8b5cc-1a39-4952-b720-3149120e268e",
+      "timestamp": 1759245689409,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759245689299_ycaogtv5u",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "d4a84091-77e4-4149-a24b-4311b058b0ef",
+      "timestamp": 1759336812057,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759336812009_741leljgb",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "bb799869-23ae-462d-83a0-e69b2bef46a5",
+      "timestamp": 1759339077884,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759339077828_laknogqeg",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "4439cf3f-1365-4623-84a1-912bafd03356",
+      "timestamp": 1759339487813,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759339077828_laknogqeg",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "92389ec4-5570-43fb-8907-c1f929abcab9",
+      "timestamp": 1759340074445,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759340074407_b6a35l3ga",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "913a809f-3aac-40a1-9f9d-827c7ff84cce",
+      "timestamp": 1759373878830,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759373878675_gkduaaq4k",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "f0a05e71-fe2f-419b-bdad-59b9d6b997ae",
+      "timestamp": 1759375165410,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759375165354_sbccnnqvc",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "8f7f04bf-95c4-4b45-9a2d-a11384e3a021",
+      "timestamp": 1759377068590,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759377068542_rmsmm3238",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "6aa0c26d-d5d0-422c-9c76-a839902533a7",
+      "timestamp": 1759377079753,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759377079719_8t1aiilkq",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "6b2e7400-b76f-437d-ad2a-ec164b40918e",
+      "timestamp": 1759384021274,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759384020999_bowk7cd3c",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "cf6fd90b-f529-4020-94cb-face8ff7bb95",
+      "timestamp": 1759388430793,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759388430739_20g71rfm4",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "0a64fa07-3842-4d5b-817d-9fc55e8b971a",
+      "timestamp": 1759388434689,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759388434505_b598w66bp",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "6a5cf994-93af-4fd9-9eef-0aa1a2ea01af",
+      "timestamp": 1759389068565,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759389068508_atll99b9x",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "b7d78381-f516-4570-837d-f1899730fee7",
+      "timestamp": 1759390338224,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759390338190_q0olxsmxg",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "ccb17047-c989-4e0f-8537-948538480669",
+      "timestamp": 1759392434831,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759390338190_q0olxsmxg",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+    },
+    {
+      "id": "aa15384d-c9ad-4a02-9381-ff746c8525ae",
+      "timestamp": 1759393196389,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759390338190_q0olxsmxg",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "fd71cf47-142d-4506-908c-a1884c824931",
+      "timestamp": 1759393201951,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759390338190_q0olxsmxg",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "8bbb3e6e-b788-4408-a52a-cf9356b858e0",
+      "timestamp": 1759393221410,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759390338190_q0olxsmxg",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "444d05e8-2b1a-4582-8268-a31437b0c5a0",
+      "timestamp": 1759393349127,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759390338190_q0olxsmxg",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "41792ac1-6207-43f0-8e33-b75c9ff9ab1f",
+      "timestamp": 1759393830012,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759390338190_q0olxsmxg",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "24894616-b75f-4343-b8c7-42a23823b2da",
+      "timestamp": 1759394003874,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759390338190_q0olxsmxg",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "f56d5422-557e-46f9-9989-d590014bb092",
+      "timestamp": 1759394311623,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759394311577_si2yng7tg",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "4607d92f-6662-49dc-94c8-9362e5ea4ab2",
+      "timestamp": 1759394355695,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759394355659_tjk589q4k",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "f51a770b-3577-4211-932c-9c974ca27dff",
+      "timestamp": 1759400474059,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759400473908_o32q2v2so",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "bd75c3c1-4292-485f-aba0-7678c7e70833",
+      "timestamp": 1759400692380,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759400473908_o32q2v2so",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "e96076f4-1a87-4e45-b322-eb1951a2ee8f",
+      "timestamp": 1759400898954,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759400473908_o32q2v2so",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "bd029c70-b8e1-41c7-b23e-bc0b1504f1b3",
+      "timestamp": 1759401040419,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759400473908_o32q2v2so",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "e4e86e12-8018-4e5a-a7ef-8bee21dfeace",
+      "timestamp": 1759406443033,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759406344359_q616e313m",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "9c9f27a0-a14a-4a62-aab0-a7bf34901411",
+      "timestamp": 1759406452077,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759406452052_3kdc7ns8c",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "8b1f3911-ce40-4890-81fe-67bfdc1c9060",
+      "timestamp": 1759409013931,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759409013761_o603278g4",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    }
+  ],
+  "bookings": [
+    {
+      "id": "booking_1759376153780",
+      "amount": 210,
+      "status": "pending_payment",
+      "createdAt": "2025-10-02T03:35:53.781Z"
+    },
+    {
+      "id": "booking_1759377128452",
+      "amount": 420,
+      "status": "pending_payment",
+      "createdAt": "2025-10-02T03:52:08.452Z"
+    },
+    {
+      "id": "booking_1759377384135",
+      "amount": 420,
+      "status": "pending_payment",
+      "createdAt": "2025-10-02T03:56:24.135Z"
+    },
+    {
+      "id": "booking_1759377874517",
+      "amount": 300,
+      "status": "pending_payment",
+      "createdAt": "2025-10-02T04:04:34.517Z"
+    },
+    {
+      "id": "booking_1759378282421",
+      "amount": 300,
+      "status": "paid",
+      "createdAt": "2025-10-02T04:11:22.421Z",
+      "updatedAt": "2025-10-02T04:12:12.330Z"
+    },
+    {
+      "id": "booking_1759378585505",
+      "details": {
+        "customerName": "sugam pokharel",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Adarsha Toel",
+        "city": "Itahari",
+        "postalCode": "56705",
+        "package": "moveout",
+        "date": "2025-10-25",
+        "time": "11:00",
+        "duration": 1,
+        "cleaners": 1,
+        "propertySize": "50",
+        "specialRequests": "",
+        "salutation": "Mr."
+      },
+      "amount": 50,
+      "status": "pending_payment",
+      "createdAt": "2025-10-02T04:16:25.505Z"
+    },
+    {
+      "id": "booking_1759378814630",
+      "details": {
+        "customerName": "sugam pokharel",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Adarsha Toel",
+        "city": "Itahari",
+        "postalCode": "56705",
+        "package": "residential",
+        "date": "2025-10-11",
+        "time": "15:00",
+        "duration": 1,
+        "cleaners": 1,
+        "propertySize": "50",
+        "specialRequests": "",
+        "salutation": "Mr."
+      },
+      "amount": 35,
+      "status": "pending_payment",
+      "createdAt": "2025-10-02T04:20:14.630Z"
+    },
+    {
+      "id": "booking_1759378976736",
+      "details": {
+        "customerName": "sugam pokharel",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Adarsha Toel",
+        "city": "Itahari",
+        "postalCode": "56705",
+        "package": "residential",
+        "date": "2025-10-26",
+        "time": "08:00",
+        "duration": 3,
+        "cleaners": 1,
+        "propertySize": "300",
+        "specialRequests": "",
+        "salutation": "Mr."
+      },
+      "amount": 105,
+      "status": "pending_payment",
+      "createdAt": "2025-10-02T04:22:56.736Z"
+    },
+    {
+      "id": "booking_1759385168795",
+      "details": {
+        "customerName": "sugam pokharel",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Adarsha Toel",
+        "city": "Itahari",
+        "postalCode": "56705",
+        "package": "residential",
+        "date": "2025-10-23",
+        "time": "15:00",
+        "duration": 6,
+        "cleaners": 1,
+        "propertySize": "300",
+        "specialRequests": "",
+        "salutation": "Mr."
+      },
+      "amount": 210,
+      "status": "paid",
+      "paymentIntentId": "pi_3SDfdzHIVAzPWFkU010k1eGI",
+      "paidAt": "2025-10-02T06:06:08.795Z",
+      "createdAt": "2025-10-02T06:06:08.795Z"
+    },
+    {
+      "id": "booking_1759385245726",
+      "details": {
+        "customerName": "sugam pokharel",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Adarsha Toel",
+        "city": "Itahari",
+        "postalCode": "56705",
+        "package": "moveout",
+        "date": "2025-10-17",
+        "time": "08:00",
+        "duration": 3,
+        "cleaners": 1,
+        "propertySize": "300",
+        "specialRequests": "",
+        "salutation": "Mr."
+      },
+      "amount": 150,
+      "status": "paid",
+      "paymentIntentId": "pi_3SDffHHIVAzPWFkU1oiSUnew",
+      "paidAt": "2025-10-02T06:07:25.726Z",
+      "createdAt": "2025-10-02T06:07:25.726Z"
+    },
+    {
+      "id": "booking_1759388766741",
+      "details": {
+        "customerName": "sugam pokharel",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Adarsha Toel",
+        "city": "Itahari",
+        "postalCode": "56705",
+        "package": "residential",
+        "date": "2025-10-25",
+        "time": "08:00",
+        "duration": 5,
+        "cleaners": 1,
+        "propertySize": "300",
+        "specialRequests": "sssssssssss",
+        "salutation": "Mr."
+      },
+      "amount": 175,
+      "status": "paid",
+      "paymentIntentId": "pi_3SDgZpHIVAzPWFkU0UGBTaME",
+      "paidAt": "2025-10-02T07:06:06.741Z",
+      "createdAt": "2025-10-02T07:06:06.741Z"
+    },
+    {
+      "id": "booking_1759389158718",
+      "details": {
+        "customerName": "sugam pokharel",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Adarsha Toel",
+        "city": "Itahari",
+        "postalCode": "56705",
+        "package": "residential",
+        "date": "2025-10-24",
+        "time": "15:00",
+        "duration": 3,
+        "cleaners": 1,
+        "propertySize": "50",
+        "specialRequests": "sssssssssssssssssssss",
+        "salutation": "Mr."
+      },
+      "amount": 105,
+      "status": "paid",
+      "paymentIntentId": "pi_3SDgg5HIVAzPWFkU07E6nrxn",
+      "paidAt": "2025-10-02T07:12:38.718Z",
+      "createdAt": "2025-10-02T07:12:38.718Z"
+    },
+    {
+      "id": "booking_1759389384313",
+      "details": {
+        "customerName": "Sanju Dhakal",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Bahnhofstrasse 5",
+        "city": "Bischofsheim",
+        "postalCode": "65474",
+        "package": "residential",
+        "date": "2025-10-23",
+        "time": "15:00",
+        "duration": 6,
+        "cleaners": 1,
+        "propertySize": "300",
+        "specialRequests": "ssssssssssssssssssssssss",
+        "salutation": "Mr."
+      },
+      "amount": 210,
+      "status": "paid",
+      "paymentIntentId": "pi_3SDgjzHIVAzPWFkU1aI8xEPm",
+      "paidAt": "2025-10-02T07:16:24.313Z",
+      "createdAt": "2025-10-02T07:16:24.313Z"
+    },
+    {
+      "id": "booking_1759389705915",
+      "details": {
+        "customerName": "sugam pokharel",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Adarsha Toel",
+        "city": "Itahari",
+        "postalCode": "56705",
+        "package": "residential",
+        "date": "2025-10-09",
+        "time": "15:00",
+        "duration": 1,
+        "cleaners": 1,
+        "propertySize": "3",
+        "specialRequests": "",
+        "salutation": "Mr."
+      },
+      "amount": 35,
+      "status": "paid",
+      "paymentIntentId": "pi_3SDgp8HIVAzPWFkU1W1zAYdm",
+      "paidAt": "2025-10-02T07:21:45.915Z",
+      "createdAt": "2025-10-02T07:21:45.915Z"
+    },
+    {
+      "id": "booking_1759390399792",
+      "details": {
+        "customerName": "sugam pokharel",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Adarsha Toel",
+        "city": "Itahari",
+        "postalCode": "56705",
+        "package": "deep",
+        "date": "2025-10-11",
+        "time": "11:00",
+        "duration": 1,
+        "cleaners": 1,
+        "propertySize": "33",
+        "specialRequests": "Hi whats up what are you doing halleo",
+        "salutation": "Mr."
+      },
+      "amount": 45,
+      "status": "paid",
+      "paymentIntentId": "pi_3SDh0OHIVAzPWFkU1uWlg1mK",
+      "paidAt": "2025-10-02T07:33:19.792Z",
+      "createdAt": "2025-10-02T07:33:19.792Z"
+    },
+    {
+      "id": "booking_1759391373924",
+      "details": {
+        "customerName": "sugam pokharel",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Adarsha Toel",
+        "city": "Itahari",
+        "postalCode": "56705",
+        "package": "residential",
+        "date": "2025-10-24",
+        "time": "17:00",
+        "duration": 1,
+        "cleaners": 1,
+        "propertySize": "33",
+        "specialRequests": "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS\n",
+        "salutation": "Mr."
+      },
+      "amount": 35,
+      "status": "paid",
+      "paymentIntentId": "pi_3SDhG5HIVAzPWFkU0ouX2LE3",
+      "paidAt": "2025-10-02T07:49:33.924Z",
+      "createdAt": "2025-10-02T07:49:33.924Z"
+    },
+    {
+      "id": "booking_1759394759632",
+      "details": {
+        "customerName": "Sanju Dhakal",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Bahnhofstrasse 5",
+        "city": "Bischofsheim",
+        "postalCode": "65474",
+        "package": "commercial",
+        "date": "",
+        "time": "",
+        "duration": 1,
+        "cleaners": 1,
+        "propertySize": "",
+        "specialRequests": "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+        "salutation": "Mr."
+      },
+      "amount": 0,
+      "status": "pending_consultation",
+      "paymentIntentId": null,
+      "paidAt": null,
+      "createdAt": "2025-10-02T08:45:59.632Z",
+      "updatedAt": "2025-10-02T08:45:59.632Z"
+    }
+  ]
+}

@@ -21,6 +21,153 @@ const csrf = require('csurf');
 const geoip = require('geoip-lite'); // Added for analytics
 const helmet = require('helmet');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const nodemailer = require('nodemailer');
+
+// Email configuration
+const emailTransporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: process.env.SMTP_PORT || 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+        user: process.env.SMTP_USER || process.env.ADMIN_EMAIL,
+        pass: process.env.SMTP_PASS || process.env.ADMIN_PASSWORD
+    }
+});
+
+// Verify email configuration
+emailTransporter.verify((error, success) => {
+    if (error) {
+        console.log('❌ Email configuration error:', error.message);
+        console.log('📧 Email notifications will be disabled until SMTP is configured');
+    } else {
+        console.log('✅ Email server is ready to send messages');
+    }
+});
+
+// Function to send booking confirmation invoice
+async function sendBookingInvoice(booking) {
+    try {
+        const details = booking.details || {};
+        const customerName = details.customerName || 'Valued Customer';
+        const customerEmail = details.customerEmail;
+        const bookingDate = details.date || 'TBD';
+        const bookingTime = details.time || 'TBD';
+        const packageType = details.package || 'Cleaning Service';
+        const duration = details.duration || 0;
+        const cleaners = details.cleaners || 1;
+        const amount = booking.amount || 0;
+        const specialRequests = details.specialRequests || 'None';
+
+        const invoiceHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Booking Confirmation - AJK Cleaning</title>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                .content { background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px; }
+                .invoice-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                .total { background: #10b981; color: white; padding: 15px; border-radius: 8px; text-align: center; font-size: 18px; font-weight: bold; }
+                .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+                .highlight { background: #eff6ff; padding: 15px; border-left: 4px solid #3b82f6; margin: 15px 0; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>🧹 AJK Cleaning Company</h1>
+                <h2>Booking Confirmation & Invoice</h2>
+            </div>
+            
+            <div class="content">
+                <p>Dear ${customerName},</p>
+                
+                <p>Thank you for choosing AJK Cleaning Company! Your booking has been confirmed and payment processed successfully.</p>
+                
+                <div class="highlight">
+                    <h3>📋 Booking Details</h3>
+                    <p><strong>Booking ID:</strong> ${booking.id}</p>
+                    <p><strong>Service:</strong> ${packageType}</p>
+                    <p><strong>Date:</strong> ${bookingDate}</p>
+                    <p><strong>Time:</strong> ${bookingTime}</p>
+                    <p><strong>Duration:</strong> ${duration} hours</p>
+                    <p><strong>Cleaners:</strong> ${cleaners}</p>
+                </div>
+                
+                <div class="invoice-details">
+                    <h3>💰 Payment Summary</h3>
+                    <p><strong>Service Fee:</strong> €${amount}</p>
+                    <p><strong>Payment Status:</strong> ✅ Paid</p>
+                    <p><strong>Payment Method:</strong> Stripe</p>
+                </div>
+                
+                <div class="total">
+                    Total Amount: €${amount}
+                </div>
+                
+                ${specialRequests !== 'None' ? `
+                <div class="highlight">
+                    <h3>📝 Special Requests</h3>
+                    <p>${specialRequests}</p>
+                </div>
+                ` : ''}
+                
+                <div class="highlight">
+                    <h3>📞 Contact Information</h3>
+                    <p><strong>Phone:</strong> +49 176 61852286</p>
+                    <p><strong>Email:</strong> info@ajkcleaners.de</p>
+                    <p><strong>Website:</strong> https://ajkcleaners.de</p>
+                </div>
+                
+                <p>We look forward to providing you with excellent cleaning services!</p>
+                
+                <p>Best regards,<br>
+                <strong>AJK Cleaning Team</strong></p>
+            </div>
+            
+            <div class="footer">
+                <p>AJK Cleaning Company | Professional Cleaning Services in Bischofsheim</p>
+                <p>This is an automated confirmation email. Please keep this for your records.</p>
+            </div>
+        </body>
+        </html>
+        `;
+
+        const mailOptions = {
+            from: `"AJK Cleaning Company" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
+            to: customerEmail,
+            subject: `🧹 Booking Confirmation & Invoice - ${booking.id}`,
+            html: invoiceHtml,
+            text: `
+Booking Confirmation - AJK Cleaning Company
+
+Dear ${customerName},
+
+Your booking has been confirmed!
+
+Booking ID: ${booking.id}
+Service: ${packageType}
+Date: ${bookingDate}
+Time: ${bookingTime}
+Duration: ${duration} hours
+Cleaners: ${cleaners}
+Amount: €${amount}
+
+Contact: +49 176 61852286 | info@ajkcleaners.de
+
+Thank you for choosing AJK Cleaning Company!
+            `
+        };
+
+        await emailTransporter.sendMail(mailOptions);
+        console.log(`✅ Invoice email sent to ${customerEmail} for booking ${booking.id}`);
+        
+    } catch (error) {
+        console.error('❌ Failed to send invoice email:', error);
+        throw error;
+    }
+}
 
 // Use memory store for sessions to avoid file system issues on Render
 const MemoryStore = require('memorystore')(session);
@@ -168,6 +315,14 @@ app.post('/stripe-webhook', express.raw({type: 'application/json'}), async (req,
                 
                 console.info(`[STRIPE] ✅ Successfully wrote booking ${newBooking.id} to database.`);
                 console.info(`[STRIPE] 📊 Total bookings now:`, db.data.bookings.length);
+                
+                // Send invoice email to customer
+                try {
+                    await sendBookingInvoice(newBooking);
+                    console.log(`[STRIPE] 📧 Invoice email sent for booking ${newBooking.id}`);
+                } catch (emailError) {
+                    console.error(`[STRIPE] ❌ Failed to send invoice email for booking ${newBooking.id}:`, emailError.message);
+                }
             } catch (error) {
                 console.error(`[STRIPE] ❌ Error processing successful payment webhook: ${error.message}`);
                 console.error(error.stack);
@@ -299,7 +454,8 @@ app.use((req, res, next) => {
         '/api/booking/webhook',
         '/api/bookings/check-payment-status',
         '/api/bookings/create-from-payment',
-        '/api/bookings/commercial-create'
+        '/api/bookings/commercial-create',
+        '/api/admin/login'
     ];
     if (excludedRoutes.includes(req.path)) {
         return next();
@@ -1359,25 +1515,40 @@ async function initializeDB() {
         db.data.analytics_events = db.data.analytics_events || []; // Ensure analytics array exists
         db.data.bookings = db.data.bookings || [];
         
-        const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+        const adminEmail = process.env.ADMIN_EMAIL;
         const adminPassword = process.env.ADMIN_PASSWORD;
 
-        if (!adminPassword) {
-            console.error('CRITICAL: ADMIN_PASSWORD is not set in the environment variables.');
+        if (!adminEmail || !adminPassword) {
+            console.error('CRITICAL: ADMIN_EMAIL and ADMIN_PASSWORD must be set in environment variables.');
+            console.error('Please set:');
+            console.error('ADMIN_EMAIL=your-email@example.com');
+            console.error('ADMIN_PASSWORD=your-secure-password');
             process.exit(1);
         }
         
-        const adminUser = db.data.admin_users.find(user => user.username === adminUsername);
+        const adminUser = db.data.admin_users.find(user => user.email === adminEmail);
         if (!adminUser) {
             const hash = await bcrypt.hash(adminPassword, 12);
             db.data.admin_users.push({
                 id: Date.now(),
-                username: adminUsername,
+                email: adminEmail,
+                username: adminEmail.split('@')[0], // Use email prefix as username
                 password_hash: hash,
                 created_at: new Date().toISOString()
             });
             await db.write();
-            console.log('Admin user created successfully');
+            console.log(`✅ Admin user '${adminEmail}' created successfully`);
+        } else {
+            // Update password if it has changed
+            const isValid = await bcrypt.compare(adminPassword, adminUser.password_hash);
+            if (!isValid) {
+                const hash = await bcrypt.hash(adminPassword, 12);
+                adminUser.password_hash = hash;
+                await db.write();
+                console.log(`✅ Admin password updated for '${adminEmail}'`);
+            } else {
+                console.log(`✅ Admin user '${adminEmail}' already exists with current password`);
+            }
         }
         
         try { await db.write(); } catch (_) {}
@@ -2218,6 +2389,14 @@ app.post('/api/bookings/manual-create', async (req, res) => {
         console.log(`[MANUAL] ✅ Created booking ${newBooking.id}`);
         console.log(`[MANUAL] 📊 Total bookings in database:`, db.data.bookings.length);
         
+        // Send invoice email to customer
+        try {
+            await sendBookingInvoice(newBooking);
+            console.log(`[MANUAL] 📧 Invoice email sent for booking ${newBooking.id}`);
+        } catch (emailError) {
+            console.error(`[MANUAL] ❌ Failed to send invoice email for booking ${newBooking.id}:`, emailError.message);
+        }
+        
         res.json({ 
             status: 'created', 
             message: 'Booking created successfully',
@@ -2291,6 +2470,14 @@ app.post('/api/bookings/create-from-payment', async (req, res) => {
         
         db.data.bookings.push(newBooking);
         await db.write();
+        
+        // Send invoice email to customer
+        try {
+            await sendBookingInvoice(newBooking);
+            console.log(`[PAYMENT] 📧 Invoice email sent for booking ${newBooking.id}`);
+        } catch (emailError) {
+            console.error(`[PAYMENT] ❌ Failed to send invoice email for booking ${newBooking.id}:`, emailError.message);
+        }
         
         res.json({ 
             status: 'created', 
@@ -2659,12 +2846,13 @@ app.post('/api/admin/login', async (req, res) => {
     const { username, password, sessionId, deviceType } = req.body;
     
     if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password are required' });
+        return res.status(400).json({ error: 'Email and password are required' });
     }
     
     try {
         await db.read();
-        const user = db.data.admin_users.find(u => u.username === username);
+        // Support both email and username for backward compatibility
+        const user = db.data.admin_users.find(u => u.email === username || u.username === username);
         
         if (!user) {
             return res.status(401).json({ error: 'Invalid credentials' });
@@ -2677,12 +2865,13 @@ app.post('/api/admin/login', async (req, res) => {
         }
         
         req.session.authenticated = true;
-        req.session.user = { id: user.id, username: user.username };
+        req.session.user = { id: user.id, username: user.username, email: user.email };
         
         if (sessionId) {
             adminSessions.set(sessionId, {
                 id: sessionId,
-                username: username,
+                username: user.username,
+                email: user.email,
                 loginTime: new Date().toISOString(),
                 deviceType: deviceType || 'unknown',
                 ip: req.ip,

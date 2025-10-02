@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "setup": "node setup-env.js",
+    "restart": "taskkill /f /im node.exe 2>nul & npm start",
+    "reset-admin": "node reset-admin.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -31,6 +34,7 @@
     "joi": "^17.11.0",
     "lowdb": "^7.0.1",
     "memorystore": "^1.6.7",
+    "mongodb": "^6.20.0",
     "morgan": "^1.10.0",
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.10.1",

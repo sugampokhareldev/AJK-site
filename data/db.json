@@ -23,16 +23,11 @@
   ],
   "admin_users": [
     {
-      "id": 1758276883200,
-      "username": "Sanud119@gmail.com",
-      "password_hash": "$2b$12$FL1NE3/cbmptxBzDP.nwD.NaOiT18kUrOPUU8y9JvZx2CzEGtK1rS",
-      "created_at": "2025-09-19T10:14:43.200Z"
-    },
-    {
-      "id": 1758903383390,
-      "username": "admin",
-      "password_hash": "$2b$12$tz8PZHqXzDAic0GBOHnRlek3ql/JzBjHOISz7nATrYX4i9JFI8FB6",
-      "created_at": "2025-09-26T16:16:23.390Z"
+      "id": 1759409389522,
+      "email": "Sanudhakal119@gmail.com",
+      "username": "Sanudhakal119",
+      "password_hash": "$2b$12$HpVUgPJdxa3qwMFdG1INIe0nMC8NmtwbB.Y3SGUdp5iBFdRBHMehq",
+      "created_at": "2025-10-02T12:49:49.522Z"
     }
   ],
   "offline_messages": {},
@@ -1203,6 +1198,61 @@
       "ip": "127.0.0.1",
       "country": "Unknown",
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "e4e86e12-8018-4e5a-a7ef-8bee21dfeace",
+      "timestamp": 1759406443033,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759406344359_q616e313m",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "9c9f27a0-a14a-4a62-aab0-a7bf34901411",
+      "timestamp": 1759406452077,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759406452052_3kdc7ns8c",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "8b1f3911-ce40-4890-81fe-67bfdc1c9060",
+      "timestamp": 1759409013931,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759409013761_o603278g4",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "760b9170-f87e-4e34-8f4d-8be8acdc3c4d",
+      "timestamp": 1759409846881,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759409846768_m07fjj2h2",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "edcffcee-337e-4424-b8ff-cadcad7bbb78",
+      "timestamp": 1759412004615,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759412004538_7ilrg2d9h",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
     }
   ],
   "bookings": [
@@ -1519,6 +1569,55 @@
       "paidAt": null,
       "createdAt": "2025-10-02T08:45:59.632Z",
       "updatedAt": "2025-10-02T08:45:59.632Z"
+    },
+    {
+      "id": "booking_1759411239899",
+      "details": {
+        "customerName": "sugam pokharel",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Adarsha Toel, dssdaseedasd",
+        "city": "Itahari",
+        "postalCode": "56705",
+        "package": "commercial",
+        "date": "2025-10-16",
+        "time": "11:00",
+        "duration": 6,
+        "cleaners": 1,
+        "propertySize": "300",
+        "specialRequests": "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+        "salutation": "Mr."
+      },
+      "amount": 0,
+      "status": "pending_consultation",
+      "paymentIntentId": null,
+      "paidAt": null,
+      "createdAt": "2025-10-02T13:20:39.899Z",
+      "updatedAt": "2025-10-02T13:20:39.899Z"
+    },
+    {
+      "id": "booking_1759412046343",
+      "details": {
+        "customerName": "sugam pokharel",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Adarsha Toel",
+        "city": "Itahari",
+        "postalCode": "56705",
+        "package": "residential",
+        "date": "2025-10-16",
+        "time": "11:00",
+        "duration": 1,
+        "cleaners": 1,
+        "propertySize": "33",
+        "specialRequests": "",
+        "salutation": "Mr."
+      },
+      "amount": 35,
+      "status": "paid",
+      "paymentIntentId": "pi_3SDmdZHIVAzPWFkU1Rv1XrUM",
+      "paidAt": "2025-10-02T13:34:06.343Z",
+      "createdAt": "2025-10-02T13:34:06.343Z"
     }
   ]
 }
