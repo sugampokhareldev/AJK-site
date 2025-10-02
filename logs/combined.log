@@ -1,0 +1,1 @@
+{"errors":[{"field":"message","message":"Message must be at least 10 characters long"}],"ip":"127.0.0.1","level":"warn","message":"Validation error","method":"POST","path":"/submit","service":"ajk-cleaning","timestamp":"2025-09-24 14:30:06"}
