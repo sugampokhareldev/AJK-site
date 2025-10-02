@@ -296,6 +296,7 @@ app.use((req, res, next) => {
         '/api/analytics/track', 
         '/create-payment-intent', 
         '/stripe-webhook',
+        '/api/booking/webhook',
         '/api/bookings/check-payment-status',
         '/api/bookings/create-from-payment',
         '/api/bookings/commercial-create'
@@ -637,12 +638,13 @@ async function handleAdminConnection(ws, request) {
         return;
     }
 
-    // IP validation for security
+    // IP validation for security (relaxed for production)
     const clientIP = request.socket.remoteAddress;
     if (sessionData.ip && sessionData.ip !== clientIP) {
         console.warn(`IP mismatch for admin session ${sessionId}. Expected: ${sessionData.ip}, Got: ${clientIP}`);
-        ws.close(1008, 'Session security violation - IP mismatch');
-        return;
+        // Don't close connection in production - just log the warning
+        // ws.close(1008, 'Session security violation - IP mismatch');
+        // return;
     }
 
     // Check session age

@@ -10,7 +10,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.0"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="icon" type="image/x-icon" href="https://placehold.co/64x64/e0f2fe/1e40af?text=AJK">
 
@@ -658,7 +669,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     // --- IMPORTANT: This key is for testing purposes. Replace with your actual publishable key in production. ---
-    const stripe = Stripe('pk_test_51SD6iOHIVAzPWFkU1ixyvux7u4Srneo6y2tuko22UX4OR2cGTNXvAssP1DAhbB9XnSDOgNPAwpOaLchXBBRD36Fb00uYOldQMJ');
+    const stripe = Stripe('pk_live_51SD6iOHIVAzPWFkUzo4dOYE8aVpZXhzPN8LJFT6XGnR1OalT0gkKyZoAsQyf808h5dmncGzjSo7IzYarVc5YI7Ta005jaC0NSW');
     
     // --- Stripe variables ---
     let elements;
@@ -826,6 +837,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 setLoading(false);
                 showStep(4);
             }, 30000); // 30 second global timeout
+
+            // Check if payment element is properly mounted
+            if (!paymentElement || !elements) {
+                throw new Error('Payment element not properly initialized');
+            }
 
             const { error } = await stripe.confirmPayment({
                 elements,
@@ -1041,11 +1057,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         if(index === 3){ // Payment step
+            console.log('💳 Showing payment step, package:', state.package);
             if(state.package === 'commercial'){
                  document.getElementById('payment-element').style.display = 'none';
+                 console.log('📞 Commercial booking - payment element hidden');
             } else {
                  document.getElementById('payment-element').style.display = 'block';
-                 initializeStripe();
+                 console.log('💳 Regular booking - showing payment element');
+                 // Wait a moment for the step to be fully visible before initializing Stripe
+                 setTimeout(() => {
+                     initializeStripe();
+                 }, 100);
             }
         }
         
@@ -1278,6 +1300,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- STRIPE FUNCTIONS ---
     async function initializeStripe() {
+        console.log('🔄 Initializing Stripe payment element...');
         const total = state.price_per_hour * state.duration * state.cleaners;
         
         // Prepare booking details to send to server
@@ -1315,8 +1338,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
             elements = stripe.elements({ clientSecret });
             paymentElement = elements.create("payment");
-            paymentElement.mount("#payment-element");
+            
+            console.log('🔧 Creating payment element...');
+            
+            // Check if payment element container is visible
+            const paymentContainer = document.getElementById('payment-element');
+            if (!paymentContainer) {
+                throw new Error('Payment element container not found');
+            }
+            console.log('📍 Payment container found:', paymentContainer);
+            
+            // Wait for the element to be ready before mounting
+            await new Promise((resolve) => {
+                paymentElement.on('ready', () => {
+                    console.log('✅ Payment Element ready, mounting...');
+                    resolve();
+                });
+                paymentElement.mount("#payment-element");
+            });
+            
+            console.log('✅ Payment Element mounted successfully');
+            
+            // Ensure the payment element is visible
+            paymentContainer.style.display = 'block';
+            paymentContainer.style.visibility = 'visible';
+            
         } catch (e) {
+            console.error('❌ Stripe initialization error:', e);
             showMessage("Could not connect to payment server. Please try again later.");
         }
     }
