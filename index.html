@@ -86,6 +86,19 @@
         .char-counter.invalid { color: #ef4444; }
         @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
         .animate-fade-in-up{animation:fadeInUp .8s ease-out forwards; opacity: 0;}
+        @keyframes pulse-shadow {
+          0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          }
+          50% {
+            transform: scale(1.05);
+            box-shadow: 0 20px 25px -5px rgba(30, 64, 175, 0.4), 0 8px 10px -6px rgba(30, 64, 175, 0.4);
+          }
+        }
+        .animate-pulse-shadow {
+          animation: pulse-shadow 2.5s infinite ease-in-out;
+        }
         .trust-point{background:#f8fafc;border-left:4px solid var(--primary);transition:all .3s ease}
         .trust-point:hover{background:#f1f5f9;transform:translateX(5px)}
         .skip-link{position:absolute;top:-40px;left:6px;background:#000;color:#fff;padding:8px;z-index:10000;text-decoration:none}
@@ -94,7 +107,47 @@
         a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
         .text-blue-200{color:#bfdbfe}
         .sticky-cta{padding-bottom:constant(safe-area-inset-bottom);padding-bottom:env(safe-area-inset-bottom);z-index:50}
-        .hero-image{background-image:url(https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80);background-size:cover;background-position:center;background-attachment:scroll}
+        .hero-image{
+            background-image:url(https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80);
+            background-size:cover;
+            background-position:center;
+            background-attachment:scroll;
+            position:relative;
+            overflow:hidden;
+        }
+        .hero-image::before{
+            content:'';
+            position:absolute;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            background:linear-gradient(45deg, rgba(30,64,175,0.8), rgba(5,150,105,0.6), rgba(139,92,246,0.7));
+            animation:gradientShift 8s ease-in-out infinite;
+            z-index:1;
+        }
+        .hero-image::after{
+            content:'';
+            position:absolute;
+            top:0;
+            left:0;
+            right:0;
+            bottom:0;
+            background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+            animation:float 20s ease-in-out infinite;
+            z-index:2;
+        }
+        @keyframes gradientShift{
+            0%{background:linear-gradient(45deg, rgba(30,64,175,0.8), rgba(5,150,105,0.6), rgba(139,92,246,0.7));}
+            25%{background:linear-gradient(45deg, rgba(5,150,105,0.8), rgba(139,92,246,0.6), rgba(30,64,175,0.7));}
+            50%{background:linear-gradient(45deg, rgba(139,92,246,0.8), rgba(30,64,175,0.6), rgba(5,150,105,0.7));}
+            75%{background:linear-gradient(45deg, rgba(30,64,175,0.8), rgba(139,92,246,0.6), rgba(5,150,105,0.7));}
+            100%{background:linear-gradient(45deg, rgba(30,64,175,0.8), rgba(5,150,105,0.6), rgba(139,92,246,0.7));}
+        }
+        @keyframes float{
+            0%,100%{transform:translateY(0px) rotate(0deg);}
+            50%{transform:translateY(-10px) rotate(1deg);}
+        }
         @media (min-width: 1024px) { .hero-image { background-attachment: fixed; } }
         .faq-question{cursor:pointer}
         .faq-answer{max-height:0;overflow:hidden;transition:max-height .5s ease-in-out; contain: content;}
@@ -109,12 +162,110 @@
         .chat-window.open{transform:translateY(0) scale(1);opacity:1;display:flex}
         .chat-header{background:#1e40af;color:#fff;padding:15px;display:flex;justify-content:space-between;align-items:center}
         .chat-header h3{margin:0;font-size:16px;font-weight:600}
-        .chat-status{font-size:12px;opacity:.9; display: flex; align-items: center; gap: 6px;}
+        .chat-status{font-size:12px;opacity:.9; display: flex; flex-direction: column; align-items: flex-start; gap: 4px;}
         .chat-status::before { content: ''; display: block; width: 8px; height: 8px; background-color: #34d399; border-radius: 50%;}
-        .chat-header-actions{display:flex;gap:5px}
-        .chat-action-btn, .minimize-btn, .close-btn { background: hsla(0,0%,100%,.2); border: none; color: #fff; width: 28px; height: 28px; border-radius: 4px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: background .2s; }
-        .chat-action-btn:hover, .minimize-btn:hover, .close-btn:hover { background: hsla(0,0%,100%,.3); }
-        .chat-action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .chat-mode-indicator{margin-top: 4px;}
+        .mode-badge{display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+        .mode-badge.ai-mode{background: rgba(59, 130, 246, 0.2); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3);}
+        .mode-badge.human-mode{background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);}
+        .chat-action-btn{display: flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600;}
+        .chat-action-btn .btn-text{display: none;}
+        @media (min-width: 400px) {.chat-action-btn .btn-text{display: inline;}}
+        
+        /* Chat Switch Notification Styles */
+        .chat-switch-notification{
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            margin: 10px;
+            padding: 16px;
+            position: relative;
+            animation: slideInDown 0.5s ease-out;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+        .switch-notification-content{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .switch-notification-icon{
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .switch-notification-text{
+            flex: 1;
+        }
+        .switch-notification-text h4{
+            margin: 0 0 4px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .switch-notification-text p{
+            margin: 0;
+            font-size: 12px;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+        .switch-to-human-btn{
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+        .switch-to-human-btn:hover{
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+        }
+        .switch-notification-close{
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 16px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        .switch-notification-close:hover{
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+        @keyframes slideInDown{
+            from{opacity: 0; transform: translateY(-20px);}
+            to{opacity: 1; transform: translateY(0);}
+        }
+        .chat-header-actions{display:flex;gap:8px;align-items:center}
+        .chat-action-btn{background:linear-gradient(135deg, #10b981, #059669);border:none;color:#fff;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px;transition:all .2s;flex-shrink:0}
+        .chat-action-btn:hover{background:linear-gradient(135deg, #059669, #047857);transform:translateY(-1px)}
+        .chat-action-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+        .close-btn{background:hsla(0,0%,100%,.2);border:none;color:#fff;width:28px;height:28px;border-radius:4px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}
+        .close-btn:hover{background:hsla(0,0%,100%,.3)}
         .chat-messages{flex:1;padding:15px;overflow-y:auto;background:#f8fafc}
         .message{margin-bottom:15px;animation:messageSlide .3s ease-out}
         @keyframes messageSlide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -144,7 +295,19 @@
         #chat-send-enhanced{background:#1e40af;color:#fff;border:none;border-radius:50%;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
         #chat-send-enhanced:hover:not(:disabled){background:#1e3a8a;transform:scale(1.05)}
         #chat-send-enhanced:disabled{background:#9ca3af;cursor:not-allowed;transform:none}
-        @media (max-width:768px){.chat-widget-enhanced{bottom:90px!important;right:15px;z-index:60}.chat-window{width:calc(100vw - 30px)!important;right:-15px!important;height:400px;bottom:75px!important}.chat-toggle{width:55px;height:55px}}
+        @media (max-width:768px){
+            .chat-widget-enhanced{bottom:90px!important;right:15px;z-index:60}
+            .chat-window{width:calc(100vw - 30px)!important;right:-15px!important;height:400px;bottom:75px!important}
+            .chat-toggle{width:55px;height:55px}
+            .chat-header{padding:12px}
+            .chat-header h3{font-size:14px}
+            .chat-status{font-size:11px}
+            .mode-badge{font-size:9px;padding:1px 6px}
+            .chat-header-actions{gap:6px}
+            .chat-action-btn{padding:4px 8px;font-size:10px;gap:2px}
+            .chat-action-btn .btn-text{display:none!important}
+            .close-btn{width:24px;height:24px;font-size:14px}
+        }
         .chat-messages::-webkit-scrollbar{width:6px}
         .chat-messages::-webkit-scrollbar-track{background:#f1f5f9}
         .chat-messages::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
@@ -168,11 +331,55 @@
         .lang-option:hover{background-color:#e2e8f0}
         .lang-option.active{background-color:#ffffff;border-color:var(--primary);box-shadow:0 2px 5px rgba(0,0,0,0.1);transform:scale(1.05)}
         
-        @media (max-width: 768px) {
-            .sticky-cta a { min-height: 44px; display: flex; align-items: center; justify-content: center; }
-            .service-card { margin: 0.5rem; }
-            input, select, textarea { font-size: 16px !important; }
+        .animated-border-button {
+          --border-width: 3px;
+          position: relative;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          padding: 0.75rem 1.5rem;
+          font-weight: 600;
+          color: var(--primary);
+          background: #fff;
+          border-radius: 0.5rem; /* rounded-lg */
+          text-decoration: none;
+          transition: all 0.3s ease;
+          z-index: 1;
         }
+
+        .animated-border-button:hover {
+            color: white;
+            background: var(--primary);
+        }
+
+        .animated-border-button::after {
+          position: absolute;
+          content: "";
+          top: calc(-1 * var(--border-width));
+          left: calc(-1 * var(--border-width));
+          z-index: -1;
+          width: calc(100% + var(--border-width) * 2);
+          height: calc(100% + var(--border-width) * 2);
+          background: linear-gradient(
+            60deg,
+            hsl(221, 83%, 70%),
+            hsl(162, 80%, 60%),
+            hsl(280, 80%, 70%),
+            hsl(221, 83%, 70%)
+          );
+          background-size: 300% 300%;
+          background-position: 0 50%;
+          border-radius: calc(0.5rem + var(--border-width));
+          animation: moveGradient 4s alternate infinite;
+        }
+
+        @keyframes moveGradient {
+          50% {
+            background-position: 100% 50%;
+          }
+        }
+        
         .testimonial-card{transition:transform 0.3s ease, box-shadow 0.3s ease}
         .testimonial-card:hover{transform:translateY(-5px);box-shadow:0 10px 20px rgba(0,0,0,0.1)}
         .stars .fa-star{color:#f59e0b}
@@ -349,18 +556,18 @@
     <header id="navbar" class="fixed w-full z-50 transition-all duration-500">
         <div class="container mx-auto flex justify-between items-center px-6">
             <a href="#home" class="flex items-center space-x-3" aria-label="AJK Cleaning Company Home">
-                <img src="images/logo.jpg" alt="AJK Cleaning Company Logo" class="h-24 w-24 sm:h-32 sm:w-32 rounded-lg logo transition-transform duration-300 object-contain" width="128" height="128" loading="eager">
+                <img src="images/logo.jpg" alt="AJK Cleaning Company Logo" class="h-16 w-16 sm:h-20 sm:w-20 rounded-lg logo transition-transform duration-300 object-contain" width="80" height="80" loading="eager">
                 <span id="company-name" class="font-bold text-lg sm:text-xl text-primary transition-colors duration-300" data-translate="companyName">AJK Cleaning Company</span>
             </a>
             
-            <nav class="hidden md:flex space-x-8 items-center py-4" aria-label="Main navigation">
+            <nav class="hidden md:flex space-x-8 items-center" aria-label="Main navigation">
                 <a href="#home" class="nav-link text-gray-700 hover:text-primary font-medium active" aria-current="page" data-translate="navHome">Home</a>
                 <a href="#services" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navServices">Services</a>
                 <a href="#about" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navAbout">About</a>
                 <a href="#testimonials" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navTestimonials">Testimonials</a>
                 <a href="#faq" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navFaq">FAQ</a>
                 <a href="#contact" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navContact">Contact</a>
-                <a href="#contact" class="cta-button bg-gradient-to-r from-primary to-primary-dark text-white px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg hover:from-primary-dark hover:to-primary-dark transition-all duration-300 font-semibold" data-translate="navQuote">GET A FREE QUOTE</a>
+                <a href="/booking" class="cta-button bg-gradient-to-r from-secondary to-secondary-dark text-white px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg hover:from-secondary-dark hover:to-secondary-dark transition-all duration-300 font-semibold" data-translate="navQuote">Book Now</a>
                 <div class="lang-switcher ml-4">
                     <button data-lang="en" class="lang-option active" title="Switch to English" aria-label="Switch to English">
                         <svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg"><clipPath id="a"><path d="m30 15h30v15zm0 0v15h-30zm0 0h-30v-15zm0 0v-15h30z"/></clipPath><path d="m0 0v30h60v-30z" fill="#012169"/><path d="m0 0 60 30m-60 0 60-30" stroke="#fff" stroke-width="6"/><path d="m0 0 60 30m-60 0 60-30" stroke="#c8102e" stroke-width="4" clip-path="url(#a)"/><path d="m30 0v30m-30-15h60" stroke="#fff" stroke-width="10"/><path d="m30 0v30m-30-15h60" stroke="#c8102e" stroke-width="6"/></svg>
@@ -395,7 +602,7 @@
             <a href="#testimonials" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navTestimonials">Testimonials</a>
             <a href="#faq" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navFaq">FAQ</a>
             <a href="#contact" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navContact">Contact</a>
-            <a href="#contact" class="cta-button block bg-gradient-to-r from-primary to-primary-dark text-white px-4 py-3 rounded-lg text-center hover:shadow-md transition-colors duration-300 mt-2 font-semibold" data-translate="navQuote">GET A FREE QUOTE</a>
+            <a href="/booking" class="cta-button block bg-gradient-to-r from-secondary to-secondary-dark text-white px-4 py-3 rounded-lg text-center hover:shadow-md transition-colors duration-300 mt-2 font-semibold" data-translate="navQuote">Book Now</a>
         </div>
     </header>
 
@@ -408,9 +615,14 @@
                 <div class="mb-6 bg-white/20 backdrop-blur-sm p-2 rounded-lg inline-block text-white font-semibold">
                     Next available slot: <span class="font-bold text-yellow-300">This Friday!</span>
                 </div>
-                <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="#contact" class="bg-primary text-white px-6 py-3 rounded-lg shadow hover:bg-primary-dark transition-colors duration-300 font-semibold" data-translate="heroBtnBook">Request a Cleaning</a>
-                    <a href="#services" class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-lg shadow hover:bg-white hover:text-primary transition-colors duration-300 font-semibold" data-translate="heroBtnServices">Our Services</a>
+                <div class="flex flex-col items-center justify-center gap-4">
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <a href="/booking" class="bg-primary text-white px-8 py-4 rounded-lg shadow-lg hover:bg-primary-dark transition-all duration-300 font-semibold text-lg inline-flex items-center animate-pulse-shadow" data-translate="heroBtnBookNow">
+                            Book Now <i class="fas fa-calendar-check ml-3"></i>
+                        </a>
+                        <a href="#services" class="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg shadow hover:bg-white/30 transition-colors duration-300 font-semibold" data-translate="heroBtnServices">Our Services</a>
+                    </div>
+                    <a href="#contact" class="bg-secondary text-white px-6 py-3 rounded-lg shadow hover:bg-secondary-dark transition-colors duration-300 font-semibold" data-translate="ctaQuote">Get Quote</a>
                 </div>
             </div>
             <a href="#offer" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce" aria-label="Scroll to next section">
@@ -431,7 +643,7 @@
                  <h2 class="text-2xl font-bold text-primary mb-8 animate-fade-in-up" data-translate="trustTitle">Trusted By Your Neighbors & Fully Certified</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 items-center max-w-4xl mx-auto">
                     <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.2s;">
-                        <i class="fas fa-leaf text-4xl text-secondary mb-2"></i>
+                        <i class="fas fa-leaf text-secondary text-4xl mb-2"></i>
                         <span class="font-semibold" data-translate="trustEco">Eco-Friendly</span>
                     </div>
                     <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.3s;">
@@ -858,6 +1070,16 @@
                         </button>
                         <div id="form-success" class="bg-green-100 text-green-700 p-3 rounded-lg mt-4 hidden" role="alert" data-translate="formSuccess">Thank you! We'll be in touch soon.</div>
                         <div id="form-error" class="bg-red-100 text-red-700 p-3 rounded-lg mt-4 hidden" role="alert" data-translate="formError">An error occurred. Please try again.</div>
+                        
+                        <div class="relative flex !my-6 items-center">
+                            <div class="flex-grow border-t border-gray-300"></div>
+                            <span class="flex-shrink mx-4 text-gray-500 text-xs uppercase">Or</span>
+                            <div class="flex-grow border-t border-gray-300"></div>
+                        </div>
+
+                        <a href="/booking" class="animated-border-button">
+                            Book Now
+                        </a>
                     </form>
                 </div>
             </div>
@@ -922,13 +1144,40 @@
             <div class="chat-header">
                 <div class="chat-header-info">
                     <h3 id="chat-header-title">AJK AI Assistant ✨</h3>
-                    <div class="chat-status" id="chat-status"><span>Typically replies in 2 minutes</span></div>
+                    <div class="chat-status" id="chat-status">
+                        <span id="status-text">Typically replies in 2 minutes</span>
+                        <div class="chat-mode-indicator" id="chat-mode-indicator">
+                            <span class="mode-badge ai-mode" id="mode-badge">
+                                <i class="fas fa-robot"></i> AI Assistant
+                            </span>
+                        </div>
+                    </div>
                 </div>
                 <div class="chat-header-actions">
-                    <button class="chat-action-btn" id="human-handoff-btn" type="button" title="Talk to a human" aria-label="Talk to a human"><i class="fas fa-user"></i></button>
-                    <button class="minimize-btn" id="minimize-chat" type="button" aria-label="Minimize chat">−</button>
+                    <button class="chat-action-btn" id="human-handoff-btn" type="button" title="Switch to Human Support" aria-label="Switch to Human Support">
+                        <i class="fas fa-user"></i>
+                        <span class="btn-text">Human</span>
+                    </button>
                     <button class="close-btn" id="close-chat" type="button" aria-label="Close chat">×</button>
                 </div>
+            </div>
+            
+            <!-- AI to Human Switch Notification -->
+            <div class="chat-switch-notification" id="chat-switch-notification" style="display: none;">
+                <div class="switch-notification-content">
+                    <div class="switch-notification-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <div class="switch-notification-text">
+                        <h4>Need Human Help?</h4>
+                        <p>Our AI can answer most questions, but if you need to speak with a real person, click below!</p>
+                    </div>
+                    <button class="switch-to-human-btn" id="switch-to-human-btn">
+                        <i class="fas fa-user"></i>
+                        Talk to Human
+                    </button>
+                </div>
+                <button class="switch-notification-close" id="switch-notification-close">×</button>
             </div>
             <div class="chat-messages" id="chat-messages"></div>
             <div class="typing-indicator" id="typing-indicator">
@@ -1037,9 +1286,10 @@
                     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.sendMessage(); }
                 });
                 document.getElementById('close-chat').addEventListener('click', () => this.closeChat());
-                document.getElementById('minimize-chat').addEventListener('click', () => this.closeChat());
                 document.getElementById('save-user-info').addEventListener('click', () => this.saveUserInfo());
                 document.getElementById('human-handoff-btn').addEventListener('click', () => this.requestHumanHandoff());
+                document.getElementById('switch-to-human-btn').addEventListener('click', () => this.requestHumanHandoff());
+                document.getElementById('switch-notification-close').addEventListener('click', () => this.hideSwitchNotification());
             }
 
             connect() {
@@ -1136,11 +1386,21 @@
                 if (this.isLiveChatActive) {
                     document.getElementById('chat-header-title').textContent = 'Live Chat with Support';
                     document.getElementById('human-handoff-btn').disabled = true;
+                    document.getElementById('status-text').textContent = 'Connected to human agent';
+                    document.getElementById('mode-badge').innerHTML = '<i class="fas fa-user"></i> Human Support';
+                    document.getElementById('mode-badge').className = 'mode-badge human-mode';
                     this.connect(); 
                 } else if (this.isAiActive && this.chatHistory.length === 0) {
                     const welcomeMessage = "Hello! I'm Alex, the AI assistant for AJK Cleaning. How can I help you today? You can ask me about our services, service areas, or for cleaning tips! 😊";
                     this.chatHistory.push({ role: 'model', parts: [{ text: welcomeMessage }]});
                     this.displayMessage(this.markdownToHtml(welcomeMessage), 'admin', 'Alex', true);
+                }
+                
+                // Show switch notification after 3 AI interactions
+                if (this.isAiActive && this.chatHistory.length >= 6) { // 3 user + 3 AI messages
+                    setTimeout(() => {
+                        this.showSwitchNotification();
+                    }, 2000);
                 }
                 this.scrollToBottom();
             }
@@ -1192,8 +1452,30 @@
                 localStorage.setItem('chatMode', 'live'); 
                 document.getElementById('human-handoff-btn').disabled = true;
                 document.getElementById('chat-header-title').textContent = 'Live Chat with Support';
+                document.getElementById('status-text').textContent = 'Connecting to human agent...';
+                document.getElementById('mode-badge').innerHTML = '<i class="fas fa-user"></i> Human Support';
+                document.getElementById('mode-badge').className = 'mode-badge human-mode';
+                this.hideSwitchNotification();
                 this.displayMessage("You're being connected to a human agent. Please wait.", 'system', 'System');
                 this.connect(); 
+            }
+            
+            showSwitchNotification() {
+                const notification = document.getElementById('chat-switch-notification');
+                if (notification && this.isAiActive) {
+                    notification.style.display = 'block';
+                    // Auto-hide after 10 seconds
+                    setTimeout(() => {
+                        this.hideSwitchNotification();
+                    }, 10000);
+                }
+            }
+            
+            hideSwitchNotification() {
+                const notification = document.getElementById('chat-switch-notification');
+                if (notification) {
+                    notification.style.display = 'none';
+                }
             }
 
             displayMessage(text, type, sender, isHtml = false) {
@@ -1246,10 +1528,10 @@
         const translations = {
             en: {
                 companyName: "AJK Cleaning Company", skipLink: "Skip to main content",
-                navHome: "Home", navServices: "Services", navAbout: "About", navTestimonials: "Testimonials", navFaq: "FAQ", navContact: "Contact", navQuote: "GET A FREE QUOTE",
+                navHome: "Home", navServices: "Services", navAbout: "About", navTestimonials: "Testimonials", navFaq: "FAQ", navContact: "Contact", navQuote: "Book Now",
                 heroTitle: "Experience the AJK Standard of Clean in Bischofsheim",
                 heroSubtitle: "Fully insured, eco-friendly products, and satisfaction guaranteed. Serving Bischofsheim, Mainz, Wiesbaden & surrounding areas.",
-                heroBtnBook: "Request a Cleaning", heroBtnServices: "Our Services",
+                heroBtnBookNow: "Book Now", heroBtnServices: "Our Services",
                 trustTitle: "Trusted By Your Neighbors & Fully Certified",
                 trustEco: "Eco-Friendly", trustRated: "5-Star Rated", trustGuaranteed: "Satisfaction Guaranteed",
                 servicesTitle: "Our Premium Cleaning Services",
@@ -1320,10 +1602,10 @@
             },
             de: {
                 companyName: "AJK Reinigungsfirma", skipLink: "Zum Hauptinhalt springen",
-                navHome: "Startseite", navServices: "Leistungen", navAbout: "Über uns", navTestimonials: "Kundenstimmen", navFaq: "FAQ", navContact: "Kontakt", navQuote: "Kostenloses Angebot",
+                navHome: "Startseite", navServices: "Leistungen", navAbout: "Über uns", navTestimonials: "Kundenstimmen", navFaq: "FAQ", navContact: "Kontakt", navQuote: "Jetzt Buchen",
                 heroTitle: "Erleben Sie den AJK-Reinigungsstandard in Bischofsheim",
                 heroSubtitle: "Voll versichert, umweltfreundliche Produkte und Zufriedenheitsgarantie. Für Sie da in Bischofsheim, Mainz, Wiesbaden und Umgebung.",
-                heroBtnBook: "Reinigung anfragen", heroBtnServices: "Unsere Leistungen",
+                heroBtnBookNow: "Jetzt Buchen", heroBtnServices: "Unsere Leistungen",
                 trustTitle: "Von Ihren Nachbarn vertraut & vollständig zertifiziert",
                 trustEco: "Umweltfreundlich", trustRated: "Top bewertet", trustGuaranteed: "Zufriedenheitsgarantie",
                 servicesTitle: "Unsere Premium-Reinigungsdienste",
@@ -1714,4 +1996,7 @@
     </script>
 </body>
 </html>
+
+
+
 

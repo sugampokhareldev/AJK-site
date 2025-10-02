@@ -20,6 +20,7 @@ const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
 const geoip = require('geoip-lite'); // Added for analytics
 const helmet = require('helmet');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Use memory store for sessions to avoid file system issues on Render
 const MemoryStore = require('memorystore')(session);
@@ -55,7 +56,7 @@ if (!fs.existsSync(dbDir)) {
 }
 
 const adapter = new JSONFile(dbPath);
-const db = new Low(adapter, { submissions: [], admin_users: [], offline_messages: {}, chats: {}, analytics_events: [] });
+const db = new Low(adapter, { submissions: [], admin_users: [], offline_messages: {}, chats: {}, analytics_events: [], bookings: [] });
 
 // Analytics Batching Setup
 const analyticsQueue = [];
@@ -96,6 +97,127 @@ function clearCache(key = null) {
 // END OF DATABASE CACHING
 // =================================================================
 
+// Stripe Webhook Endpoint - IMPORTANT: This must be before express.json()
+app.post('/stripe-webhook', express.raw({type: 'application/json'}), async (req, res) => {
+    console.log('🔔 Webhook received:', req.headers['stripe-signature']);
+    
+    const sig = req.headers['stripe-signature'];
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+    if (!webhookSecret) {
+        console.error('❌ STRIPE_WEBHOOK_SECRET is not set in environment variables');
+        return res.status(500).send('Webhook secret not configured');
+    }
+
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+        console.log('✅ Webhook signature verified, event type:', event.type);
+    } catch (err) {
+        console.error(`❌ Webhook signature verification failed: ${err.message}`);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Handle the event
+    switch (event.type) {
+        case 'payment_intent.succeeded':
+            const paymentIntent = event.data.object;
+            console.info(`[STRIPE] ✅ Payment successful for PaymentIntent ${paymentIntent.id}.`);
+            
+            try {
+                console.info(`[STRIPE] Raw Metadata:`, paymentIntent.metadata);
+                if (!paymentIntent.metadata || !paymentIntent.metadata.bookingDetailsId) {
+                    console.error(`[STRIPE] ❌ CRITICAL: bookingDetailsId missing from metadata for PI ${paymentIntent.id}. Cannot create booking.`);
+                    break;
+                }
+        
+                await db.read();
+                
+                // Retrieve full booking details from temporary storage
+                const tempId = paymentIntent.metadata.bookingDetailsId;
+                let bookingDetails;
+                
+                if (global.tempBookingDetails && global.tempBookingDetails.has(tempId)) {
+                    bookingDetails = global.tempBookingDetails.get(tempId);
+                    // Clean up the temporary storage
+                    global.tempBookingDetails.delete(tempId);
+                    console.info(`[STRIPE] 📝 Retrieved full booking details from temp storage`);
+                } else {
+                    console.error(`[STRIPE] ❌ CRITICAL: Full booking details not found in temp storage for ID ${tempId}`);
+                    break;
+                }
+                
+                const totalAmount = parseFloat(paymentIntent.metadata.totalAmount || '0');
+                
+                console.info(`[STRIPE] 📝 Parsed booking details:`, bookingDetails);
+                
+                const newBooking = {
+                    id: `booking_${Date.now()}`,
+                    details: bookingDetails,
+                    amount: totalAmount,
+                    status: 'paid',
+                    paymentIntentId: paymentIntent.id,
+                    paidAt: new Date().toISOString(),
+                    createdAt: new Date().toISOString(),
+                };
+                
+                console.info(`[STRIPE] 📦 Preparing to save new booking:`, newBooking.id);
+                db.data.bookings.push(newBooking);
+                await db.write();
+                
+                console.info(`[STRIPE] ✅ Successfully wrote booking ${newBooking.id} to database.`);
+                console.info(`[STRIPE] 📊 Total bookings now:`, db.data.bookings.length);
+            } catch (error) {
+                console.error(`[STRIPE] ❌ Error processing successful payment webhook: ${error.message}`);
+                console.error(error.stack);
+            }
+            break;
+
+        case 'payment_intent.payment_failed':
+            const paymentIntentFailed = event.data.object;
+            console.warn(`[STRIPE] ❌ Payment failed for PaymentIntent ${paymentIntentFailed.id}. Reason: ${paymentIntentFailed.last_payment_error?.message}`);
+            
+            try {
+                await db.read();
+                
+                const existingBooking = db.data.bookings.find(b => b.paymentIntentId === paymentIntentFailed.id);
+                if (existingBooking) {
+                    console.warn(`[STRIPE] ⚠️ Booking for failed payment intent ${paymentIntentFailed.id} already exists. Status: ${existingBooking.status}`);
+                    break; 
+                }
+
+                const bookingDetails = JSON.parse(paymentIntentFailed.metadata.bookingDetails || '{}');
+                const totalAmount = parseFloat(paymentIntentFailed.metadata.totalAmount || '0');
+                
+                const failedBooking = {
+                    id: `booking_${Date.now()}`,
+                    details: bookingDetails,
+                    amount: totalAmount,
+                    status: 'payment_failed',
+                    paymentIntentId: paymentIntentFailed.id,
+                    paymentError: paymentIntentFailed.last_payment_error?.message || 'Payment failed',
+                    failedAt: new Date().toISOString(),
+                    createdAt: new Date().toISOString(),
+                };
+
+                db.data.bookings.push(failedBooking);
+                await db.write();
+                console.info(`[STRIPE] ✅ Created booking record for failed payment ${failedBooking.id}`);
+
+            } catch (error) {
+                console.error(`[STRIPE] ❌ Error creating record for failed payment: ${error.message}`);
+            }
+            break;
+
+        default:
+            // console.log(`[STRIPE] Unhandled event type: ${event.type}`); // Optional: for debugging
+    }
+
+    // Return a 200 response to acknowledge receipt of the event
+    res.json({received: true});
+});
+
 
 // =================================================================
 // MIDDLEWARE SETUP
@@ -129,7 +251,7 @@ app.use(cors({
 }));
 app.options('*', cors());
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
-app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.json());
 app.use(cookieParser());
 
 // ENHANCEMENT: Add detailed request logging
@@ -168,7 +290,16 @@ const csrfProtection = csrf({ cookie: true });
 
 // Conditionally apply CSRF protection. Public POST endpoints are excluded.
 app.use((req, res, next) => {
-    const excludedRoutes = ['/api/form/submit', '/api/gemini', '/api/analytics/track'];
+    const excludedRoutes = [
+        '/api/form/submit', 
+        '/api/gemini', 
+        '/api/analytics/track', 
+        '/create-payment-intent', 
+        '/stripe-webhook',
+        '/api/bookings/check-payment-status',
+        '/api/bookings/create-from-payment',
+        '/api/bookings/commercial-create'
+    ];
     if (excludedRoutes.includes(req.path)) {
         return next();
     }
@@ -1092,12 +1223,12 @@ app.use((req, res, next) => {
     res.setHeader(
         'Content-Security-Policy',
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://www.googletagmanager.com https://app.usercentrics.eu https://cdn.jsdelivr.net https://cdnjs.cloudflare.com blob:; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://www.googletagmanager.com https://app.usercentrics.eu https://cdn.jsdelivr.net https://cdnjs.cloudflare.com blob: https://js.stripe.com; " +
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; " +
         "img-src 'self' data: https: blob:; " +
         "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; " +
-        `connect-src 'self' ${protocol}://${host} https://generativelanguage.googleapis.com https://api.usercentrics.eu https://privacy-proxy.usercentrics.eu https://www.google-analytics.com https://consent-api.service.consent.usercentrics.eu; ` + 
-        "frame-src 'self' https://www.google.com https://app.usercentrics.eu;"
+        `connect-src 'self' ${protocol}://${host} https://generativelanguage.googleapis.com https://api.usercentrics.eu https://privacy-proxy.usercentrics.eu https://www.google-analytics.com https://consent-api.service.consent.usercentrics.eu https://api.stripe.com; ` + 
+        "frame-src 'self' https://www.google.com https://app.usercentrics.eu https://js.stripe.com;"
     );
     next();
 });
@@ -1224,6 +1355,7 @@ async function initializeDB() {
         db.data.admin_users = db.data.admin_users || [];
         db.data.chats = db.data.chats || {};
         db.data.analytics_events = db.data.analytics_events || []; // Ensure analytics array exists
+        db.data.bookings = db.data.bookings || [];
         
         const adminUsername = process.env.ADMIN_USERNAME || 'admin';
         const adminPassword = process.env.ADMIN_PASSWORD;
@@ -1729,6 +1861,537 @@ app.get('/api/submissions/export', requireAuth, async (req, res) => {
     }
 });
 
+// Bookings API endpoints
+app.get('/api/bookings', requireAuth, async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = Math.min(parseInt(req.query.limit) || 10, 100);
+        const searchTerm = req.query.search || '';
+        const statusFilter = req.query.status || '';
+        const dateFrom = req.query.dateFrom || '';
+        const dateTo = req.query.dateTo || '';
+
+        await db.read();
+        let bookings = db.data.bookings || [];
+
+        // Apply filters
+        if (searchTerm) {
+            bookings = bookings.filter(booking => 
+                booking.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (booking.details?.customerName && booking.details.customerName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (booking.details?.customerEmail && booking.details.customerEmail.toLowerCase().includes(searchTerm.toLowerCase()))
+            );
+        }
+
+        if (statusFilter) {
+            bookings = bookings.filter(booking => booking.status === statusFilter);
+        }
+
+        if (dateFrom) {
+            const fromDate = new Date(dateFrom);
+            bookings = bookings.filter(booking => new Date(booking.createdAt) >= fromDate);
+        }
+
+        if (dateTo) {
+            const toDate = new Date(dateTo);
+            toDate.setHours(23, 59, 59, 999);
+            bookings = bookings.filter(booking => new Date(booking.createdAt) <= toDate);
+        }
+
+        // Sort by creation date (newest first)
+        bookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        // Calculate pagination
+        const totalBookings = bookings.length;
+        const totalPages = Math.ceil(totalBookings / limit);
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const paginatedBookings = bookings.slice(startIndex, endIndex);
+
+        // Calculate stats
+        const paidBookings = bookings.filter(b => b.status === 'paid' || b.status === 'confirmed' || b.status === 'in_progress' || b.status === 'completed');
+        const stats = {
+            total: totalBookings,
+            revenue: paidBookings.reduce((sum, booking) => sum + (booking.amount || 0), 0),
+            pending: bookings.filter(b => b.status === 'pending_payment').length,
+            completed: bookings.filter(b => b.status === 'completed').length
+        };
+
+        res.json({
+            data: paginatedBookings,
+            pagination: {
+                page,
+                totalPages,
+                total: totalBookings,
+                hasNext: page < totalPages,
+                hasPrev: page > 1
+            },
+            stats
+        });
+    } catch (err) {
+        console.error('Error fetching bookings:', err);
+        res.status(500).json({ error: 'Failed to fetch bookings' });
+    }
+});
+
+app.get('/api/bookings/:id', requireAuth, async (req, res) => {
+    try {
+        await db.read();
+        const bookings = db.data.bookings || [];
+        const booking = bookings.find(b => b.id === req.params.id);
+        
+        if (!booking) {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+        
+        res.json(booking);
+    } catch (err) {
+        console.error('Error fetching booking:', err);
+        res.status(500).json({ error: 'Failed to fetch booking' });
+    }
+});
+
+app.get('/api/bookings/by-payment-intent/:paymentIntentId', async (req, res) => {
+    try {
+        await db.read();
+        const bookings = db.data.bookings || [];
+        const booking = bookings.find(b => b.paymentIntentId === req.params.paymentIntentId);
+        
+        if (!booking) {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+        
+        res.json(booking);
+    } catch (err) {
+        console.error('Error fetching booking by payment intent:', err);
+        res.status(500).json({ error: 'Failed to fetch booking' });
+    }
+});
+
+app.put('/api/bookings/:id/status', requireAuth, async (req, res) => {
+    try {
+        const { status } = req.body;
+        const validStatuses = ['pending_payment', 'paid', 'confirmed', 'in_progress', 'completed', 'payment_failed', 'cancelled'];
+        
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ error: 'Invalid status' });
+        }
+
+        await db.read();
+        const bookings = db.data.bookings || [];
+        const bookingIndex = bookings.findIndex(b => b.id === req.params.id);
+        
+        if (bookingIndex === -1) {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+        
+        bookings[bookingIndex].status = status;
+        bookings[bookingIndex].updatedAt = new Date().toISOString();
+        
+        await db.write();
+        res.json({ success: true, message: 'Booking status updated successfully' });
+    } catch (err) {
+        console.error('Error updating booking status:', err);
+        res.status(500).json({ error: 'Failed to update booking status' });
+    }
+});
+
+app.get('/api/bookings/export', requireAuth, async (req, res) => {
+    try {
+        await db.read();
+        const bookings = db.data.bookings || [];
+        
+        const headers = ['ID', 'Customer Name', 'Customer Email', 'Customer Phone', 'Package', 'Date', 'Time', 'Duration', 'Cleaners', 'Amount', 'Status', 'Created At'];
+        const csvRows = [headers.join(',')];
+        
+        bookings.forEach(booking => {
+            const row = [
+                booking.id,
+                booking.details?.customerName || '',
+                booking.details?.customerEmail || '',
+                booking.details?.customerPhone || '',
+                booking.details?.package || '',
+                booking.details?.date || '',
+                booking.details?.time || '',
+                booking.details?.duration || '',
+                booking.details?.cleaners || '',
+                booking.amount || 0,
+                booking.status || '',
+                new Date(booking.createdAt).toLocaleString()
+            ];
+            csvRows.push(row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(','));
+        });
+        
+        const csv = csvRows.join('\n');
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', `attachment; filename=bookings-${Date.now()}.csv`);
+        res.send(csv);
+    } catch (err) {
+        console.error('Export error:', err);
+        res.status(500).json({ error: 'Export failed' });
+    }
+});
+
+// Quick fix: Update all pending payments to paid
+app.post('/api/bookings/update-all-pending', async (req, res) => {
+    try {
+        await db.read();
+        const bookings = db.data.bookings || [];
+        let updatedCount = 0;
+        
+        for (let booking of bookings) {
+            if (booking.status === 'pending_payment') {
+                booking.status = 'paid';
+                booking.paidAt = new Date().toISOString();
+                booking.updatedAt = new Date().toISOString();
+                updatedCount++;
+            }
+        }
+        
+        if (updatedCount > 0) {
+            await db.write();
+            res.json({ 
+                success: true, 
+                message: `Updated ${updatedCount} bookings to paid status`,
+                updatedCount 
+            });
+        } else {
+            res.json({ 
+                success: true, 
+                message: 'No pending bookings found',
+                updatedCount: 0 
+            });
+        }
+    } catch (error) {
+        console.error('Error updating pending bookings:', error);
+        res.status(500).json({ error: 'Failed to update bookings' });
+    }
+});
+
+// Create commercial booking (no payment required)
+app.post('/api/bookings/commercial-create', async (req, res) => {
+    try {
+        const { bookingDetails } = req.body;
+        
+        if (!bookingDetails) {
+            return res.status(400).json({ error: 'Booking details are required' });
+        }
+
+        // Validate required fields
+        if (!bookingDetails.customerEmail || !bookingDetails.customerName) {
+            return res.status(400).json({ error: 'Customer email and name are required' });
+        }
+
+        console.log(`[COMMERCIAL] 📋 Creating commercial booking:`, bookingDetails);
+        console.log(`[COMMERCIAL] 📧 Customer Email:`, bookingDetails.customerEmail);
+        console.log(`[COMMERCIAL] 📅 Booking Date:`, bookingDetails.date);
+
+        // Check if booking already exists (by email and date)
+        await db.read();
+        
+        // Ensure bookings array exists
+        if (!db.data.bookings) {
+            db.data.bookings = [];
+        }
+        
+        console.log(`[COMMERCIAL] 📊 Total existing bookings:`, db.data.bookings.length);
+        const existingBooking = db.data.bookings.find(b => 
+            b.details && 
+            b.details.customerEmail === bookingDetails.customerEmail && 
+            b.details.date === bookingDetails.date &&
+            b.details.package === 'commercial'
+        );
+        
+        if (existingBooking) {
+            return res.json({ 
+                status: 'exists', 
+                message: 'Commercial booking already exists for this email and date',
+                booking: existingBooking 
+            });
+        }
+
+        // Create the commercial booking record
+        const newBooking = {
+            id: `booking_${Date.now()}`,
+            details: bookingDetails,
+            amount: 0, // Commercial bookings have no fixed amount
+            status: 'pending_consultation', // Special status for commercial
+            paymentIntentId: null, // No payment intent for commercial
+            paidAt: null,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        };
+        
+        console.log(`[COMMERCIAL] 📦 Creating commercial booking:`, newBooking);
+        
+        db.data.bookings.push(newBooking);
+        await db.write();
+        
+        console.log(`[COMMERCIAL] ✅ Created commercial booking ${newBooking.id}`);
+        console.log(`[COMMERCIAL] 📊 Total bookings in database:`, db.data.bookings.length);
+        
+        res.json({ 
+            status: 'created', 
+            message: 'Commercial booking created successfully',
+            booking: newBooking 
+        });
+
+    } catch (error) {
+        console.error('[COMMERCIAL] ❌ Error creating commercial booking:', error);
+        res.status(500).json({ error: 'Failed to create commercial booking: ' + error.message });
+    }
+});
+
+// Manual trigger to create booking (for testing)
+app.post('/api/bookings/manual-create', async (req, res) => {
+    try {
+        const { paymentIntentId } = req.body;
+        
+        if (!paymentIntentId) {
+            return res.status(400).json({ error: 'Payment Intent ID is required' });
+        }
+
+        console.log(`[MANUAL] 🔍 Looking for payment intent: ${paymentIntentId}`);
+
+        // Retrieve payment intent from Stripe
+        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+        console.log(`[MANUAL] 📋 Payment Intent Status: ${paymentIntent.status}`);
+        console.log(`[MANUAL] 📋 Payment Intent Metadata:`, paymentIntent.metadata);
+        
+        if (paymentIntent.status !== 'succeeded') {
+            return res.status(400).json({ 
+                error: `Payment not successful. Status: ${paymentIntent.status}` 
+            });
+        }
+
+        // Check if booking already exists
+        await db.read();
+        const existingBooking = db.data.bookings.find(b => b.paymentIntentId === paymentIntentId);
+        if (existingBooking) {
+            return res.json({ 
+                status: 'exists', 
+                message: 'Booking already exists',
+                booking: existingBooking 
+            });
+        }
+
+        // Parse booking details from metadata (handle both old and new format)
+        let bookingDetails;
+        if (paymentIntent.metadata.bookingDetailsId && global.tempBookingDetails) {
+            // New format: retrieve from temp storage
+            const tempId = paymentIntent.metadata.bookingDetailsId;
+            if (global.tempBookingDetails.has(tempId)) {
+                bookingDetails = global.tempBookingDetails.get(tempId);
+                global.tempBookingDetails.delete(tempId);
+            } else {
+                bookingDetails = {};
+            }
+        } else if (paymentIntent.metadata.bookingDetails) {
+            // Old format: parse from metadata
+            bookingDetails = JSON.parse(paymentIntent.metadata.bookingDetails);
+        } else {
+            bookingDetails = {};
+        }
+        const totalAmount = parseFloat(paymentIntent.metadata.totalAmount || '0');
+        
+        console.log(`[MANUAL] 📝 Parsed booking details:`, bookingDetails);
+        console.log(`[MANUAL] 💰 Total amount:`, totalAmount);
+        
+        // Create the booking record
+        const newBooking = {
+            id: `booking_${Date.now()}`,
+            details: bookingDetails,
+            amount: totalAmount,
+            status: 'paid',
+            paymentIntentId: paymentIntentId,
+            paidAt: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
+        };
+        
+        console.log(`[MANUAL] 📦 Creating booking:`, newBooking);
+        
+        db.data.bookings.push(newBooking);
+        await db.write();
+        
+        console.log(`[MANUAL] ✅ Created booking ${newBooking.id}`);
+        console.log(`[MANUAL] 📊 Total bookings in database:`, db.data.bookings.length);
+        
+        res.json({ 
+            status: 'created', 
+            message: 'Booking created successfully',
+            booking: newBooking 
+        });
+
+    } catch (error) {
+        console.error('[MANUAL] ❌ Error creating booking:', error);
+        res.status(500).json({ error: 'Failed to create booking: ' + error.message });
+    }
+});
+
+// Create booking manually if webhook failed
+app.post('/api/bookings/create-from-payment', async (req, res) => {
+    try {
+        const { paymentIntentId } = req.body;
+        
+        if (!paymentIntentId) {
+            return res.status(400).json({ error: 'Payment Intent ID is required' });
+        }
+
+        // Check if booking already exists
+        await db.read();
+        const existingBooking = db.data.bookings.find(b => b.paymentIntentId === paymentIntentId);
+        if (existingBooking) {
+            return res.json({ 
+                status: 'exists', 
+                message: 'Booking already exists',
+                booking: existingBooking 
+            });
+        }
+
+        // Retrieve payment intent from Stripe
+        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+        
+        if (paymentIntent.status !== 'succeeded') {
+            return res.status(400).json({ 
+                error: `Payment not successful. Status: ${paymentIntent.status}` 
+            });
+        }
+
+        // Parse booking details from metadata (handle both old and new format)
+        let bookingDetails;
+        if (paymentIntent.metadata.bookingDetailsId && global.tempBookingDetails) {
+            // New format: retrieve from temp storage
+            const tempId = paymentIntent.metadata.bookingDetailsId;
+            if (global.tempBookingDetails.has(tempId)) {
+                bookingDetails = global.tempBookingDetails.get(tempId);
+                global.tempBookingDetails.delete(tempId);
+            } else {
+                bookingDetails = {};
+            }
+        } else if (paymentIntent.metadata.bookingDetails) {
+            // Old format: parse from metadata
+            bookingDetails = JSON.parse(paymentIntent.metadata.bookingDetails);
+        } else {
+            bookingDetails = {};
+        }
+        const totalAmount = parseFloat(paymentIntent.metadata.totalAmount || '0');
+        
+        // Create the booking record
+        const newBooking = {
+            id: `booking_${Date.now()}`,
+            details: bookingDetails,
+            amount: totalAmount,
+            status: 'paid',
+            paymentIntentId: paymentIntentId,
+            paidAt: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
+        };
+        
+        db.data.bookings.push(newBooking);
+        await db.write();
+        
+        res.json({ 
+            status: 'created', 
+            message: 'Booking created successfully',
+            booking: newBooking 
+        });
+
+    } catch (error) {
+        console.error('Error creating booking from payment:', error);
+        res.status(500).json({ error: 'Failed to create booking from payment' });
+    }
+});
+
+// Manual payment status check endpoint (for testing/debugging)
+app.post('/api/bookings/check-payment-status', async (req, res) => {
+    try {
+        const { bookingId } = req.body;
+        
+        if (!bookingId) {
+            return res.status(400).json({ error: 'Booking ID is required' });
+        }
+
+        await db.read();
+        const bookings = db.data.bookings || [];
+        const booking = bookings.find(b => b.id === bookingId);
+        
+        if (!booking) {
+            return res.status(404).json({ error: 'Booking not found' });
+        }
+
+        // If booking is already paid, return current status
+        if (booking.status === 'paid') {
+            return res.json({ 
+                status: 'paid', 
+                message: 'Booking is already marked as paid',
+                booking: booking 
+            });
+        }
+
+        // Check with Stripe if payment was successful
+        if (booking.paymentIntentId) {
+            try {
+                const paymentIntent = await stripe.paymentIntents.retrieve(booking.paymentIntentId);
+                
+                if (paymentIntent.status === 'succeeded') {
+                    // Update booking status
+                    const bookingIndex = bookings.findIndex(b => b.id === bookingId);
+                    if (bookingIndex !== -1) {
+                        bookings[bookingIndex].status = 'paid';
+                        bookings[bookingIndex].paidAt = new Date().toISOString();
+                        await db.write();
+                        
+                        return res.json({ 
+                            status: 'updated', 
+                            message: 'Booking status updated to paid',
+                            booking: bookings[bookingIndex]
+                        });
+                    }
+                } else if (paymentIntent.status === 'requires_payment_method' || paymentIntent.status === 'requires_confirmation') {
+                    return res.json({ 
+                        status: 'pending', 
+                        message: `Payment status: ${paymentIntent.status}`,
+                        booking: booking 
+                    });
+                } else if (paymentIntent.status === 'canceled' || paymentIntent.status === 'payment_failed') {
+                    // Update booking status to failed
+                    const bookingIndex = bookings.findIndex(b => b.id === bookingId);
+                    if (bookingIndex !== -1) {
+                        bookings[bookingIndex].status = 'payment_failed';
+                        bookings[bookingIndex].failedAt = new Date().toISOString();
+                        await db.write();
+                    }
+                    
+                    return res.json({ 
+                        status: 'failed', 
+                        message: `Payment failed: ${paymentIntent.status}`,
+                        booking: bookings[bookingIndex]
+                    });
+                } else {
+                    return res.json({ 
+                        status: 'unknown', 
+                        message: `Payment status: ${paymentIntent.status}`,
+                        booking: booking 
+                    });
+                }
+            } catch (stripeError) {
+                console.error('Stripe error:', stripeError);
+                return res.status(500).json({ error: 'Failed to check payment status with Stripe' });
+            }
+        }
+
+        return res.json({ 
+            status: 'no_payment_intent', 
+            message: 'No payment intent found for this booking',
+            booking: booking 
+        });
+
+    } catch (error) {
+        console.error('Error checking payment status:', error);
+        res.status(500).json({ error: 'Failed to check payment status' });
+    }
+});
+
 app.get('/api/statistics', requireAuth, async (req, res) => {
     try {
         await db.read();
@@ -2088,6 +2751,66 @@ app.get('/api/admin/backup', requireAuth, async (req, res) => {
     }
 });
 
+app.post('/create-payment-intent', async (req, res) => {
+    const { totalAmount, bookingDetails } = req.body;
+
+    // Basic validation
+    if (typeof totalAmount !== 'number' || totalAmount <= 0) {
+        return res.status(400).json({ error: 'Invalid total amount specified.' });
+    }
+
+    // Amount in cents for Stripe
+    const amountInCents = Math.round(totalAmount * 100);
+    
+    // Minimum charge amount is €0.50 for many card types
+    if (amountInCents < 50) {
+         return res.status(400).json({ error: 'Amount must be at least €0.50.' });
+    }
+
+    try {
+        // Store full booking details temporarily and reference by ID
+        const tempId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Store in a simple in-memory cache (in production, use Redis or database)
+        if (!global.tempBookingDetails) {
+            global.tempBookingDetails = new Map();
+        }
+        global.tempBookingDetails.set(tempId, bookingDetails);
+        
+        // Clean up old entries (older than 1 hour)
+        const oneHourAgo = Date.now() - (60 * 60 * 1000);
+        for (const [key, value] of global.tempBookingDetails.entries()) {
+            const timestamp = parseInt(key.split('_')[1]);
+            if (timestamp < oneHourAgo) {
+                global.tempBookingDetails.delete(key);
+            }
+        }
+        
+        // Create payment intent with reference to full details
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: amountInCents,
+            currency: 'eur',
+            automatic_payment_methods: {
+                enabled: true,
+            },
+            metadata: {
+                bookingDetailsId: tempId,
+                totalAmount: totalAmount.toString()
+            }
+        });
+
+        console.log(`[STRIPE] 💳 Created PaymentIntent ${paymentIntent.id}`);
+
+        res.send({
+            clientSecret: paymentIntent.client_secret,
+            paymentIntentId: paymentIntent.id
+        });
+    } catch (e) {
+        console.error('Stripe Payment Intent creation failed:', e.message);
+        res.status(500).json({ error: `Payment Intent creation failed: ${e.message}` });
+    }
+});
+
 app.use(express.static(path.join(__dirname), {
     setHeaders: (res, filePath) => {
         if (filePath.endsWith('.css')) res.setHeader('Content-Type', 'text/css');
@@ -2127,6 +2850,10 @@ app.get(['/admin', '/admin/login'], (req, res) => {
         console.error("Could not read or process admin.html file:", error);
         res.status(500).send("<h1>Error loading admin page. Check server logs for details.</h1>");
     }
+});
+
+app.get('/booking', (req, res) => {
+    res.sendFile(path.join(__dirname, 'booking.html'));
 });
 
 app.get('/chat', (req, res) => {
@@ -2206,4 +2933,3 @@ initializeDB().then(() => {
     console.error('Failed to initialize and start server:', err);
     process.exit(1);
 });
-

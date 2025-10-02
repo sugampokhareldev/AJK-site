@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Book a Cleaning • AJK Cleaning Company</title>
+    <meta name="description" content="Book trusted cleaners in Bischofsheim. Fast online booking with instant price estimates, verified teams, and satisfaction guarantee.">
+    <!-- Stripe.js Script -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" type="image/x-icon" href="https://placehold.co/64x64/e0f2fe/1e40af?text=AJK">
+
+    <style>
+        :root {
+            --primary-500: #2563eb; /* blue-600 */
+            --primary-600: #1d4ed8; /* blue-700 */
+            --accent-500: #0d9488;  /* teal-600 */
+            --accent-600: #087f75;  /* teal-700 */
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        html { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+
+        body {
+            background-image: url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(37, 99, 235, 0.1), rgba(13, 148, 136, 0.1), rgba(139, 92, 246, 0.1));
+            animation: backgroundShift 15s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes backgroundShift {
+            0%, 100% { background: linear-gradient(45deg, rgba(37, 99, 235, 0.1), rgba(13, 148, 136, 0.1), rgba(139, 92, 246, 0.1)); }
+            33% { background: linear-gradient(45deg, rgba(13, 148, 136, 0.1), rgba(139, 92, 246, 0.1), rgba(37, 99, 235, 0.1)); }
+            66% { background: linear-gradient(45deg, rgba(139, 92, 246, 0.1), rgba(37, 99, 235, 0.1), rgba(13, 148, 136, 0.1)); }
+        }
+
+        .main-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(248, 250, 252, 0.85);
+            backdrop-filter: blur(16px);
+            z-index: -1;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(15, 23, 42, 0.1);
+            box-shadow: var(--shadow-lg);
+            animation: glassFloat 6s ease-in-out infinite;
+        }
+        
+        @keyframes glassFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-2px); }
+        }
+        
+        /* Language Switcher Styles */
+        .lang-btn {
+            padding: 4px 8px;
+            border: 1px solid #d1d5db;
+            background: white;
+            color: #6b7280;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .lang-btn:hover {
+            background: #f3f4f6;
+            border-color: #9ca3af;
+        }
+        .lang-btn.active {
+            background: #1e40af;
+            color: white;
+            border-color: #1e40af;
+        }
+
+        .card-hover {
+            transition: all .3s cubic-bezier(.4,0,.2,1);
+            position: relative;
+            overflow: hidden;
+        }
+        .card-hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        .card-hover:hover::before {
+            left: 100%;
+        }
+        
+        /* Floating Label Form Fields */
+        .field { position: relative; }
+        .field .field-icon { position: absolute; left: 1rem; top: 1rem; color: var(--gray-400); transition: color .2s; pointer-events: none; }
+        .field .form-input { transition: border-color .2s; -webkit-appearance: none; -moz-appearance: none; appearance: none; padding-left: 2.75rem; }
+        .field select.form-input {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+            background-position: right .7rem center; background-repeat: no-repeat; background-size: 1.25em; padding-right: 2.5rem; padding-left: 1rem;
+        }
+        .field .form-input:focus { border-color: var(--primary-500); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); outline: none; }
+        .field .form-input:focus ~ .field-icon { color: var(--primary-600); }
+        .field .form-input:focus + label, .field .form-input:not(:placeholder-shown) + label, .field select.form-input + label {
+            transform: translateY(-1.3rem) scale(.8); background: var(--white); padding: 0 .4rem;
+        }
+        .field input.form-input:not(:placeholder-shown) + label, .field .form-input:focus + label { left: 2.5rem; }
+        .field select.form-input + label { left: .8rem; }
+        .field label { position: absolute; left: 2.75rem; top: 1rem; transition: all .2s ease-in-out; pointer-events: none; color: var(--gray-400); }
+        .field select ~ label { left: 1rem; }
+
+        .form-input.error { border-color: #ef4444 !important; }
+        .error-message { color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; display: none; }
+        
+        /* Wizard Steps */
+        .wizard-steps { counter-reset: step; }
+        .wizard-step {
+            display: flex;
+            align-items: center;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        .wizard-step::before {
+            counter-increment: step;
+            content: counter(step);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 2.5rem; height: 2.5rem;
+            border-radius: 99px;
+            background-color: var(--gray-200);
+            color: var(--gray-600);
+            font-weight: 600;
+            margin-right: 0.75rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .wizard-step.active { opacity: 1; }
+        .wizard-step.active::before { background-color: var(--primary-500); color: var(--white); }
+        .wizard-step.completed::before { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; background-color: var(--accent-500); color: var(--white); }
+        .wizard-connector { flex-grow: 1; height: 2px; background-color: var(--gray-200); margin: 0 0.5rem; }
+
+        .a-focus:focus-visible { outline: 3px solid rgba(37,99,235,0.2); outline-offset: 2px; border-radius: 6px; }
+
+        /* Step Animations */
+        #wizard { overflow: hidden; }
+        .step {
+            transition: opacity .3s ease-in-out, transform .3s ease-in-out;
+            will-change: transform, opacity;
+        }
+        .step.hidden-left { position: absolute; opacity: 0; transform: translateX(-50px); pointer-events: none; }
+        .step.hidden-right { position: absolute; opacity: 0; transform: translateX(50px); pointer-events: none; }
+        
+        .package.selected {
+            background: rgba(37, 99, 235, 0.05);
+            border-color: var(--primary-500) !important;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+            transform: translateY(-4px);
+        }
+
+        /* Custom Calendar */
+        #calendar-grid .day:not(.disabled):hover { background-color: #dbeafe; }
+        #calendar-grid .day.selected { background-color: var(--primary-500) !important; color: white; font-weight: 600; }
+        .time-slot:hover, .time-slot.selected { background-color: var(--primary-500); color: white; border-color: var(--primary-600); }
+
+        /* Modern button styles */
+        .btn { padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-weight: 600; transition: all 0.2s ease-in-out; }
+        .btn-primary { background-color: var(--primary-500); color: white; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2); }
+        .btn-primary:hover:not(:disabled) { background-color: var(--primary-600); transform: translateY(-1px); box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3); }
+        .btn-secondary { background-color: var(--gray-200); color: var(--gray-800); }
+        .btn-secondary:hover { background-color: #d1d5db; }
+        .btn-accent { background-color: var(--accent-500); color: white; }
+        .btn-accent:hover { background-color: var(--accent-600); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        .quantity-btn:hover:not(:disabled) { background: #e2e8f0; }
+        .quantity-btn:active:not(:disabled) { transform: scale(0.95); }
+        .quantity-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Loader */
+        .loader { width: 18px; height: 18px; border: 2px solid #FFF; border-bottom-color: transparent; border-radius: 50%; display: inline-block; box-sizing: border-box; animation: rotation 1s linear infinite; }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Success Animation */
+        .success-checkmark { width: 80px; height: 80px; margin: 2rem auto; }
+        .check-icon { width: 80px; height: 80px; position: relative; border-radius: 50%; box-sizing: content-box; border: 4px solid var(--accent-500); }
+        .check-icon::before { top: 3px; left: -2px; width: 30px; transform-origin: 100% 50%; border-radius: 100px 0 0 100px; content: ""; }
+        .check-icon::after { top: 0; left: 30px; width: 60px; transform-origin: 0 50%; border-radius: 0 100px 100px 0; animation: rotate-circle 4.25s ease-in; content: ""; }
+        .check-icon::before, .check-icon::after { content: ''; height: 100px; position: absolute; background: #f8fafc; transform: rotate(-45deg); }
+        .icon-line { height: 5px; background-color: var(--accent-500); display: block; border-radius: 2px; position: absolute; z-index: 10; }
+        .icon-line.line-tip { top: 46px; left: 14px; width: 25px; transform: rotate(45deg); animation: icon-line-tip .75s; }
+        .icon-line.line-long { top: 38px; right: 8px; width: 47px; transform: rotate(-45deg); animation: icon-line-long .75s; }
+        .icon-circle { top: -4px; left: -4px; z-index: 10; width: 80px; height: 80px; border-radius: 50%; position: absolute; box-sizing: content-box; border: 4px solid rgba(13, 148, 136, .5); }
+        .icon-fix { top: 8px; width: 5px; left: 26px; z-index: 1; width: 5px; height: 85px; position: absolute; transform: rotate(-45deg); background-color: #f8fafc; }
+        @keyframes rotate-circle { 0%, 12% { transform: rotate(-45deg); } 100% { transform: rotate(-405deg); } }
+        @keyframes icon-line-tip { 0%, 54% { width: 0; left: 1px; top: 19px; } 70% { width: 50px; left: -8px; top: 37px; } 84% { width: 17px; left: 21px; top: 48px; } 100% { width: 25px; left: 14px; top: 45px; } }
+        @keyframes icon-line-long { 0%, 65% { width: 0; right: 46px; top: 54px; } 84% { width: 55px; right: 0px; top: 35px; } 100% { width: 47px; right: 8px; top: 38px; } }
+    
+        #terms-modal.hidden, #privacy-modal.hidden { display: none; }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .max-w-7xl { max-width: 100%; }
+            .px-6 { padding-left: 1rem; padding-right: 1rem; }
+            .grid.lg\\:grid-cols-3 { grid-template-columns: 1fr; gap: 1.5rem; }
+            .p-6 { padding: 1rem; }
+            .sm\\:p-8 { padding: 1rem; }
+            .wizard-steps { flex-direction: column; gap: 0.5rem; }
+            .wizard-step { width: 100%; text-align: center; padding: 0.75rem; }
+            .wizard-connector { display: none; }
+            .package-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+            .package { padding: 1rem; }
+            .form-row { flex-direction: column; gap: 0.75rem; }
+            .form-row .form-group { flex: 1; }
+            .btn-primary { width: 100%; padding: 0.875rem; }
+            .calendar-grid { grid-template-columns: repeat(7, 1fr); gap: 0.25rem; }
+            .calendar-day { padding: 0.5rem 0.25rem; font-size: 0.8rem; }
+            .time-slots { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+            .time-slot { padding: 0.5rem; font-size: 0.8rem; }
+            .success-message { padding: 1.5rem; text-align: center; }
+            .success-message h2 { font-size: 1.5rem; }
+            .success-message p { font-size: 0.9rem; }
+            .sticky.top-0 { position: relative; }
+            .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+            .text-lg { font-size: 1rem; }
+            .text-xs { font-size: 0.7rem; }
+            .h-12 { height: 2.5rem; }
+            .w-12 { width: 2.5rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .px-6 { padding-left: 0.5rem; padding-right: 0.5rem; }
+            .p-6 { padding: 0.75rem; }
+            .wizard-step { padding: 0.5rem; font-size: 0.8rem; }
+            .package { padding: 0.75rem; }
+            .package h3 { font-size: 1rem; }
+            .package .price { font-size: 1.25rem; }
+            .btn-primary { padding: 0.75rem; font-size: 0.875rem; }
+            .calendar-day { padding: 0.25rem; font-size: 0.7rem; }
+            .time-slot { padding: 0.375rem; font-size: 0.75rem; }
+            .success-message { padding: 1rem; }
+            .success-message h2 { font-size: 1.25rem; }
+            .success-message p { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body class="antialiased text-slate-700 bg-slate-50">
+
+<div class="relative min-h-screen">
+    <header class="sticky top-0 z-20 bg-white/80 backdrop-blur-lg border-b border-slate-200/80">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3 a-focus" aria-label="AJK Cleaning Home">
+                <img src="https://placehold.co/64x64/e0f2fe/1d4ed8?text=AJK" alt="AJK Cleaning logo" class="h-12 w-12 rounded-lg shadow-sm object-cover">
+                <div>
+                    <div class="font-poppins text-lg font-bold text-slate-800">AJK Cleaning</div>
+                    <div class="text-xs text-slate-500">Bischofsheim • Trusted & Verified</div>
+                </div>
+            </a>
+            <div class="flex items-center space-x-4">
+                <!-- Language Switcher -->
+                <div class="flex items-center space-x-2">
+                    <button id="lang-en" class="lang-btn active" data-lang="en">EN</button>
+                    <span class="text-gray-400">|</span>
+                    <button id="lang-de" class="lang-btn" data-lang="de">DE</button>
+                </div>
+                <div class="text-right text-sm">
+                    <div class="text-slate-700 font-medium">International Support</div>
+                    <a href="tel:+4917661852286" class="mt-1 inline-block text-blue-600 font-semibold a-focus">+49 176 61852286</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 grid lg:grid-cols-3 gap-10 items-start pt-8">
+        <div class="lg:col-span-2">
+            <!-- Form Wizard -->
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <!-- Step indicators -->
+                <div class="wizard-steps flex items-center mb-6 sm:mb-8">
+                    <div class="wizard-step" data-step-id="1">Package</div>
+                    <div class="wizard-connector"></div>
+                    <div class="wizard-step" data-step-id="2">Schedule</div>
+                    <div class="wizard-connector"></div>
+                    <div class="wizard-step" data-step-id="3">Details</div>
+                    <div class="wizard-connector"></div>
+                    <div class="wizard-step" data-step-id="4">Payment</div>
+                </div>
+
+                <div id="wizard" class="relative">
+                    <!-- STEP 1: Package -->
+                    <form class="step" data-step="1">
+                        <h3 class="text-2xl font-poppins font-bold text-slate-800" data-translate="package-title">Choose a Package</h3>
+                        <p class="text-slate-500 mt-1" data-translate="package-desc">Select the type of cleaning that fits your needs.</p>
+                        <div id="package-selection" class="mt-6 grid sm:grid-cols-2 gap-4">
+                            <!-- JS will inject packages here -->
+                        </div>
+                        <div class="mt-6 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <label class="text-sm font-medium text-slate-600 flex items-center gap-2"><i class="fas fa-users text-slate-400"></i>Cleaners</label>
+                                <div class="inline-flex items-center gap-1 bg-white rounded-full p-1 shadow-sm border">
+                                    <button type="button" class="quantity-btn h-8 w-8 text-lg rounded-full a-focus hover:bg-slate-100 transition-colors" data-field="cleaners" data-amount="-1" aria-label="Decrease cleaners">-</button>
+                                    <div id="cleaners-count" class="px-2 font-semibold w-8 text-center">1</div>
+                                    <button type="button" class="quantity-btn h-8 w-8 text-lg rounded-full a-focus hover:bg-slate-100 transition-colors" data-field="cleaners" data-amount="1" aria-label="Increase cleaners">+</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" data-action="next">Next <i class="fas fa-arrow-right ml-2"></i></button>
+                        </div>
+                    </form>
+
+                    <!-- STEP 2: Schedule -->
+                    <form class="step hidden-right" data-step="2">
+                        <h3 class="text-2xl font-poppins font-bold text-slate-800">Schedule Your Cleaning</h3>
+                        <p class="text-slate-500 mt-1">Pick a date and time that works for you.</p>
+                        
+                        <div id="schedule-fields">
+                            <div class="mt-6 grid md:grid-cols-5 gap-6">
+                                <div class="md:col-span-3">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <button type="button" id="prev-month" class="p-2 rounded-full w-10 h-10 a-focus hover:bg-slate-100 disabled:opacity-50" aria-label="Previous month"><i class="fas fa-chevron-left"></i></button>
+                                        <h4 id="month-year" class="font-bold text-lg text-slate-700 text-center"></h4>
+                                        <button type="button" id="next-month" class="p-2 rounded-full w-10 h-10 a-focus hover:bg-slate-100 disabled:opacity-50" aria-label="Next month"><i class="fas fa-chevron-right"></i></button>
+                                    </div>
+                                    <div class="grid grid-cols-7 gap-1 text-center text-sm text-slate-500 font-medium mb-2">
+                                        <div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div><div>Su</div>
+                                    </div>
+                                    <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <div class="mb-4">
+                                        <label class="text-sm font-medium text-slate-600 mb-2 block">Available Slots</label>
+                                        <div id="time-slots" class="grid grid-cols-2 gap-2"></div>
+                                    </div>
+                                    <div class="mb-4 field">
+                                        <i class="field-icon fas fa-ruler-combined"></i>
+                                        <input id="property-size" type="number" min="1" max="300" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" ">
+                                        <label for="property-size">Property Size (m²)</label>
+                                        <div id="duration-suggestion" class="hidden mt-2 text-xs text-slate-600 bg-blue-50 border border-blue-200 rounded-md p-2"></div>
+                                    </div>
+                                    <div>
+                                        <label class="text-sm font-medium text-slate-600 flex items-center gap-2"><i class="fas fa-hourglass-half text-slate-400"></i>Duration (hours)</label>
+                                        <div class="inline-flex items-center gap-1 bg-white rounded-full p-1 shadow-sm border mt-2">
+                                            <button type="button" class="quantity-btn h-8 w-8 text-lg rounded-full a-focus hover:bg-slate-100" data-field="duration" data-amount="-1" aria-label="Decrease duration">-</button>
+                                            <div id="duration-count" class="px-2 font-semibold w-8 text-center">1</div>
+                                            <button type="button" class="quantity-btn h-8 w-8 text-lg rounded-full a-focus hover:bg-slate-100" data-field="duration" data-amount="1" aria-label="Increase duration">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="commercial-message" class="hidden mt-6 text-center text-slate-600 bg-blue-50 p-4 rounded-lg border border-blue-200">
+                           For commercial quotes, please proceed to the next step to provide your contact details. Our team will contact you for a detailed consultation.
+                        </div>
+
+                        <div id="step2-error" class="hidden text-red-600 text-sm font-medium mt-4 text-center p-3 bg-red-50 border border-red-200 rounded-lg"></div>
+
+                        <div class="mt-8 flex items-center justify-between">
+                            <button type="button" class="btn btn-secondary" data-action="prev">Back</button>
+                            <button type="button" class="btn btn-primary" data-action="next">Next <i class="fas fa-arrow-right ml-2"></i></button>
+                        </div>
+                    </form>
+
+                    <!-- STEP 3: Details -->
+                    <form class="step hidden-right" data-step="3">
+                        <h3 class="text-2xl font-poppins font-bold text-slate-800">Your Details</h3>
+                        <p class="text-slate-500 mt-1">We need your contact and address for the booking.</p>
+                        <div class="mt-6 grid sm:grid-cols-2 gap-5">
+                            <div class="field">
+                                <select id="salutation" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300">
+                                    <option>Mr.</option><option>Ms.</option><option>Mrs.</option>
+                                </select>
+                                <label for="salutation">Salutation</label>
+                            </div>
+                            <div class="field">
+                                <i class="field-icon fas fa-user"></i>
+                                <input id="customer-name" type="text" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" " required>
+                                <label for="customer-name">Full name</label>
+                                <div class="error-message">Name is required.</div>
+                            </div>
+                            <div class="field">
+                                <i class="field-icon fas fa-envelope"></i>
+                                <input id="customer-email" type="email" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" " required>
+                                <label for="customer-email">Email address</label>
+                                <div class="error-message">A valid email is required.</div>
+                            </div>
+                             <div class="field">
+                                <i class="field-icon fas fa-phone"></i>
+                                <input id="customer-phone" type="tel" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" " required>
+                                <label for="customer-phone">Phone number</label>
+                                <div class="error-message">Phone number is required.</div>
+                            </div>
+                            <div class="field sm:col-span-2">
+                                <i class="field-icon fas fa-map-marker-alt"></i>
+                                <input id="customer-address" type="text" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" " required>
+                                <label for="customer-address">Street address</label>
+                                <div class="error-message">Address is required.</div>
+                            </div>
+                            <div class="field">
+                                <i class="field-icon fas fa-hashtag"></i>
+                                <input id="postal-code" type="text" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" " required>
+                                <label for="postal-code">Postal Code</label>
+                                <div class="error-message">Postal code is required.</div>
+                            </div>
+                            <div class="field">
+                                <i class="field-icon fas fa-city"></i>
+                                <input id="city" type="text" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" " required>
+                                <label for="city">City</label>
+                                <div class="error-message">City is required.</div>
+                            </div>
+                             <div class="sm:col-span-2">
+                                <div class="field">
+                                    <i class="field-icon fas fa-comment-dots"></i>
+                                    <textarea id="special-requests" rows="2" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" "></textarea>
+                                    <label for="special-requests">Special requests (optional)</label>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-1 pl-2">If you've booked less than the recommended time, please list your priority areas here.</p>
+                             </div>
+                        </div>
+                        <div class="mt-8 flex items-center justify-between">
+                             <button type="button" class="btn btn-secondary" data-action="prev">Back</button>
+                            <button type="button" class="btn btn-accent" data-action="next">Review & Pay</button>
+                        </div>
+                    </form>
+                    
+                    <!-- STEP 4: PAYMENT -->
+                    <form id="payment-form" class="step hidden-right" data-step="4">
+                        <h3 class="text-2xl font-poppins font-bold text-slate-800">Confirm & Pay</h3>
+                        <p class="text-slate-500 mt-1">Please review your booking and enter payment details.</p>
+                        
+                        <div class="mt-6 space-y-3" id="review-container">
+                           <!-- JS injects review details -->
+                        </div>
+
+                        <!-- Stripe Payment Element -->
+                        <div id="payment-element" class="mt-6"></div>
+                        <div id="payment-message" class="hidden text-red-600 text-sm font-medium mt-4 text-center p-3 bg-red-50 border border-red-200 rounded-lg"></div>
+
+                        <div class="mt-8 flex items-center justify-between">
+                            <button type="button" class="btn btn-secondary" data-action="prev">Go Back</button>
+                            <button id="submit-payment" class="btn btn-primary inline-flex items-center gap-3">
+                                <span id="button-text">Pay Now</span>
+                                <span id="spinner" class="loader hidden"></span>
+                            </button>
+                        </div>
+                    </form>
+
+
+                    <!-- STEP 5: Success -->
+                    <section class="step hidden-right text-center" data-step="5">
+                         <div class="success-checkmark">
+                            <div class="check-icon">
+                                <span class="icon-line line-tip"></span>
+                                <span class="icon-line line-long"></span>
+                                <div class="icon-circle"></div>
+                                <div class="icon-fix"></div>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-poppins font-bold text-slate-800 mt-4">Booking Confirmed!</h3>
+                        <p class="text-slate-500 mt-2 max-w-md mx-auto">Thank you, <span id="confirm-name" class="font-semibold"></span>! We've received your request and a confirmation email has been sent to <span id="confirm-email" class="font-semibold"></span>.</p>
+                        <p class="text-sm text-slate-500 mt-1">Our team will be at your address on <span id="confirm-date" class="font-semibold"></span>.</p>
+                        <button id="book-another" class="mt-8 btn btn-primary">Book Another Cleaning</button>
+                    </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: sticky summary -->
+        <aside class="lg:sticky lg:top-6 space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h4 class="text-lg font-poppins font-semibold text-slate-800 border-b pb-3">Booking Summary</h4>
+                <div class="mt-4 space-y-3 text-sm" id="summary-container">
+                    <!-- JS injects summary -->
+                </div>
+                <div class="mt-4 border-t pt-4">
+                    <div class="flex justify-between items-center">
+                        <div class="text-slate-600">Estimated total</div>
+                        <div id="summary-total" class="text-2xl font-bold text-blue-600">€0.00</div>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-slate-500 text-center">By booking you agree to our <a href="#" class="terms-link text-blue-600 underline">terms</a>.</div>
+            </div>
+            <!-- Trust Badges -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                 <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <i class="fas fa-shield-halved text-3xl text-accent-500"></i>
+                        <div>
+                            <h5 class="font-semibold text-slate-800">100% Satisfaction Guarantee</h5>
+                            <p class="text-xs text-slate-500">If you're not happy, we'll work to make it right.</p>
+                        </div>
+                    </div>
+                     <div class="flex items-center gap-4">
+                        <i class="fas fa-user-check text-3xl text-accent-500"></i>
+                        <div>
+                            <h5 class="font-semibold text-slate-800">Trusted & Vetted Cleaners</h5>
+                            <p class="text-xs text-slate-500">All our professionals are background-checked and trained.</p>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-300 mt-16">
+        <div class="max-w-7xl mx-auto px-6 py-12">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="md:col-span-1">
+                     <h4 class="font-poppins font-bold text-white text-lg">AJK Cleaning</h4>
+                     <p class="text-sm mt-2 text-slate-400">Your trusted partner for professional cleaning services in Bischofsheim. We are committed to delivering spotless results and exceptional customer service for homes and businesses.</p>
+                </div>
+                <div class="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-8">
+                    <div>
+                        <h5 class="font-semibold text-slate-200">Services</h5>
+                        <ul class="mt-3 space-y-2 text-sm">
+                            <li><a href="#" class="hover:text-white">Residential Cleaning</a></li>
+                            <li><a href="#" class="hover:text-white">Deep Cleaning</a></li>
+                            <li><a href="#" class="hover:text-white">Move-In/Out</a></li>
+                            <li><a href="#" class="hover:text-white">Commercial</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="font-semibold text-slate-200">Legal</h5>
+                        <ul class="mt-3 space-y-2 text-sm">
+                            <li><a href="#" class="terms-link hover:text-white">Terms of Service</a></li>
+                            <li><a href="#" class="privacy-link hover:text-white">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                     <div>
+                        <h5 class="font-semibold text-slate-200">Contact</h5>
+                        <ul class="mt-3 space-y-2 text-sm">
+                            <li><a href="mailto:info@ajkcleaners.de" class="hover:text-white">info@ajkcleaners.de</a></li>
+                            <li><a href="tel:+4917661852286" class="hover:text-white">+49 176 61852286</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-slate-700 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between text-sm">
+                <div>&copy; <span id="year"></span> AJK Cleaning Company. All rights reserved.</div>
+                <div class="flex items-center gap-4 mt-4 sm:mt-0 text-lg">
+                    <a href="#" aria-label="facebook" class="hover:text-white a-focus"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="instagram" class="hover:text-white a-focus"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- Terms Modal -->
+<div id="terms-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+        <div class="p-6 border-b flex justify-between items-center">
+            <h3 class="text-xl font-poppins font-bold text-slate-800">Terms of Service</h3>
+            <button id="close-modal-btn" class="text-slate-400 hover:text-slate-800 a-focus rounded-full w-8 h-8 flex items-center justify-center">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="p-6 space-y-4 overflow-y-auto text-slate-600 text-sm">
+            <p>Welcome to AJK Cleaning. By booking our services, you agree to the following terms and conditions.</p>
+            <h4 class="font-bold text-slate-700 pt-2">1. Booking and Confirmation</h4>
+            <p>All bookings are subject to availability. You must provide accurate and complete information during the booking process. Your booking is confirmed only after you receive a confirmation email from us.</p>
+            <h4 class="font-bold text-slate-700 pt-2">2. Cancellation Policy</h4>
+            <p>Cancellations made at least 48 hours before the scheduled service time will receive a full refund. Cancellations made within 48 hours of the service time may be subject to a cancellation fee.</p>
+            <h4 class="font-bold text-slate-700 pt-2">3. Satisfaction Guarantee & Refund Policy</h4>
+            <p>We are committed to providing an exceptional cleaning service. If you are not satisfied with the quality of our work, please contact us within 24 hours of the service completion. In cases where our service fails to provide the expected and agreed-upon results, clients are eligible for a partial or full refund.</p>
+            <p class="font-medium text-slate-700">To claim a refund, please contact AJK Cleaning with all the necessary proof, such as your invoice, booking confirmation messages, and photographic evidence of the issues. You can reach our support team at:</p>
+            <ul class="list-disc list-inside bg-slate-50 p-3 rounded-lg border">
+                <li>Email: <a href="mailto:info@ajkcleaners.de" class="text-blue-600 font-semibold">info@ajkcleaners.de</a></li>
+                <li>Phone: <a href="tel:+491629817752" class="text-blue-600 font-semibold">+49 162 9817752</a></li>
+            </ul>
+            <p>Our team will review your claim and process it accordingly. All decisions regarding refunds are at the discretion of AJK Cleaning management.</p>
+            <h4 class="font-bold text-slate-700 pt-2">4. Liability</h4>
+            <p>AJK Cleaning is insured and bonded. While we exercise the utmost care in cleaning your property, we are not liable for pre-existing damage, wear and tear, or damage resulting from improper installation of any item.</p>
+        </div>
+        <div class="p-4 bg-slate-50 border-t text-right rounded-b-2xl">
+            <button id="modal-close-footer" class="btn btn-secondary">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div id="privacy-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+        <div class="p-6 border-b flex justify-between items-center">
+            <h3 class="text-xl font-poppins font-bold text-slate-800">Privacy Policy</h3>
+            <button id="close-privacy-modal-btn" class="text-slate-400 hover:text-slate-800 a-focus rounded-full w-8 h-8 flex items-center justify-center">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="p-6 space-y-4 overflow-y-auto text-slate-600 text-sm">
+            <p><strong>Last Updated:</strong> October 1, 2025</p>
+            <p>AJK Cleaning ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our booking services.</p>
+            <h4 class="font-bold text-slate-700 pt-2">1. Information We Collect</h4>
+            <p>We may collect personal information that you provide directly to us, such as your name, salutation, email address, phone number, and physical address when you book a cleaning service.</p>
+            <h4 class="font-bold text-slate-700 pt-2">2. How We Use Your Information</h4>
+            <p>We use the information we collect to:</p>
+            <ul class="list-disc list-inside pl-4">
+                <li>Schedule, confirm, and provide our cleaning services.</li>
+                <li>Communicate with you about your booking, including reminders and updates.</li>
+                <li>Process payments for our services.</li>
+                <li>Respond to your comments, questions, and requests.</li>
+                <li>Improve our website and services.</li>
+            </ul>
+            <h4 class="font-bold text-slate-700 pt-2">3. Data Sharing and Disclosure</h4>
+            <p>We do not sell, trade, or otherwise transfer your personally identifiable information to outside parties. This does not include trusted third parties who assist us in operating our website, conducting our business (such as payment processors), or servicing you, so long as those parties agree to keep this information confidential. Your information will be shared with our cleaning staff solely for the purpose of providing the service at your specified address.</p>
+            <h4 class="font-bold text-slate-700 pt-2">4. Data Security</h4>
+            <p>We implement a variety of security measures to maintain the safety of your personal information when you place an order. However, no electronic transmission over the internet or information storage technology can be guaranteed to be 100% secure.</p>
+            <h4 class="font-bold text-slate-700 pt-2">5. Your Rights</h4>
+            <p>You have the right to request access to, correct, or delete your personal data. To make such a request, please contact us using the information below.</p>
+            <h4 class="font-bold text-slate-700 pt-2">6. Contact Us</h4>
+            <p>If you have any questions regarding this privacy policy, you may contact us using the information below:</p>
+            <ul class="list-disc list-inside bg-slate-50 p-3 rounded-lg border">
+                 <li>Email: <a href="mailto:info@ajkcleaners.de" class="text-blue-600 font-semibold">info@ajkcleaners.de</a></li>
+                <li>Phone: <a href="tel:+4917661852286" class="text-blue-600 font-semibold">+49 176 61852286</a></li>
+            </ul>
+        </div>
+        <div class="p-4 bg-slate-50 border-t text-right rounded-b-2xl">
+            <button id="privacy-modal-close-footer" class="btn btn-secondary">Close</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- IMPORTANT: This key is for testing purposes. Replace with your actual publishable key in production. ---
+    const stripe = Stripe('pk_test_51SD6iOHIVAzPWFkU1ixyvux7u4Srneo6y2tuko22UX4OR2cGTNXvAssP1DAhbB9XnSDOgNPAwpOaLchXBBRD36Fb00uYOldQMJ');
+    
+    // --- Stripe variables ---
+    let elements;
+    let paymentElement;
+
+    // --- CONFIGURATION ---
+    const CONFIG = {
+        packages: [
+             { id: 'residential', title: 'Residential Cleaning', price: 35, desc: 'Ideal for ongoing upkeep. No commitment is required.', icon: 'fas fa-home' },
+             { id: 'deep', title: 'Deep Cleaning', price: 45, desc: 'Intensive service for a home that feels brand new.', icon: 'fas fa-broom' },
+             { id: 'moveout', title: 'Move-In/Out', price: 50, desc: 'A top-to-bottom clean for an empty home.', icon: 'fas fa-box-open' },
+             { id: 'commercial', title: 'Commercial', price: 0, desc: 'Tailored solutions for your office or retail space.', icon: 'fas fa-building' },
+        ],
+        limits: {
+            cleaners: { min: 1, max: 5 },
+            duration: { min: 1, max: 12 },
+        },
+        timeSlots: ["08:00", "09:00", "11:00", "13:00", "15:00", "17:00"]
+    };
+
+    // --- DOM ELEMENTS CACHE ---
+    const DOM = {
+        wizard: document.getElementById('wizard'),
+        steps: Array.from(document.querySelectorAll('.step')),
+        wizardSteps: Array.from(document.querySelectorAll('.wizard-step')),
+        packageContainer: document.getElementById('package-selection'),
+        summaryContainer: document.getElementById('summary-container'),
+        reviewContainer: document.getElementById('review-container'),
+        summaryTotal: document.getElementById('summary-total'),
+        year: document.getElementById('year'),
+        calendar: {
+            grid: document.getElementById('calendar-grid'),
+            monthYear: document.getElementById('month-year'),
+            prevBtn: document.getElementById('prev-month'),
+            nextBtn: document.getElementById('next-month'),
+        },
+        durationSuggestion: document.getElementById('duration-suggestion'),
+        timeSlotsContainer: document.getElementById('time-slots'),
+        termsModal: document.getElementById('terms-modal'),
+        privacyModal: document.getElementById('privacy-modal'),
+        paymentForm: document.getElementById('payment-form'),
+    };
+
+    // --- STATE MANAGEMENT ---
+    let state = {
+        activeStep: 0,
+        package: CONFIG.packages[0].id,
+        price_per_hour: CONFIG.packages[0].price,
+        cleaners: 1,
+        duration: 1,
+        date: '',
+        time: '',
+        propertySize: '',
+        salutation: 'Mr.',
+        customerName: '',
+        customerEmail: '',
+        customerPhone: '',
+        customerAddress: '',
+        city: '',
+        postalCode: '',
+        specialRequests: '',
+    };
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); 
+    const limitDate = new Date();
+    limitDate.setDate(today.getDate() + 45);
+    limitDate.setHours(23, 59, 59, 999);
+
+    let currentDate = new Date();
+    currentDate.setDate(1);
+
+    // --- INITIALIZATION ---
+    function init() {
+        DOM.year.textContent = new Date().getFullYear();
+        renderPackages();
+        setupEventListeners();
+        renderCalendar();
+        renderTimeSlots();
+        updateUI();
+        showStep(0);
+        selectPackage(document.querySelector('.package'));
+        checkStripeStatus();
+        setupLanguageSwitcher();
+    }
+
+    // --- RENDER FUNCTIONS ---
+    function renderPackages() {
+        DOM.packageContainer.innerHTML = CONFIG.packages.map(p => `
+            <label class="package card-hover bg-white p-4 rounded-xl cursor-pointer a-focus border" tabindex="0" data-package-id="${p.id}">
+                <input type="radio" name="package" value="${p.id}" class="sr-only" ${p.id === state.package ? 'checked' : ''}>
+                <div class="flex items-start sm:items-center justify-between flex-col sm:flex-row">
+                    <div class="font-semibold text-slate-800 flex items-center gap-3"><i class="${p.icon} w-5 text-center text-blue-600 text-lg"></i>${p.title}</div>
+                    <div class="font-bold text-blue-600 mt-2 sm:mt-0">${p.price > 0 ? `€${p.price}/hr` : 'On Request'}</div>
+                </div>
+                <div class="text-sm text-slate-500 mt-2 pl-8">${p.desc}</div>
+            </label>
+        `).join('');
+    }
+
+    function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        DOM.calendar.monthYear.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
+        DOM.calendar.grid.innerHTML = '';
+        
+        DOM.calendar.prevBtn.disabled = (year === today.getFullYear() && month === today.getMonth());
+        const nextMonthFirstDay = new Date(year, month + 1, 1);
+        DOM.calendar.nextBtn.disabled = nextMonthFirstDay > limitDate;
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const dayOffset = (firstDay === 0) ? 6 : firstDay - 1;
+
+        for (let i = 0; i < dayOffset; i++) DOM.calendar.grid.insertAdjacentHTML('beforeend', '<div></div>');
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(year, month, day);
+            date.setHours(0,0,0,0);
+            const isDisabled = date < today || date > limitDate;
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const isSelected = dateStr === state.date;
+            DOM.calendar.grid.insertAdjacentHTML('beforeend', `<button type="button" class="day p-2 rounded-full aspect-square ${isDisabled ? 'disabled text-slate-300 cursor-not-allowed' : 'a-focus'} ${isSelected ? 'selected' : ''}" data-date="${dateStr}" ${isDisabled ? 'disabled' : ''}>${day}</button>`);
+        }
+    }
+
+    function renderTimeSlots() {
+        DOM.timeSlotsContainer.innerHTML = CONFIG.timeSlots.map(time => `<button type="button" class="time-slot p-2 rounded-lg border text-sm font-medium transition-colors a-focus ${state.time === time ? 'selected' : ''}" data-time="${time}">${time}</button>`).join('');
+    }
+
+    function formatMinutesToHours(totalMinutes) {
+        if (totalMinutes <= 0) return '0min';
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        let result = '';
+        if (hours > 0) result += `${hours}h`;
+        if (minutes > 0) { if (hours > 0) result += ' '; result += `${minutes}min`; }
+        return result;
+    }
+
+    // --- EVENT LISTENERS ---
+    function setupEventListeners() {
+        DOM.wizard.addEventListener('click', e => {
+            const button = e.target.closest('button');
+            if (!button) return;
+            if (button.dataset.action === 'next') { if(validateStep(state.activeStep)) { showStep(state.activeStep + 1); } }
+            if (button.dataset.action === 'prev') { showStep(state.activeStep - 1); }
+            const editStep = button.dataset.editStep;
+            if (editStep) { showStep(parseInt(editStep) - 1); }
+            if(button.id === 'book-another') { window.location.replace(window.location.pathname); }
+        });
+
+        DOM.paymentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (state.package === 'commercial') {
+                // For commercial, submit booking data to server
+                await submitCommercialBooking();
+                return;
+            }
+            setLoading(true);
+            
+            // Add a global timeout to prevent infinite buffering
+            const globalTimeout = setTimeout(() => {
+                console.error('❌ Payment processing timeout - proceeding anyway');
+                setLoading(false);
+                showStep(4);
+            }, 30000); // 30 second global timeout
+
+            const { error } = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    return_url: window.location.href.split('?')[0],
+                },
+                redirect: 'if_required' // Prevent redirect for successful payment
+            });
+
+            if (error) {
+                clearTimeout(globalTimeout);
+                if (error.type === "card_error" || error.type === "validation_error") {
+                    showMessage(error.message);
+                } else {
+                    showMessage("An unexpected error occurred.");
+                }
+                setLoading(false);
+            } else {
+                // Payment succeeded - wait a moment for webhook to process
+                console.log('✅ Payment successful, waiting for booking creation...');
+                
+                // Show user-friendly message
+                showMessage('Payment successful! Creating your booking...');
+                
+                // Wait for booking to be created by webhook, with fallback
+                let attempts = 0;
+                const maxAttempts = 8; // Reduced from 10 to 8 for faster fallback
+                const checkBooking = async () => {
+                    try {
+                        console.log(`🔍 Checking for booking creation (attempt ${attempts + 1}/${maxAttempts})...`);
+                        const response = await fetch(`/api/bookings/by-payment-intent/${state.paymentIntentId}`);
+                        
+                        if (response.ok) {
+                            const booking = await response.json();
+                            if (booking && booking.id) {
+                                console.log('✅ Booking created successfully:', booking.id);
+                                clearTimeout(globalTimeout);
+                                setLoading(false);
+                                showStep(4);
+                                return;
+                            }
+                        } else if (response.status === 404) {
+                            console.log('⏳ Booking not found yet, waiting for webhook...');
+                        } else {
+                            console.warn('⚠️ Unexpected response from booking check:', response.status);
+                        }
+                        
+                        attempts++;
+                        if (attempts < maxAttempts) {
+                            setTimeout(checkBooking, 1500); // Check again in 1.5 seconds
+                        } else {
+                            // Fallback: create booking manually
+                            console.log('🔄 Webhook timeout, creating booking manually...');
+                            setLoading(true);
+                            try {
+                                const createResponse = await fetch('/api/bookings/create-from-payment', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ paymentIntentId: state.paymentIntentId })
+                                });
+                                
+                                if (createResponse.ok) {
+                                    const result = await createResponse.json();
+                                    console.log('✅ Booking created manually:', result.booking.id);
+                                    clearTimeout(globalTimeout);
+                                    setLoading(false);
+                                    showStep(4);
+                                } else {
+                                    const errorData = await createResponse.json().catch(() => ({}));
+                                    console.error('❌ Manual booking creation failed:', errorData);
+                                    clearTimeout(globalTimeout);
+                                    showMessage('Payment successful but booking creation failed. Please contact support.');
+                                    setLoading(false);
+                                }
+                            } catch (createError) {
+                                console.error('❌ Error creating booking manually:', createError);
+                                clearTimeout(globalTimeout);
+                                showMessage('Payment successful but booking creation failed. Please contact support.');
+                                setLoading(false);
+                            }
+                        }
+                    } catch (error) {
+                        console.error('❌ Error checking booking creation:', error);
+                        attempts++;
+                        if (attempts < maxAttempts) {
+                            setTimeout(checkBooking, 1500);
+                        } else {
+                            console.error('❌ Max attempts reached, proceeding anyway...');
+                            clearTimeout(globalTimeout);
+                            setLoading(false);
+                            showStep(4);
+                        }
+                    }
+                };
+                
+                // Start checking for booking creation
+                setTimeout(checkBooking, 1000); // Wait 1 second before first check
+            }
+        });
+
+        DOM.packageContainer.addEventListener('click', e => {
+            const card = e.target.closest('.package');
+            if (card) selectPackage(card);
+        });
+
+        DOM.wizard.addEventListener('click', e => {
+            const btn = e.target.closest('.quantity-btn');
+            if (btn) {
+                const { field, amount } = btn.dataset;
+                updateQuantity(field, parseInt(amount));
+            }
+        });
+        
+        DOM.wizard.addEventListener('input', e => {
+            const { id, value } = e.target;
+            const key = id.replace(/-(\w)/g, (_, c) => c.toUpperCase());
+            if (key in state) {
+                state[key] = value;
+                if (id === 'property-size') {
+                    const sizeInput = e.target;
+                    let size = parseInt(value, 10);
+                    if (size > 300) { size = 300; sizeInput.value = '300'; state.propertySize = '300'; }
+
+                    const suggestionBox = DOM.durationSuggestion;
+                    if (size > 0) {
+                        let suggestedDuration = Math.ceil(size / 50);
+                        const { min, max } = CONFIG.limits.duration;
+                        state.duration = Math.max(min, Math.min(max, suggestedDuration));
+                        const baseMinutes = 90, minutesPerSqM = 2, totalMinutes = baseMinutes + (size * minutesPerSqM);
+                        const minTime = Math.max(60, totalMinutes - 30), maxTime = totalMinutes + 30;
+                        const minTimeStr = formatMinutesToHours(minTime), maxTimeStr = formatMinutesToHours(maxTime);
+
+                        suggestionBox.innerHTML = `<p class="font-semibold">For a property of <strong>${size} m²</strong>, we recommend between <strong>${minTimeStr}</strong> and <strong>${maxTimeStr}</strong>.</p><p class="mt-1">If you book less, please specify priority areas in 'Special Requests' later.</p>`;
+                        suggestionBox.classList.remove('hidden');
+                    } else {
+                        state.duration = CONFIG.limits.duration.min;
+                        suggestionBox.classList.add('hidden');
+                    }
+                    updateUI();
+                }
+            }
+        });
+
+        DOM.calendar.prevBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+        DOM.calendar.nextBtn.addEventListener('click', () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+        DOM.calendar.grid.addEventListener('click', e => {
+            const dayBtn = e.target.closest('.day');
+            if (dayBtn && !dayBtn.disabled) { state.date = dayBtn.dataset.date; renderCalendar(); updateUI(); }
+        });
+        DOM.timeSlotsContainer.addEventListener('click', e => {
+            const timeBtn = e.target.closest('.time-slot');
+            if(timeBtn) { state.time = timeBtn.dataset.time; renderTimeSlots(); updateUI(); }
+        });
+
+        document.querySelectorAll('.terms-link').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); DOM.termsModal.classList.remove('hidden'); }); });
+        const closeModal = () => DOM.termsModal.classList.add('hidden');
+        DOM.termsModal.addEventListener('click', (e) => { if (e.target === DOM.termsModal) closeModal(); });
+        document.getElementById('close-modal-btn').addEventListener('click', closeModal);
+        document.getElementById('modal-close-footer').addEventListener('click', closeModal);
+
+        document.querySelectorAll('.privacy-link').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); DOM.privacyModal.classList.remove('hidden'); }); });
+        const closePrivacyModal = () => DOM.privacyModal.classList.add('hidden');
+        DOM.privacyModal.addEventListener('click', (e) => { if (e.target === DOM.privacyModal) closePrivacyModal(); });
+        document.getElementById('close-privacy-modal-btn').addEventListener('click', closePrivacyModal);
+        document.getElementById('privacy-modal-close-footer').addEventListener('click', closePrivacyModal);
+    }
+
+    // --- ACTIONS ---
+    function selectPackage(card) {
+        DOM.packageContainer.querySelectorAll('.package').forEach(l => l.classList.remove('selected'));
+        card.classList.add('selected');
+        const radio = card.querySelector('input');
+        radio.checked = true;
+        
+        const selectedPkg = CONFIG.packages.find(p => p.id === radio.value);
+        state.package = selectedPkg.id;
+        state.price_per_hour = selectedPkg.price;
+
+        const scheduleFields = document.getElementById('schedule-fields');
+        const commercialMessage = document.getElementById('commercial-message');
+        if (selectedPkg.id === 'commercial') {
+            scheduleFields.classList.add('hidden');
+            commercialMessage.classList.remove('hidden');
+        } else {
+            scheduleFields.classList.remove('hidden');
+            commercialMessage.classList.add('hidden');
+        }
+        updateUI();
+    }
+    
+    function updateQuantity(field, amount) {
+        const limits = CONFIG.limits[field];
+        const newValue = state[field] + amount;
+        if (newValue >= limits.min && newValue <= limits.max) {
+            state[field] = newValue;
+            updateUI();
+        }
+    }
+    
+    function showStep(index) {
+        if (index < 0 || index >= DOM.steps.length) return;
+        state.activeStep = index;
+        
+        DOM.steps.forEach((s, i) => {
+            s.classList.remove('hidden-left', 'hidden-right');
+            if (i !== index) { s.classList.add(i < index ? 'hidden-left' : 'hidden-right'); }
+        });
+
+        DOM.wizardSteps.forEach((ws, i) => {
+            ws.classList.remove('active', 'completed');
+            if (i < index) ws.classList.add('completed');
+            if (i === index) ws.classList.add('active');
+        });
+        
+        if(index === 3){ // Payment step
+            if(state.package === 'commercial'){
+                 document.getElementById('payment-element').style.display = 'none';
+            } else {
+                 document.getElementById('payment-element').style.display = 'block';
+                 initializeStripe();
+            }
+        }
+        
+        if(index === 4){
+             document.getElementById('confirm-name').textContent = state.customerName;
+             document.getElementById('confirm-email').textContent = state.customerEmail;
+             document.getElementById('confirm-date').textContent = state.package === 'commercial' ? 'Our team will contact you shortly' : `${state.date} at ${state.time}`;
+        }
+        updateUI();
+    }
+
+    // --- UI UPDATES ---
+    function updateUI() {
+        document.getElementById('cleaners-count').textContent = state.cleaners;
+        document.getElementById('duration-count').textContent = state.duration;
+
+        const isCommercial = state.package === 'commercial';
+        const total = isCommercial ? 0 : state.price_per_hour * state.duration * state.cleaners;
+        const pkg = CONFIG.packages.find(p => p.id === state.package);
+        
+        let summaryDetails = `<div class="flex justify-between items-center"><span class="flex items-center gap-2 text-slate-600"><i class="fas fa-box w-4 text-center text-slate-400"></i>Package</span><strong class="capitalize">${pkg.title}</strong></div>`;
+        if (isCommercial) {
+            summaryDetails += `<div class="text-center p-3 bg-slate-50 rounded-md my-2">Details will be confirmed after consultation.</div>`;
+        } else {
+            summaryDetails += `
+                <div class="flex justify-between items-center"><span class="flex items-center gap-2 text-slate-600"><i class="fas fa-calendar-alt w-4 text-center text-slate-400"></i>When</span><strong>${state.date && state.time ? `${state.date} at ${state.time}`: 'Not set'}</strong></div>
+                <div class="flex justify-between items-center"><span class="flex items-center gap-2 text-slate-600"><i class="fas fa-ruler-combined w-4 text-center text-slate-400"></i>Size</span><strong>${state.propertySize ? `${state.propertySize} m²` : 'N/A'}</strong></div>
+                <div class="flex justify-between items-center"><span class="flex items-center gap-2 text-slate-600"><i class="fas fa-hourglass-half w-4 text-center text-slate-400"></i>Duration</span><strong>${state.duration}h</strong></div>
+                <div class="flex justify-between items-center"><span class="flex items-center gap-2 text-slate-600"><i class="fas fa-users w-4 text-center text-slate-400"></i>Cleaners</span><strong>${state.cleaners}</strong></div>
+                <div class="flex justify-between items-center"><span class="flex items-center gap-2 text-slate-600"><i class="fas fa-tag w-4 text-center text-slate-400"></i>Rate/hr</span><strong>€${pkg.price}</strong></div>`;
+        }
+        DOM.summaryContainer.innerHTML = summaryDetails;
+
+        DOM.summaryTotal.textContent = isCommercial ? 'On Request' : `€${total.toFixed(2)}`;
+
+        if (state.activeStep === 3) {
+            const fullAddress = `${state.customerAddress}, ${state.postalCode} ${state.city}`;
+            let reviewDetails = `<div class="p-4 bg-slate-50 rounded-lg border"><div class="flex justify-between items-center"><div class="flex items-center gap-3"><i class="fas fa-user-circle text-xl text-blue-500"></i><div><div class="text-sm text-slate-500">Billed To</div><div class="font-semibold truncate">${state.customerName}</div><div class="text-sm font-medium text-slate-600">${fullAddress}</div></div></div><button type="button" class="text-sm font-semibold text-blue-600 hover:underline a-focus flex-shrink-0 ml-4" data-edit-step="3">Edit</button></div></div>`;
+            DOM.reviewContainer.innerHTML = reviewDetails;
+
+            const buttonText = document.getElementById('button-text');
+            if (buttonText) buttonText.textContent = isCommercial ? 'Request Quote' : `Pay €${total.toFixed(2)}`;
+        }
+    }
+    
+    // --- VALIDATION ---
+    function validateStep(stepIndex) {
+        let isValid = true;
+        document.querySelectorAll('.error-message, .form-input.error').forEach(el => { el.style.display = 'none'; el.classList.remove('error'); });
+        const errorEl = document.getElementById('step2-error');
+        if(errorEl) errorEl.classList.add('hidden');
+
+        if (state.package !== 'commercial' && stepIndex === 1) {
+            if (!state.date || !state.time) {
+                isValid = false;
+                errorEl.textContent = 'Please select a date and time from the calendar.';
+            } else if (!state.propertySize || parseInt(state.propertySize, 10) <= 0) {
+                isValid = false;
+                errorEl.textContent = 'Please enter a valid property size to continue.';
+                document.getElementById('property-size').classList.add('error');
+            }
+            if (!isValid) errorEl.classList.remove('hidden');
+        }
+        
+        if (stepIndex === 2) { // Customer details step
+            const fields = ['customer-name', 'customer-email', 'customer-address', 'customer-phone', 'city', 'postal-code'];
+            fields.forEach(id => {
+                const input = document.getElementById(id);
+                if (!input.value.trim() || (input.type === 'email' && !/^\S+@\S+\.\S+$/.test(input.value))) {
+                    isValid = false;
+                    input.classList.add('error');
+                    const errorMsg = input.closest('.field').querySelector('.error-message');
+                    if(errorMsg) errorMsg.style.display = 'block';
+                }
+            });
+        }
+        return isValid;
+    }
+
+    // --- LANGUAGE SWITCHER ---
+    function setupLanguageSwitcher() {
+        const langButtons = document.querySelectorAll('.lang-btn');
+        const currentLang = localStorage.getItem('language') || 'en';
+        
+        // Set initial language
+        setLanguage(currentLang);
+        
+        langButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const lang = btn.dataset.lang;
+                setLanguage(lang);
+                localStorage.setItem('language', lang);
+            });
+        });
+    }
+    
+    function setLanguage(lang) {
+        // Update button states
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.lang === lang) {
+                btn.classList.add('active');
+            }
+        });
+        
+        // Apply translations
+        const translations = {
+            en: {
+                'package-title': 'Choose a Package',
+                'package-desc': 'Select the type of cleaning that fits your needs.',
+                'cleaners-label': 'Cleaners',
+                'next-btn': 'Next',
+                'schedule-title': 'Schedule Your Service',
+                'schedule-desc': 'Pick a date and time that works for you.',
+                'date-label': 'Date',
+                'time-label': 'Time',
+                'duration-label': 'Duration',
+                'details-title': 'Your Details',
+                'details-desc': 'Tell us about your property and any special requests.',
+                'salutation-label': 'Salutation',
+                'name-label': 'Full Name',
+                'email-label': 'Email Address',
+                'phone-label': 'Phone Number',
+                'address-label': 'Street Address',
+                'city-label': 'City',
+                'postal-label': 'Postal Code',
+                'size-label': 'Property Size (m²)',
+                'requests-label': 'Special Requests',
+                'payment-title': 'Payment',
+                'payment-desc': 'Secure payment powered by Stripe.',
+                'book-btn': 'Book Now',
+                'commercial-message': 'For commercial cleaning, we\'ll contact you to discuss your specific needs and provide a custom quote.',
+                'success-title': 'Booking Confirmed!',
+                'success-desc': 'Thank you for choosing AJK Cleaning. We\'ll be in touch soon.',
+                'support-text': 'International Support'
+            },
+            de: {
+                'package-title': 'Paket wählen',
+                'package-desc': 'Wählen Sie die Art der Reinigung, die zu Ihren Bedürfnissen passt.',
+                'cleaners-label': 'Reinigungskräfte',
+                'next-btn': 'Weiter',
+                'schedule-title': 'Service terminieren',
+                'schedule-desc': 'Wählen Sie ein Datum und eine Uhrzeit, die für Sie funktioniert.',
+                'date-label': 'Datum',
+                'time-label': 'Uhrzeit',
+                'duration-label': 'Dauer',
+                'details-title': 'Ihre Daten',
+                'details-desc': 'Erzählen Sie uns von Ihrer Immobilie und besonderen Wünschen.',
+                'salutation-label': 'Anrede',
+                'name-label': 'Vollständiger Name',
+                'email-label': 'E-Mail-Adresse',
+                'phone-label': 'Telefonnummer',
+                'address-label': 'Straßenadresse',
+                'city-label': 'Stadt',
+                'postal-label': 'Postleitzahl',
+                'size-label': 'Grundstücksgröße (m²)',
+                'requests-label': 'Besondere Wünsche',
+                'payment-title': 'Zahlung',
+                'payment-desc': 'Sichere Zahlung über Stripe.',
+                'book-btn': 'Jetzt buchen',
+                'commercial-message': 'Für gewerbliche Reinigung kontaktieren wir Sie, um Ihre spezifischen Bedürfnisse zu besprechen und ein individuelles Angebot zu erstellen.',
+                'success-title': 'Buchung bestätigt!',
+                'success-desc': 'Vielen Dank, dass Sie sich für AJK Cleaning entschieden haben. Wir werden uns bald bei Ihnen melden.',
+                'support-text': 'Internationaler Support'
+            }
+        };
+        
+        const t = translations[lang] || translations.en;
+        
+        // Apply translations to elements
+        Object.keys(t).forEach(key => {
+            const elements = document.querySelectorAll(`[data-translate="${key}"]`);
+            elements.forEach(el => {
+                if (el.tagName === 'INPUT' && el.type === 'text') {
+                    el.placeholder = t[key];
+                } else {
+                    el.textContent = t[key];
+                }
+            });
+        });
+    }
+
+    // --- COMMERCIAL BOOKING FUNCTIONS ---
+    async function submitCommercialBooking() {
+        setLoading(true);
+        
+        try {
+            // Prepare booking details
+            const bookingDetails = {
+                customerName: state.customerName,
+                customerEmail: state.customerEmail,
+                customerPhone: state.customerPhone,
+                customerAddress: state.customerAddress,
+                city: state.city,
+                postalCode: state.postalCode,
+                package: state.package,
+                date: state.date,
+                time: state.time,
+                duration: state.duration,
+                cleaners: state.cleaners,
+                propertySize: state.propertySize,
+                specialRequests: state.specialRequests,
+                salutation: state.salutation
+            };
+            
+            console.log('📋 Submitting commercial booking:', bookingDetails);
+            
+            const response = await fetch('/api/bookings/commercial-create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ bookingDetails })
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                console.log('✅ Commercial booking created successfully:', result);
+                showStep(4); // Go to success page
+            } else {
+                console.error('❌ Failed to create commercial booking:', result);
+                showMessage(result.error || 'Failed to create commercial booking');
+            }
+        } catch (error) {
+            console.error('❌ Error submitting commercial booking:', error);
+            showMessage('Failed to submit commercial booking. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    // --- STRIPE FUNCTIONS ---
+    async function initializeStripe() {
+        const total = state.price_per_hour * state.duration * state.cleaners;
+        
+        // Prepare booking details to send to server
+        const bookingDetails = {
+            customerName: state.customerName,
+            customerEmail: state.customerEmail,
+            customerPhone: state.customerPhone,
+            customerAddress: state.customerAddress,
+            city: state.city,
+            postalCode: state.postalCode,
+            package: state.package,
+            date: state.date,
+            time: state.time,
+            duration: state.duration,
+            cleaners: state.cleaners,
+            propertySize: state.propertySize,
+            specialRequests: state.specialRequests,
+            salutation: state.salutation
+        };
+        
+        try {
+            const response = await fetch('/create-payment-intent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    totalAmount: total,
+                    bookingDetails: bookingDetails
+                }),
+            });
+            const { clientSecret, error, paymentIntentId } = await response.json();
+            if(error) { showMessage(error); return; }
+
+            // Store payment intent ID for later use
+            state.paymentIntentId = paymentIntentId;
+
+            elements = stripe.elements({ clientSecret });
+            paymentElement = elements.create("payment");
+            paymentElement.mount("#payment-element");
+        } catch (e) {
+            showMessage("Could not connect to payment server. Please try again later.");
+        }
+    }
+    
+    async function checkStripeStatus() {
+        const clientSecret = new URLSearchParams(window.location.search).get("payment_intent_client_secret");
+        if (!clientSecret) return;
+
+        const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+        if (paymentIntent.status === 'succeeded') {
+            // This is a naive way to get data post-redirect. A real app would save state or fetch from a DB.
+            const storedState = JSON.parse(localStorage.getItem('bookingState'));
+            if(storedState) {
+                Object.assign(state, storedState);
+            }
+            showStep(4); 
+            localStorage.removeItem('bookingState');
+        } else {
+            showMessage("Payment not successful. Please try again.");
+        }
+    }
+
+    function setLoading(isLoading) {
+        const submitBtn = document.getElementById('submit-payment');
+        if (isLoading) {
+            submitBtn.disabled = true;
+            document.getElementById('spinner').classList.remove('hidden');
+            document.getElementById('button-text').classList.add('hidden');
+        } else {
+            submitBtn.disabled = false;
+            document.getElementById('spinner').classList.add('hidden');
+            document.getElementById('button-text').classList.remove('hidden');
+        }
+    }
+
+    function showMessage(messageText) {
+        const messageContainer = document.querySelector("#payment-message");
+        messageContainer.classList.remove("hidden");
+        messageContainer.textContent = messageText;
+        setTimeout(() => messageContainer.classList.add("hidden"), 5000);
+    }
+
+    init();
+});
+</script>
+</body>
+</html>
