@@ -1700,9 +1700,11 @@ app.post('/api/quote-submit', async (req, res) => {
             // Don't fail the request if email fails
         }
 
-        // Send admin notification for quote request
+        // Store quote request in database for admin review
         try {
-            const adminQuoteData = {
+            await db.read();
+            const quoteRequest = {
+                id: `quote_${Date.now()}`,
                 customerName,
                 customerEmail,
                 customerPhone: customerPhone || 'Not provided',
@@ -1712,41 +1714,21 @@ app.post('/api/quote-submit', async (req, res) => {
                 specialRequirements: specialRequirements || 'None',
                 preferredDate: preferredDate || 'Flexible',
                 preferredTime: preferredTime || 'Flexible',
-                salutation: salutation || 'Dear'
-            };
-
-            // Create a mock booking object for admin notification
-            const mockBooking = {
-                id: `quote_${Date.now()}`,
-                details: {
-                    customerName,
-                    customerEmail,
-                    customerPhone: customerPhone || 'Not provided',
-                    customerAddress: 'Quote Request',
-                    city: 'Quote Request',
-                    postalCode: '00000',
-                    bookingType: 'quote',
-                    package: serviceType,
-                    date: preferredDate || 'Flexible',
-                    time: preferredTime || 'Flexible',
-                    duration: 0,
-                    cleaners: 0,
-                    propertySize,
-                    specialRequests: specialRequirements || 'None',
-                    salutation: salutation || 'Dear'
-                },
-                amount: 0,
-                status: 'quote_request',
-                paymentIntentId: null,
-                paidAt: null,
+                salutation: salutation || 'Dear',
+                status: 'pending_review',
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
             };
 
-            await sendAdminNotification(mockBooking);
-            console.log(`[QUOTE] 📧 Admin notification sent for quote request from ${customerName}`);
-        } catch (adminError) {
-            console.error(`[QUOTE] ❌ Failed to send admin notification for quote:`, adminError.message);
+            if (!db.data.quoteRequests) {
+                db.data.quoteRequests = [];
+            }
+            db.data.quoteRequests.push(quoteRequest);
+            await db.write();
+            
+            console.log(`[QUOTE] 📋 Quote request stored for admin review: ${quoteRequest.id}`);
+        } catch (dbError) {
+            console.error(`[QUOTE] ❌ Failed to store quote request:`, dbError.message);
         }
 
         res.json({ 
@@ -1796,6 +1778,226 @@ app.post('/api/test-admin-notification', async (req, res) => {
     } catch (error) {
         console.error('❌ Admin notification test failed:', error);
         res.status(500).json({ error: 'Failed to send admin notification test: ' + error.message });
+    }
+});
+
+// Get all quote requests (for admin panel)
+app.get('/api/quotes', async (req, res) => {
+    try {
+        await db.read();
+        const quotes = db.data.quoteRequests || [];
+        res.json(quotes);
+    } catch (error) {
+        console.error('❌ Failed to fetch quotes:', error);
+        res.status(500).json({ error: 'Failed to fetch quote requests' });
+    }
+});
+
+// Get specific quote request
+app.get('/api/quotes/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await db.read();
+        const quotes = db.data.quoteRequests || [];
+        const quote = quotes.find(q => q.id === id);
+        
+        if (!quote) {
+            return res.status(404).json({ error: 'Quote request not found' });
+        }
+        
+        res.json(quote);
+    } catch (error) {
+        console.error('❌ Failed to fetch quote:', error);
+        res.status(500).json({ error: 'Failed to fetch quote request' });
+    }
+});
+
+// Send professional quote response to client
+app.post('/api/quotes/:id/send-response', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const {
+            subject,
+            message,
+            pricing,
+            nextSteps,
+            attachments
+        } = req.body;
+
+        if (!subject || !message) {
+            return res.status(400).json({ 
+                error: 'Subject and message are required' 
+            });
+        }
+
+        await db.read();
+        const quotes = db.data.quoteRequests || [];
+        const quote = quotes.find(q => q.id === id);
+        
+        if (!quote) {
+            return res.status(404).json({ error: 'Quote request not found' });
+        }
+
+        // Create professional quote response email
+        const responseHtml = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Quote Response - AJK Cleaning</title>
+                <style>
+                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f4; }
+                    .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+                    .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+                    .header p { margin: 10px 0 0 0; font-size: 16px; opacity: 0.9; }
+                    .content { padding: 30px; }
+                    .quote-details { background: #f8f9fa; border-radius: 8px; padding: 25px; margin: 20px 0; }
+                    .detail-row { display: flex; justify-content: space-between; margin: 12px 0; padding: 8px 0; border-bottom: 1px solid #e9ecef; }
+                    .detail-row:last-child { border-bottom: none; }
+                    .detail-label { font-weight: bold; color: #495057; }
+                    .detail-value { color: #212529; }
+                    .pricing { background: #e8f5e8; border-left: 4px solid #28a745; padding: 20px; margin: 20px 0; }
+                    .pricing h3 { color: #155724; margin: 0 0 15px 0; }
+                    .next-steps { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 20px; margin: 20px 0; }
+                    .next-steps h3 { color: #1976d2; margin: 0 0 15px 0; }
+                    .message-content { background: #fff; border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; margin: 20px 0; }
+                    .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #6c757d; border-top: 1px solid #e9ecef; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>📋 Your Quote Response</h1>
+                        <p>AJK Cleaning Company - Professional Cleaning Services</p>
+                    </div>
+                    
+                    <div class="content">
+                        <div class="quote-details">
+                            <h3 style="margin-top: 0; color: #495057;">📋 Your Original Request</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">Service Type:</span>
+                                <span class="detail-value">${quote.serviceType}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Property Size:</span>
+                                <span class="detail-value">${quote.propertySize} sq ft</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Service Frequency:</span>
+                                <span class="detail-value">${quote.frequency}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Preferred Date:</span>
+                                <span class="detail-value">${quote.preferredDate}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Preferred Time:</span>
+                                <span class="detail-value">${quote.preferredTime}</span>
+                            </div>
+                            ${quote.specialRequirements !== 'None' ? `
+                            <div class="detail-row">
+                                <span class="detail-label">Special Requirements:</span>
+                                <span class="detail-value">${quote.specialRequirements}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="message-content">
+                            <h3 style="margin-top: 0; color: #495057;">💬 Our Response</h3>
+                            <div style="white-space: pre-line;">${message}</div>
+                        </div>
+
+                        ${pricing ? `
+                        <div class="pricing">
+                            <h3>💰 Pricing Information</h3>
+                            <div style="white-space: pre-line;">${pricing}</div>
+                        </div>
+                        ` : ''}
+
+                        ${nextSteps ? `
+                        <div class="next-steps">
+                            <h3>🎯 Next Steps</h3>
+                            <div style="white-space: pre-line;">${nextSteps}</div>
+                        </div>
+                        ` : ''}
+
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                            <h4 style="margin-top: 0; color: #495057;">📞 Questions or Ready to Book?</h4>
+                            <p style="margin: 5px 0;"><strong>Phone:</strong> +49 176 61852286</p>
+                            <p style="margin: 5px 0;"><strong>Email:</strong> info@ajkcleaners.de</p>
+                            <p style="margin: 5px 0;"><strong>Hours:</strong> Monday - Friday: 8:00 AM - 6:00 PM</p>
+                        </div>
+                    </div>
+                    
+                    <div class="footer">
+                        <p><strong>AJK Cleaning Company</strong> | Professional Cleaning Services</p>
+                        <p>Thank you for considering us for your cleaning needs!</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `;
+
+        const responseText = `
+📋 QUOTE RESPONSE - AJK Cleaning Company
+
+Dear ${quote.customerName},
+
+Thank you for your interest in our professional cleaning services!
+
+YOUR ORIGINAL REQUEST:
+Service Type: ${quote.serviceType}
+Property Size: ${quote.propertySize} sq ft
+Service Frequency: ${quote.frequency}
+Preferred Date: ${quote.preferredDate}
+Preferred Time: ${quote.preferredTime}
+${quote.specialRequirements !== 'None' ? `Special Requirements: ${quote.specialRequirements}` : ''}
+
+OUR RESPONSE:
+${message}
+
+${pricing ? `PRICING INFORMATION:\n${pricing}\n` : ''}
+${nextSteps ? `NEXT STEPS:\n${nextSteps}\n` : ''}
+
+QUESTIONS OR READY TO BOOK?
+Phone: +49 176 61852286
+Email: info@ajkcleaners.de
+Hours: Monday - Friday: 8:00 AM - 6:00 PM
+
+Thank you for considering AJK Cleaning Company!
+
+Best regards,
+The AJK Cleaning Team
+        `;
+
+        const mailOptions = {
+            from: `"AJK Cleaning Company" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
+            to: quote.customerEmail,
+            subject: subject,
+            html: responseHtml,
+            text: responseText
+        };
+
+        await emailTransporter.sendMail(mailOptions);
+        console.log(`📧 Quote response sent to ${quote.customerEmail} for quote ${id}`);
+
+        // Update quote status
+        quote.status = 'responded';
+        quote.updatedAt = new Date().toISOString();
+        quote.responseSentAt = new Date().toISOString();
+        await db.write();
+
+        res.json({ 
+            success: true, 
+            message: 'Quote response sent successfully',
+            quoteId: id
+        });
+
+    } catch (error) {
+        console.error('❌ Failed to send quote response:', error);
+        res.status(500).json({ error: 'Failed to send quote response: ' + error.message });
     }
 });
 
