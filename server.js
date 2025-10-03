@@ -61,6 +61,218 @@ emailTransporter.verify((error, success) => {
     }
 });
 
+// Function to send admin notification for any booking
+async function sendAdminNotification(booking) {
+    const { details } = booking;
+    const {
+        customerName,
+        customerEmail,
+        customerPhone,
+        customerAddress,
+        city,
+        postalCode,
+        bookingType,
+        package: packageType,
+        date: bookingDate,
+        time: bookingTime,
+        duration,
+        cleaners,
+        propertySize,
+        specialRequests,
+        salutation
+    } = details;
+
+    // Admin email addresses
+    const adminEmails = [
+        'sugampokharel28@gmail.com',
+        'Sanudhakal119@gmail.com'
+    ];
+
+    const adminHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>New Booking Alert - AJK Cleaning</title>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f4; }
+                .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+                .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+                .header p { margin: 10px 0 0 0; font-size: 16px; opacity: 0.9; }
+                .content { padding: 30px; }
+                .alert { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 20px; margin-bottom: 25px; }
+                .alert h2 { color: #856404; margin: 0 0 10px 0; font-size: 20px; }
+                .booking-details { background: #f8f9fa; border-radius: 8px; padding: 25px; margin: 20px 0; }
+                .detail-row { display: flex; justify-content: space-between; margin: 12px 0; padding: 8px 0; border-bottom: 1px solid #e9ecef; }
+                .detail-row:last-child { border-bottom: none; }
+                .detail-label { font-weight: bold; color: #495057; }
+                .detail-value { color: #212529; }
+                .customer-info { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 20px; margin: 20px 0; }
+                .service-info { background: #f3e5f5; border-left: 4px solid #9c27b0; padding: 20px; margin: 20px 0; }
+                .action-required { background: #ffebee; border-left: 4px solid #f44336; padding: 20px; margin: 20px 0; }
+                .action-required h3 { color: #c62828; margin: 0 0 15px 0; }
+                .action-list { margin: 0; padding-left: 20px; }
+                .action-list li { margin: 8px 0; color: #d32f2f; }
+                .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #6c757d; border-top: 1px solid #e9ecef; }
+                .priority-high { color: #d32f2f; font-weight: bold; }
+                .booking-id { background: #667eea; color: white; padding: 5px 10px; border-radius: 4px; font-family: monospace; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>🚨 New Booking Alert</h1>
+                    <p>AJK Cleaning Company - Admin Notification</p>
+                </div>
+                
+                <div class="content">
+                    <div class="alert">
+                        <h2>⚠️ Immediate Action Required</h2>
+                        <p>A new <strong>${bookingType === 'subscription' ? 'Subscription' : 'One-Time'}</strong> cleaning booking has been received and requires your attention.</p>
+                    </div>
+
+                    <div class="booking-details">
+                        <h3 style="margin-top: 0; color: #495057;">📋 Booking Information</h3>
+                        <div class="detail-row">
+                            <span class="detail-label">Booking ID:</span>
+                            <span class="detail-value booking-id">${booking.id}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Booking Type:</span>
+                            <span class="detail-value priority-high">${bookingType === 'subscription' ? 'Subscription Service' : 'One-Time Cleaning'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Service Package:</span>
+                            <span class="detail-value">${packageType}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Requested Date:</span>
+                            <span class="detail-value">${bookingDate || 'To be scheduled'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Requested Time:</span>
+                            <span class="detail-value">${bookingTime || 'To be scheduled'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Duration:</span>
+                            <span class="detail-value">${duration} hours</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Cleaners Needed:</span>
+                            <span class="detail-value">${cleaners}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Property Size:</span>
+                            <span class="detail-value">${propertySize || 'Not specified'} sq ft</span>
+                        </div>
+                    </div>
+
+                    <div class="customer-info">
+                        <h3 style="margin-top: 0; color: #1976d2;">👤 Customer Information</h3>
+                        <div class="detail-row">
+                            <span class="detail-label">Name:</span>
+                            <span class="detail-value">${salutation} ${customerName}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Email:</span>
+                            <span class="detail-value">${customerEmail}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Phone:</span>
+                            <span class="detail-value">${customerPhone}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Address:</span>
+                            <span class="detail-value">${customerAddress}, ${city} ${postalCode}</span>
+                        </div>
+                    </div>
+
+                    ${specialRequests ? `
+                    <div class="service-info">
+                        <h3 style="margin-top: 0; color: #7b1fa2;">📝 Special Requirements</h3>
+                        <p style="margin: 0; font-style: italic;">"${specialRequests}"</p>
+                    </div>
+                    ` : ''}
+
+                    <div class="action-required">
+                        <h3>🎯 Required Actions</h3>
+                        <ul class="action-list">
+                            <li>Contact customer within 2 hours</li>
+                            <li>Confirm booking details and schedule</li>
+                            <li>Provide accurate pricing quote</li>
+                            <li>Schedule site visit if needed</li>
+                            <li>Update booking status in admin panel</li>
+                        </ul>
+                    </div>
+
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <h4 style="margin-top: 0; color: #495057;">📞 Quick Contact</h4>
+                        <p style="margin: 5px 0;"><strong>Customer:</strong> ${customerName} - ${customerPhone}</p>
+                        <p style="margin: 5px 0;"><strong>Email:</strong> ${customerEmail}</p>
+                        <p style="margin: 5px 0;"><strong>Booking Time:</strong> ${new Date().toLocaleString()}</p>
+                    </div>
+                </div>
+                
+                <div class="footer">
+                    <p><strong>AJK Cleaning Company</strong> | Admin Notification System</p>
+                    <p>This is an automated notification. Please respond promptly to maintain customer satisfaction.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
+
+    const adminText = `
+🚨 NEW BOOKING ALERT - AJK Cleaning Company
+
+Booking ID: ${booking.id}
+Booking Type: ${bookingType === 'subscription' ? 'Subscription Service' : 'One-Time Cleaning'}
+Service: ${packageType}
+Date: ${bookingDate || 'To be scheduled'}
+Time: ${bookingTime || 'To be scheduled'}
+Duration: ${duration} hours
+Cleaners: ${cleaners}
+
+CUSTOMER DETAILS:
+Name: ${salutation} ${customerName}
+Email: ${customerEmail}
+Phone: ${customerPhone}
+Address: ${customerAddress}, ${city} ${postalCode}
+Property Size: ${propertySize || 'Not specified'} sq ft
+
+${specialRequests ? `Special Requirements: ${specialRequests}` : ''}
+
+REQUIRED ACTIONS:
+1. Contact customer within 2 hours
+2. Confirm booking details and schedule
+3. Provide accurate pricing quote
+4. Schedule site visit if needed
+5. Update booking status in admin panel
+
+Booking received: ${new Date().toLocaleString()}
+    `;
+
+    // Send to all admin emails
+    for (const adminEmail of adminEmails) {
+        try {
+            const adminMailOptions = {
+                from: `"AJK Cleaning System" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
+                to: adminEmail,
+                subject: `🚨 New ${bookingType === 'subscription' ? 'Subscription' : 'One-Time'} Booking - ${booking.id}`,
+                html: adminHtml,
+                text: adminText
+            };
+
+            await emailTransporter.sendMail(adminMailOptions);
+            console.log(`📧 Admin notification sent to ${adminEmail} for booking ${booking.id}`);
+        } catch (error) {
+            console.error(`❌ Failed to send admin notification to ${adminEmail}:`, error.message);
+        }
+    }
+}
+
 // Function to send commercial booking confirmation with retry logic
 async function sendCommercialBookingConfirmation(booking) {
     const maxRetries = 3;
@@ -250,6 +462,16 @@ We look forward to serving your commercial cleaning needs!
         
         if (emailSent) {
             console.log(`📧 Email details: From ${process.env.SMTP_USER || process.env.ADMIN_EMAIL} to ${customerEmail}`);
+            
+            // Send admin notification email
+            try {
+                await sendAdminNotification(booking);
+                console.log(`📧 Admin notification sent for booking ${booking.id}`);
+            } catch (adminError) {
+                console.error(`❌ Failed to send admin notification:`, adminError.message);
+                // Don't fail the main email process if admin notification fails
+            }
+            
             return; // Success - exit the retry loop
         }
         
@@ -1247,6 +1469,44 @@ app.post('/api/test-webhook-email', async (req, res) => {
     } catch (error) {
         console.error('❌ Webhook test email failed:', error);
         res.status(500).json({ error: 'Failed to send webhook test email: ' + error.message });
+    }
+});
+
+// Test admin notification endpoint
+app.post('/api/test-admin-notification', async (req, res) => {
+    try {
+        const testBooking = {
+            id: 'test_admin_123',
+            details: {
+                customerName: 'Test Customer',
+                customerEmail: 'test@example.com',
+                customerPhone: '+49 123 456789',
+                customerAddress: 'Test Street 123',
+                city: 'Test City',
+                postalCode: '12345',
+                bookingType: 'one-time',
+                package: 'basic',
+                date: '2025-01-15',
+                time: '10:00',
+                duration: 2,
+                cleaners: 1,
+                propertySize: '100',
+                specialRequests: 'Test admin notification',
+                salutation: 'Mr.'
+            },
+            amount: 50,
+            status: 'paid',
+            paymentIntentId: 'test_pi_123',
+            paidAt: new Date().toISOString(),
+            createdAt: new Date().toISOString()
+        };
+
+        await sendAdminNotification(testBooking);
+        console.log('✅ Admin notification test sent successfully');
+        res.json({ success: true, message: 'Admin notification test sent successfully' });
+    } catch (error) {
+        console.error('❌ Admin notification test failed:', error);
+        res.status(500).json({ error: 'Failed to send admin notification test: ' + error.message });
     }
 });
 
@@ -3406,6 +3666,14 @@ app.post('/api/bookings/manual-create', async (req, res) => {
             console.error(`[MANUAL] ❌ Failed to send invoice email for booking ${newBooking.id}:`, emailError.message);
         }
         
+        // Send admin notification for new booking
+        try {
+            await sendAdminNotification(newBooking);
+            console.log(`[MANUAL] 📧 Admin notification sent for booking ${newBooking.id}`);
+        } catch (adminError) {
+            console.error(`[MANUAL] ❌ Failed to send admin notification for booking ${newBooking.id}:`, adminError.message);
+        }
+        
         res.json({ 
             status: 'created', 
             message: 'Booking created successfully',
@@ -3486,6 +3754,14 @@ app.post('/api/bookings/create-from-payment', async (req, res) => {
             console.log(`[PAYMENT] 📧 Invoice email sent for booking ${newBooking.id}`);
         } catch (emailError) {
             console.error(`[PAYMENT] ❌ Failed to send invoice email for booking ${newBooking.id}:`, emailError.message);
+        }
+        
+        // Send admin notification for new booking
+        try {
+            await sendAdminNotification(newBooking);
+            console.log(`[PAYMENT] 📧 Admin notification sent for booking ${newBooking.id}`);
+        } catch (adminError) {
+            console.error(`[PAYMENT] ❌ Failed to send admin notification for booking ${newBooking.id}:`, adminError.message);
         }
         
         res.json({ 
