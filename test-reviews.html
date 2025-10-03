@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Reviews System - AJK Cleaning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">🧪 Reviews System Test</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Test Controls -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">🔧 Test Controls</h2>
+                
+                <button id="add-sample-reviews" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600">
+                    Add Sample Reviews
+                </button>
+                
+                <button id="check-database" class="bg-green-500 text-white px-4 py-2 rounded mb-4 hover:bg-green-600">
+                    Check Database
+                </button>
+                
+                <button id="fetch-public-reviews" class="bg-purple-500 text-white px-4 py-2 rounded mb-4 hover:bg-purple-600">
+                    Fetch Public Reviews
+                </button>
+                
+                <button id="fetch-admin-reviews" class="bg-orange-500 text-white px-4 py-2 rounded mb-4 hover:bg-orange-600">
+                    Fetch Admin Reviews
+                </button>
+            </div>
+            
+            <!-- Results -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">📊 Results</h2>
+                <div id="results" class="bg-gray-50 p-4 rounded min-h-32">
+                    <p class="text-gray-500">Click a button above to test the reviews system...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Public Reviews Display -->
+        <div class="bg-white p-6 rounded-lg shadow mt-6">
+            <h2 class="text-xl font-semibold mb-4">⭐ Public Reviews</h2>
+            <div id="public-reviews" class="space-y-4">
+                <p class="text-gray-500">Loading public reviews...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const resultsDiv = document.getElementById('results');
+        const publicReviewsDiv = document.getElementById('public-reviews');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? 'text-red-600' : type === 'success' ? 'text-green-600' : 'text-blue-600';
+            resultsDiv.innerHTML += `<div class="${color} text-sm">[${timestamp}] ${message}</div>`;
+        }
+        
+        function clearResults() {
+            resultsDiv.innerHTML = '';
+        }
+        
+        // Add sample reviews
+        document.getElementById('add-sample-reviews').addEventListener('click', async () => {
+            clearResults();
+            log('Adding sample reviews...');
+            
+            try {
+                const response = await fetch('/api/reviews/test-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    log(`✅ ${data.message}`, 'success');
+                    log(`Added ${data.reviews.length} sample reviews`);
+                } else {
+                    log(`❌ Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Network error: ${error.message}`, 'error');
+            }
+        });
+        
+        // Check database
+        document.getElementById('check-database').addEventListener('click', async () => {
+            clearResults();
+            log('Checking database contents...');
+            
+            try {
+                const response = await fetch('/api/debug/database');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log('✅ Database check successful', 'success');
+                    log(`Submissions: ${data.submissions.count}`);
+                    log(`Chats: ${data.chats.count}`);
+                    log(`Reviews: ${data.reviews.count}`);
+                    log(`Bookings: ${data.bookings.count}`);
+                } else {
+                    log(`❌ Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Network error: ${error.message}`, 'error');
+            }
+        });
+        
+        // Fetch public reviews
+        document.getElementById('fetch-public-reviews').addEventListener('click', async () => {
+            clearResults();
+            log('Fetching public reviews...');
+            
+            try {
+                const response = await fetch('/api/reviews/public');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log(`✅ Found ${data.length} public reviews`, 'success');
+                    displayPublicReviews(data);
+                } else {
+                    log(`❌ Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Network error: ${error.message}`, 'error');
+            }
+        });
+        
+        // Fetch admin reviews
+        document.getElementById('fetch-admin-reviews').addEventListener('click', async () => {
+            clearResults();
+            log('Fetching admin reviews...');
+            
+            try {
+                const response = await fetch('/api/reviews/admin');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    log(`✅ Found ${data.reviews.length} admin reviews`, 'success');
+                    log(`Total: ${data.pagination.total}`);
+                    log(`Page: ${data.pagination.page}/${data.pagination.totalPages}`);
+                } else {
+                    log(`❌ Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Network error: ${error.message}`, 'error');
+            }
+        });
+        
+        function displayPublicReviews(reviews) {
+            if (reviews.length === 0) {
+                publicReviewsDiv.innerHTML = '<p class="text-gray-500">No public reviews found.</p>';
+                return;
+            }
+            
+            publicReviewsDiv.innerHTML = reviews.map(review => `
+                <div class="border-l-4 border-blue-500 pl-4 py-2">
+                    <div class="flex items-center mb-2">
+                        <h3 class="font-semibold">${review.customerName}</h3>
+                        <div class="ml-2 flex">
+                            ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+                        </div>
+                        <span class="ml-2 text-sm text-gray-500">${review.serviceType}</span>
+                    </div>
+                    <p class="text-gray-700">${review.reviewText}</p>
+                    <p class="text-sm text-gray-500 mt-1">${new Date(review.createdAt).toLocaleDateString()}</p>
+                </div>
+            `).join('');
+        }
+        
+        // Auto-load public reviews on page load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('/api/reviews/public');
+                const data = await response.json();
+                if (response.ok) {
+                    displayPublicReviews(data);
+                }
+            } catch (error) {
+                console.error('Failed to load public reviews:', error);
+            }
+        });
+    </script>
+</body>
+</html>
