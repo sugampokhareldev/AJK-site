@@ -2240,11 +2240,16 @@ app.post('/api/reviews', async (req, res) => {
 app.get('/api/reviews/public', async (req, res) => {
     try {
         await db.read();
+        console.log('📋 Fetching public reviews...');
+        console.log('📋 Database data:', db.data ? Object.keys(db.data) : 'No data');
+        console.log('📋 Reviews in database:', db.data.reviews ? db.data.reviews.length : 0);
+        
         const reviews = (db.data.reviews || [])
             .filter(review => review.isPublic && review.status === 'approved')
             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
             .slice(0, 20); // Limit to 20 most recent reviews
 
+        console.log('📋 Public reviews found:', reviews.length);
         res.json(reviews);
     } catch (error) {
         console.error('❌ Failed to fetch public reviews:', error);
@@ -2261,16 +2266,22 @@ app.get('/api/reviews/admin', requireAuth, async (req, res) => {
         const rating = req.query.rating || '';
 
         await db.read();
+        console.log('📋 Admin reviews request - Database data:', db.data ? Object.keys(db.data) : 'No data');
+        console.log('📋 Reviews in database:', db.data.reviews ? db.data.reviews.length : 0);
+        
         let reviews = db.data.reviews || [];
+        console.log('📋 All reviews:', reviews.length);
 
         // Filter by status
         if (status) {
             reviews = reviews.filter(review => review.status === status);
+            console.log(`📋 Filtered by status '${status}':`, reviews.length);
         }
 
         // Filter by rating
         if (rating) {
             reviews = reviews.filter(review => review.rating === parseInt(rating));
+            console.log(`📋 Filtered by rating '${rating}':`, reviews.length);
         }
 
         // Sort by newest first
@@ -2467,6 +2478,105 @@ AJK Cleaning Company
     await emailTransporter.sendMail(mailOptions);
     console.log(`📧 Admin notification sent for review from ${review.customerName}`);
 }
+
+// Test endpoint to add sample reviews
+app.post('/api/reviews/test-data', async (req, res) => {
+    try {
+        await db.read();
+        if (!db.data.reviews) {
+            db.data.reviews = [];
+        }
+
+        const sampleReviews = [
+            {
+                id: `review_${Date.now()}_1`,
+                customerName: 'Sarah Johnson',
+                customerEmail: 'sarah.johnson@example.com',
+                serviceType: 'Residential Cleaning',
+                rating: 5,
+                reviewText: 'Absolutely fantastic service! The team was professional, thorough, and left my home spotless. I highly recommend AJK Cleaning to anyone looking for quality cleaning services.',
+                bookingId: null,
+                isPublic: true,
+                status: 'approved',
+                createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+                approvedAt: new Date(Date.now() - 86400000).toISOString(),
+                approvedBy: 'admin'
+            },
+            {
+                id: `review_${Date.now()}_2`,
+                customerName: 'Michael Chen',
+                customerEmail: 'michael.chen@example.com',
+                serviceType: 'Commercial Cleaning',
+                rating: 5,
+                reviewText: 'Outstanding commercial cleaning service! Our office has never looked better. The team is reliable, efficient, and pays attention to every detail.',
+                bookingId: null,
+                isPublic: true,
+                status: 'approved',
+                createdAt: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
+                approvedAt: new Date(Date.now() - 172800000).toISOString(),
+                approvedBy: 'admin'
+            },
+            {
+                id: `review_${Date.now()}_3`,
+                customerName: 'Emma Wilson',
+                customerEmail: 'emma.wilson@example.com',
+                serviceType: 'Deep Cleaning',
+                rating: 4,
+                reviewText: 'Great deep cleaning service! The team was very thorough and used eco-friendly products. My home feels completely refreshed.',
+                bookingId: null,
+                isPublic: true,
+                status: 'approved',
+                createdAt: new Date(Date.now() - 259200000).toISOString(), // 3 days ago
+                approvedAt: new Date(Date.now() - 259200000).toISOString(),
+                approvedBy: 'admin'
+            },
+            {
+                id: `review_${Date.now()}_4`,
+                customerName: 'David Brown',
+                customerEmail: 'david.brown@example.com',
+                serviceType: 'Move In/Out Cleaning',
+                rating: 5,
+                reviewText: 'Perfect move-out cleaning service! The team made our old apartment look brand new. Highly professional and reasonably priced.',
+                bookingId: null,
+                isPublic: true,
+                status: 'approved',
+                createdAt: new Date(Date.now() - 345600000).toISOString(), // 4 days ago
+                approvedAt: new Date(Date.now() - 345600000).toISOString(),
+                approvedBy: 'admin'
+            },
+            {
+                id: `review_${Date.now()}_5`,
+                customerName: 'Lisa Garcia',
+                customerEmail: 'lisa.garcia@example.com',
+                serviceType: 'Residential Cleaning',
+                rating: 5,
+                reviewText: 'Excellent service! The cleaners were punctual, friendly, and did an amazing job. I will definitely book again.',
+                bookingId: null,
+                isPublic: true,
+                status: 'approved',
+                createdAt: new Date(Date.now() - 432000000).toISOString(), // 5 days ago
+                approvedAt: new Date(Date.now() - 432000000).toISOString(),
+                approvedBy: 'admin'
+            }
+        ];
+
+        // Add sample reviews to database
+        db.data.reviews.push(...sampleReviews);
+        await db.write();
+
+        console.log(`📝 Added ${sampleReviews.length} sample reviews to database`);
+
+        res.json({ 
+            success: true, 
+            message: `Added ${sampleReviews.length} sample reviews successfully`,
+            reviews: sampleReviews
+        });
+
+    } catch (error) {
+        console.error('❌ Failed to add sample reviews:', error);
+        res.status(500).json({ error: 'Failed to add sample reviews: ' + error.message });
+    }
+});
 
 // Debug endpoint to check database contents
 app.get('/api/debug/database', requireAuth, async (req, res) => {
