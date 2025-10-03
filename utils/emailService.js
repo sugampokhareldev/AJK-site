@@ -1,11 +1,13 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter
+// Create transporter - use same configuration as server.js
 const transporter = nodemailer.createTransporter({
-  service: 'gmail',
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: process.env.SMTP_PORT || 587,
+  secure: false, // true for 465, false for other ports
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+    user: process.env.SMTP_USER || process.env.ADMIN_EMAIL,
+    pass: process.env.SMTP_PASS || process.env.ADMIN_PASSWORD
   }
 });
 
@@ -13,8 +15,8 @@ const transporter = nodemailer.createTransporter({
 const sendEmailNotification = async (submission) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.ADMIN_EMAIL || process.env.EMAIL_USER,
+      from: `"AJK Cleaning Company" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
+      to: process.env.ADMIN_EMAIL,
       subject: 'New Contact Form Submission - AJK Cleaning',
       html: `
         <h2>New Contact Form Submission</h2>
@@ -38,7 +40,7 @@ const sendEmailNotification = async (submission) => {
 const sendConfirmationEmail = async (submission) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: `"AJK Cleaning Company" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
       to: submission.email,
       subject: 'Thank you for contacting AJK Cleaning',
       html: `

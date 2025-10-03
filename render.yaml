@@ -18,8 +18,13 @@ services:
       # - STRIPE_PUBLISHABLE_KEY: Your Stripe publishable key
       # - STRIPE_WEBHOOK_SECRET: Your Stripe webhook secret
       # - GEMINI_API_KEY: Your Google Gemini API key
-      # Optional Email Configuration:
+      # Email Configuration (REQUIRED for email notifications):
       # - SMTP_HOST: SMTP server host (default: smtp.gmail.com)
       # - SMTP_PORT: SMTP server port (default: 587)
-      # - SMTP_USER: SMTP username (defaults to ADMIN_EMAIL)
-      # - SMTP_PASS: SMTP password (defaults to ADMIN_PASSWORD)
+      # - SMTP_USER: Your Gmail address (e.g., your-email@gmail.com)
+      # - SMTP_PASS: Gmail App Password (NOT your regular password!)
+      # 
+      # Gmail Setup Instructions:
+      # 1. Enable 2-Factor Authentication on your Gmail account
+      # 2. Generate an App Password: Google Account > Security > App passwords
+      # 3. Use the App Password as SMTP_PASS (16 characters, no spaces)
