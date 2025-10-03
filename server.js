@@ -2001,6 +2001,39 @@ The AJK Cleaning Team
     }
 });
 
+// Debug endpoint to check database contents
+app.get('/api/debug/database', requireAuth, async (req, res) => {
+    try {
+        await db.read();
+        const data = {
+            submissions: {
+                exists: !!db.data.submissions,
+                length: db.data.submissions ? db.data.submissions.length : 0,
+                sample: db.data.submissions ? db.data.submissions.slice(0, 2) : []
+            },
+            chats: {
+                exists: !!db.data.chats,
+                length: db.data.chats ? Object.keys(db.data.chats).length : 0,
+                keys: db.data.chats ? Object.keys(db.data.chats) : []
+            },
+            quoteRequests: {
+                exists: !!db.data.quoteRequests,
+                length: db.data.quoteRequests ? db.data.quoteRequests.length : 0,
+                sample: db.data.quoteRequests ? db.data.quoteRequests.slice(0, 2) : []
+            },
+            bookings: {
+                exists: !!db.data.bookings,
+                length: db.data.bookings ? db.data.bookings.length : 0,
+                sample: db.data.bookings ? db.data.bookings.slice(0, 2) : []
+            },
+            allKeys: Object.keys(db.data || {})
+        };
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: 'Database error: ' + error.message });
+    }
+});
+
 // Test quote email endpoint
 app.post('/api/test-quote-email', async (req, res) => {
     try {
