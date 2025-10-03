@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter - use same configuration as server.js
+// Create transporter with timeout and connection settings for Render
 const transporter = nodemailer.createTransporter({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: process.env.SMTP_PORT || 587,
@@ -8,6 +8,20 @@ const transporter = nodemailer.createTransporter({
   auth: {
     user: process.env.SMTP_USER || process.env.ADMIN_EMAIL,
     pass: process.env.SMTP_PASS || process.env.ADMIN_PASSWORD
+  },
+  // Connection timeout settings for Render
+  connectionTimeout: 60000, // 60 seconds
+  greetingTimeout: 30000,   // 30 seconds
+  socketTimeout: 60000,     // 60 seconds
+  // Retry settings
+  pool: true,
+  maxConnections: 1,
+  maxMessages: 3,
+  rateDelta: 20000, // 20 seconds
+  rateLimit: 5, // max 5 messages per rateDelta
+  // TLS settings for better compatibility
+  tls: {
+    rejectUnauthorized: false
   }
 });
 

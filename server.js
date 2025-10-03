@@ -22,8 +22,9 @@ const geoip = require('geoip-lite'); // Added for analytics
 const helmet = require('helmet');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const nodemailer = require('nodemailer');
+const { sendEmailWithFallback } = require('./utils/emailFallback');
 
-// Email configuration
+// Email configuration with timeout and connection settings
 const emailTransporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: process.env.SMTP_PORT || 587,
@@ -31,6 +32,20 @@ const emailTransporter = nodemailer.createTransport({
     auth: {
         user: process.env.SMTP_USER || process.env.ADMIN_EMAIL,
         pass: process.env.SMTP_PASS || process.env.ADMIN_PASSWORD
+    },
+    // Connection timeout settings for Render
+    connectionTimeout: 60000, // 60 seconds
+    greetingTimeout: 30000,   // 30 seconds
+    socketTimeout: 60000,     // 60 seconds
+    // Retry settings
+    pool: true,
+    maxConnections: 1,
+    maxMessages: 3,
+    rateDelta: 20000, // 20 seconds
+    rateLimit: 5, // max 5 messages per rateDelta
+    // TLS settings for better compatibility
+    tls: {
+        rejectUnauthorized: false
     }
 });
 
@@ -44,9 +59,13 @@ emailTransporter.verify((error, success) => {
     }
 });
 
-// Function to send commercial booking confirmation
+// Function to send commercial booking confirmation with retry logic
 async function sendCommercialBookingConfirmation(booking) {
-    try {
+    const maxRetries = 3;
+    let retryCount = 0;
+    
+    while (retryCount < maxRetries) {
+        try {
         console.log(`[COMMERCIAL EMAIL] 🚀 Starting email send for booking:`, booking.id);
         const details = booking.details || {};
         const customerName = details.customerName || 'Valued Customer';
@@ -173,14 +192,36 @@ We look forward to serving your commercial cleaning needs!
             `
         };
 
-        console.log(`[COMMERCIAL EMAIL] 📤 Attempting to send email...`);
-        await emailTransporter.sendMail(mailOptions);
-        console.log(`✅ Commercial booking confirmation sent to ${customerEmail} for request ${booking.id}`);
-        console.log(`📧 Email details: From ${process.env.SMTP_USER || process.env.ADMIN_EMAIL} to ${customerEmail}`);
+        console.log(`[COMMERCIAL EMAIL] 📤 Attempting to send email... (Attempt ${retryCount + 1}/${maxRetries})`);
+        
+        // Try fallback email service first
+        try {
+            await sendEmailWithFallback(mailOptions, 2);
+            console.log(`✅ Commercial booking confirmation sent to ${customerEmail} for request ${booking.id}`);
+            console.log(`📧 Email details: From ${process.env.SMTP_USER || process.env.ADMIN_EMAIL} to ${customerEmail}`);
+            return; // Success - exit the retry loop
+        } catch (fallbackError) {
+            console.log('🔄 Fallback email service failed, trying primary transporter...');
+            // Fallback to primary transporter
+            await emailTransporter.sendMail(mailOptions);
+            console.log(`✅ Commercial booking confirmation sent to ${customerEmail} for request ${booking.id}`);
+            console.log(`📧 Email details: From ${process.env.SMTP_USER || process.env.ADMIN_EMAIL} to ${customerEmail}`);
+            return; // Success - exit the retry loop
+        }
         
     } catch (error) {
-        console.error('❌ Failed to send commercial booking confirmation:', error);
-        throw error;
+        retryCount++;
+        console.error(`❌ Failed to send commercial booking confirmation (Attempt ${retryCount}/${maxRetries}):`, error.message);
+        
+        if (retryCount < maxRetries) {
+            const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff: 2s, 4s, 8s
+            console.log(`⏳ Retrying in ${delay/1000} seconds...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+        } else {
+            console.error('❌ All retry attempts failed for commercial booking confirmation');
+            throw error;
+        }
+    }
     }
 }
 
