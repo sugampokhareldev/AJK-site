@@ -3,10 +3,23 @@ services:
     name: ajk-website
     env: node
     plan: free
-    buildCommand: npm install
+    buildCommand: npm install && npx tailwindcss -i ./src/styles.css -o ./dist/output.css --minify
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
       - key: SESSION_SECRET
         generateValue: true
+      # Required Environment Variables (set these in Render dashboard):
+      # - ADMIN_EMAIL: Your admin email address
+      # - ADMIN_PASSWORD: Your admin password
+      # - ADMIN_USERNAME: Your admin username (default: admin)
+      # - STRIPE_SECRET_KEY: Your Stripe secret key
+      # - STRIPE_PUBLISHABLE_KEY: Your Stripe publishable key
+      # - STRIPE_WEBHOOK_SECRET: Your Stripe webhook secret
+      # - GEMINI_API_KEY: Your Google Gemini API key
+      # Optional Email Configuration:
+      # - SMTP_HOST: SMTP server host (default: smtp.gmail.com)
+      # - SMTP_PORT: SMTP server port (default: 587)
+      # - SMTP_USER: SMTP username (defaults to ADMIN_EMAIL)
+      # - SMTP_PASS: SMTP password (defaults to ADMIN_PASSWORD)

@@ -111,3 +111,4 @@ class MongoDBAdapter {
 }
 
 module.exports = MongoDBAdapter;
+

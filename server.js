@@ -44,6 +44,539 @@ emailTransporter.verify((error, success) => {
     }
 });
 
+// Function to send commercial booking confirmation
+async function sendCommercialBookingConfirmation(booking) {
+    try {
+        console.log(`[COMMERCIAL EMAIL] 🚀 Starting email send for booking:`, booking.id);
+        const details = booking.details || {};
+        const customerName = details.customerName || 'Valued Customer';
+        const customerEmail = details.customerEmail;
+        console.log(`[COMMERCIAL EMAIL] 📧 Sending to:`, customerEmail);
+        const bookingDate = details.date || 'TBD';
+        const bookingTime = details.time || 'TBD';
+        const packageType = details.package || 'Commercial Cleaning';
+        const duration = details.duration || 0;
+        const cleaners = details.cleaners || 1;
+        const specialRequests = details.specialRequests || 'None';
+        const propertySize = details.propertySize || 'Not specified';
+
+        const confirmationHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Commercial Booking Request - AJK Cleaning</title>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                .content { background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px; }
+                .booking-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                .status { background: #fbbf24; color: #92400e; padding: 15px; border-radius: 8px; text-align: center; font-size: 16px; font-weight: bold; }
+                .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+                .highlight { background: #eff6ff; padding: 15px; border-left: 4px solid #3b82f6; margin: 15px 0; }
+                .consultation { background: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; margin: 15px 0; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>🏢 AJK Cleaning Company</h1>
+                <h2>Commercial Booking Request</h2>
+            </div>
+            
+            <div class="content">
+                <p>Dear ${customerName},</p>
+                
+                <p>Thank you for your commercial cleaning inquiry! We have received your request and will contact you shortly to discuss your specific needs and provide a customized quote.</p>
+                
+                <div class="status">
+                    📞 Consultation Required - We will contact you within 24 hours
+                </div>
+                
+                <div class="booking-details">
+                    <h3>📋 Your Request Details</h3>
+                    <p><strong>Request ID:</strong> ${booking.id}</p>
+                    <p><strong>Service Type:</strong> ${packageType}</p>
+                    <p><strong>Preferred Date:</strong> ${bookingDate}</p>
+                    <p><strong>Preferred Time:</strong> ${bookingTime}</p>
+                    <p><strong>Property Size:</strong> ${propertySize} sq ft</p>
+                    <p><strong>Estimated Duration:</strong> ${duration} hours</p>
+                    <p><strong>Number of Cleaners:</strong> ${cleaners}</p>
+                </div>
+                
+                ${specialRequests !== 'None' ? `
+                <div class="highlight">
+                    <h3>📝 Special Requirements</h3>
+                    <p>${specialRequests}</p>
+                </div>
+                ` : ''}
+                
+                <div class="consultation">
+                    <h3>💼 Next Steps</h3>
+                    <p><strong>1. We will call you within 24 hours</strong> to discuss your specific needs</p>
+                    <p><strong>2. We will provide a detailed quote</strong> based on your requirements</p>
+                    <p><strong>3. We will schedule a site visit</strong> if needed for accurate pricing</p>
+                    <p><strong>4. We will confirm the final details</strong> and schedule your cleaning</p>
+                </div>
+                
+                <div class="highlight">
+                    <h3>📞 Contact Information</h3>
+                    <p><strong>Phone:</strong> +49 176 61852286</p>
+                    <p><strong>Email:</strong> info@ajkcleaners.de</p>
+                    <p><strong>Website:</strong> https://ajkcleaners.de</p>
+                </div>
+                
+                <p>We look forward to providing you with professional commercial cleaning services!</p>
+                
+                <p>Best regards,<br>
+                <strong>AJK Cleaning Team</strong></p>
+            </div>
+            
+            <div class="footer">
+                <p>AJK Cleaning Company | Professional Commercial Cleaning Services</p>
+                <p>This is an automated confirmation. We will contact you soon!</p>
+            </div>
+        </body>
+        </html>
+        `;
+
+        const mailOptions = {
+            from: `"AJK Cleaning Company" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
+            to: customerEmail,
+            subject: `🏢 Commercial Cleaning Request Received - ${booking.id}`,
+            html: confirmationHtml,
+            text: `
+Commercial Cleaning Request - AJK Cleaning Company
+
+Dear ${customerName},
+
+Thank you for your commercial cleaning inquiry!
+
+Request ID: ${booking.id}
+Service: ${packageType}
+Date: ${bookingDate}
+Time: ${bookingTime}
+Property Size: ${propertySize} sq ft
+Duration: ${duration} hours
+Cleaners: ${cleaners}
+
+Special Requirements: ${specialRequests}
+
+NEXT STEPS:
+1. We will call you within 24 hours
+2. We will provide a detailed quote
+3. We will schedule a site visit if needed
+4. We will confirm final details
+
+Contact: +49 176 61852286 | info@ajkcleaners.de
+
+We look forward to serving your commercial cleaning needs!
+            `
+        };
+
+        console.log(`[COMMERCIAL EMAIL] 📤 Attempting to send email...`);
+        await emailTransporter.sendMail(mailOptions);
+        console.log(`✅ Commercial booking confirmation sent to ${customerEmail} for request ${booking.id}`);
+        console.log(`📧 Email details: From ${process.env.SMTP_USER || process.env.ADMIN_EMAIL} to ${customerEmail}`);
+        
+    } catch (error) {
+        console.error('❌ Failed to send commercial booking confirmation:', error);
+        throw error;
+    }
+}
+
+// Function to send employee payslip
+async function sendEmployeePayslip(employee, month, year) {
+    try {
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+        const monthName = monthNames[parseInt(month) - 1];
+        
+        // Calculate comprehensive payroll
+        const grossSalary = parseFloat(employee.salary);
+        
+        // Tax calculations (simplified)
+        const federalTaxRate = 0.15; // 15% federal tax
+        const stateTaxRate = 0.05;   // 5% state tax
+        const socialSecurityRate = 0.062; // 6.2% social security
+        // Medicare removed as requested
+        
+        // Check if custom tax amount is provided
+        const customTaxAmount = parseFloat(employee.customTax) || 0;
+        
+        let federalTax, stateTax, socialSecurity;
+        
+        if (customTaxAmount > 0) {
+            // Use custom tax amount instead of percentage calculations
+            federalTax = customTaxAmount;
+            stateTax = 0;
+            socialSecurity = 0;
+        } else {
+            // Use percentage-based calculations
+            federalTax = grossSalary * federalTaxRate;
+            stateTax = grossSalary * stateTaxRate;
+            socialSecurity = grossSalary * socialSecurityRate;
+        }
+        
+        // Use actual employee deduction data
+        const penalties = parseFloat(employee.penalties) || 0;
+        const absences = parseFloat(employee.absences) || 0;
+        const otherDeductions = parseFloat(employee.otherDeductions) || 0;
+        
+        const totalTaxes = federalTax + stateTax + socialSecurity;
+        const totalDeductions = totalTaxes + penalties + absences + otherDeductions;
+        const netSalary = grossSalary - totalDeductions;
+        
+        const payslipHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Payslip - ${monthName} ${year}</title>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                .content { background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px; }
+                .payslip-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                .salary-breakdown { background: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0; }
+                .net-salary { background: #10b981; color: white; padding: 20px; border-radius: 8px; text-align: center; font-size: 24px; font-weight: bold; margin: 20px 0; }
+                .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+                .highlight { background: #eff6ff; padding: 15px; border-left: 4px solid #3b82f6; margin: 15px 0; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>🧾 AJK Cleaning Company</h1>
+                <h2>Monthly Payslip - ${monthName} ${year}</h2>
+            </div>
+            
+            <div class="content">
+                <p>Dear ${employee.name},</p>
+                
+                <p>Please find your payslip for ${monthName} ${year} below. This document contains your salary breakdown and tax information.</p>
+                
+                <div class="payslip-details">
+                    <h3>📋 Employee Details</h3>
+                    <p><strong>Employee ID:</strong> ${employee.id}</p>
+                    <p><strong>Name:</strong> ${employee.name}</p>
+                    <p><strong>Job Title:</strong> ${employee.jobTitle}</p>
+                    <p><strong>SSN:</strong> ${employee.ssn || 'Not provided'}</p>
+                    <p><strong>Tax ID:</strong> ${employee.taxId || 'Not provided'}</p>
+                    <p><strong>Pay Period:</strong> ${monthName} ${year}</p>
+                    <p><strong>Date Generated:</strong> ${new Date().toLocaleDateString()}</p>
+                </div>
+                
+                <div class="salary-breakdown">
+                    <h3>💰 Salary Breakdown</h3>
+                    
+                    <h4>📈 Earnings</h4>
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Gross Salary:</span>
+                        <span>€${grossSalary.toFixed(2)}</span>
+                    </div>
+                    
+                    <h4>📉 Deductions</h4>
+                    ${customTaxAmount > 0 ? `
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Custom Tax Amount:</span>
+                        <span>-€${federalTax.toFixed(2)}</span>
+                    </div>
+                    ` : `
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Federal Tax (${(federalTaxRate * 100).toFixed(1)}%):</span>
+                        <span>-€${federalTax.toFixed(2)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>State Tax (${(stateTaxRate * 100).toFixed(1)}%):</span>
+                        <span>-€${stateTax.toFixed(2)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Social Security (${(socialSecurityRate * 100).toFixed(1)}%):</span>
+                        <span>-€${socialSecurity.toFixed(2)}</span>
+                    </div>
+                    `}
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Penalties:</span>
+                        <span>-€${penalties.toFixed(2)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Absences:</span>
+                        <span>-€${absences.toFixed(2)}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                        <span>Other Deductions:</span>
+                        <span>-€${otherDeductions.toFixed(2)}</span>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin: 10px 0; font-weight: bold; border-top: 2px solid #333; padding-top: 10px;">
+                        <span>Total Deductions:</span>
+                        <span>-€${totalDeductions.toFixed(2)}</span>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin: 10px 0; font-weight: bold; border-top: 2px solid #333; padding-top: 10px; font-size: 1.2em; color: #2d5a27;">
+                        <span>Net Salary:</span>
+                        <span>€${netSalary.toFixed(2)}</span>
+                    </div>
+                </div>
+                
+                <div class="net-salary">
+                    Net Pay: €${netSalary.toFixed(2)}
+                </div>
+                
+                <div class="highlight">
+                    <h3>📞 Contact Information</h3>
+                    <p><strong>HR Department:</strong> +49 176 61852286</p>
+                    <p><strong>Email:</strong> info@ajkcleaners.de</p>
+                    <p><strong>Website:</strong> https://ajkcleaners.de</p>
+                </div>
+                
+                <p>Thank you for your hard work and dedication to AJK Cleaning Company!</p>
+                
+                <p>Best regards,<br>
+                <strong>AJK Cleaning HR Team</strong></p>
+            </div>
+            
+            <div class="footer">
+                <p>AJK Cleaning Company | Professional Cleaning Services</p>
+                <p>This is an automated payslip. Please keep this for your records.</p>
+            </div>
+        </body>
+        </html>
+        `;
+
+        const mailOptions = {
+            from: `"AJK Cleaning HR" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
+            to: employee.email,
+            subject: `🧾 Payslip - ${monthName} ${year} - ${employee.name}`,
+            html: payslipHtml,
+            text: `
+Payslip - ${monthName} ${year}
+
+Dear ${employee.name},
+
+Your payslip for ${monthName} ${year}:
+
+Employee ID: ${employee.id}
+Job Title: ${employee.jobTitle}
+SSN: ${employee.ssn || 'Not provided'}
+Tax ID: ${employee.taxId || 'Not provided'}
+Pay Period: ${monthName} ${year}
+
+SALARY BREAKDOWN:
+
+EARNINGS:
+Gross Salary: €${grossSalary.toFixed(2)}
+
+DEDUCTIONS:
+${customTaxAmount > 0 ? 
+`Custom Tax Amount: -€${federalTax.toFixed(2)}` : 
+`Federal Tax (${(federalTaxRate * 100).toFixed(1)}%): -€${federalTax.toFixed(2)}
+State Tax (${(stateTaxRate * 100).toFixed(1)}%): -€${stateTax.toFixed(2)}
+Social Security (${(socialSecurityRate * 100).toFixed(1)}%): -€${socialSecurity.toFixed(2)}`}
+Penalties: -€${penalties.toFixed(2)}
+Absences: -€${absences.toFixed(2)}
+Other Deductions: -€${otherDeductions.toFixed(2)}
+
+Total Deductions: -€${totalDeductions.toFixed(2)}
+Net Salary: €${netSalary.toFixed(2)}
+
+Contact: +49 176 61852286 | info@ajkcleaners.de
+
+Thank you for your hard work!
+AJK Cleaning HR Team
+            `
+        };
+
+        try {
+            await emailTransporter.sendMail(mailOptions);
+            console.log(`✅ Payslip sent to ${employee.email} for ${monthName} ${year}`);
+            
+            // Record payment in employee's payment history
+            if (!employee.paymentHistory) {
+                employee.paymentHistory = [];
+            }
+            
+            const paymentRecord = {
+                month: parseInt(month) - 1, // Convert to 0-based month
+                year: parseInt(year),
+                amount: netSalary,
+                date: new Date().toISOString(),
+                payslipSent: true
+            };
+            
+            // Check if payment already exists for this month/year
+            const existingPayment = employee.paymentHistory.find(p => 
+                p.month === paymentRecord.month && p.year === paymentRecord.year
+            );
+            
+            if (!existingPayment) {
+                employee.paymentHistory.push(paymentRecord);
+                console.log(`📝 Payment recorded for ${employee.name} - ${monthName} ${year}`);
+                
+                // Update the database
+                const db = new Low(adapter);
+                await db.read();
+                const employeeIndex = db.data.employees.findIndex(emp => emp.id === employee.id);
+                if (employeeIndex !== -1) {
+                    db.data.employees[employeeIndex] = employee;
+                    await db.write();
+                    console.log(`💾 Database updated with payment record for ${employee.name}`);
+                }
+            }
+            
+        } catch (emailError) {
+            console.error(`❌ Failed to send payslip to ${employee.email}:`, emailError.message);
+            throw emailError;
+        }
+        
+        // Send a copy to admin for testing
+        try {
+            const adminCopyOptions = {
+                from: `"AJK Cleaning HR" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
+                to: process.env.ADMIN_EMAIL,
+                subject: `📋 Payslip Copy - ${employee.name} - ${monthName} ${year}`,
+                html: payslipHtml,
+                text: `
+Payslip Copy - ${monthName} ${year}
+Employee: ${employee.name}
+Email: ${employee.email}
+SSN: ${employee.ssn || 'Not provided'}
+Tax ID: ${employee.taxId || 'Not provided'}
+
+EARNINGS:
+Gross Salary: €${grossSalary.toFixed(2)}
+
+DEDUCTIONS:
+${customTaxAmount > 0 ? 
+`Custom Tax Amount: -€${federalTax.toFixed(2)}` : 
+`Federal Tax: -€${federalTax.toFixed(2)}
+State Tax: -€${stateTax.toFixed(2)}
+Social Security: -€${socialSecurity.toFixed(2)}`}
+Penalties: -€${penalties.toFixed(2)}
+Absences: -€${absences.toFixed(2)}
+Other Deductions: -€${otherDeductions.toFixed(2)}
+
+Total Deductions: -€${totalDeductions.toFixed(2)}
+Net Salary: €${netSalary.toFixed(2)}
+                `
+            };
+            
+            await emailTransporter.sendMail(adminCopyOptions);
+            console.log(`✅ Payslip copy sent to admin (${process.env.ADMIN_EMAIL})`);
+        } catch (adminEmailError) {
+            console.error(`❌ Failed to send payslip copy to admin:`, adminEmailError.message);
+            // Don't throw error for admin copy failure
+        }
+        
+    } catch (error) {
+        console.error('❌ Failed to send payslip:', error);
+        throw error;
+    }
+}
+
+// Function to send employee termination email
+async function sendEmployeeTerminationEmail(employee) {
+    try {
+        const terminationHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Employment Termination - AJK Cleaning</title>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                .content { background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px; }
+                .termination-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+                .highlight { background: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; margin: 15px 0; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>👋 AJK Cleaning Company</h1>
+                <h2>Employment Termination Notice</h2>
+            </div>
+            
+            <div class="content">
+                <p>Dear ${employee.name},</p>
+                
+                <p>This email serves as formal notice of the termination of your employment with AJK Cleaning Company.</p>
+                
+                <div class="termination-details">
+                    <h3>📋 Termination Details</h3>
+                    <p><strong>Employee ID:</strong> ${employee.id}</p>
+                    <p><strong>Name:</strong> ${employee.name}</p>
+                    <p><strong>Job Title:</strong> ${employee.jobTitle}</p>
+                    <p><strong>Date of Termination:</strong> ${new Date().toLocaleDateString()}</p>
+                    <p><strong>Last Working Day:</strong> ${new Date().toLocaleDateString()}</p>
+                </div>
+                
+                <div class="highlight">
+                    <h3>📄 Next Steps</h3>
+                    <p>1. Please return any company property in your possession</p>
+                    <p>2. Your final payslip will be sent separately</p>
+                    <p>3. If you have any questions, please contact HR</p>
+                </div>
+                
+                <div class="highlight">
+                    <h3>📞 Contact Information</h3>
+                    <p><strong>HR Department:</strong> +49 176 61852286</p>
+                    <p><strong>Email:</strong> info@ajkcleaners.de</p>
+                </div>
+                
+                <p>We thank you for your service and wish you all the best in your future endeavors.</p>
+                
+                <p>Best regards,<br>
+                <strong>AJK Cleaning HR Team</strong></p>
+            </div>
+            
+            <div class="footer">
+                <p>AJK Cleaning Company | Professional Cleaning Services</p>
+                <p>This is an automated termination notice.</p>
+            </div>
+        </body>
+        </html>
+        `;
+
+        const mailOptions = {
+            from: `"AJK Cleaning HR" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
+            to: employee.email,
+            subject: `👋 Employment Termination Notice - ${employee.name}`,
+            html: terminationHtml,
+            text: `
+Employment Termination Notice
+
+Dear ${employee.name},
+
+This email serves as formal notice of the termination of your employment with AJK Cleaning Company.
+
+TERMINATION DETAILS:
+Employee ID: ${employee.id}
+Job Title: ${employee.jobTitle}
+Date of Termination: ${new Date().toLocaleDateString()}
+
+NEXT STEPS:
+1. Please return any company property
+2. Your final payslip will be sent separately
+3. Contact HR if you have any questions
+
+Contact: +49 176 61852286 | info@ajkcleaners.de
+
+We thank you for your service and wish you all the best.
+
+AJK Cleaning HR Team
+            `
+        };
+
+        await emailTransporter.sendMail(mailOptions);
+        console.log(`✅ Termination email sent to ${employee.email}`);
+        
+    } catch (error) {
+        console.error('❌ Failed to send termination email:', error);
+        throw error;
+    }
+}
+
 // Function to send booking confirmation invoice
 async function sendBookingInvoice(booking) {
     try {
@@ -162,6 +695,7 @@ Thank you for choosing AJK Cleaning Company!
 
         await emailTransporter.sendMail(mailOptions);
         console.log(`✅ Invoice email sent to ${customerEmail} for booking ${booking.id}`);
+        console.log(`📧 Email details: From ${process.env.SMTP_USER || process.env.ADMIN_EMAIL} to ${customerEmail}`);
         
     } catch (error) {
         console.error('❌ Failed to send invoice email:', error);
@@ -455,7 +989,11 @@ app.use((req, res, next) => {
         '/api/bookings/check-payment-status',
         '/api/bookings/create-from-payment',
         '/api/bookings/commercial-create',
-        '/api/admin/login'
+        '/api/admin/login',
+        '/api/test-email',
+        '/api/test-commercial-email',
+        '/api/employees',
+        '/api/employees/generate-payslips'
     ];
     if (excludedRoutes.includes(req.path)) {
         return next();
@@ -479,6 +1017,253 @@ app.use((err, req, res, next) => {
 // Provide a dedicated endpoint for the frontend to fetch the CSRF token
 app.get('/api/csrf-token', (req, res) => {
     res.json({ csrfToken: req.csrfToken() });
+});
+
+app.get('/api/stripe-key', (req, res) => {
+    res.json({
+        publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_51SD6iOHIVAzPWFkU1ixyvux7u4Srneo6y2tuko22UX4OR2cGTNXvAssP1DAhbB9XnSDOgNPAwpOaLchXBBRD36Fb00uYOldQMJ'
+    });
+});
+
+// Test email endpoint
+app.post('/api/test-email', async (req, res) => {
+    try {
+        const testEmail = {
+            from: `"AJK Cleaning Company" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
+            to: process.env.ADMIN_EMAIL,
+            subject: '🧪 Email Test - AJK Cleaning System',
+            html: `
+                <h2>Email System Test</h2>
+                <p>This is a test email to verify the email system is working.</p>
+                <p>Time: ${new Date().toISOString()}</p>
+            `,
+            text: 'Email System Test - This is a test email to verify the email system is working.'
+        };
+
+        await emailTransporter.sendMail(testEmail);
+        console.log('✅ Test email sent successfully');
+        res.json({ success: true, message: 'Test email sent successfully' });
+    } catch (error) {
+        console.error('❌ Test email failed:', error);
+        res.status(500).json({ error: 'Failed to send test email: ' + error.message });
+    }
+});
+
+// Test commercial email endpoint
+app.post('/api/test-commercial-email', async (req, res) => {
+    try {
+        const testBooking = {
+            id: 'test_commercial_123',
+            details: {
+                customerName: 'Test Commercial Customer',
+                customerEmail: process.env.ADMIN_EMAIL,
+                package: 'commercial',
+                date: '2025-01-15',
+                time: '10:00',
+                duration: 4,
+                cleaners: 2,
+                propertySize: '500',
+                specialRequests: 'Test commercial booking email'
+            },
+            amount: 0,
+            status: 'pending_consultation'
+        };
+
+        await sendCommercialBookingConfirmation(testBooking);
+        console.log('✅ Test commercial email sent successfully');
+        res.json({ success: true, message: 'Test commercial email sent successfully' });
+    } catch (error) {
+        console.error('❌ Test commercial email failed:', error);
+        res.status(500).json({ error: 'Failed to send test commercial email: ' + error.message });
+    }
+});
+
+// ==================== TEAM MANAGEMENT API ====================
+
+// Get all employees
+app.get('/api/employees', async (req, res) => {
+    try {
+        await db.read();
+        const employees = db.data.employees || [];
+        res.json(employees);
+    } catch (error) {
+        console.error('Error fetching employees:', error);
+        res.status(500).json({ error: 'Failed to fetch employees' });
+    }
+});
+
+// Add new employee
+app.post('/api/employees', async (req, res) => {
+    try {
+        const { name, email, jobTitle, phone, salary, dateJoined, address, status, notes, ssn, taxId, penalties, absences, otherDeductions, customTax } = req.body;
+        
+        if (!name || !email || !jobTitle || !salary || !dateJoined) {
+            return res.status(400).json({ error: 'Name, email, job title, salary, and date joined are required' });
+        }
+
+        await db.read();
+        
+        // Ensure employees array exists
+        if (!db.data.employees) {
+            db.data.employees = [];
+        }
+
+        // Check if employee already exists
+        const existingEmployee = db.data.employees.find(emp => emp.email === email);
+        if (existingEmployee) {
+            return res.status(400).json({ error: 'Employee with this email already exists' });
+        }
+
+        const newEmployee = {
+            id: `emp_${Date.now()}`,
+            name,
+            email,
+            jobTitle,
+            phone: phone || '',
+            salary: parseFloat(salary),
+            dateJoined,
+            address: address || '',
+            status: status || 'active',
+            notes: notes || '',
+            ssn: ssn || '',
+            taxId: taxId || '',
+            penalties: parseFloat(penalties) || 0,
+            absences: parseFloat(absences) || 0,
+            otherDeductions: parseFloat(otherDeductions) || 0,
+            customTax: parseFloat(customTax) || 0,
+            paymentHistory: [], // Track payment history
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+
+        db.data.employees.push(newEmployee);
+        await db.write();
+
+        console.log(`✅ Employee added: ${newEmployee.name} (${newEmployee.email})`);
+        res.json({ success: true, employee: newEmployee });
+    } catch (error) {
+        console.error('Error adding employee:', error);
+        res.status(500).json({ error: 'Failed to add employee' });
+    }
+});
+
+// Update employee
+app.put('/api/employees/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updates = req.body;
+
+        await db.read();
+        
+        const employeeIndex = db.data.employees.findIndex(emp => emp.id === id);
+        if (employeeIndex === -1) {
+            return res.status(404).json({ error: 'Employee not found' });
+        }
+
+        // Update employee
+        db.data.employees[employeeIndex] = {
+            ...db.data.employees[employeeIndex],
+            ...updates,
+            updatedAt: new Date().toISOString()
+        };
+
+        await db.write();
+
+        console.log(`✅ Employee updated: ${db.data.employees[employeeIndex].name}`);
+        res.json({ success: true, employee: db.data.employees[employeeIndex] });
+    } catch (error) {
+        console.error('Error updating employee:', error);
+        res.status(500).json({ error: 'Failed to update employee' });
+    }
+});
+
+// Delete employee
+app.delete('/api/employees/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        await db.read();
+        
+        const employeeIndex = db.data.employees.findIndex(emp => emp.id === id);
+        if (employeeIndex === -1) {
+            return res.status(404).json({ error: 'Employee not found' });
+        }
+
+        const employee = db.data.employees[employeeIndex];
+        
+        // Remove employee
+        db.data.employees.splice(employeeIndex, 1);
+        await db.write();
+
+        // Send termination email
+        try {
+            await sendEmployeeTerminationEmail(employee);
+            console.log(`✅ Termination email sent to ${employee.email}`);
+        } catch (emailError) {
+            console.error('❌ Failed to send termination email:', emailError);
+        }
+
+        console.log(`✅ Employee deleted: ${employee.name}`);
+        res.json({ success: true, message: 'Employee deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting employee:', error);
+        res.status(500).json({ error: 'Failed to delete employee' });
+    }
+});
+
+// Generate payslips
+app.post('/api/employees/generate-payslips', async (req, res) => {
+    try {
+        const { month, year, employeeIds } = req.body;
+        
+        if (!month || !year || !employeeIds || employeeIds.length === 0) {
+            return res.status(400).json({ error: 'Month, year, and employee selection are required' });
+        }
+
+        await db.read();
+        const employees = db.data.employees || [];
+        
+        const selectedEmployees = employees.filter(emp => 
+            employeeIds.includes(emp.id) && emp.status === 'active'
+        );
+
+        if (selectedEmployees.length === 0) {
+            return res.status(400).json({ error: 'No active employees selected' });
+        }
+
+        const payslips = [];
+        
+        for (const employee of selectedEmployees) {
+            try {
+                await sendEmployeePayslip(employee, month, year);
+                payslips.push({
+                    employeeId: employee.id,
+                    employeeName: employee.name,
+                    email: employee.email,
+                    status: 'sent'
+                });
+                console.log(`✅ Payslip sent to ${employee.name} (${employee.email})`);
+            } catch (emailError) {
+                payslips.push({
+                    employeeId: employee.id,
+                    employeeName: employee.name,
+                    email: employee.email,
+                    status: 'failed',
+                    error: emailError.message
+                });
+                console.error(`❌ Failed to send payslip to ${employee.name}:`, emailError);
+            }
+        }
+
+        res.json({ 
+            success: true, 
+            message: `Payslips processed for ${payslips.length} employees`,
+            payslips 
+        });
+    } catch (error) {
+        console.error('Error generating payslips:', error);
+        res.status(500).json({ error: 'Failed to generate payslips' });
+    }
 });
 // =================================================================
 // END OF CSRF SETUP
@@ -772,6 +1557,7 @@ const allowedOriginsWs = [
     'http://ajkcleaners.de',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    'https://ajk-website.onrender.com', // Updated service name
     'http://localhost:3001',
     'http://127.0.0.1:3001'
 ];
@@ -1008,6 +1794,21 @@ wss.on('connection', async (ws, request) => {
     };
     clients.set(clientId, client);
     
+    // Add connection timeout to clean up unestablished clients
+    client.connectionEstablished = false;
+    client.connectionTimeout = setTimeout(() => {
+        if (!client.connectionEstablished) {
+            console.log('⚠️ Client connection timeout, cleaning up:', clientId);
+            clients.delete(clientId);
+            connectionQuality.delete(clientId);
+            notifyAdmin('client_connection_failed', {
+                clientId,
+                reason: 'Connection timeout - client never properly established connection',
+                ip: clientIp
+            });
+        }
+    }, 30000); // 30 second timeout
+    
     ws.isAlive = true;
     ws.missedPings = 0;
     ws.connectionStart = Date.now();
@@ -1075,6 +1876,16 @@ wss.on('connection', async (ws, request) => {
             
             switch (message.type) {
                 case 'chat':
+                    // Mark connection as established when first message is received
+                    if (!client.connectionEstablished) {
+                        client.connectionEstablished = true;
+                        if (client.connectionTimeout) {
+                            clearTimeout(client.connectionTimeout);
+                            client.connectionTimeout = null;
+                        }
+                        console.log('✅ Client connection established:', clientId);
+                    }
+                    
                     const messageText = message.message || message.text;
                     if (typeof messageText !== 'string' || messageText.trim().length === 0) {
                         return;
@@ -1241,6 +2052,12 @@ wss.on('connection', async (ws, request) => {
             return;
         }
         
+        // Clear connection timeout if it exists
+        if (client.connectionTimeout) {
+            clearTimeout(client.connectionTimeout);
+            client.connectionTimeout = null;
+        }
+        
         console.log('Client disconnected:', clientIp, clientId, 'Code:', code, 'Reason:', reason.toString());
         
         clients.delete(clientId);
@@ -1256,6 +2073,14 @@ wss.on('connection', async (ws, request) => {
     
     ws.on('error', (error) => {
         console.error('WebSocket error for client', clientIp, ':', error);
+        
+        // Clear connection timeout if it exists
+        const client = clients.get(clientId);
+        if (client && client.connectionTimeout) {
+            clearTimeout(client.connectionTimeout);
+            client.connectionTimeout = null;
+        }
+        
         clients.delete(clientId);
         connectionQuality.delete(clientId);
     });
@@ -1381,11 +2206,11 @@ app.use((req, res, next) => {
     res.setHeader(
         'Content-Security-Policy',
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://www.googletagmanager.com https://app.usercentrics.eu https://cdn.jsdelivr.net https://cdnjs.cloudflare.com blob: https://js.stripe.com; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://app.usercentrics.eu https://cdn.jsdelivr.net https://cdnjs.cloudflare.com blob: https://js.stripe.com; " +
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; " +
         "img-src 'self' data: https: blob:; " +
         "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; " +
-        `connect-src 'self' ${protocol}://${host} https://generativelanguage.googleapis.com https://api.usercentrics.eu https://privacy-proxy.usercentrics.eu https://www.google-analytics.com https://consent-api.service.consent.usercentrics.eu https://api.stripe.com; ` + 
+        `connect-src 'self' ${protocol}://${host} wss://${host} ws://${host} https://generativelanguage.googleapis.com https://api.usercentrics.eu https://privacy-proxy.usercentrics.eu https://www.google-analytics.com https://consent-api.service.consent.usercentrics.eu https://api.stripe.com; ` + 
         "frame-src 'self' https://www.google.com https://app.usercentrics.eu https://js.stripe.com;"
     );
     next();
@@ -2276,6 +3101,7 @@ app.post('/api/bookings/commercial-create', async (req, res) => {
         );
         
         if (existingBooking) {
+            console.log(`[COMMERCIAL] ⚠️ Duplicate booking found, skipping email`);
             return res.json({ 
                 status: 'exists', 
                 message: 'Commercial booking already exists for this email and date',
@@ -2302,6 +3128,17 @@ app.post('/api/bookings/commercial-create', async (req, res) => {
         
         console.log(`[COMMERCIAL] ✅ Created commercial booking ${newBooking.id}`);
         console.log(`[COMMERCIAL] 📊 Total bookings in database:`, db.data.bookings.length);
+        
+        // Send commercial booking confirmation email
+        try {
+            console.log(`[COMMERCIAL] 📧 Attempting to send email for booking:`, newBooking.id);
+            console.log(`[COMMERCIAL] 📧 Booking data:`, JSON.stringify(newBooking, null, 2));
+            await sendCommercialBookingConfirmation(newBooking);
+            console.log(`[COMMERCIAL] 📧 Confirmation email sent for booking ${newBooking.id}`);
+        } catch (emailError) {
+            console.error(`[COMMERCIAL] ❌ Failed to send confirmation email for booking ${newBooking.id}:`, emailError.message);
+            console.error(`[COMMERCIAL] ❌ Full error:`, emailError);
+        }
         
         res.json({ 
             status: 'created', 
@@ -2816,6 +3653,62 @@ app.get('/api/chats/:clientId', requireAuth, async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: 'Database error' });
   }
+});
+
+// Orphaned chat management endpoints
+app.get('/api/chats/orphaned-info', requireAuth, async (req, res) => {
+    try {
+        const connectedClients = Array.from(clients.values());
+        const orphanedClients = connectedClients.filter(client => 
+            !client.connectionEstablished && 
+            client.connectionTimeout && 
+            !client.isAdmin
+        );
+        
+        res.json({
+            orphanedCount: orphanedClients.length,
+            orphanedClients: orphanedClients.map(client => ({
+                clientId: client.id,
+                name: client.name || 'Unknown',
+                joined: client.joined,
+                ip: client.ip || 'Unknown',
+                timeSinceJoined: Date.now() - new Date(client.joined).getTime()
+            }))
+        });
+    } catch (err) {
+        console.error('Error fetching orphaned chat info:', err);
+        res.status(500).json({ error: 'Failed to fetch orphaned chat information' });
+    }
+});
+
+app.post('/api/chats/cleanup-orphaned', requireAuth, async (req, res) => {
+    try {
+        const connectedClients = Array.from(clients.values());
+        const orphanedClients = connectedClients.filter(client => 
+            !client.connectionEstablished && 
+            client.connectionTimeout && 
+            !client.isAdmin
+        );
+        
+        let cleanedCount = 0;
+        orphanedClients.forEach(client => {
+            if (client.connectionTimeout) {
+                clearTimeout(client.connectionTimeout);
+            }
+            clients.delete(client.id);
+            connectionQuality.delete(client.id);
+            cleanedCount++;
+        });
+        
+        res.json({
+            success: true,
+            message: `Cleaned up ${cleanedCount} orphaned chat sessions`,
+            cleanedCount
+        });
+    } catch (err) {
+        console.error('Error cleaning up orphaned chats:', err);
+        res.status(500).json({ error: 'Failed to clean up orphaned chats' });
+    }
 });
 
 app.get('/api/health/detailed', (req, res) => {

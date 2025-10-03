@@ -44,3 +44,4 @@ console.log('3. Update your .env file');
 console.log('4. Deploy to Render');
 
 console.log('\n💡 Recommendation: Start with MongoDB Atlas for simplicity!');
+

@@ -10,20 +10,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com/3.4.0"></script>
+    <link rel="stylesheet" href="./dist/output.css">
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'poppins': ['Poppins', 'sans-serif'],
-                    }
-                }
-            }
-        }
+        // Tailwind config is now in tailwind.config.js
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="icon" type="image/x-icon" href="https://placehold.co/64x64/e0f2fe/1e40af?text=AJK">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+    <link rel="manifest" href="/site.webmanifest">
 
     <style>
         :root {
@@ -45,14 +45,12 @@
         .font-poppins { font-family: 'Poppins', sans-serif; }
 
         body {
-            background-image: url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             position: relative;
             overflow-x: hidden;
         }
-        
+
         body::before {
             content: '';
             position: fixed;
@@ -60,23 +58,37 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(45deg, rgba(37, 99, 235, 0.1), rgba(13, 148, 136, 0.1), rgba(139, 92, 246, 0.1));
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
             animation: backgroundShift 15s ease-in-out infinite;
             z-index: -1;
         }
-        
+
         @keyframes backgroundShift {
-            0%, 100% { background: linear-gradient(45deg, rgba(37, 99, 235, 0.1), rgba(13, 148, 136, 0.1), rgba(139, 92, 246, 0.1)); }
-            33% { background: linear-gradient(45deg, rgba(13, 148, 136, 0.1), rgba(139, 92, 246, 0.1), rgba(37, 99, 235, 0.1)); }
-            66% { background: linear-gradient(45deg, rgba(139, 92, 246, 0.1), rgba(37, 99, 235, 0.1), rgba(13, 148, 136, 0.1)); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+
+        .main-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 
+                0 32px 64px -12px rgba(0, 0, 0, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
         }
 
         .main-container::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: rgba(248, 250, 252, 0.85);
-            backdrop-filter: blur(16px);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
             z-index: -1;
         }
 
@@ -142,6 +154,114 @@
         .field { position: relative; }
         .field .field-icon { position: absolute; left: 1rem; top: 1rem; color: var(--gray-400); transition: color .2s; pointer-events: none; }
         .field .form-input { transition: border-color .2s; -webkit-appearance: none; -moz-appearance: none; appearance: none; padding-left: 2.75rem; }
+        .form-input.error { border-color: #ef4444 !important; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important; }
+        .error-message { display: none; color: #ef4444; font-size: 0.875rem; margin-top: 0.25rem; }
+        .error-message:not([style*="display: none"]) { display: block !important; }
+        
+        /* Loading Screen Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .loading-screen.show {
+            display: flex;
+        }
+        
+        .loading-content {
+            text-align: center;
+            color: white;
+            max-width: 400px;
+            padding: 2rem;
+        }
+        
+        .loading-spinner {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+        }
+        
+        .spinner-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+        }
+        
+        .spinner-ring:nth-child(2) {
+            border-top-color: #10b981;
+            animation-delay: -0.5s;
+            animation-duration: 2s;
+        }
+        
+        .spinner-ring:nth-child(3) {
+            border-top-color: #f59e0b;
+            animation-delay: -1s;
+            animation-duration: 2.5s;
+        }
+        
+        .loading-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+        
+        .loading-subtitle {
+            font-size: 1rem;
+            color: #d1d5db;
+            margin-bottom: 2rem;
+        }
+        
+        .loading-progress {
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            border-radius: 2px;
+            animation: progress 3s ease-in-out infinite;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
         .field select.form-input {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
             background-position: right .7rem center; background-repeat: no-repeat; background-size: 1.25em; padding-right: 2.5rem; padding-left: 1rem;
@@ -165,7 +285,10 @@
             display: flex;
             align-items: center;
             opacity: 0.6;
-            transition: opacity 0.3s;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 8px 16px;
+            border-radius: 12px;
+            position: relative;
         }
         .wizard-step::before {
             counter-increment: step;
@@ -173,17 +296,35 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 2.5rem; height: 2.5rem;
+            width: 2.5rem; 
+            height: 2.5rem;
             border-radius: 99px;
-            background-color: var(--gray-200);
-            color: var(--gray-600);
-            font-weight: 600;
+            background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+            color: #6b7280;
+            font-weight: 700;
             margin-right: 0.75rem;
-            transition: background-color 0.3s, color 0.3s;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        .wizard-step.active { opacity: 1; }
-        .wizard-step.active::before { background-color: var(--primary-500); color: var(--white); }
-        .wizard-step.completed::before { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; background-color: var(--accent-500); color: var(--white); }
+        .wizard-step.active { 
+            opacity: 1; 
+            background: rgba(37, 99, 235, 0.1);
+            transform: translateY(-2px);
+        }
+        .wizard-step.active::before { 
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8); 
+            color: white; 
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+            transform: scale(1.1);
+        }
+        .wizard-step.completed::before { 
+            content: '\f00c'; 
+            font-family: 'Font Awesome 6 Free'; 
+            font-weight: 900; 
+            background: linear-gradient(135deg, #10b981, #059669); 
+            color: white; 
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
         .wizard-connector { flex-grow: 1; height: 2px; background-color: var(--gray-200); margin: 0 0.5rem; }
 
         .a-focus:focus-visible { outline: 3px solid rgba(37,99,235,0.2); outline-offset: 2px; border-radius: 6px; }
@@ -198,9 +339,11 @@
         .step.hidden-right { position: absolute; opacity: 0; transform: translateX(50px); pointer-events: none; }
         
         .package.selected {
-            background: rgba(37, 99, 235, 0.05);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.05));
             border-color: var(--primary-500) !important;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+            box-shadow: 
+                0 8px 25px rgba(37, 99, 235, 0.2),
+                0 0 0 1px rgba(37, 99, 235, 0.1);
             transform: translateY(-4px);
         }
 
@@ -211,8 +354,25 @@
 
         /* Modern button styles */
         .btn { padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-weight: 600; transition: all 0.2s ease-in-out; }
-        .btn-primary { background-color: var(--primary-500); color: white; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2); }
-        .btn-primary:hover:not(:disabled) { background-color: var(--primary-600); transform: translateY(-1px); box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3); }
+        .btn-primary { 
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8); 
+            color: white; 
+            box-shadow: 
+                0 8px 20px rgba(59, 130, 246, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-primary:hover:not(:disabled) { 
+            background: linear-gradient(135deg, #2563eb, #1e40af); 
+            transform: translateY(-3px); 
+            box-shadow: 
+                0 12px 30px rgba(59, 130, 246, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
         .btn-secondary { background-color: var(--gray-200); color: var(--gray-800); }
         .btn-secondary:hover { background-color: #d1d5db; }
         .btn-accent { background-color: var(--accent-500); color: white; }
@@ -224,7 +384,12 @@
         .quantity-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* Loader */
+        .hidden { display: none !important; }
         .loader { width: 18px; height: 18px; border: 2px solid #FFF; border-bottom-color: transparent; border-radius: 50%; display: inline-block; box-sizing: border-box; animation: rotation 1s linear infinite; }
+        
+        /* Ensure button text is visible by default */
+        #button-text { display: inline; }
+        #spinner { display: none; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* Success Animation */
@@ -287,6 +452,17 @@
             .success-message { padding: 1rem; }
             .success-message h2 { font-size: 1.25rem; }
             .success-message p { font-size: 0.8rem; }
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+            .summary-container {
+                padding: 1rem;
+            }
+            .summary-item {
+                padding: 0.75rem;
+            }
         }
     </style>
 </head>
@@ -296,7 +472,7 @@
     <header class="sticky top-0 z-20 bg-white/80 backdrop-blur-lg border-b border-slate-200/80">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <a href="/" class="flex items-center gap-3 a-focus" aria-label="AJK Cleaning Home">
-                <img src="https://placehold.co/64x64/e0f2fe/1d4ed8?text=AJK" alt="AJK Cleaning logo" class="h-12 w-12 rounded-lg shadow-sm object-cover">
+                <img src="images/logo.webp" alt="AJK Cleaning logo" class="h-16 w-16 rounded-lg shadow-sm object-contain">
                 <div>
                     <div class="font-poppins text-lg font-bold text-slate-800">AJK Cleaning</div>
                     <div class="text-xs text-slate-500">Bischofsheim • Trusted & Verified</div>
@@ -342,7 +518,7 @@
                         </div>
                         <div class="mt-6 flex items-center justify-between">
                             <div class="flex items-center gap-3">
-                                <label class="text-sm font-medium text-slate-600 flex items-center gap-2"><i class="fas fa-users text-slate-400"></i>Cleaners</label>
+                                <label class="text-sm font-medium text-slate-600 flex items-center gap-2"><i class="fas fa-users text-slate-400"></i><span data-translate="cleaners-label">Cleaners</span></label>
                                 <div class="inline-flex items-center gap-1 bg-white rounded-full p-1 shadow-sm border">
                                     <button type="button" class="quantity-btn h-8 w-8 text-lg rounded-full a-focus hover:bg-slate-100 transition-colors" data-field="cleaners" data-amount="-1" aria-label="Decrease cleaners">-</button>
                                     <div id="cleaners-count" class="px-2 font-semibold w-8 text-center">1</div>
@@ -355,8 +531,8 @@
 
                     <!-- STEP 2: Schedule -->
                     <form class="step hidden-right" data-step="2">
-                        <h3 class="text-2xl font-poppins font-bold text-slate-800">Schedule Your Cleaning</h3>
-                        <p class="text-slate-500 mt-1">Pick a date and time that works for you.</p>
+                        <h3 class="text-2xl font-poppins font-bold text-slate-800" data-translate="schedule-title">Schedule Your Cleaning</h3>
+                        <p class="text-slate-500 mt-1" data-translate="schedule-desc">Pick a date and time that works for you.</p>
                         
                         <div id="schedule-fields">
                             <div class="mt-6 grid md:grid-cols-5 gap-6">
@@ -373,17 +549,17 @@
                                 </div>
                                 <div class="md:col-span-2">
                                     <div class="mb-4">
-                                        <label class="text-sm font-medium text-slate-600 mb-2 block">Available Slots</label>
+                                        <label class="text-sm font-medium text-slate-600 mb-2 block" data-translate="time-label">Available Slots</label>
                                         <div id="time-slots" class="grid grid-cols-2 gap-2"></div>
                                     </div>
                                     <div class="mb-4 field">
                                         <i class="field-icon fas fa-ruler-combined"></i>
                                         <input id="property-size" type="number" min="1" max="300" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" ">
-                                        <label for="property-size">Property Size (m²)</label>
+                                        <label for="property-size" data-translate="size-label">Property Size (m²)</label>
                                         <div id="duration-suggestion" class="hidden mt-2 text-xs text-slate-600 bg-blue-50 border border-blue-200 rounded-md p-2"></div>
                                     </div>
                                     <div>
-                                        <label class="text-sm font-medium text-slate-600 flex items-center gap-2"><i class="fas fa-hourglass-half text-slate-400"></i>Duration (hours)</label>
+                                        <label class="text-sm font-medium text-slate-600 flex items-center gap-2"><i class="fas fa-hourglass-half text-slate-400"></i><span data-translate="duration-label">Duration (hours)</span></label>
                                         <div class="inline-flex items-center gap-1 bg-white rounded-full p-1 shadow-sm border mt-2">
                                             <button type="button" class="quantity-btn h-8 w-8 text-lg rounded-full a-focus hover:bg-slate-100" data-field="duration" data-amount="-1" aria-label="Decrease duration">-</button>
                                             <div id="duration-count" class="px-2 font-semibold w-8 text-center">1</div>
@@ -401,63 +577,63 @@
                         <div id="step2-error" class="hidden text-red-600 text-sm font-medium mt-4 text-center p-3 bg-red-50 border border-red-200 rounded-lg"></div>
 
                         <div class="mt-8 flex items-center justify-between">
-                            <button type="button" class="btn btn-secondary" data-action="prev">Back</button>
-                            <button type="button" class="btn btn-primary" data-action="next">Next <i class="fas fa-arrow-right ml-2"></i></button>
+                            <button type="button" class="btn btn-secondary" data-action="prev" data-translate="back-btn">Back</button>
+                            <button type="button" class="btn btn-primary" data-action="next" data-translate="next-btn">Next <i class="fas fa-arrow-right ml-2"></i></button>
                         </div>
                     </form>
 
                     <!-- STEP 3: Details -->
                     <form class="step hidden-right" data-step="3">
-                        <h3 class="text-2xl font-poppins font-bold text-slate-800">Your Details</h3>
-                        <p class="text-slate-500 mt-1">We need your contact and address for the booking.</p>
+                        <h3 class="text-2xl font-poppins font-bold text-slate-800" data-translate="details-title">Your Details</h3>
+                        <p class="text-slate-500 mt-1" data-translate="details-desc">We need your contact and address for the booking.</p>
                         <div class="mt-6 grid sm:grid-cols-2 gap-5">
                             <div class="field">
                                 <select id="salutation" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300">
                                     <option>Mr.</option><option>Ms.</option><option>Mrs.</option>
                                 </select>
-                                <label for="salutation">Salutation</label>
+                                <label for="salutation" data-translate="salutation-label">Salutation</label>
                             </div>
                             <div class="field">
                                 <i class="field-icon fas fa-user"></i>
                                 <input id="customer-name" type="text" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" " required>
-                                <label for="customer-name">Full name</label>
+                                <label for="customer-name" data-translate="name-label">Full name</label>
                                 <div class="error-message">Name is required.</div>
                             </div>
                             <div class="field">
                                 <i class="field-icon fas fa-envelope"></i>
                                 <input id="customer-email" type="email" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" " required>
-                                <label for="customer-email">Email address</label>
+                                <label for="customer-email" data-translate="email-label">Email address</label>
                                 <div class="error-message">A valid email is required.</div>
                             </div>
                              <div class="field">
                                 <i class="field-icon fas fa-phone"></i>
                                 <input id="customer-phone" type="tel" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" " required>
-                                <label for="customer-phone">Phone number</label>
+                                <label for="customer-phone" data-translate="phone-label">Phone number</label>
                                 <div class="error-message">Phone number is required.</div>
                             </div>
                             <div class="field sm:col-span-2">
                                 <i class="field-icon fas fa-map-marker-alt"></i>
                                 <input id="customer-address" type="text" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" " required>
-                                <label for="customer-address">Street address</label>
+                                <label for="customer-address" data-translate="address-label">Street address</label>
                                 <div class="error-message">Address is required.</div>
                             </div>
                             <div class="field">
                                 <i class="field-icon fas fa-hashtag"></i>
                                 <input id="postal-code" type="text" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" " required>
-                                <label for="postal-code">Postal Code</label>
+                                <label for="postal-code" data-translate="postal-label">Postal Code</label>
                                 <div class="error-message">Postal code is required.</div>
                             </div>
                             <div class="field">
                                 <i class="field-icon fas fa-city"></i>
                                 <input id="city" type="text" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" " required>
-                                <label for="city">City</label>
+                                <label for="city" data-translate="city-label">City</label>
                                 <div class="error-message">City is required.</div>
                             </div>
                              <div class="sm:col-span-2">
                                 <div class="field">
                                     <i class="field-icon fas fa-comment-dots"></i>
                                     <textarea id="special-requests" rows="2" class="form-input w-full bg-white rounded-lg px-4 pt-6 pb-2 border-gray-300" placeholder=" "></textarea>
-                                    <label for="special-requests">Special requests (optional)</label>
+                                    <label for="special-requests" data-translate="requests-label">Special requests (optional)</label>
                                 </div>
                                 <p class="text-xs text-slate-500 mt-1 pl-2">If you've booked less than the recommended time, please list your priority areas here.</p>
                              </div>
@@ -470,8 +646,8 @@
                     
                     <!-- STEP 4: PAYMENT -->
                     <form id="payment-form" class="step hidden-right" data-step="4">
-                        <h3 class="text-2xl font-poppins font-bold text-slate-800">Confirm & Pay</h3>
-                        <p class="text-slate-500 mt-1">Please review your booking and enter payment details.</p>
+                        <h3 class="text-2xl font-poppins font-bold text-slate-800" data-translate="payment-title">Confirm & Pay</h3>
+                        <p class="text-slate-500 mt-1" data-translate="payment-desc">Please review your booking and enter payment details.</p>
                         
                         <div class="mt-6 space-y-3" id="review-container">
                            <!-- JS injects review details -->
@@ -484,7 +660,7 @@
                         <div class="mt-8 flex items-center justify-between">
                             <button type="button" class="btn btn-secondary" data-action="prev">Go Back</button>
                             <button id="submit-payment" class="btn btn-primary inline-flex items-center gap-3">
-                                <span id="button-text">Pay Now</span>
+                                <span id="button-text" data-translate="book-btn">Pay Now</span>
                                 <span id="spinner" class="loader hidden"></span>
                             </button>
                         </div>
@@ -665,29 +841,167 @@
     </div>
 </div>
 
+<!-- Loading Screen -->
+<div id="loading-screen" class="loading-screen">
+    <div class="loading-content">
+        <div class="loading-spinner">
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+        </div>
+        <h3 class="loading-title">Processing Payment...</h3>
+        <p class="loading-subtitle">Please don't close this window</p>
+        <div class="loading-progress">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    // --- IMPORTANT: This key is for testing purposes. Replace with your actual publishable key in production. ---
-    const stripe = Stripe('pk_test_51SD6iOHIVAzPWFkU1ixyvux7u4Srneo6y2tuko22UX4OR2cGTNXvAssP1DAhbB9XnSDOgNPAwpOaLchXBBRD36Fb00uYOldQMJ');
+document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize form validation
+    addRealTimeValidation();
+    
+    // Ensure button starts in correct state (no loading)
+    setLoading(false);
+    
+    let stripe;
+    try {
+        const response = await fetch('/api/stripe-key');
+        const { publishableKey } = await response.json();
+        stripe = Stripe(publishableKey);
+        console.log('✅ Stripe initialized with key:', publishableKey.substring(0, 20) + '...');
+    } catch (error) {
+        console.error('❌ Failed to load Stripe key:', error);
+        stripe = Stripe('pk_test_51SD6iOHIVAzPWFkU1ixyvux7u4Srneo6y2tuko22UX4OR2cGTNXvAssP1DAhbB9XnSDOgNPAwpOaLchXBBRD36Fb00uYOldQMJ');
+    }
     
     // --- Stripe variables ---
     let elements;
     let paymentElement;
 
-    // --- CONFIGURATION ---
-    const CONFIG = {
-        packages: [
-             { id: 'residential', title: 'Residential Cleaning', price: 35, desc: 'Ideal for ongoing upkeep. No commitment is required.', icon: 'fas fa-home' },
-             { id: 'deep', title: 'Deep Cleaning', price: 45, desc: 'Intensive service for a home that feels brand new.', icon: 'fas fa-broom' },
-             { id: 'moveout', title: 'Move-In/Out', price: 50, desc: 'A top-to-bottom clean for an empty home.', icon: 'fas fa-box-open' },
-             { id: 'commercial', title: 'Commercial', price: 0, desc: 'Tailored solutions for your office or retail space.', icon: 'fas fa-building' },
+        // --- FORM VALIDATION ---
+        function validateForm() {
+            const requiredFields = [
+                'customer-name',
+                'customer-email', 
+                'customer-phone',
+                'customer-address',
+                'postal-code',
+                'city'
+            ];
+            
+            let isValid = true;
+            
+            // Clear previous error states
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                const errorMessage = field.parentElement.querySelector('.error-message');
+                if (field && errorMessage) {
+                    field.classList.remove('error');
+                    errorMessage.style.display = 'none';
+                }
+            });
+            
+            // Validate each required field
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                const errorMessage = field.parentElement.querySelector('.error-message');
+                
+                if (!field.value.trim()) {
+                    field.classList.add('error');
+                    if (errorMessage) {
+                        errorMessage.style.display = 'block';
+                    }
+                    isValid = false;
+                }
+            });
+            
+            // Validate email format
+            const emailField = document.getElementById('customer-email');
+            const emailError = emailField.parentElement.querySelector('.error-message');
+            if (emailField.value.trim() && !isValidEmail(emailField.value)) {
+                emailField.classList.add('error');
+                if (emailError) {
+                    emailError.textContent = 'Please enter a valid email address.';
+                    emailError.style.display = 'block';
+                }
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        // Add real-time validation to clear errors when user starts typing
+        function addRealTimeValidation() {
+            const requiredFields = [
+                'customer-name',
+                'customer-email', 
+                'customer-phone',
+                'customer-address',
+                'postal-code',
+                'city'
+            ];
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', function() {
+                        if (this.value.trim()) {
+                            this.classList.remove('error');
+                            const errorMessage = this.parentElement.querySelector('.error-message');
+                            if (errorMessage) {
+                                errorMessage.style.display = 'none';
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Loading screen functions
+        function showLoadingScreen() {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+                loadingScreen.classList.add('show');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            }
+        }
+        
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+                loadingScreen.classList.remove('show');
+                document.body.style.overflow = ''; // Restore scrolling
+            }
+        }
+
+        // --- CONFIGURATION ---
+        const CONFIG = {
+            packages: [
+                { id: 'residential', title: 'Residential Cleaning', price: 35, desc: 'Ideal for ongoing upkeep. No commitment is required.', icon: 'fas fa-home' },
+                { id: 'deep', title: 'Deep Cleaning', price: 45, desc: 'Intensive service for a home that feels brand new.', icon: 'fas fa-broom' },
+                { id: 'moveout', title: 'Move-In/Out', price: 50, desc: 'A top-to-bottom clean for an empty home.', icon: 'fas fa-box-open' },
+                { id: 'commercial', title: 'Commercial', price: 0, desc: 'Tailored solutions for your office or retail space.', icon: 'fas fa-building' },
         ],
         limits: {
             cleaners: { min: 1, max: 5 },
             duration: { min: 1, max: 12 },
         },
-        timeSlots: ["08:00", "09:00", "11:00", "13:00", "15:00", "17:00"]
+        timeSlots: [
+            // Morning slots: 8:00 AM to 10:00 AM (30-minute intervals)
+            "08:00", "08:30", "09:00", "09:30", "10:00",
+            // Afternoon slots: 12:00 PM to 6:00 PM (30-minute intervals)
+            "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", 
+            "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00"
+        ]
     };
 
     // --- DOM ELEMENTS CACHE ---
@@ -824,6 +1138,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         DOM.paymentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Validate form fields
+            if (!validateForm()) {
+                return;
+            }
+            
             if (state.package === 'commercial') {
                 // For commercial, submit booking data to server
                 await submitCommercialBooking();
@@ -1180,10 +1500,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 'package-desc': 'Select the type of cleaning that fits your needs.',
                 'cleaners-label': 'Cleaners',
                 'next-btn': 'Next',
+                'back-btn': 'Back',
+                'book-btn': 'Book Now',
                 'schedule-title': 'Schedule Your Service',
                 'schedule-desc': 'Pick a date and time that works for you.',
                 'date-label': 'Date',
-                'time-label': 'Time',
+                'time-label': 'Available Slots',
                 'duration-label': 'Duration',
                 'details-title': 'Your Details',
                 'details-desc': 'Tell us about your property and any special requests.',
@@ -1209,10 +1531,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 'package-desc': 'Wählen Sie die Art der Reinigung, die zu Ihren Bedürfnissen passt.',
                 'cleaners-label': 'Reinigungskräfte',
                 'next-btn': 'Weiter',
+                'back-btn': 'Zurück',
+                'book-btn': 'Jetzt buchen',
                 'schedule-title': 'Service terminieren',
                 'schedule-desc': 'Wählen Sie ein Datum und eine Uhrzeit, die für Sie funktioniert.',
                 'date-label': 'Datum',
-                'time-label': 'Uhrzeit',
+                'time-label': 'Verfügbare Zeiten',
                 'duration-label': 'Dauer',
                 'details-title': 'Ihre Daten',
                 'details-desc': 'Erzählen Sie uns von Ihrer Immobilie und besonderen Wünschen.',
@@ -1349,11 +1673,23 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('📍 Payment container found:', paymentContainer);
             
             // Wait for the element to be ready before mounting
-            await new Promise((resolve) => {
+            await new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    reject(new Error('Payment element initialization timeout'));
+                }, 10000); // 10 second timeout
+                
                 paymentElement.on('ready', () => {
                     console.log('✅ Payment Element ready, mounting...');
+                    clearTimeout(timeout);
                     resolve();
                 });
+                
+                paymentElement.on('loaderror', (error) => {
+                    console.error('❌ Payment Element load error:', error);
+                    clearTimeout(timeout);
+                    reject(error);
+                });
+                
                 paymentElement.mount("#payment-element");
             });
             
@@ -1393,10 +1729,12 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
             document.getElementById('spinner').classList.remove('hidden');
             document.getElementById('button-text').classList.add('hidden');
+            showLoadingScreen(); // Show full-screen loading
         } else {
             submitBtn.disabled = false;
             document.getElementById('spinner').classList.add('hidden');
             document.getElementById('button-text').classList.remove('hidden');
+            hideLoadingScreen(); // Hide full-screen loading
         }
     }
 

@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AJK Cleaning Company | Professional Cleaning Services in Bischofsheim</title>
+    <title>Reinigungsservice Deutschland | AJK Cleaning - Professionelle Reinigung in Bischofsheim</title>
     
     <script id="usercentrics-cmp" src="https://app.usercentrics.eu/browser-ui/latest/loader.js" data-settings-id="8b2vYJAM6JTPCf" async></script>
 
     <link rel="dns-prefetch" href="//maps.googleapis.com">
     <link rel="dns-prefetch" href="//generativelanguage.googleapis.com">
+    <link rel="dns-prefetch" href="//app.usercentrics.eu">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="image" href="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" fetchpriority="high">
+    <link rel="preload" as="style" href="./dist/output.css">
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <meta name="description" content="AJK Cleaning Company: Professional residential & commercial cleaning services in Bischofsheim. Eco-friendly products, fully insured, satisfaction guaranteed. Free quotes!">
-    <meta name="keywords" content="cleaning service, Bischofsheim, residential cleaning, commercial cleaning, eco-friendly cleaning, move-in cleaning, deep cleaning, office cleaning mainz, house cleaning wiesbaden">
+    <meta name="description" content="Professioneller Reinigungsservice in Deutschland - AJK Cleaning bietet Wohnungsreinigung, Büroreinigung & Gewerbereinigung in Bischofsheim, Mainz, Wiesbaden. Ökologisch, versichert, zufriedenheitsgarantie. Kostenloses Angebot!">
+    <meta name="keywords" content="Reinigungsservice Deutschland, Reinigungsservice, Putzservice, Wohnungsreinigung, Büroreinigung, Gewerbereinigung, Reinigungsfirma, Putzfrau, Haushaltshilfe, Büroreinigung Mainz, Reinigung Wiesbaden, Reinigung Bischofsheim, Umzugsreinigung, Grundreinigung, Fensterreinigung, Teppichreinigung, Büroreinigung Frankfurt, Reinigungsservice Hessen, professionelle Reinigung, ökologische Reinigung, Reinigungsunternehmen">
     <meta name="author" content="AJK Cleaning Company">
     <meta name="robots" content="index, follow">
     <meta name="geo.region" content="DE-HE">
@@ -40,22 +44,83 @@
     <meta name="twitter:description" content="Top-rated, eco-friendly cleaning for homes and businesses in Bischofsheim. Get your free quote today!">
     <meta name="twitter:image" content="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80">
 
-    <link rel="icon" type="image/x-icon" href="images/logo.jpg">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+    <link rel="manifest" href="/site.webmanifest">
 
-    <script src="https://cdn.tailwindcss.com/3.4.0"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'poppins': ['Poppins', 'sans-serif'],
-                    }
-                }
+    <!-- Structured Data for Local Business -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "AJK Cleaning Company",
+        "description": "Professioneller Reinigungsservice in Deutschland - Wohnungsreinigung, Büroreinigung & Gewerbereinigung",
+        "url": "https://www.ajkcleaners.de",
+        "telephone": "+49-123-456-7890",
+        "email": "info@ajkcleaners.de",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Musterstraße 123",
+            "addressLocality": "Bischofsheim",
+            "addressRegion": "Hessen",
+            "postalCode": "65474",
+            "addressCountry": "DE"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "49.9939",
+            "longitude": "8.3669"
+        },
+        "areaServed": [
+            {
+                "@type": "City",
+                "name": "Bischofsheim"
+            },
+            {
+                "@type": "City", 
+                "name": "Mainz"
+            },
+            {
+                "@type": "City",
+                "name": "Wiesbaden"
+            },
+            {
+                "@type": "City",
+                "name": "Frankfurt"
             }
+        ],
+        "serviceType": [
+            "Wohnungsreinigung",
+            "Büroreinigung", 
+            "Gewerbereinigung",
+            "Umzugsreinigung",
+            "Grundreinigung",
+            "Fensterreinigung",
+            "Teppichreinigung"
+        ],
+        "priceRange": "€€",
+        "openingHours": "Mo-Fr 08:00-18:00",
+        "sameAs": [
+            "https://www.facebook.com/ajkcleaning",
+            "https://www.instagram.com/ajkcleaning"
+        ],
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "127"
         }
+    }
+    </script>
+
+    <link rel="stylesheet" href="./dist/output.css">
+    <script>
+        // Tailwind config is now in tailwind.config.js
     </script>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" xintegrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -64,6 +129,23 @@
     
     <style>
         :root{--primary:#1e40af;--primary-dark:#1e3a8a;--secondary:#059669;--secondary-dark:#047857}
+        .bg-primary{background-color:var(--primary)}
+        .bg-primary-dark{background-color:var(--primary-dark)}
+        .bg-secondary{background-color:var(--secondary)}
+        .bg-secondary-dark{background-color:var(--secondary-dark)}
+        .text-primary{color:var(--primary)}
+        .text-primary-dark{color:var(--primary-dark)}
+        .text-secondary{color:var(--secondary)}
+        .text-secondary-dark{color:var(--secondary-dark)}
+        .border-primary{border-color:var(--primary)}
+        .border-secondary{border-color:var(--secondary)}
+        .hover\:bg-primary-dark:hover{background-color:var(--primary-dark)}
+        .hover\:bg-secondary-dark:hover{background-color:var(--secondary-dark)}
+        .from-secondary{background:linear-gradient(to right,var(--secondary),var(--secondary-dark))}
+        .to-secondary-dark{background:linear-gradient(to right,var(--secondary),var(--secondary-dark))}
+        .hover\:from-secondary-dark:hover{background:linear-gradient(to right,var(--secondary-dark),var(--secondary-dark))}
+        .hover\:to-secondary-dark:hover{background:linear-gradient(to right,var(--secondary-dark),var(--secondary-dark))}
+        .bg-gradient-to-r{background:linear-gradient(to right,var(--secondary),var(--secondary-dark))}
         *{scroll-behavior:smooth;box-sizing:border-box}
         body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.6;color:#374151}
         #navbar { transition: background-color 0.3s, box-shadow 0.3s, backdrop-filter 0.3s; }
@@ -258,6 +340,17 @@
             to{opacity: 1; transform: translateY(0);}
         }
         .chat-header-actions{display:flex;gap:8px;align-items:center}
+        .chat-header{position:relative;display:flex;justify-content:space-between;align-items:center;padding:20px;padding-right:60px;min-height:80px}
+        .close-btn{position:absolute;top:20px;right:20px;z-index:10;width:32px;height:32px;border-radius:50%;background:#f3f4f6;color:#374151;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s}
+        .close-btn:hover{background:#e5e7eb;transform:scale(1.05)}
+        .chat-header-info{flex:1;margin-right:20px}
+        .chat-header-actions{flex-shrink:0;display:flex;align-items:center}
+        @media (min-width:769px){
+            .chat-header{display:flex;flex-direction:column;align-items:flex-start;padding:20px;padding-right:60px;min-height:100px;position:relative}
+            .chat-header-info{flex:1;margin-right:0;margin-bottom:15px;width:100%}
+            .chat-header-actions{flex-shrink:0;display:flex;align-items:center;position:absolute;bottom:15px;right:20px}
+            .close-btn{position:absolute;top:20px;right:20px;z-index:10}
+        }
         .chat-action-btn{background:linear-gradient(135deg, #10b981, #059669);border:none;color:#fff;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;transition:all .2s;flex-shrink:0;position:relative;min-height:40px;min-width:150px}
         .chat-action-btn:hover{background:linear-gradient(135deg, #059669, #047857);transform:translateY(-1px)}
         .chat-action-btn.highlight{animation:pulse-glow 2s infinite;box-shadow:0 0 15px rgba(16,185,129,0.5)}
@@ -295,19 +388,45 @@
         #chat-send-enhanced:hover:not(:disabled){background:#1e3a8a;transform:scale(1.05)}
         #chat-send-enhanced:disabled{background:#9ca3af;cursor:not-allowed;transform:none}
         @media (max-width:768px){
-            .chat-widget-enhanced{bottom:90px!important;right:15px;z-index:60}
-            .chat-window{width:calc(100vw - 30px)!important;right:-15px!important;height:500px;bottom:75px!important}
-            .chat-toggle{width:60px;height:60px;font-size:20px}
-            .chat-header{padding:15px}
-            .chat-header h3{font-size:16px}
-            .chat-action-btn{padding:8px 12px;font-size:12px;min-height:36px}
-            .close-btn{width:32px;height:32px;font-size:16px}
-            .chat-status{font-size:11px}
-            .mode-badge{font-size:9px;padding:1px 6px}
-            .chat-header-actions{gap:6px}
-            .chat-action-btn{padding:6px 10px;font-size:11px;gap:4px;min-width:140px}
-            .chat-action-btn .btn-text{display:inline!important;font-size:11px}
-            .close-btn{width:32px;height:32px;font-size:16px}
+            .chat-widget-enhanced{bottom:20px!important;right:1px;z-index:60}
+            .chat-window{width:calc(100vw - 40px)!important;right:0!important;height:70vh!important;max-height:600px!important;bottom:75px!important;border-radius:20px!important}
+            .chat-toggle{width:65px;height:65px;font-size:22px;right:1px;bottom:20px!important}
+            .chat-header{padding:20px;padding-right:60px;border-radius:20px 20px 0 0;display:flex!important;flex-direction:column;align-items:flex-start;min-height:auto}
+            .chat-header h3{font-size:18px;font-weight:600}
+            .chat-action-btn{padding:10px 16px;font-size:13px;min-height:40px;border-radius:20px;font-weight:500}
+            .close-btn{width:36px;height:36px;font-size:18px;border-radius:50%;top:15px!important;right:15px!important}
+            .chat-status{font-size:12px;margin-top:4px}
+            .mode-badge{font-size:10px;padding:3px 8px;border-radius:12px}
+            .chat-header-actions{gap:8px;flex-wrap:wrap;margin-top:12px;width:100%}
+            .chat-action-btn .btn-text{display:inline!important;font-size:12px;margin-left:6px}
+            .chat-messages{padding:15px;max-height:calc(70vh - 200px)!important}
+            .chat-input-container{padding:15px;border-radius:0 0 20px 20px}
+            .chat-input{font-size:16px;padding:12px 16px;border-radius:25px}
+            .chat-send{width:48px;height:48px;border-radius:50%!important;min-width:48px!important;min-height:48px!important;aspect-ratio:1!important}
+            #chat-send-enhanced{width:48px!important;height:48px!important;border-radius:50%!important;min-width:48px!important;min-height:48px!important;aspect-ratio:1!important}
+            .typing-indicator{padding:10px 15px}
+            .typing-text{font-size:13px}
+            .chat-switch-notification{padding:15px;border-radius:15px;margin:10px}
+            .switch-notification-content h4{font-size:16px;margin-bottom:8px}
+            .switch-notification-content p{font-size:13px;line-height:1.4}
+            .switch-to-human-btn{padding:10px 16px;font-size:13px;border-radius:20px}
+            .chat-toggle:hover{transform:scale(1.1)!important}
+            .chat-action-btn:hover{transform:translateY(-1px)!important;box-shadow:0 4px 12px rgba(0,0,0,0.15)!important}
+            .chat-messages::-webkit-scrollbar{width:4px}
+            .chat-messages::-webkit-scrollbar-track{background:#f1f5f9;border-radius:2px}
+            .chat-messages::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:2px}
+            .chat-messages::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+            .message{max-width:85%!important;margin-bottom:12px!important}
+            .message.user{background:linear-gradient(135deg,#1e40af,#1e3a8a)!important;color:white!important;border-radius:20px 20px 5px 20px!important}
+            .message.assistant{background:#f8fafc!important;color:#374151!important;border-radius:20px 20px 20px 5px!important;border:1px solid #e2e8f0!important}
+            .message.human{background:linear-gradient(135deg,#059669,#047857)!important;color:white!important;border-radius:20px 20px 5px 20px!important}
+            .hero-content h1{font-size:2.5rem;line-height:1.2}
+            .hero-content p{font-size:1.1rem}
+            .service-card{padding:1.5rem}
+            .service-card h3{font-size:1.25rem}
+            .comparison-table{grid-template-columns:1fr;gap:1rem}
+            .comparison-table .table-header{display:none}
+            .comparison-table > div{padding:1rem;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
         }
         .chat-messages::-webkit-scrollbar{width:6px}
         .chat-messages::-webkit-scrollbar-track{background:#f1f5f9}
@@ -518,7 +637,7 @@
         "name": "AJK Cleaning Company",
         "description": "Professional residential & commercial cleaning services in Bischofsheim. Eco-friendly products, fully insured, satisfaction guaranteed.",
         "url": "https://www.ajkcleaners.de",
-        "logo": "https://www.ajkcleaners.de/images/logo.jpg",
+        "logo": "https://www.ajkcleaners.de/images/logo.webp",
         "image": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
         "telephone": "+4917661852286",
         "email": "info@ajkcleaning.com",
@@ -557,7 +676,7 @@
     <header id="navbar" class="fixed w-full z-50 transition-all duration-500">
         <div class="container mx-auto flex justify-between items-center px-6">
             <a href="#home" class="flex items-center space-x-3" aria-label="AJK Cleaning Company Home">
-                <img src="images/logo.jpg" alt="AJK Cleaning Company Logo" class="h-16 w-16 sm:h-20 sm:w-20 rounded-lg logo transition-transform duration-300 object-contain" width="80" height="80" loading="eager">
+                <img src="images/logo.webp" alt="AJK Cleaning Company Logo" class="h-20 w-20 sm:h-24 sm:w-24 rounded-lg logo transition-transform duration-300 object-contain" width="96" height="96" loading="eager">
                 <span id="company-name" class="font-bold text-lg sm:text-xl text-primary transition-colors duration-300" data-translate="companyName">AJK Cleaning Company</span>
             </a>
             
@@ -611,8 +730,8 @@
         <section id="home" class="relative min-h-screen flex items-center justify-center text-center text-white pt-16 hero-image" role="banner" aria-labelledby="hero-heading">
             <div class="hero-overlay absolute inset-0"></div>
             <div id="main-content" class="relative z-10 max-w-4xl px-6 animate-fade-in-up">
-                <h1 id="hero-heading" class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 leading-tight" data-translate="heroTitle">Experience the AJK Standard of Clean in Bischofsheim</h1>
-                <p class="mb-8 text-lg md:text-xl" data-translate="heroSubtitle">Fully insured, eco-friendly products, and satisfaction guaranteed. Serving Bischofsheim, Mainz, Wiesbaden & surrounding areas.</p>
+                <h1 id="hero-heading" class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 leading-tight" data-translate="heroTitle">Professioneller Reinigungsservice Deutschland - AJK Cleaning in Bischofsheim</h1>
+                <p class="mb-8 text-lg md:text-xl" data-translate="heroSubtitle">Wohnungsreinigung, Büroreinigung & Gewerbereinigung mit ökologischen Produkten. Versichert, zufriedenheitsgarantie. Bischofsheim, Mainz, Wiesbaden & Umgebung.</p>
                 <div class="mb-6 bg-white/20 backdrop-blur-sm p-2 rounded-lg inline-block text-white font-semibold">
                     Next available slot: <span class="font-bold text-yellow-300">This Friday!</span>
                 </div>
@@ -661,14 +780,14 @@
         
         <section id="services" class="py-16 bg-gray-50" aria-labelledby="services-heading">
             <div class="container mx-auto px-6 text-center">
-                <h2 id="services-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="servicesTitle">Our Premium Cleaning Services</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto mb-12 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="servicesSubtitle">We offer a wide range of cleaning services tailored to meet your specific needs and exceed your expectations in Bischofsheim and surrounding areas.</p>
+                <h2 id="services-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="servicesTitle">Professionelle Reinigungsdienstleistungen - Wohnung & Büro</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto mb-12 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="servicesSubtitle">Umfassende Reinigungsservices für Wohnungen, Büros und Gewerbe. Spezialisiert auf ökologische Reinigung in Bischofsheim, Mainz, Wiesbaden und Umgebung.</p>
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                     <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.3s;">
                         <div>
                             <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-home text-primary text-2xl"></i></div>
-                            <h3 class="font-bold text-lg mb-2" data-translate="service1Title">Residential Cleaning</h3>
-                            <p class="text-sm text-gray-600 mb-4" data-translate="service1Desc">Keep your home spotless with our detailed cleaning services.</p>
+                            <h3 class="font-bold text-lg mb-2" data-translate="service1Title">Wohnungsreinigung</h3>
+                            <p class="text-sm text-gray-600 mb-4" data-translate="service1Desc">Professionelle Haushaltsreinigung mit ökologischen Produkten für Ihr Zuhause.</p>
                         </div>
                         <div class="mt-4">
                              <a href="#comparison" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
@@ -678,8 +797,8 @@
                     <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.4s;">
                         <div>
                             <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-building text-primary text-2xl"></i></div>
-                            <h3 class="font-bold text-lg mb-2" data-translate="service2Title">Commercial Cleaning</h3>
-                            <p class="text-sm text-gray-600 mb-4" data-translate="service2Desc">Reliable cleaning for offices and businesses of all sizes.</p>
+                            <h3 class="font-bold text-lg mb-2" data-translate="service2Title">Büroreinigung</h3>
+                            <p class="text-sm text-gray-600 mb-4" data-translate="service2Desc">Professionelle Büroreinigung und Gewerbereinigung für Unternehmen aller Größen.</p>
                         </div>
                         <div class="mt-4">
                             <a href="#contact" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
@@ -689,8 +808,8 @@
                     <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.5s;">
                         <div>
                             <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-broom text-primary text-2xl"></i></div>
-                            <h3 class="font-bold text-lg mb-2" data-translate="service3Title">Deep Cleaning</h3>
-                            <p class="text-sm text-gray-600 mb-4" data-translate="service3Desc">Thorough cleaning for a refreshed and healthy space.</p>
+                            <h3 class="font-bold text-lg mb-2" data-translate="service3Title">Grundreinigung</h3>
+                            <p class="text-sm text-gray-600 mb-4" data-translate="service3Desc">Intensive Reinigung für einen frischen und gesunden Raum.</p>
                         </div>
                         <div class="mt-4">
                             <a href="#comparison" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
@@ -700,8 +819,8 @@
                     <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.6s;">
                         <div>
                             <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-truck-moving text-primary text-2xl"></i></div>
-                            <h3 class="font-bold text-lg mb-2" data-translate="service4Title">Move-In/Move-Out</h3>
-                            <p class="text-sm text-gray-600 mb-4" data-translate="service4Desc">Start fresh in your new place with our moving cleaning.</p>
+                            <h3 class="font-bold text-lg mb-2" data-translate="service4Title">Umzugsreinigung</h3>
+                            <p class="text-sm text-gray-600 mb-4" data-translate="service4Desc">Professionelle Reinigung für Ein- und Auszug - starten Sie frisch in Ihrem neuen Zuhause.</p>
                         </div>
                         <div class="mt-4">
                             <a href="#comparison" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
@@ -843,9 +962,9 @@
             <div class="container mx-auto px-6">
                 <div class="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h2 id="about-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="aboutTitle">Why Choose AJK Cleaning?</h2>
-                        <p class="mb-6 text-gray-700 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="aboutP1">At AJK Cleaning Company, we are dedicated to providing premium cleaning services with a commitment to quality and community. Our team uses eco-friendly products and ensures every job meets our AJK standard of clean.</p>
-                        <p class="mb-6 text-gray-700 animate-fade-in-up" style="animation-delay: 0.3s;" data-translate="aboutP2">Founded in 2022, we've grown to become one of the most trusted cleaning services in the Bischofsheim area, serving hundreds of satisfied residential and commercial clients.</p>
+                        <h2 id="about-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="aboutTitle">Warum AJK Cleaning wählen? - Professioneller Reinigungsservice Deutschland</h2>
+                        <p class="mb-6 text-gray-700 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="aboutP1">AJK Cleaning ist Ihr vertrauensvoller Partner für professionelle Reinigungsdienstleistungen in Deutschland. Wir bieten Wohnungsreinigung, Büroreinigung und Gewerbereinigung mit ökologischen Produkten und höchsten Qualitätsstandards.</p>
+                        <p class="mb-6 text-gray-700 animate-fade-in-up" style="animation-delay: 0.3s;" data-translate="aboutP2">Seit 2022 sind wir einer der führenden Reinigungsservices in Bischofsheim, Mainz, Wiesbaden und Umgebung. Hunderte zufriedene Kunden vertrauen auf unsere professionelle Reinigung.</p>
                         <div class="space-y-4 mt-8">
                             <div class="trust-point p-4 rounded-lg flex items-center animate-fade-in-up" style="animation-delay: 0.4s;"><i class="fas fa-shield-alt text-primary text-xl w-8 text-center" aria-hidden="true"></i><span class="font-medium text-gray-700 ml-3" data-translate="aboutPoint1">Fully Insured & Bonded</span></div>
                             <div class="trust-point p-4 rounded-lg flex items-center animate-fade-in-up" style="animation-delay: 0.5s;"><i class="fas fa-leaf text-green-600 text-xl w-8 text-center" aria-hidden="true"></i><span class="font-medium text-gray-700 ml-3" data-translate="aboutPoint2">Eco-Friendly Products</span></div>
@@ -1091,25 +1210,25 @@
         <div class="container mx-auto px-6 grid md:grid-cols-4 gap-8">
             <div>
                 <h4 class="font-bold text-xl mb-4" data-translate="companyName">AJK Cleaning Company</h4>
-                <p class="text-blue-200" data-translate="footerDesc">Premium Cleaning Solutions for Homes and Offices in Bischofsheim</p>
+                <p class="text-gray-200" data-translate="footerDesc">Premium Cleaning Solutions for Homes and Offices in Bischofsheim</p>
             </div>
             <div>
                 <h4 class="font-bold mb-4 text-lg" data-translate="footerLinksTitle">Quick Links</h4>
                 <ul class="space-y-2">
-                    <li><a href="#home" class="text-blue-200 hover:text-white transition-colors" data-translate="navHome">Home</a></li>
-                    <li><a href="#services" class="text-blue-200 hover:text-white transition-colors" data-translate="navServices">Services</a></li>
-                    <li><a href="#about" class="text-blue-200 hover:text-white transition-colors" data-translate="navAbout">About</a></li>
-                    <li><a href="#testimonials" class="text-blue-200 hover:text-white transition-colors" data-translate="navTestimonials">Testimonials</a></li>
-                    <li><a href="#faq" class="text-blue-200 hover:text-white transition-colors" data-translate="navFaq">FAQ</a></li>
-                    <li><a href="#contact" class="text-blue-200 hover:text-white transition-colors" data-translate="navContact">Contact</a></li>
+                    <li><a href="#home" class="text-gray-200 hover:text-white transition-colors" data-translate="navHome">Home</a></li>
+                    <li><a href="#services" class="text-gray-200 hover:text-white transition-colors" data-translate="navServices">Services</a></li>
+                    <li><a href="#about" class="text-gray-200 hover:text-white transition-colors" data-translate="navAbout">About</a></li>
+                    <li><a href="#testimonials" class="text-gray-200 hover:text-white transition-colors" data-translate="navTestimonials">Testimonials</a></li>
+                    <li><a href="#faq" class="text-gray-200 hover:text-white transition-colors" data-translate="navFaq">FAQ</a></li>
+                    <li><a href="#contact" class="text-gray-200 hover:text-white transition-colors" data-translate="navContact">Contact</a></li>
                 </ul>
             </div>
             <div>
                 <h4 class="font-bold mb-4 text-lg" data-translate="footerServicesTitle">Our Services</h4>
                 <ul class="space-y-2">
-                    <li><a href="#services" class="text-blue-200 hover:text-white transition-colors" data-translate="service1Title">Residential Cleaning</a></li>
-                    <li><a href="#services" class="text-blue-200 hover:text-white transition-colors" data-translate="service2Title">Commercial Cleaning</a></li>
-                    <li><a href="#services" class="text-blue-200 hover:text-white transition-colors" data-translate="service3Title">Deep Cleaning</a></li>
+                    <li><a href="#services" class="text-gray-200 hover:text-white transition-colors" data-translate="service1Title">Residential Cleaning</a></li>
+                    <li><a href="#services" class="text-gray-200 hover:text-white transition-colors" data-translate="service2Title">Commercial Cleaning</a></li>
+                    <li><a href="#services" class="text-gray-200 hover:text-white transition-colors" data-translate="service3Title">Deep Cleaning</a></li>
                 </ul>
             </div>
             <div>
@@ -1120,11 +1239,11 @@
                 </div>
             </div>
         </div>
-        <div class="text-center mt-8 pt-6 border-t border-blue-700 text-blue-200 text-sm">
+        <div class="text-center mt-8 pt-6 border-t border-gray-600 text-gray-200 text-sm">
              <a href="/impressum" class="hover:text-white" data-translate="footerImpressum">Impressum</a> | 
              <a href="/datenschutz" class="hover:text-white" data-translate="footerPrivacy">Data Protection</a>
         </div>
-        <div class="text-center mt-4 pt-4 text-blue-200 text-sm">
+        <div class="text-center mt-4 pt-4 text-gray-200 text-sm">
             © <span id="copyright-year">2025</span> <span data-translate="companyName">AJK Cleaning Company</span>. <span data-translate="footerRights">All rights reserved.</span>
         </div>
     </footer>
@@ -1143,10 +1262,11 @@
         </button>
         <div class="chat-window" id="chat-window-enhanced">
             <div class="chat-header">
+                <button class="close-btn" id="close-chat" type="button" aria-label="Close chat">×</button>
                 <div class="chat-header-info">
                     <h3 id="chat-header-title">AJK AI Assistant ✨</h3>
                     <div class="chat-status" id="chat-status">
-                        <span id="status-text">Typically replies in 2 minutes</span>
+                        <span id="status-text"></span>
                         <div class="chat-mode-indicator" id="chat-mode-indicator">
                             <span class="mode-badge ai-mode" id="mode-badge">
                                 <i class="fas fa-robot"></i> AI Assistant
@@ -1159,7 +1279,6 @@
                         <i class="fas fa-user"></i>
                         <span class="btn-text">Talk to Human</span>
                     </button>
-                    <button class="close-btn" id="close-chat" type="button" aria-label="Close chat">×</button>
                 </div>
             </div>
             
@@ -1295,10 +1414,13 @@
 
             connect() {
                 if (this.ws && this.ws.readyState === WebSocket.OPEN) { return; }
-                const protocol = window.location.protocol === 'https' ? 'wss' : 'ws';
+                const isProduction = window.location.hostname === 'ajkcleaners.de';
+                const protocol = (window.location.protocol === 'https' || isProduction) ? 'wss' : 'ws';
                 const wsUrl = `${protocol}://${window.location.host}?clientId=${this.clientId}`;
                 this.ws = new WebSocket(wsUrl);
                 this.ws.onopen = () => {
+                    console.log('✅ WebSocket connection established');
+                    document.getElementById('status-text').textContent = 'Connected to support';
                     this.displayMessage('You are connected to live support.', 'system', 'System');
                     this.sendIdentification();
                 };
@@ -1318,8 +1440,8 @@
                     } catch (error) { console.error("Error parsing incoming WebSocket message:", error); }
                 };
                 this.ws.onerror = (error) => {
-                    console.error('WebSocket error:', error);
-                    this.displayMessage('Connection error. Please try refreshing the page.', 'system', 'System');
+                    console.error('❌ WebSocket connection failed:', error);
+                    this.displayMessage('Connection error. Please try refreshing the page or contact us directly at info@ajkcleaners.de', 'system', 'System');
                 };
                 this.ws.onclose = () => {
                     if (this.isLiveChatActive) {
@@ -1466,7 +1588,39 @@
                 document.getElementById('mode-badge').className = 'mode-badge human-mode';
                 this.hideSwitchNotification();
                 this.displayMessage("You're being connected to a human agent. Please wait.", 'system', 'System');
-                this.connect(); 
+                this.connectWithRetry(); 
+            }
+
+            connectWithRetry() {
+                let attempts = 0;
+                const maxAttempts = 3;
+                const retryDelay = 2000; // 2 seconds
+
+                const tryConnect = () => {
+                    attempts++;
+                    console.log(`🔄 Attempting WebSocket connection (${attempts}/${maxAttempts})`);
+                    
+                    this.connect();
+                    
+                    // Check if connection was successful after a short delay
+                    setTimeout(() => {
+                        if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+                            if (attempts < maxAttempts) {
+                                console.log(`⚠️ Connection failed, retrying in ${retryDelay}ms...`);
+                                this.displayMessage(`Connection attempt ${attempts} failed. Retrying...`, 'system', 'System');
+                                setTimeout(tryConnect, retryDelay);
+                            } else {
+                                console.error('❌ All connection attempts failed');
+                                this.displayMessage('Unable to connect to live support. Please try again later or contact us directly at info@ajkcleaners.de', 'system', 'System');
+                                document.getElementById('status-text').textContent = 'Connection failed';
+                            }
+                        } else {
+                            console.log('✅ WebSocket connection successful');
+                        }
+                    }, 1000);
+                };
+
+                tryConnect();
             }
             
             showSwitchNotification() {
@@ -2005,7 +2159,3 @@
     </script>
 </body>
 </html>
-
-
-
-

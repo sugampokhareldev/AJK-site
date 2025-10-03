@@ -145,3 +145,4 @@ class PostgreSQLAdapter {
 }
 
 module.exports = PostgreSQLAdapter;
+
