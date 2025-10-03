@@ -1623,6 +1623,34 @@
   background-color: #dc2626;
   transform: translateY(-1px);
   }
+  /* Custom Message Modal Styles */
+  .send-message-btn {
+  background: var(--success);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  }
+  .send-message-btn:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  }
+  .message-preview {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  }
+  .preview-content {
+  background: white;
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+  }
   /* Submission details */
   .submission-details {
   padding: 20px;
@@ -3884,6 +3912,49 @@
   </div>
   </div>
   </div>
+  <!-- Custom Message Modal -->
+  <div id="custom-message-modal" class="modal">
+  <div class="modal-content">
+  <div class="modal-header">
+  <h3>Send Custom Message</h3>
+  <span class="close" id="close-message-modal">&times;</span>
+  </div>
+  <div class="modal-body">
+  <form id="custom-message-form">
+  <div class="form-group">
+  <label for="message-subject">Subject *</label>
+  <input type="text" id="message-subject" name="subject" required placeholder="Enter message subject">
+  </div>
+  <div class="form-group">
+  <label for="message-content">Message *</label>
+  <textarea id="message-content" name="message" rows="8" required placeholder="Enter your custom message to the client..."></textarea>
+  </div>
+  <div class="form-group">
+  <label for="message-type">Message Type</label>
+  <select id="message-type" name="messageType">
+  <option value="custom">Custom Message</option>
+  <option value="follow-up">Follow-up</option>
+  <option value="quote">Quote Response</option>
+  <option value="booking">Booking Information</option>
+  <option value="reminder">Reminder</option>
+  </select>
+  </div>
+  <div class="message-preview" id="message-preview" style="display: none;">
+  <h4>Message Preview:</h4>
+  <div class="preview-content" style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6;">
+  <strong>Subject:</strong> <span id="preview-subject"></span><br><br>
+  <strong>Message:</strong><br>
+  <div id="preview-message" style="white-space: pre-line; margin-top: 8px;"></div>
+  </div>
+  </div>
+  </form>
+  </div>
+  <div class="modal-footer">
+  <button type="button" class="btn btn-secondary" id="preview-message-btn">Preview</button>
+  <button type="button" class="btn btn-primary" id="send-custom-message-btn">Send Message</button>
+  </div>
+  </div>
+  </div>
   <!-- Employee Modal -->
   <div id="employee-modal" class="modal">
   <div class="modal-content">
@@ -4407,6 +4478,22 @@
   });
   document.getElementById('close-payslip-modal')?.addEventListener('click', () => {
   this.closePayslipModal();
+  });
+  // Custom message modal event listeners
+  document.getElementById('close-message-modal')?.addEventListener('click', () => {
+  this.closeCustomMessageModal();
+  });
+  document.getElementById('preview-message-btn')?.addEventListener('click', () => {
+  this.previewCustomMessage();
+  });
+  document.getElementById('send-custom-message-btn')?.addEventListener('click', () => {
+  this.sendCustomMessage();
+  });
+  // Close custom message modal when clicking outside
+  document.getElementById('custom-message-modal')?.addEventListener('click', (e) => {
+  if (e.target.id === 'custom-message-modal') {
+  this.closeCustomMessageModal();
+  }
   });
   }
   debounce(func, wait) {
@@ -5650,6 +5737,7 @@
   </div>
   <div class="submission-actions">
   <button type="button" class="btn btn-primary btn-sm view-btn" data-id="${submission.id}"><i class="fas fa-eye"></i> View</button>
+  <button type="button" class="btn btn-success btn-sm send-message-btn" data-id="${submission.id}"><i class="fas fa-envelope"></i> Message</button>
   <button type="button" class="btn btn-danger btn-sm delete-btn-sm" data-id="${submission.id}"><i class="fas fa-trash"></i> Delete</button>
   </div>
   </div>
@@ -5670,6 +5758,7 @@
   <td>
   <div class="mobile-actions">
   <button type="button" class="action-btn view-btn" data-id="${submission.id}">View</button>
+  <button type="button" class="action-btn send-message-btn" data-id="${submission.id}">Message</button>
   <button type="button" class="action-btn delete-btn-sm" data-id="${submission.id}">Delete</button>
   </div>
   </td>
@@ -5718,6 +5807,9 @@
   document.querySelectorAll('.delete-btn-sm').forEach(btn => {
   btn.addEventListener('click', () => this.deleteSubmission(btn.getAttribute('data-id')));
   });
+  document.querySelectorAll('.send-message-btn').forEach(btn => {
+  btn.addEventListener('click', () => this.openCustomMessageModal(btn.getAttribute('data-id')));
+  });
   document.querySelectorAll('.submission-checkbox').forEach(checkbox => {
   checkbox.addEventListener('change', () => this.updateBulkDeleteButton());
   });
@@ -5763,6 +5855,70 @@
   } catch (error) {
   console.error('Error deleting submission:', error);
   this.showNotification('Error deleting submission', 'error');
+  }
+  }
+  openCustomMessageModal(submissionId) {
+  this.currentSubmissionId = submissionId;
+  document.getElementById('custom-message-modal').style.display = 'block';
+  document.getElementById('message-subject').value = '';
+  document.getElementById('message-content').value = '';
+  document.getElementById('message-type').value = 'custom';
+  document.getElementById('message-preview').style.display = 'none';
+  }
+  closeCustomMessageModal() {
+  document.getElementById('custom-message-modal').style.display = 'none';
+  this.currentSubmissionId = null;
+  }
+  previewCustomMessage() {
+  const subject = document.getElementById('message-subject').value;
+  const message = document.getElementById('message-content').value;
+  
+  if (!subject || !message) {
+  this.showNotification('Please fill in both subject and message', 'warning');
+  return;
+  }
+  
+  document.getElementById('preview-subject').textContent = subject;
+  document.getElementById('preview-message').textContent = message;
+  document.getElementById('message-preview').style.display = 'block';
+  }
+  async sendCustomMessage() {
+  const subject = document.getElementById('message-subject').value;
+  const message = document.getElementById('message-content').value;
+  const messageType = document.getElementById('message-type').value;
+  
+  if (!subject || !message) {
+  this.showNotification('Please fill in both subject and message', 'warning');
+  return;
+  }
+  
+  if (!this.currentSubmissionId) {
+  this.showNotification('No submission selected', 'error');
+  return;
+  }
+  
+  try {
+  const response = await this.fetchWithCSRF(`/api/submissions/${this.currentSubmissionId}/send-message`, {
+  method: 'POST',
+  body: {
+  subject: subject,
+  message: message,
+  messageType: messageType
+  }
+  });
+  
+  if (response.ok) {
+  const result = await response.json();
+  this.showNotification('Custom message sent successfully!', 'success');
+  this.closeCustomMessageModal();
+  this.loadSubmissions(); // Refresh submissions to show updated data
+  } else {
+  const error = await response.json();
+  throw new Error(error.error || 'Failed to send message');
+  }
+  } catch (error) {
+  console.error('Error sending custom message:', error);
+  this.showNotification('Error sending message: ' + error.message, 'error');
   }
   }
   updateBulkDeleteButton() {

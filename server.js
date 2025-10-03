@@ -2001,6 +2001,169 @@ The AJK Cleaning Team
     }
 });
 
+// Send custom message to client from admin
+app.post('/api/submissions/:id/send-message', requireAuth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { subject, message, messageType = 'custom' } = req.body;
+
+        if (!subject || !message) {
+            return res.status(400).json({ 
+                error: 'Subject and message are required' 
+            });
+        }
+
+        await db.read();
+        const submissions = (db.data && Array.isArray(db.data.submissions)) ? db.data.submissions : [];
+        const submission = submissions.find(s => s.id === parseInt(id));
+        
+        if (!submission) {
+            return res.status(404).json({ error: 'Submission not found' });
+        }
+
+        // Create professional custom message email
+        const customMessageHtml = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Message from AJK Cleaning</title>
+                <style>
+                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f4; }
+                    .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+                    .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+                    .header p { margin: 10px 0 0 0; font-size: 16px; opacity: 0.9; }
+                    .content { padding: 30px; }
+                    .message-content { background: #fff; border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; margin: 20px 0; }
+                    .original-request { background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0; }
+                    .detail-row { display: flex; justify-content: space-between; margin: 8px 0; padding: 4px 0; border-bottom: 1px solid #e9ecef; }
+                    .detail-row:last-child { border-bottom: none; }
+                    .detail-label { font-weight: bold; color: #495057; }
+                    .detail-value { color: #212529; }
+                    .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #6c757d; border-top: 1px solid #e9ecef; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>📧 Message from AJK Cleaning</h1>
+                        <p>Professional Cleaning Services</p>
+                    </div>
+                    
+                    <div class="content">
+                        <div class="message-content">
+                            <h3 style="margin-top: 0; color: #495057;">💬 Your Message</h3>
+                            <div style="white-space: pre-line;">${message}</div>
+                        </div>
+
+                        <div class="original-request">
+                            <h3 style="margin-top: 0; color: #495057;">📋 Your Original Request</h3>
+                            <div class="detail-row">
+                                <span class="detail-label">Name:</span>
+                                <span class="detail-value">${submission.name}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Service:</span>
+                                <span class="detail-value">${submission.service}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Preferred Date:</span>
+                                <span class="detail-value">${submission.preferred_date || 'Not specified'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Preferred Time:</span>
+                                <span class="detail-value">${submission.preferred_time || 'Not specified'}</span>
+                            </div>
+                            ${submission.message ? `
+                            <div class="detail-row">
+                                <span class="detail-label">Your Message:</span>
+                                <span class="detail-value">${submission.message}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                            <h4 style="margin-top: 0; color: #495057;">📞 Questions or Ready to Book?</h4>
+                            <p style="margin: 5px 0;"><strong>Phone:</strong> +49 176 61852286</p>
+                            <p style="margin: 5px 0;"><strong>Email:</strong> info@ajkcleaners.de</p>
+                            <p style="margin: 5px 0;"><strong>Hours:</strong> Monday - Friday: 8:00 AM - 6:00 PM</p>
+                        </div>
+                    </div>
+                    
+                    <div class="footer">
+                        <p><strong>AJK Cleaning Company</strong> | Professional Cleaning Services</p>
+                        <p>Thank you for choosing us for your cleaning needs!</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `;
+
+        const customMessageText = `
+📧 MESSAGE FROM AJK CLEANING COMPANY
+
+Dear ${submission.name},
+
+${message}
+
+YOUR ORIGINAL REQUEST:
+Name: ${submission.name}
+Service: ${submission.service}
+Preferred Date: ${submission.preferred_date || 'Not specified'}
+Preferred Time: ${submission.preferred_time || 'Not specified'}
+${submission.message ? `Your Message: ${submission.message}` : ''}
+
+QUESTIONS OR READY TO BOOK?
+Phone: +49 176 61852286
+Email: info@ajkcleaners.de
+Hours: Monday - Friday: 8:00 AM - 6:00 PM
+
+Thank you for choosing AJK Cleaning Company!
+
+Best regards,
+The AJK Cleaning Team
+        `;
+
+        const mailOptions = {
+            from: `"AJK Cleaning Company" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
+            to: submission.email,
+            subject: subject,
+            html: customMessageHtml,
+            text: customMessageText
+        };
+
+        await emailTransporter.sendMail(mailOptions);
+        console.log(`📧 Custom message sent to ${submission.email} for submission ${id}`);
+
+        // Log the message in submission history
+        if (!submission.messageHistory) {
+            submission.messageHistory = [];
+        }
+        submission.messageHistory.push({
+            type: messageType,
+            subject: subject,
+            message: message,
+            sentAt: new Date().toISOString(),
+            sentBy: 'admin'
+        });
+        submission.lastContactedAt = new Date().toISOString();
+        
+        await db.write();
+
+        res.json({ 
+            success: true, 
+            message: 'Custom message sent successfully',
+            submissionId: id
+        });
+
+    } catch (error) {
+        console.error('❌ Failed to send custom message:', error);
+        res.status(500).json({ error: 'Failed to send custom message: ' + error.message });
+    }
+});
+
 // Debug endpoint to check database contents
 app.get('/api/debug/database', requireAuth, async (req, res) => {
     try {
