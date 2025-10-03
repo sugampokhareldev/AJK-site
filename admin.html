@@ -3245,6 +3245,10 @@
   <i class="fas fa-comments"></i>
   <span>Live Chat</span>
   </button>
+  <button class="nav-item" data-tab="reviews">
+  <i class="fas fa-star"></i>
+  <span>Reviews</span>
+  </button>
   </div>
   <div class="nav-section">
   <div class="nav-title">Management</div>
@@ -3714,6 +3718,114 @@
   </div>
   <button type="button" class="btn btn-primary" id="backup-btn">Backup Now</button>
   </div>
+  </div>
+  </div>
+  </div>
+  <!-- Reviews Tab -->
+  <div id="reviews-tab" class="tab-content">
+  <div class="reviews-container">
+  <div class="reviews-header">
+  <h2><i class="fas fa-star"></i> Customer Reviews Management</h2>
+  <div class="reviews-actions">
+  <button class="btn btn-primary" id="refresh-reviews">
+  <i class="fas fa-sync-alt"></i> Refresh
+  </button>
+  <button class="btn btn-secondary" id="export-reviews">
+  <i class="fas fa-download"></i> Export
+  </button>
+  </div>
+  </div>
+  <div class="reviews-stats">
+  <div class="stat-card">
+  <div class="stat-icon">
+  <i class="fas fa-star"></i>
+  </div>
+  <div class="stat-content">
+  <h3 id="total-reviews">0</h3>
+  <p>Total Reviews</p>
+  </div>
+  </div>
+  <div class="stat-card">
+  <div class="stat-icon">
+  <i class="fas fa-star-half-alt"></i>
+  </div>
+  <div class="stat-content">
+  <h3 id="average-rating">0.0</h3>
+  <p>Average Rating</p>
+  </div>
+  </div>
+  <div class="stat-card">
+  <div class="stat-icon">
+  <i class="fas fa-clock"></i>
+  </div>
+  <div class="stat-content">
+  <h3 id="pending-reviews">0</h3>
+  <p>Pending Approval</p>
+  </div>
+  </div>
+  <div class="stat-card">
+  <div class="stat-icon">
+  <i class="fas fa-check-circle"></i>
+  </div>
+  <div class="stat-content">
+  <h3 id="approved-reviews">0</h3>
+  <p>Approved</p>
+  </div>
+  </div>
+  </div>
+  <div class="reviews-filters">
+  <div class="filter-group">
+  <label for="review-status-filter">Status:</label>
+  <select id="review-status-filter" class="filter-select">
+  <option value="">All Status</option>
+  <option value="pending_approval">Pending Approval</option>
+  <option value="approved">Approved</option>
+  <option value="rejected">Rejected</option>
+  </select>
+  </div>
+  <div class="filter-group">
+  <label for="review-rating-filter">Rating:</label>
+  <select id="review-rating-filter" class="filter-select">
+  <option value="">All Ratings</option>
+  <option value="5">5 Stars</option>
+  <option value="4">4 Stars</option>
+  <option value="3">3 Stars</option>
+  <option value="2">2 Stars</option>
+  <option value="1">1 Star</option>
+  </select>
+  </div>
+  <div class="filter-group">
+  <label for="review-search">Search:</label>
+  <input type="text" id="review-search" placeholder="Search reviews..." class="filter-input">
+  </div>
+  </div>
+  <div class="reviews-table-container">
+  <table class="reviews-table" id="reviewsTable">
+  <thead>
+  <tr>
+  <th><input type="checkbox" id="select-all-reviews"></th>
+  <th data-sort="customerName">Customer</th>
+  <th data-sort="rating">Rating</th>
+  <th data-sort="serviceType">Service</th>
+  <th data-sort="status">Status</th>
+  <th data-sort="createdAt">Date</th>
+  <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody id="reviewsTableBody">
+  <!-- Reviews will be loaded here -->
+  </tbody>
+  </table>
+  </div>
+  <div class="pagination" id="reviews-pagination">
+  <button id="prev-reviews-page" class="btn btn-secondary">Previous</button>
+  <span id="reviews-page-info">Page 1 of 1</span>
+  <button id="next-reviews-page" class="btn btn-secondary">Next</button>
+  <select id="reviews-page-size">
+  <option value="10">10 per page</option>
+  <option value="20" selected>20 per page</option>
+  <option value="50">50 per page</option>
+  </select>
   </div>
   </div>
   </div>
@@ -4483,6 +4595,22 @@
   document.getElementById('close-message-modal')?.addEventListener('click', () => {
   this.closeCustomMessageModal();
   });
+  // Reviews event listeners
+  document.getElementById('refresh-reviews')?.addEventListener('click', () => {
+  this.loadReviews();
+  });
+  document.getElementById('review-status-filter')?.addEventListener('change', (e) => {
+  this.reviewStatusFilter = e.target.value;
+  this.loadReviews();
+  });
+  document.getElementById('review-rating-filter')?.addEventListener('change', (e) => {
+  this.reviewRatingFilter = e.target.value;
+  this.loadReviews();
+  });
+  document.getElementById('review-search')?.addEventListener('input', this.debounce(() => {
+  this.reviewSearchTerm = document.getElementById('review-search').value;
+  this.loadReviews();
+  }, 300));
   document.getElementById('preview-message-btn')?.addEventListener('click', () => {
   this.previewCustomMessage();
   });
@@ -4665,6 +4793,8 @@
   this.loadSubmissions();
   } else if (tabName === 'chats') {
   this.loadChats();
+  } else if (tabName === 'reviews') {
+  this.loadReviews();
   } else if (tabName === 'bookings') {
   this.loadBookings();
   } else if (tabName === 'team') {
@@ -4728,6 +4858,8 @@
   refreshPromises.push(this.loadSubmissions());
   } else if (this.currentTab === 'chats') {
   refreshPromises.push(this.loadChats());
+  } else if (this.currentTab === 'reviews') {
+  refreshPromises.push(this.loadReviews());
   } else if (this.currentTab === 'bookings') {
   refreshPromises.push(this.loadBookings());
   }
@@ -5032,6 +5164,186 @@
   this.showNotification('Error loading bookings', 'error');
   } finally {
   this.showTableLoading(false);
+  }
+  }
+  async loadReviews() {
+  this.showTableLoading(true);
+  const params = new URLSearchParams({
+  page: this.currentPage || 1,
+  limit: this.pageSize || 20,
+  status: this.reviewStatusFilter || '',
+  rating: this.reviewRatingFilter || ''
+  });
+  try {
+  const response = await this.fetchWithCSRF(`/api/reviews/admin?${params}`);
+  if (response.ok) {
+  const data = await response.json();
+  this.reviews = data.reviews;
+  this.renderReviewsTable();
+  this.updateReviewsStats();
+  this.updateReviewsPagination(data.pagination);
+  } else {
+  throw new Error('Failed to load reviews');
+  }
+  } catch (error) {
+  console.error('Error loading reviews:', error);
+  this.showNotification('Error loading reviews', 'error');
+  } finally {
+  this.showTableLoading(false);
+  }
+  }
+  renderReviewsTable() {
+  const tbody = document.getElementById('reviewsTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (!this.reviews || this.reviews.length === 0) {
+  tbody.innerHTML = '<tr><td colspan="7" class="text-center">No reviews found</td></tr>';
+  return;
+  }
+  this.reviews.forEach(review => {
+  const row = document.createElement('tr');
+  const date = new Date(review.createdAt).toLocaleDateString();
+  const ratingStars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+  const statusClass = review.status === 'approved' ? 'status-approved' : 
+  review.status === 'pending_approval' ? 'status-pending' : 'status-rejected';
+  row.innerHTML = `
+  <td><input type="checkbox" class="review-checkbox" data-id="${review.id}"></td>
+  <td>${this.escapeHtml(review.customerName)}</td>
+  <td><span class="rating-display">${ratingStars}</span> (${review.rating}/5)</td>
+  <td>${this.escapeHtml(review.serviceType)}</td>
+  <td><span class="status ${statusClass}">${review.status.replace('_', ' ')}</span></td>
+  <td>${date}</td>
+  <td>
+  <div class="action-buttons">
+  <button class="btn btn-sm btn-info view-review-btn" data-id="${review.id}">View</button>
+  ${review.status === 'pending_approval' ? `
+  <button class="btn btn-sm btn-success approve-review-btn" data-id="${review.id}">Approve</button>
+  <button class="btn btn-sm btn-warning reject-review-btn" data-id="${review.id}">Reject</button>
+  ` : ''}
+  <button class="btn btn-sm btn-danger delete-review-btn" data-id="${review.id}">Delete</button>
+  </div>
+  </td>
+  `;
+  tbody.appendChild(row);
+  });
+  this.setupReviewEventListeners();
+  }
+  updateReviewsStats() {
+  if (!this.reviews) return;
+  const totalReviews = this.reviews.length;
+  const approvedReviews = this.reviews.filter(r => r.status === 'approved').length;
+  const pendingReviews = this.reviews.filter(r => r.status === 'pending_approval').length;
+  const averageRating = this.reviews.length > 0 ? 
+  (this.reviews.reduce((sum, r) => sum + r.rating, 0) / this.reviews.length).toFixed(1) : '0.0';
+  document.getElementById('total-reviews').textContent = totalReviews;
+  document.getElementById('average-rating').textContent = averageRating;
+  document.getElementById('pending-reviews').textContent = pendingReviews;
+  document.getElementById('approved-reviews').textContent = approvedReviews;
+  }
+  updateReviewsPagination(pagination) {
+  if (document.getElementById('reviews-page-info')) {
+  document.getElementById('reviews-page-info').textContent = `Page ${pagination.page} of ${pagination.totalPages || 1}`;
+  }
+  if (document.getElementById('prev-reviews-page')) {
+  document.getElementById('prev-reviews-page').disabled = !pagination.hasPrev;
+  }
+  if (document.getElementById('next-reviews-page')) {
+  document.getElementById('next-reviews-page').disabled = !pagination.hasNext;
+  }
+  }
+  setupReviewEventListeners() {
+  document.querySelectorAll('.view-review-btn').forEach(btn => {
+  btn.addEventListener('click', () => this.viewReview(btn.getAttribute('data-id')));
+  });
+  document.querySelectorAll('.approve-review-btn').forEach(btn => {
+  btn.addEventListener('click', () => this.approveReview(btn.getAttribute('data-id')));
+  });
+  document.querySelectorAll('.reject-review-btn').forEach(btn => {
+  btn.addEventListener('click', () => this.rejectReview(btn.getAttribute('data-id')));
+  });
+  document.querySelectorAll('.delete-review-btn').forEach(btn => {
+  btn.addEventListener('click', () => this.deleteReview(btn.getAttribute('data-id')));
+  });
+  }
+  async viewReview(id) {
+  const review = this.reviews.find(r => r.id === id);
+  if (!review) return;
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.innerHTML = `
+  <div class="modal-content">
+  <div class="modal-header">
+  <h3>Review Details</h3>
+  <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+  </div>
+  <div class="modal-body">
+  <div class="review-details">
+  <p><strong>Customer:</strong> ${this.escapeHtml(review.customerName)}</p>
+  <p><strong>Email:</strong> ${this.escapeHtml(review.customerEmail)}</p>
+  <p><strong>Service:</strong> ${this.escapeHtml(review.serviceType)}</p>
+  <p><strong>Rating:</strong> ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)} (${review.rating}/5)</p>
+  <p><strong>Status:</strong> ${review.status.replace('_', ' ')}</p>
+  <p><strong>Date:</strong> ${new Date(review.createdAt).toLocaleString()}</p>
+  </div>
+  <div class="review-text">
+  <h4>Review Text:</h4>
+  <p style="font-style: italic; line-height: 1.6;">"${this.escapeHtml(review.reviewText)}"</p>
+  </div>
+  </div>
+  </div>
+  `;
+  document.body.appendChild(modal);
+  modal.style.display = 'block';
+  }
+  async approveReview(id) {
+  if (!confirm('Are you sure you want to approve this review?')) return;
+  try {
+  const response = await this.fetchWithCSRF(`/api/reviews/${id}/approve`, {
+  method: 'POST',
+  body: { action: 'approve' }
+  });
+  if (response.ok) {
+  this.showNotification('Review approved successfully', 'success');
+  this.loadReviews();
+  } else {
+  throw new Error('Failed to approve review');
+  }
+  } catch (error) {
+  console.error('Error approving review:', error);
+  this.showNotification('Error approving review', 'error');
+  }
+  }
+  async rejectReview(id) {
+  if (!confirm('Are you sure you want to reject this review?')) return;
+  try {
+  const response = await this.fetchWithCSRF(`/api/reviews/${id}/approve`, {
+  method: 'POST',
+  body: { action: 'reject' }
+  });
+  if (response.ok) {
+  this.showNotification('Review rejected successfully', 'success');
+  this.loadReviews();
+  } else {
+  throw new Error('Failed to reject review');
+  }
+  } catch (error) {
+  console.error('Error rejecting review:', error);
+  this.showNotification('Error rejecting review', 'error');
+  }
+  }
+  async deleteReview(id) {
+  if (!confirm('Are you sure you want to delete this review? This action cannot be undone.')) return;
+  try {
+  const response = await this.fetchWithCSRF(`/api/reviews/${id}`, { method: 'DELETE' });
+  if (response.ok) {
+  this.showNotification('Review deleted successfully', 'success');
+  this.loadReviews();
+  } else {
+  throw new Error('Failed to delete review');
+  }
+  } catch (error) {
+  console.error('Error deleting review:', error);
+  this.showNotification('Error deleting review', 'error');
   }
   }
   async autoCheckPendingPayments() {

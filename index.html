@@ -442,6 +442,101 @@
         #tip-result-container { transition: opacity 0.3s ease; }
         .prose h3, .prose h4 { margin-bottom: 0.5em !important; margin-top: 1em !important; color: var(--primary); }
         .prose ul { padding-left: 1.5em !important; margin-top: 0.5em !important;}
+        
+        /* Review Modal Styles */
+        .rating-input {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+        .rating-input input[type="radio"] {
+            display: none;
+        }
+        .rating-input label {
+            font-size: 2rem;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .rating-input label:hover,
+        .rating-input label:hover ~ label,
+        .rating-input input[type="radio"]:checked ~ label {
+            color: #fbbf24;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+        .close:hover {
+            color: #374151;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #374151;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
         .admin-message .message-content a { text-decoration: underline; }
         .admin-message .message-content a:hover { color: var(--primary-dark); }
         
@@ -1016,6 +1111,31 @@
             </div>
         </section>
 
+        <!-- Customer Reviews Section -->
+        <section id="reviews" class="py-16 bg-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-primary mb-4" data-translate="reviewsTitle">Customer Reviews</h2>
+                    <p class="text-lg text-gray-600" data-translate="reviewsSubtitle">Real feedback from our satisfied customers</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12" id="reviews-container">
+                    <!-- Reviews will be loaded here -->
+                    <div class="text-center py-8">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                        <p class="mt-4 text-gray-600">Loading reviews...</p>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button id="submit-review-btn" class="btn btn-primary">
+                        <i class="fas fa-star mr-2"></i>
+                        <span data-translate="submitReviewBtn">Submit Your Review</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <section id="faq" class="py-16 bg-gray-50" aria-labelledby="faq-heading">
             <div class="container px-6 mx-auto">
                 <div class="max-w-3xl mx-auto text-center">
@@ -1332,6 +1452,67 @@
             <div class="flex items-center justify-end pt-4 mt-4 space-x-3 border-t">
                 <button id="checklist-modal-download" class="hidden px-4 py-2 font-semibold text-white transition-colors rounded-lg bg-secondary hover:bg-secondary-dark" data-translate="modalDownload">Download</button>
                 <button id="checklist-modal-close-bottom" class="px-4 py-2 font-semibold text-gray-800 transition-colors bg-gray-200 rounded-lg hover:bg-gray-300" data-translate="modalClose">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Submission Modal -->
+    <div id="review-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Submit Your Review</h3>
+                <span class="close" id="close-review-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="review-form">
+                    <div class="form-group">
+                        <label for="review-customer-name">Your Name *</label>
+                        <input type="text" id="review-customer-name" name="customerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="review-customer-email">Your Email *</label>
+                        <input type="email" id="review-customer-email" name="customerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="review-service-type">Service Type</label>
+                        <select id="review-service-type" name="serviceType">
+                            <option value="Residential Cleaning">Residential Cleaning</option>
+                            <option value="Commercial Cleaning">Commercial Cleaning</option>
+                            <option value="Deep Cleaning">Deep Cleaning</option>
+                            <option value="Move In/Out Cleaning">Move In/Out Cleaning</option>
+                            <option value="General Cleaning">General Cleaning</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="review-rating">Rating *</label>
+                        <div class="rating-input">
+                            <input type="radio" id="star5" name="rating" value="5">
+                            <label for="star5">★</label>
+                            <input type="radio" id="star4" name="rating" value="4">
+                            <label for="star4">★</label>
+                            <input type="radio" id="star3" name="rating" value="3">
+                            <label for="star3">★</label>
+                            <input type="radio" id="star2" name="rating" value="2">
+                            <label for="star2">★</label>
+                            <input type="radio" id="star1" name="rating" value="1">
+                            <label for="star1">★</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="review-text">Your Review *</label>
+                        <textarea id="review-text" name="reviewText" rows="5" required placeholder="Tell us about your experience..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="isPublic" checked>
+                            Make this review public on our website
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancel-review">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submit-review">Submit Review</button>
             </div>
         </div>
     </div>
@@ -1687,6 +1868,116 @@
         
         const chatManager = new ChatManager();
         
+        // --- Reviews System ---
+        async function loadReviews() {
+            try {
+                const response = await fetch('/api/reviews/public');
+                if (response.ok) {
+                    const reviews = await response.json();
+                    displayReviews(reviews);
+                } else {
+                    console.error('Failed to load reviews');
+                    document.getElementById('reviews-container').innerHTML = '<p class="text-center text-gray-600">No reviews available at the moment.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                document.getElementById('reviews-container').innerHTML = '<p class="text-center text-gray-600">Unable to load reviews.</p>';
+            }
+        }
+
+        function displayReviews(reviews) {
+            const container = document.getElementById('reviews-container');
+            if (!reviews || reviews.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-600 col-span-full">No reviews available yet. Be the first to leave a review!</p>';
+                return;
+            }
+
+            container.innerHTML = reviews.map(review => `
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex items-center mb-4">
+                        <div class="flex text-yellow-400">
+                            ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}
+                        </div>
+                        <span class="ml-2 text-sm text-gray-600">${review.rating}/5</span>
+                    </div>
+                    <p class="text-gray-700 mb-4 italic">"${review.reviewText}"</p>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="font-semibold text-gray-900">${review.customerName}</p>
+                            <p class="text-sm text-gray-600">${review.serviceType}</p>
+                        </div>
+                        <p class="text-sm text-gray-500">${new Date(review.createdAt).toLocaleDateString()}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openReviewModal() {
+            document.getElementById('review-modal').style.display = 'block';
+        }
+
+        function closeReviewModal() {
+            document.getElementById('review-modal').style.display = 'none';
+            document.getElementById('review-form').reset();
+        }
+
+        async function submitReview() {
+            const form = document.getElementById('review-form');
+            const formData = new FormData(form);
+            
+            const reviewData = {
+                customerName: formData.get('customerName'),
+                customerEmail: formData.get('customerEmail'),
+                serviceType: formData.get('serviceType'),
+                rating: parseInt(formData.get('rating')),
+                reviewText: formData.get('reviewText'),
+                isPublic: formData.get('isPublic') === 'on'
+            };
+
+            if (!reviewData.customerName || !reviewData.customerEmail || !reviewData.rating || !reviewData.reviewText) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/reviews', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(reviewData)
+                });
+
+                if (response.ok) {
+                    alert('Thank you for your review! It will be published after admin approval.');
+                    closeReviewModal();
+                    loadReviews(); // Refresh reviews
+                } else {
+                    const error = await response.json();
+                    alert('Error submitting review: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error submitting review:', error);
+                alert('Error submitting review. Please try again.');
+            }
+        }
+
+        // Event listeners for reviews
+        document.getElementById('submit-review-btn')?.addEventListener('click', openReviewModal);
+        document.getElementById('close-review-modal')?.addEventListener('click', closeReviewModal);
+        document.getElementById('cancel-review')?.addEventListener('click', closeReviewModal);
+        document.getElementById('submit-review')?.addEventListener('click', submitReview);
+
+        // Close modal when clicking outside
+        document.getElementById('review-modal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'review-modal') {
+                closeReviewModal();
+            }
+        });
+
+        // Load reviews on page load
+        loadReviews();
+
         // --- Multi-Language Support, Modals, Page Interactivity, etc. ---
         const translations = {
             en: {

@@ -2164,6 +2164,303 @@ The AJK Cleaning Team
     }
 });
 
+// Reviews API endpoints
+app.post('/api/reviews', async (req, res) => {
+    try {
+        const {
+            customerName,
+            customerEmail,
+            serviceType,
+            rating,
+            reviewText,
+            bookingId,
+            isPublic = true
+        } = req.body;
+
+        // Validate required fields
+        if (!customerName || !customerEmail || !rating || !reviewText) {
+            return res.status(400).json({ 
+                error: 'Missing required fields: customerName, customerEmail, rating, reviewText are required' 
+            });
+        }
+
+        if (rating < 1 || rating > 5) {
+            return res.status(400).json({ 
+                error: 'Rating must be between 1 and 5' 
+            });
+        }
+
+        await db.read();
+        if (!db.data.reviews) {
+            db.data.reviews = [];
+        }
+
+        const review = {
+            id: `review_${Date.now()}`,
+            customerName,
+            customerEmail,
+            serviceType: serviceType || 'General Cleaning',
+            rating: parseInt(rating),
+            reviewText,
+            bookingId: bookingId || null,
+            isPublic: isPublic === true,
+            status: 'pending_approval', // Admin approval required
+            createdAt: new Date().toISOString(),
+            approvedAt: null,
+            approvedBy: null
+        };
+
+        db.data.reviews.push(review);
+        await db.write();
+
+        console.log(`📝 New review submitted by ${customerName} (${customerEmail}) - Rating: ${rating}/5`);
+
+        // Send notification to admin
+        try {
+            await sendAdminReviewNotification(review);
+        } catch (emailError) {
+            console.error('Failed to send admin notification for review:', emailError.message);
+        }
+
+        res.json({ 
+            success: true, 
+            message: 'Review submitted successfully. Thank you for your feedback!',
+            reviewId: review.id
+        });
+
+    } catch (error) {
+        console.error('❌ Review submission failed:', error);
+        res.status(500).json({ error: 'Failed to submit review: ' + error.message });
+    }
+});
+
+// Get public reviews for website display
+app.get('/api/reviews/public', async (req, res) => {
+    try {
+        await db.read();
+        const reviews = (db.data.reviews || [])
+            .filter(review => review.isPublic && review.status === 'approved')
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .slice(0, 20); // Limit to 20 most recent reviews
+
+        res.json(reviews);
+    } catch (error) {
+        console.error('❌ Failed to fetch public reviews:', error);
+        res.status(500).json({ error: 'Failed to fetch reviews' });
+    }
+});
+
+// Admin endpoints for review management
+app.get('/api/reviews/admin', requireAuth, async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = Math.min(parseInt(req.query.limit) || 20, 100);
+        const status = req.query.status || '';
+        const rating = req.query.rating || '';
+
+        await db.read();
+        let reviews = db.data.reviews || [];
+
+        // Filter by status
+        if (status) {
+            reviews = reviews.filter(review => review.status === status);
+        }
+
+        // Filter by rating
+        if (rating) {
+            reviews = reviews.filter(review => review.rating === parseInt(rating));
+        }
+
+        // Sort by newest first
+        reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        // Pagination
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const paginatedReviews = reviews.slice(startIndex, endIndex);
+
+        res.json({
+            reviews: paginatedReviews,
+            pagination: {
+                page,
+                limit,
+                total: reviews.length,
+                totalPages: Math.ceil(reviews.length / limit),
+                hasNext: endIndex < reviews.length,
+                hasPrev: page > 1
+            }
+        });
+
+    } catch (error) {
+        console.error('❌ Failed to fetch admin reviews:', error);
+        res.status(500).json({ error: 'Failed to fetch reviews' });
+    }
+});
+
+// Approve/reject review
+app.post('/api/reviews/:id/approve', requireAuth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { action } = req.body; // 'approve' or 'reject'
+
+        if (!['approve', 'reject'].includes(action)) {
+            return res.status(400).json({ error: 'Action must be approve or reject' });
+        }
+
+        await db.read();
+        const reviews = db.data.reviews || [];
+        const reviewIndex = reviews.findIndex(review => review.id === id);
+
+        if (reviewIndex === -1) {
+            return res.status(404).json({ error: 'Review not found' });
+        }
+
+        const review = reviews[reviewIndex];
+        review.status = action === 'approve' ? 'approved' : 'rejected';
+        review.updatedAt = new Date().toISOString();
+        review.approvedAt = action === 'approve' ? new Date().toISOString() : null;
+        review.approvedBy = action === 'approve' ? 'admin' : null;
+
+        await db.write();
+
+        console.log(`📝 Review ${id} ${action}d by admin`);
+
+        res.json({ 
+            success: true, 
+            message: `Review ${action}d successfully`,
+            review: review
+        });
+
+    } catch (error) {
+        console.error('❌ Failed to update review:', error);
+        res.status(500).json({ error: 'Failed to update review: ' + error.message });
+    }
+});
+
+// Delete review
+app.delete('/api/reviews/:id', requireAuth, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        await db.read();
+        const reviews = db.data.reviews || [];
+        const reviewIndex = reviews.findIndex(review => review.id === id);
+
+        if (reviewIndex === -1) {
+            return res.status(404).json({ error: 'Review not found' });
+        }
+
+        reviews.splice(reviewIndex, 1);
+        await db.write();
+
+        console.log(`📝 Review ${id} deleted by admin`);
+
+        res.json({ 
+            success: true, 
+            message: 'Review deleted successfully'
+        });
+
+    } catch (error) {
+        console.error('❌ Failed to delete review:', error);
+        res.status(500).json({ error: 'Failed to delete review: ' + error.message });
+    }
+});
+
+// Send admin notification for new review
+async function sendAdminReviewNotification(review) {
+    const adminEmailHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>New Customer Review - AJK Cleaning</title>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f4; }
+                .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+                .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+                .content { padding: 30px; }
+                .review-details { background: #f8f9fa; border-radius: 8px; padding: 25px; margin: 20px 0; }
+                .rating { font-size: 24px; color: #ffc107; margin: 10px 0; }
+                .review-text { background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #28a745; margin: 15px 0; }
+                .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #6c757d; border-top: 1px solid #e9ecef; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>⭐ New Customer Review</h1>
+                    <p>AJK Cleaning Company - Review Management</p>
+                </div>
+                
+                <div class="content">
+                    <div class="review-details">
+                        <h3 style="margin-top: 0; color: #495057;">📝 Review Details</h3>
+                        <p><strong>Customer:</strong> ${review.customerName}</p>
+                        <p><strong>Email:</strong> ${review.customerEmail}</p>
+                        <p><strong>Service:</strong> ${review.serviceType}</p>
+                        <p><strong>Rating:</strong> <span class="rating">${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</span> (${review.rating}/5)</p>
+                        <p><strong>Status:</strong> Pending Approval</p>
+                    </div>
+
+                    <div class="review-text">
+                        <h4 style="margin-top: 0; color: #495057;">💬 Customer Review:</h4>
+                        <p style="font-style: italic; line-height: 1.6;">"${review.reviewText}"</p>
+                    </div>
+
+                    <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 20px; margin: 20px 0;">
+                        <h4 style="margin-top: 0; color: #1976d2;">🎯 Action Required</h4>
+                        <p>Please review and approve this customer feedback in your admin panel.</p>
+                        <p><strong>Admin Panel:</strong> <a href="${process.env.ADMIN_URL || 'https://your-app.onrender.com/admin'}" style="color: #1976d2;">Review Management</a></p>
+                    </div>
+                </div>
+                
+                <div class="footer">
+                    <p><strong>AJK Cleaning Company</strong> | Review Management System</p>
+                    <p>Thank you for maintaining our service quality!</p>
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
+
+    const adminEmailText = `
+⭐ NEW CUSTOMER REVIEW - AJK Cleaning Company
+
+Review Details:
+Customer: ${review.customerName}
+Email: ${review.customerEmail}
+Service: ${review.serviceType}
+Rating: ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)} (${review.rating}/5)
+Status: Pending Approval
+
+Customer Review:
+"${review.reviewText}"
+
+Action Required:
+Please review and approve this customer feedback in your admin panel.
+
+Admin Panel: ${process.env.ADMIN_URL || 'https://your-app.onrender.com/admin'}
+
+Thank you for maintaining our service quality!
+
+Best regards,
+AJK Cleaning Company
+    `;
+
+    const mailOptions = {
+        from: `"AJK Cleaning Company" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
+        to: process.env.ADMIN_EMAIL,
+        subject: `⭐ New Customer Review - ${review.rating}/5 stars from ${review.customerName}`,
+        html: adminEmailHtml,
+        text: adminEmailText
+    };
+
+    await emailTransporter.sendMail(mailOptions);
+    console.log(`📧 Admin notification sent for review from ${review.customerName}`);
+}
+
 // Debug endpoint to check database contents
 app.get('/api/debug/database', requireAuth, async (req, res) => {
     try {
