@@ -261,11 +261,13 @@ async function sendAdminNotification(booking) {
         salutation
     } = details;
 
-    // Admin email addresses
-    const adminEmails = [
-        'sugampokharel28@gmail.com',
-        'Sanudhakal119@gmail.com'
-    ];
+    // Get admin emails from environment variables
+    const adminEmails = process.env.ADMIN_EMAILS ? 
+        process.env.ADMIN_EMAILS.split(',').map(email => email.trim()) : 
+        [
+            process.env.ADMIN_EMAIL || 'sugampokharel28@gmail.com',
+            'Sanudhakal119@gmail.com'
+        ];
 
     const adminHtml = `
         <!DOCTYPE html>
@@ -2449,9 +2451,14 @@ Best regards,
 AJK Cleaning Company
     `;
 
+    // Get admin emails from environment variables
+    const adminEmails = process.env.ADMIN_EMAILS ? 
+        process.env.ADMIN_EMAILS.split(',').map(email => email.trim()) : 
+        [process.env.ADMIN_EMAIL || 'sugampokharel28@gmail.com'];
+
     const mailOptions = {
         from: `"AJK Cleaning Company" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
-        to: process.env.ADMIN_EMAIL,
+        to: adminEmails.join(','),
         subject: `⭐ New Customer Review - ${review.rating}/5 stars from ${review.customerName}`,
         html: adminEmailHtml,
         text: adminEmailText
