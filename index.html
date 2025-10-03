@@ -670,25 +670,25 @@
     }
     </script>
 </head>
-<body class="font-sans text-gray-800 antialiased">
+<body class="font-sans antialiased text-gray-800">
     <a href="#main-content" class="skip-link" data-translate="skipLink">Skip to main content</a>
 
-    <header id="navbar" class="fixed w-full z-50 transition-all duration-500">
-        <div class="container mx-auto flex justify-between items-center px-6">
+    <header id="navbar" class="fixed z-50 w-full transition-all duration-500">
+        <div class="container flex items-center justify-between px-6 mx-auto">
             <a href="#home" class="flex items-center space-x-3" aria-label="AJK Cleaning Company Home">
-                <img src="images/logo.webp" alt="AJK Cleaning Company Logo" class="h-20 w-20 sm:h-24 sm:w-24 rounded-lg logo transition-transform duration-300 object-contain" width="96" height="96" loading="eager">
-                <span id="company-name" class="font-bold text-lg sm:text-xl text-primary transition-colors duration-300" data-translate="companyName">AJK Cleaning Company</span>
+                <img src="images/logo.webp" alt="AJK Cleaning Company Logo" class="object-contain w-20 h-20 transition-transform duration-300 rounded-lg sm:h-24 sm:w-24 logo" width="96" height="96" loading="eager">
+                <span id="company-name" class="text-lg font-bold transition-colors duration-300 sm:text-xl text-primary" data-translate="companyName">AJK Cleaning Company</span>
             </a>
             
-            <nav class="hidden md:flex space-x-8 items-center" aria-label="Main navigation">
-                <a href="#home" class="nav-link text-gray-700 hover:text-primary font-medium active" aria-current="page" data-translate="navHome">Home</a>
-                <a href="#services" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navServices">Services</a>
-                <a href="#about" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navAbout">About</a>
-                <a href="#testimonials" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navTestimonials">Testimonials</a>
-                <a href="#faq" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navFaq">FAQ</a>
-                <a href="#contact" class="nav-link text-gray-700 hover:text-primary font-medium" data-translate="navContact">Contact</a>
+            <nav class="items-center hidden space-x-8 md:flex" aria-label="Main navigation">
+                <a href="#home" class="font-medium text-gray-700 nav-link hover:text-primary active" aria-current="page" data-translate="navHome">Home</a>
+                <a href="#services" class="font-medium text-gray-700 nav-link hover:text-primary" data-translate="navServices">Services</a>
+                <a href="#about" class="font-medium text-gray-700 nav-link hover:text-primary" data-translate="navAbout">About</a>
+                <a href="#testimonials" class="font-medium text-gray-700 nav-link hover:text-primary" data-translate="navTestimonials">Testimonials</a>
+                <a href="#faq" class="font-medium text-gray-700 nav-link hover:text-primary" data-translate="navFaq">FAQ</a>
+                <a href="#contact" class="font-medium text-gray-700 nav-link hover:text-primary" data-translate="navContact">Contact</a>
                 <a href="/booking" class="cta-button bg-gradient-to-r from-secondary to-secondary-dark text-white px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg hover:from-secondary-dark hover:to-secondary-dark transition-all duration-300 font-semibold" data-translate="navQuote">Book Now</a>
-                <div class="lang-switcher ml-4">
+                <div class="ml-4 lang-switcher">
                     <button data-lang="en" class="lang-option active" title="Switch to English" aria-label="Switch to English">
                         <svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg"><clipPath id="a"><path d="m30 15h30v15zm0 0v15h-30zm0 0h-30v-15zm0 0v-15h30z"/></clipPath><path d="m0 0v30h60v-30z" fill="#012169"/><path d="m0 0 60 30m-60 0 60-30" stroke="#fff" stroke-width="6"/><path d="m0 0 60 30m-60 0 60-30" stroke="#c8102e" stroke-width="4" clip-path="url(#a)"/><path d="m30 0v30m-30-15h60" stroke="#fff" stroke-width="10"/><path d="m30 0v30m-30-15h60" stroke="#c8102e" stroke-width="6"/></svg>
                     </button>
@@ -698,8 +698,8 @@
                 </div>
             </nav>
             
-            <div class="flex items-center md:hidden py-4">
-                <div class="lang-switcher mr-2">
+            <div class="flex items-center py-4 md:hidden">
+                <div class="mr-2 lang-switcher">
                     <button data-lang="en" class="lang-option active" title="Switch to English" aria-label="Switch to English">
                         <svg viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg"><clipPath id="a-mobile-header"><path d="m30 15h30v15zm0 0v15h-30zm0 0h-30v-15zm0 0v-15h30z"/></clipPath><path d="m0 0v30h60v-30z" fill="#012169"/><path d="m0 0 60 30m-60 0 60-30" stroke="#fff" stroke-width="6"/><path d="m0 0 60 30m-60 0 60-30" stroke="#c8102e" stroke-width="4" clip-path="url(#a-mobile-header)"/><path d="m30 0v30m-30-15h60" stroke="#fff" stroke-width="10"/><path d="m30 0v30m-30-15h60" stroke="#c8102e" stroke-width="6"/></svg>
                     </button>
@@ -715,63 +715,63 @@
             </div>
         </div>
         
-        <div id="mobile-menu" class="mobile-menu flex-col bg-white px-6 pb-6 space-y-3 md:hidden border-t shadow-lg" aria-hidden="true">
-            <a href="#home" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium active" aria-current="page" data-translate="navHome">Home</a>
-            <a href="#services" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navServices">Services</a>
-            <a href="#about" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navAbout">About</a>
-            <a href="#testimonials" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navTestimonials">Testimonials</a>
-            <a href="#faq" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navFaq">FAQ</a>
-            <a href="#contact" class="block py-3 px-4 rounded-lg hover:bg-blue-50 text-gray-700 hover:text-primary transition-colors duration-300 font-medium" data-translate="navContact">Contact</a>
-            <a href="/booking" class="cta-button block bg-gradient-to-r from-secondary to-secondary-dark text-white px-4 py-3 rounded-lg text-center hover:shadow-md transition-colors duration-300 mt-2 font-semibold" data-translate="navQuote">Book Now</a>
+        <div id="mobile-menu" class="flex-col px-6 pb-6 space-y-3 bg-white border-t shadow-lg mobile-menu md:hidden" aria-hidden="true">
+            <a href="#home" class="block px-4 py-3 font-medium text-gray-700 transition-colors duration-300 rounded-lg hover:bg-blue-50 hover:text-primary active" aria-current="page" data-translate="navHome">Home</a>
+            <a href="#services" class="block px-4 py-3 font-medium text-gray-700 transition-colors duration-300 rounded-lg hover:bg-blue-50 hover:text-primary" data-translate="navServices">Services</a>
+            <a href="#about" class="block px-4 py-3 font-medium text-gray-700 transition-colors duration-300 rounded-lg hover:bg-blue-50 hover:text-primary" data-translate="navAbout">About</a>
+            <a href="#testimonials" class="block px-4 py-3 font-medium text-gray-700 transition-colors duration-300 rounded-lg hover:bg-blue-50 hover:text-primary" data-translate="navTestimonials">Testimonials</a>
+            <a href="#faq" class="block px-4 py-3 font-medium text-gray-700 transition-colors duration-300 rounded-lg hover:bg-blue-50 hover:text-primary" data-translate="navFaq">FAQ</a>
+            <a href="#contact" class="block px-4 py-3 font-medium text-gray-700 transition-colors duration-300 rounded-lg hover:bg-blue-50 hover:text-primary" data-translate="navContact">Contact</a>
+            <a href="/booking" class="block px-4 py-3 mt-2 font-semibold text-center text-white transition-colors duration-300 rounded-lg cta-button bg-gradient-to-r from-secondary to-secondary-dark hover:shadow-md" data-translate="navQuote">Book Now</a>
         </div>
     </header>
 
     <main>
-        <section id="home" class="relative min-h-screen flex items-center justify-center text-center text-white pt-16 hero-image" role="banner" aria-labelledby="hero-heading">
-            <div class="hero-overlay absolute inset-0"></div>
+        <section id="home" class="relative flex items-center justify-center min-h-screen pt-16 text-center text-white hero-image" role="banner" aria-labelledby="hero-heading">
+            <div class="absolute inset-0 hero-overlay"></div>
             <div id="main-content" class="relative z-10 max-w-4xl px-6 animate-fade-in-up">
-                <h1 id="hero-heading" class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 leading-tight" data-translate="heroTitle">Professioneller Reinigungsservice Deutschland - AJK Cleaning in Bischofsheim</h1>
+                <h1 id="hero-heading" class="mb-4 text-4xl font-bold leading-tight sm:text-5xl md:text-6xl" data-translate="heroTitle">Professioneller Reinigungsservice Deutschland - AJK Cleaning in Bischofsheim</h1>
                 <p class="mb-8 text-lg md:text-xl" data-translate="heroSubtitle">Wohnungsreinigung, Büroreinigung & Gewerbereinigung mit ökologischen Produkten. Versichert, zufriedenheitsgarantie. Bischofsheim, Mainz, Wiesbaden & Umgebung.</p>
-                <div class="mb-6 bg-white/20 backdrop-blur-sm p-2 rounded-lg inline-block text-white font-semibold">
+                <div class="inline-block p-2 mb-6 font-semibold text-white rounded-lg bg-white/20 backdrop-blur-sm">
                     Next available slot: <span class="font-bold text-yellow-300">This Friday!</span>
                 </div>
                 <div class="flex flex-col items-center justify-center gap-4">
-                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <a href="/booking" class="bg-primary text-white px-8 py-4 rounded-lg shadow-lg hover:bg-primary-dark transition-all duration-300 font-semibold text-lg inline-flex items-center animate-pulse-shadow" data-translate="heroBtnBookNow">
-                            Book Now <i class="fas fa-calendar-check ml-3"></i>
+                    <div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
+                        <a href="/booking" class="inline-flex items-center px-8 py-4 text-lg font-semibold text-white transition-all duration-300 rounded-lg shadow-lg bg-primary hover:bg-primary-dark animate-pulse-shadow" data-translate="heroBtnBookNow">
+                            Book Now <i class="ml-3 fas fa-calendar-check"></i>
                         </a>
-                        <a href="#services" class="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-lg shadow hover:bg-white/30 transition-colors duration-300 font-semibold" data-translate="heroBtnServices">Our Services</a>
+                        <a href="#services" class="px-6 py-3 font-semibold text-white transition-colors duration-300 rounded-lg shadow bg-white/20 backdrop-blur-sm hover:bg-white/30" data-translate="heroBtnServices">Our Services</a>
                     </div>
-                    <a href="#contact" class="bg-secondary text-white px-6 py-3 rounded-lg shadow hover:bg-secondary-dark transition-colors duration-300 font-semibold" data-translate="ctaQuote">Get Quote</a>
+                    <a href="#contact" class="px-6 py-3 font-semibold text-white transition-colors duration-300 rounded-lg shadow bg-secondary hover:bg-secondary-dark" data-translate="ctaQuote">Get Quote</a>
                 </div>
             </div>
-            <a href="#offer" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce" aria-label="Scroll to next section">
-                <i class="fas fa-chevron-down text-2xl text-white"></i>
+            <a href="#offer" class="absolute transform -translate-x-1/2 bottom-8 left-1/2 animate-bounce" aria-label="Scroll to next section">
+                <i class="text-2xl text-white fas fa-chevron-down"></i>
             </a>
         </section>
 
-        <section id="offer" class="bg-secondary text-white py-4 text-center">
-            <div class="container mx-auto px-6">
-                <p class="font-semibold text-lg animate-fade-in-up">
-                    <i class="fas fa-tag mr-2"></i> Limited Time Offer: Get 15% Off Your First Cleaning! <a href="#contact" class="underline hover:text-yellow-300 ml-2">Claim Offer</a>
+        <section id="offer" class="py-4 text-center text-white bg-secondary">
+            <div class="container px-6 mx-auto">
+                <p class="text-lg font-semibold animate-fade-in-up">
+                    <i class="mr-2 fas fa-tag"></i> Limited Time Offer: Get 15% Off Your First Cleaning! <a href="#contact" class="ml-2 underline hover:text-yellow-300">Claim Offer</a>
                 </p>
             </div>
         </section>
 
         <section id="trust" class="py-12 bg-white">
-            <div class="container mx-auto px-6 text-center">
-                 <h2 class="text-2xl font-bold text-primary mb-8 animate-fade-in-up" data-translate="trustTitle">Trusted By Your Neighbors & Fully Certified</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 items-center max-w-4xl mx-auto">
+            <div class="container px-6 mx-auto text-center">
+                 <h2 class="mb-8 text-2xl font-bold text-primary animate-fade-in-up" data-translate="trustTitle">Trusted By Your Neighbors & Fully Certified</h2>
+                <div class="grid items-center max-w-4xl grid-cols-1 gap-8 mx-auto sm:grid-cols-3">
                     <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.2s;">
-                        <i class="fas fa-leaf text-secondary text-4xl mb-2"></i>
+                        <i class="mb-2 text-4xl fas fa-leaf text-secondary"></i>
                         <span class="font-semibold" data-translate="trustEco">Eco-Friendly</span>
                     </div>
                     <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.3s;">
-                        <i class="fas fa-star text-4xl text-yellow-400 mb-2"></i>
+                        <i class="mb-2 text-4xl text-yellow-400 fas fa-star"></i>
                         <span class="font-semibold" data-translate="trustRated">5-Star Rated</span>
                     </div>
                     <div class="flex flex-col items-center text-gray-700 animate-fade-in-up" style="animation-delay: 0.4s;">
-                        <i class="fas fa-thumbs-up text-4xl text-primary mb-2"></i>
+                        <i class="mb-2 text-4xl fas fa-thumbs-up text-primary"></i>
                         <span class="font-semibold" data-translate="trustGuaranteed">Satisfaction Guaranteed</span>
                     </div>
                 </div>
@@ -779,52 +779,52 @@
         </section>
         
         <section id="services" class="py-16 bg-gray-50" aria-labelledby="services-heading">
-            <div class="container mx-auto px-6 text-center">
-                <h2 id="services-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="servicesTitle">Professionelle Reinigungsdienstleistungen - Wohnung & Büro</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto mb-12 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="servicesSubtitle">Umfassende Reinigungsservices für Wohnungen, Büros und Gewerbe. Spezialisiert auf ökologische Reinigung in Bischofsheim, Mainz, Wiesbaden und Umgebung.</p>
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.3s;">
+            <div class="container px-6 mx-auto text-center">
+                <h2 id="services-heading" class="mb-4 text-3xl font-bold text-primary animate-fade-in-up" data-translate="servicesTitle">Professionelle Reinigungsdienstleistungen - Wohnung & Büro</h2>
+                <p class="max-w-2xl mx-auto mb-12 text-gray-600 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="servicesSubtitle">Umfassende Reinigungsservices für Wohnungen, Büros und Gewerbe. Spezialisiert auf ökologische Reinigung in Bischofsheim, Mainz, Wiesbaden und Umgebung.</p>
+                <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+                    <article class="relative flex flex-col justify-between p-6 bg-white shadow-md service-card rounded-xl animate-fade-in-up" style="animation-delay: 0.3s;">
                         <div>
-                            <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-home text-primary text-2xl"></i></div>
-                            <h3 class="font-bold text-lg mb-2" data-translate="service1Title">Wohnungsreinigung</h3>
-                            <p class="text-sm text-gray-600 mb-4" data-translate="service1Desc">Professionelle Haushaltsreinigung mit ökologischen Produkten für Ihr Zuhause.</p>
+                            <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-100 to-blue-200" aria-hidden="true"><i class="text-2xl fas fa-home text-primary"></i></div>
+                            <h3 class="mb-2 text-lg font-bold" data-translate="service1Title">Wohnungsreinigung</h3>
+                            <p class="mb-4 text-sm text-gray-600" data-translate="service1Desc">Professionelle Haushaltsreinigung mit ökologischen Produkten für Ihr Zuhause.</p>
                         </div>
                         <div class="mt-4">
-                             <a href="#comparison" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
-                            <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors" data-service="Residential Cleaning" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
+                             <a href="#comparison" class="inline-flex items-center mb-3 font-medium text-primary hover:underline" data-translate="serviceLearnMore">Learn More <i class="ml-2 text-xs fas fa-arrow-right" aria-hidden="true"></i></a>
+                            <button class="w-full px-4 py-2 font-semibold transition-colors bg-blue-100 rounded-lg get-checklist-btn text-primary hover:bg-blue-200" data-service="Residential Cleaning" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
                         </div>
                     </article>
-                    <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.4s;">
+                    <article class="relative flex flex-col justify-between p-6 bg-white shadow-md service-card rounded-xl animate-fade-in-up" style="animation-delay: 0.4s;">
                         <div>
-                            <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-building text-primary text-2xl"></i></div>
-                            <h3 class="font-bold text-lg mb-2" data-translate="service2Title">Büroreinigung</h3>
-                            <p class="text-sm text-gray-600 mb-4" data-translate="service2Desc">Professionelle Büroreinigung und Gewerbereinigung für Unternehmen aller Größen.</p>
+                            <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-100 to-blue-200" aria-hidden="true"><i class="text-2xl fas fa-building text-primary"></i></div>
+                            <h3 class="mb-2 text-lg font-bold" data-translate="service2Title">Büroreinigung</h3>
+                            <p class="mb-4 text-sm text-gray-600" data-translate="service2Desc">Professionelle Büroreinigung und Gewerbereinigung für Unternehmen aller Größen.</p>
                         </div>
                         <div class="mt-4">
-                            <a href="#contact" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
-                            <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors" data-service="Commercial Cleaning" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
+                            <a href="#contact" class="inline-flex items-center mb-3 font-medium text-primary hover:underline" data-translate="serviceLearnMore">Learn More <i class="ml-2 text-xs fas fa-arrow-right" aria-hidden="true"></i></a>
+                            <button class="w-full px-4 py-2 font-semibold transition-colors bg-blue-100 rounded-lg get-checklist-btn text-primary hover:bg-blue-200" data-service="Commercial Cleaning" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
                         </div>
                     </article>
-                    <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.5s;">
+                    <article class="relative flex flex-col justify-between p-6 bg-white shadow-md service-card rounded-xl animate-fade-in-up" style="animation-delay: 0.5s;">
                         <div>
-                            <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-broom text-primary text-2xl"></i></div>
-                            <h3 class="font-bold text-lg mb-2" data-translate="service3Title">Grundreinigung</h3>
-                            <p class="text-sm text-gray-600 mb-4" data-translate="service3Desc">Intensive Reinigung für einen frischen und gesunden Raum.</p>
+                            <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-100 to-blue-200" aria-hidden="true"><i class="text-2xl fas fa-broom text-primary"></i></div>
+                            <h3 class="mb-2 text-lg font-bold" data-translate="service3Title">Grundreinigung</h3>
+                            <p class="mb-4 text-sm text-gray-600" data-translate="service3Desc">Intensive Reinigung für einen frischen und gesunden Raum.</p>
                         </div>
                         <div class="mt-4">
-                            <a href="#comparison" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
-                            <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors" data-service="Deep Cleaning" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
+                            <a href="#comparison" class="inline-flex items-center mb-3 font-medium text-primary hover:underline" data-translate="serviceLearnMore">Learn More <i class="ml-2 text-xs fas fa-arrow-right" aria-hidden="true"></i></a>
+                            <button class="w-full px-4 py-2 font-semibold transition-colors bg-blue-100 rounded-lg get-checklist-btn text-primary hover:bg-blue-200" data-service="Deep Cleaning" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
                         </div>
                     </article>
-                    <article class="service-card bg-white p-6 rounded-xl shadow-md relative animate-fade-in-up flex flex-col justify-between" style="animation-delay: 0.6s;">
+                    <article class="relative flex flex-col justify-between p-6 bg-white shadow-md service-card rounded-xl animate-fade-in-up" style="animation-delay: 0.6s;">
                         <div>
-                            <div class="bg-gradient-to-br from-blue-100 to-blue-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true"><i class="fas fa-truck-moving text-primary text-2xl"></i></div>
-                            <h3 class="font-bold text-lg mb-2" data-translate="service4Title">Umzugsreinigung</h3>
-                            <p class="text-sm text-gray-600 mb-4" data-translate="service4Desc">Professionelle Reinigung für Ein- und Auszug - starten Sie frisch in Ihrem neuen Zuhause.</p>
+                            <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-100 to-blue-200" aria-hidden="true"><i class="text-2xl fas fa-truck-moving text-primary"></i></div>
+                            <h3 class="mb-2 text-lg font-bold" data-translate="service4Title">Umzugsreinigung</h3>
+                            <p class="mb-4 text-sm text-gray-600" data-translate="service4Desc">Professionelle Reinigung für Ein- und Auszug - starten Sie frisch in Ihrem neuen Zuhause.</p>
                         </div>
                         <div class="mt-4">
-                            <a href="#comparison" class="text-primary hover:underline font-medium inline-flex items-center mb-3" data-translate="serviceLearnMore">Learn More <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i></a>
-                            <button class="get-checklist-btn w-full bg-blue-100 text-primary font-semibold py-2 px-4 rounded-lg hover:bg-blue-200 transition-colors" data-service="Move-In/Move-Out" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
+                            <a href="#comparison" class="inline-flex items-center mb-3 font-medium text-primary hover:underline" data-translate="serviceLearnMore">Learn More <i class="ml-2 text-xs fas fa-arrow-right" aria-hidden="true"></i></a>
+                            <button class="w-full px-4 py-2 font-semibold transition-colors bg-blue-100 rounded-lg get-checklist-btn text-primary hover:bg-blue-200" data-service="Move-In/Move-Out" data-translate="serviceBtnChecklist">✨ Get Cleaning Checklist</button>
                         </div>
                     </article>
                 </div>
@@ -832,26 +832,26 @@
         </section>
 
         <section id="how-it-works" class="py-16 bg-white" aria-labelledby="how-it-works-heading">
-            <div class="container mx-auto px-6 text-center">
-                <h2 id="how-it-works-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="howitworksTitle">Our Simple 3-Step Process</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto mb-12 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="howitworksSubtitle">Getting your space professionally cleaned has never been easier.</p>
-                <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div class="container px-6 mx-auto text-center">
+                <h2 id="how-it-works-heading" class="mb-4 text-3xl font-bold text-primary animate-fade-in-up" data-translate="howitworksTitle">Our Simple 3-Step Process</h2>
+                <p class="max-w-2xl mx-auto mb-12 text-gray-600 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="howitworksSubtitle">Getting your space professionally cleaned has never been easier.</p>
+                <div class="grid max-w-5xl gap-8 mx-auto md:grid-cols-3">
                     <!-- Step 1 -->
                     <div class="flex flex-col items-center animate-fade-in-up" style="animation-delay: 0.3s;">
-                        <div class="flex items-center justify-center w-20 h-20 rounded-full bg-blue-100 text-primary text-3xl font-bold mb-4">1</div>
-                        <h3 class="font-bold text-xl mb-2" data-translate="howitworksStep1Title">Request a Quote</h3>
+                        <div class="flex items-center justify-center w-20 h-20 mb-4 text-3xl font-bold bg-blue-100 rounded-full text-primary">1</div>
+                        <h3 class="mb-2 text-xl font-bold" data-translate="howitworksStep1Title">Request a Quote</h3>
                         <p class="text-gray-600" data-translate="howitworksStep1Desc">Fill out our quick contact form or give us a call to tell us about your cleaning needs.</p>
                     </div>
                     <!-- Step 2 -->
                     <div class="flex flex-col items-center animate-fade-in-up" style="animation-delay: 0.4s;">
-                         <div class="flex items-center justify-center w-20 h-20 rounded-full bg-blue-100 text-primary text-3xl font-bold mb-4">2</div>
-                        <h3 class="font-bold text-xl mb-2" data-translate="howitworksStep2Title">We Clean Your Space</h3>
+                         <div class="flex items-center justify-center w-20 h-20 mb-4 text-3xl font-bold bg-blue-100 rounded-full text-primary">2</div>
+                        <h3 class="mb-2 text-xl font-bold" data-translate="howitworksStep2Title">We Clean Your Space</h3>
                         <p class="text-gray-600" data-translate="howitworksStep2Desc">Our professional, vetted team arrives on time with eco-friendly supplies to make your home sparkle.</p>
                     </div>
                     <!-- Step 3 -->
                     <div class="flex flex-col items-center animate-fade-in-up" style="animation-delay: 0.5s;">
-                         <div class="flex items-center justify-center w-20 h-20 rounded-full bg-blue-100 text-primary text-3xl font-bold mb-4">3</div>
-                        <h3 class="font-bold text-xl mb-2" data-translate="howitworksStep3Title">Enjoy the Freshness</h3>
+                         <div class="flex items-center justify-center w-20 h-20 mb-4 text-3xl font-bold bg-blue-100 rounded-full text-primary">3</div>
+                        <h3 class="mb-2 text-xl font-bold" data-translate="howitworksStep3Title">Enjoy the Freshness</h3>
                         <p class="text-gray-600" data-translate="howitworksStep3Desc">Come back to a spotless, fresh-smelling space and enjoy your free time.</p>
                     </div>
                 </div>
@@ -859,13 +859,13 @@
         </section>
 
         <section id="comparison" class="py-16 bg-gray-50" aria-labelledby="comparison-heading">
-            <div class="container mx-auto px-6">
-                 <div class="text-center max-w-3xl mx-auto">
-                    <h2 id="comparison-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="comparisonTitle">Compare Our Cleaning Packages</h2>
-                    <p class="text-gray-600 mb-12 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="comparisonSubtitle">Find the perfect service for your needs. Contact us for a custom quote for commercial spaces.</p>
+            <div class="container px-6 mx-auto">
+                 <div class="max-w-3xl mx-auto text-center">
+                    <h2 id="comparison-heading" class="mb-4 text-3xl font-bold text-primary animate-fade-in-up" data-translate="comparisonTitle">Compare Our Cleaning Packages</h2>
+                    <p class="mb-12 text-gray-600 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="comparisonSubtitle">Find the perfect service for your needs. Contact us for a custom quote for commercial spaces.</p>
                 </div>
 
-                <div class="comparison-table max-w-5xl mx-auto animate-fade-in-up" style="animation-delay: 0.3s;">
+                <div class="max-w-5xl mx-auto comparison-table animate-fade-in-up" style="animation-delay: 0.3s;">
                     <!-- Headers -->
                     <div class="table-header feature-name" data-translate="comparisonHeaderFeature">Feature</div>
                     <div class="table-header" data-translate="service1Title">Residential Cleaning</div>
@@ -931,22 +931,22 @@
         </section>
         
         <section id="service-area" class="py-16 bg-white" aria-labelledby="area-heading">
-             <div class="container mx-auto px-6">
-                <div class="grid md:grid-cols-2 gap-12 items-center">
+             <div class="container px-6 mx-auto">
+                <div class="grid items-center gap-12 md:grid-cols-2">
                     <div class="animate-fade-in-up">
-                         <h2 id="area-heading" class="text-3xl font-bold text-primary mb-4" data-translate="areaTitle">Proudly Serving the Rhine-Main Area</h2>
+                         <h2 id="area-heading" class="mb-4 text-3xl font-bold text-primary" data-translate="areaTitle">Proudly Serving the Rhine-Main Area</h2>
                          <p class="mb-6 text-gray-700" data-translate="areaSubtitle">We provide reliable, high-quality cleaning services to homes and businesses in the following areas:</p>
                          <ul class="grid grid-cols-2 gap-2 text-gray-700">
-                             <li class="flex items-center"><i class="fas fa-map-marker-alt text-secondary mr-2"></i>Bischofsheim</li>
-                             <li class="flex items-center"><i class="fas fa-map-marker-alt text-secondary mr-2"></i>Mainz</li>
-                             <li class="flex items-center"><i class="fas fa-map-marker-alt text-secondary mr-2"></i>Wiesbaden</li>
-                             <li class="flex items-center"><i class="fas fa-map-marker-alt text-secondary mr-2"></i>Ginsheim-Gustavsburg</li>
-                             <li class="flex items-center"><i class="fas fa-map-marker-alt text-secondary mr-2"></i>Rüsselsheim</li>
-                             <li class="flex items-center"><i class="fas fa-map-marker-alt text-secondary mr-2"></i>And surrounding areas!</li>
+                             <li class="flex items-center"><i class="mr-2 fas fa-map-marker-alt text-secondary"></i>Bischofsheim</li>
+                             <li class="flex items-center"><i class="mr-2 fas fa-map-marker-alt text-secondary"></i>Mainz</li>
+                             <li class="flex items-center"><i class="mr-2 fas fa-map-marker-alt text-secondary"></i>Wiesbaden</li>
+                             <li class="flex items-center"><i class="mr-2 fas fa-map-marker-alt text-secondary"></i>Ginsheim-Gustavsburg</li>
+                             <li class="flex items-center"><i class="mr-2 fas fa-map-marker-alt text-secondary"></i>Rüsselsheim</li>
+                             <li class="flex items-center"><i class="mr-2 fas fa-map-marker-alt text-secondary"></i>And surrounding areas!</li>
                          </ul>
                          <p class="mt-4 text-sm text-gray-500">Including ZIP codes: 65474, 55116-55131, 65183-65207, and more.</p>
                     </div>
-                     <div class="animate-fade-in-up rounded-xl shadow-lg overflow-hidden" style="animation-delay: 0.2s;">
+                     <div class="overflow-hidden shadow-lg animate-fade-in-up rounded-xl" style="animation-delay: 0.2s;">
                         <iframe 
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d164160.0388909893!2d8.140733519398858!3d50.0213192453508!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47bd9a250c6f5d87%3A0x422d4d510db1ba0!2sMainz!5e0!3m2!1sen!2sde!4v1664456345678!5m2!1sen!2sde" 
                             width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" 
@@ -959,57 +959,57 @@
         </section>
 
         <section id="about" class="py-16 bg-gray-50" aria-labelledby="about-heading">
-            <div class="container mx-auto px-6">
-                <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="container px-6 mx-auto">
+                <div class="grid items-center gap-12 md:grid-cols-2">
                     <div>
-                        <h2 id="about-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="aboutTitle">Warum AJK Cleaning wählen? - Professioneller Reinigungsservice Deutschland</h2>
+                        <h2 id="about-heading" class="mb-4 text-3xl font-bold text-primary animate-fade-in-up" data-translate="aboutTitle">Warum AJK Cleaning wählen? - Professioneller Reinigungsservice Deutschland</h2>
                         <p class="mb-6 text-gray-700 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="aboutP1">AJK Cleaning ist Ihr vertrauensvoller Partner für professionelle Reinigungsdienstleistungen in Deutschland. Wir bieten Wohnungsreinigung, Büroreinigung und Gewerbereinigung mit ökologischen Produkten und höchsten Qualitätsstandards.</p>
                         <p class="mb-6 text-gray-700 animate-fade-in-up" style="animation-delay: 0.3s;" data-translate="aboutP2">Seit 2022 sind wir einer der führenden Reinigungsservices in Bischofsheim, Mainz, Wiesbaden und Umgebung. Hunderte zufriedene Kunden vertrauen auf unsere professionelle Reinigung.</p>
-                        <div class="space-y-4 mt-8">
-                            <div class="trust-point p-4 rounded-lg flex items-center animate-fade-in-up" style="animation-delay: 0.4s;"><i class="fas fa-shield-alt text-primary text-xl w-8 text-center" aria-hidden="true"></i><span class="font-medium text-gray-700 ml-3" data-translate="aboutPoint1">Fully Insured & Bonded</span></div>
-                            <div class="trust-point p-4 rounded-lg flex items-center animate-fade-in-up" style="animation-delay: 0.5s;"><i class="fas fa-leaf text-green-600 text-xl w-8 text-center" aria-hidden="true"></i><span class="font-medium text-gray-700 ml-3" data-translate="aboutPoint2">Eco-Friendly Products</span></div>
-                            <div class="trust-point p-4 rounded-lg flex items-center animate-fade-in-up" style="animation-delay: 0.6s;"><i class="fas fa-user-check text-primary text-xl w-8 text-center" aria-hidden="true"></i><span class="font-medium text-gray-700 ml-3" data-translate="aboutPoint3">Trained Professionals</span></div>
-                            <div class="trust-point p-4 rounded-lg flex items-center animate-fade-in-up" style="animation-delay: 0.7s;"><i class="fas fa-thumbs-up text-green-600 text-xl w-8 text-center" aria-hidden="true"></i><span class="font-medium text-gray-700 ml-3" data-translate="aboutPoint4">Satisfaction Guaranteed</span></div>
+                        <div class="mt-8 space-y-4">
+                            <div class="flex items-center p-4 rounded-lg trust-point animate-fade-in-up" style="animation-delay: 0.4s;"><i class="w-8 text-xl text-center fas fa-shield-alt text-primary" aria-hidden="true"></i><span class="ml-3 font-medium text-gray-700" data-translate="aboutPoint1">Fully Insured & Bonded</span></div>
+                            <div class="flex items-center p-4 rounded-lg trust-point animate-fade-in-up" style="animation-delay: 0.5s;"><i class="w-8 text-xl text-center text-green-600 fas fa-leaf" aria-hidden="true"></i><span class="ml-3 font-medium text-gray-700" data-translate="aboutPoint2">Eco-Friendly Products</span></div>
+                            <div class="flex items-center p-4 rounded-lg trust-point animate-fade-in-up" style="animation-delay: 0.6s;"><i class="w-8 text-xl text-center fas fa-user-check text-primary" aria-hidden="true"></i><span class="ml-3 font-medium text-gray-700" data-translate="aboutPoint3">Trained Professionals</span></div>
+                            <div class="flex items-center p-4 rounded-lg trust-point animate-fade-in-up" style="animation-delay: 0.7s;"><i class="w-8 text-xl text-center text-green-600 fas fa-thumbs-up" aria-hidden="true"></i><span class="ml-3 font-medium text-gray-700" data-translate="aboutPoint4">Satisfaction Guaranteed</span></div>
                         </div>
                     </div>
                     <div class="animate-fade-in-up" style="animation-delay: 0.8s;">
-                        <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Professional cleaning team working together" class="rounded-xl shadow-lg" width="600" height="400" loading="lazy">
+                        <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Professional cleaning team working together" class="shadow-lg rounded-xl" width="600" height="400" loading="lazy">
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="testimonials" class="py-16 bg-white">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="testimonialsTitle">What Our Customers Say</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto mb-6 animate-fade-in-up" style="animation-delay: 0.1s;" data-translate="testimonialsSubtitle">We're proud of our 5-star reputation. Here's what some of our clients have to say.</p>
-                <div class="flex justify-center items-center gap-2 mb-12 animate-fade-in-up" style="animation-delay: 0.2s;">
+            <div class="container px-6 mx-auto text-center">
+                <h2 class="mb-4 text-3xl font-bold text-primary animate-fade-in-up" data-translate="testimonialsTitle">What Our Customers Say</h2>
+                <p class="max-w-2xl mx-auto mb-6 text-gray-600 animate-fade-in-up" style="animation-delay: 0.1s;" data-translate="testimonialsSubtitle">We're proud of our 5-star reputation. Here's what some of our clients have to say.</p>
+                <div class="flex items-center justify-center gap-2 mb-12 animate-fade-in-up" style="animation-delay: 0.2s;">
                       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png" alt="Google Logo" class="h-6">
-                      <span class="font-semibold text-lg text-gray-700">Google Rating</span>
-                      <div class="stars flex items-center text-yellow-500">
+                      <span class="text-lg font-semibold text-gray-700">Google Rating</span>
+                      <div class="flex items-center text-yellow-500 stars">
                           <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
                       </div>
                       <span class="font-bold text-gray-800">4.9</span>
                       <span class="text-gray-500">(58 reviews)</span>
                 </div>
 
-                <div class="grid md:grid-cols-3 gap-8 mt-8">
-                    <div class="testimonial-card bg-white p-8 rounded-lg shadow-md animate-fade-in-up" style="animation-delay: 0.3s;">
-                        <img src="https://placehold.co/80x80/e0e7ff/374151?text=A" class="w-20 h-20 mx-auto rounded-full -mt-16 border-4 border-white" alt="Customer avatar">
-                        <div class="stars my-4"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                        <p class="text-gray-600 italic">"AJK Cleaning did an amazing job on our move-out clean. The apartment was spotless and we got our full deposit back. Highly recommend!"</p>
+                <div class="grid gap-8 mt-8 md:grid-cols-3">
+                    <div class="p-8 bg-white rounded-lg shadow-md testimonial-card animate-fade-in-up" style="animation-delay: 0.3s;">
+                        <img src="https://placehold.co/80x80/e0e7ff/374151?text=A" class="w-20 h-20 mx-auto -mt-16 border-4 border-white rounded-full" alt="Customer avatar">
+                        <div class="my-4 stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                        <p class="italic text-gray-600">"AJK Cleaning did an amazing job on our move-out clean. The apartment was spotless and we got our full deposit back. Highly recommend!"</p>
                         <p class="mt-4 font-semibold text-primary">- Maria S. from Mainz</p>
                     </div>
-                    <div class="testimonial-card bg-white p-8 rounded-lg shadow-md animate-fade-in-up" style="animation-delay: 0.4s;">
-                        <img src="https://placehold.co/80x80/e0e7ff/374151?text=B" class="w-20 h-20 mx-auto rounded-full -mt-16 border-4 border-white" alt="Customer avatar">
-                        <div class="stars my-4"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                        <p class="text-gray-600 italic">"Reliable, professional, and thorough. Our office has never looked better. The team is friendly and always on time. Five stars!"</p>
+                    <div class="p-8 bg-white rounded-lg shadow-md testimonial-card animate-fade-in-up" style="animation-delay: 0.4s;">
+                        <img src="https://placehold.co/80x80/e0e7ff/374151?text=B" class="w-20 h-20 mx-auto -mt-16 border-4 border-white rounded-full" alt="Customer avatar">
+                        <div class="my-4 stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                        <p class="italic text-gray-600">"Reliable, professional, and thorough. Our office has never looked better. The team is friendly and always on time. Five stars!"</p>
                         <p class="mt-4 font-semibold text-primary">- Thomas K. from Wiesbaden</p>
                     </div>
-                    <div class="testimonial-card bg-white p-8 rounded-lg shadow-md animate-fade-in-up" style="animation-delay: 0.5s;">
-                        <img src="https://placehold.co/80x80/e0e7ff/374151?text=C" class="w-20 h-20 mx-auto rounded-full -mt-16 border-4 border-white" alt="Customer avatar">
-                        <div class="stars my-4"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                        <p class="text-gray-600 italic">"I love coming home after AJK has been there. They pay attention to the little details and use products that are safe for my kids and pets."</p>
+                    <div class="p-8 bg-white rounded-lg shadow-md testimonial-card animate-fade-in-up" style="animation-delay: 0.5s;">
+                        <img src="https://placehold.co/80x80/e0e7ff/374151?text=C" class="w-20 h-20 mx-auto -mt-16 border-4 border-white rounded-full" alt="Customer avatar">
+                        <div class="my-4 stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                        <p class="italic text-gray-600">"I love coming home after AJK has been there. They pay attention to the little details and use products that are safe for my kids and pets."</p>
                         <p class="mt-4 font-semibold text-primary">- Julia R. from Bischofsheim</p>
                     </div>
                 </div>
@@ -1017,25 +1017,25 @@
         </section>
 
         <section id="faq" class="py-16 bg-gray-50" aria-labelledby="faq-heading">
-            <div class="container mx-auto px-6">
-                <div class="text-center max-w-3xl mx-auto">
-                    <h2 id="faq-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="faqTitle">Frequently Asked Questions</h2>
-                    <p class="text-gray-600 mb-12 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="faqSubtitle">Have questions? We have answers. Here are some common queries we receive from our clients in the Bischofsheim area.</p>
+            <div class="container px-6 mx-auto">
+                <div class="max-w-3xl mx-auto text-center">
+                    <h2 id="faq-heading" class="mb-4 text-3xl font-bold text-primary animate-fade-in-up" data-translate="faqTitle">Frequently Asked Questions</h2>
+                    <p class="mb-12 text-gray-600 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="faqSubtitle">Have questions? We have answers. Here are some common queries we receive from our clients in the Bischofsheim area.</p>
                 </div>
                 <div class="max-w-3xl mx-auto space-y-4" id="faq-container"></div>
             </div>
         </section>
 
         <section id="calculator" class="py-16 bg-white" aria-labelledby="calculator-heading">
-            <div class="container mx-auto px-6 max-w-3xl">
-                 <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 text-center animate-fade-in-up">
-                      <h2 id="calculator-heading" class="text-3xl font-bold text-primary mb-2" data-translate="calculatorTitle">Get an Instant Estimate</h2>
-                      <p class="text-gray-600 mb-8" data-translate="calculatorSubtitle">This is an estimate only. A final quote will be provided after consultation.</p>
+            <div class="container max-w-3xl px-6 mx-auto">
+                 <div class="p-8 text-center bg-white border border-gray-100 shadow-lg rounded-xl animate-fade-in-up">
+                      <h2 id="calculator-heading" class="mb-2 text-3xl font-bold text-primary" data-translate="calculatorTitle">Get an Instant Estimate</h2>
+                      <p class="mb-8 text-gray-600" data-translate="calculatorSubtitle">This is an estimate only. A final quote will be provided after consultation.</p>
                       
                       <div class="space-y-6 text-left">
                             <div>
                                 <label for="calc-service" class="font-semibold text-gray-700">Service Type</label>
-                                <select id="calc-service" class="w-full mt-2 p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <select id="calc-service" class="w-full p-3 mt-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
                                       <option value="200" data-type="residential" data-translate="service1Title">Residential Cleaning</option>
                                       <option value="300" data-type="commercial" data-translate="service2Title">Commercial Cleaning</option>
                                       <option value="350" data-type="deep-residential" data-translate="service3Title">Deep Cleaning</option>
@@ -1046,16 +1046,16 @@
                             <div id="residential-inputs">
                                 <div class="space-y-6">
                                     <div>
-                                        <div class="flex justify-between items-center mb-2">
+                                        <div class="flex items-center justify-between mb-2">
                                             <label for="calc-bedrooms" class="font-semibold text-gray-700">Bedrooms</label>
-                                            <span id="bedrooms-value" class="font-bold text-primary bg-blue-100 py-1 px-3 rounded-full text-sm">3</span>
+                                            <span id="bedrooms-value" class="px-3 py-1 text-sm font-bold bg-blue-100 rounded-full text-primary">3</span>
                                         </div>
                                         <input type="range" id="calc-bedrooms" min="1" max="6" value="3" class="w-full styled-slider">
                                     </div>
                                     <div>
-                                        <div class="flex justify-between items-center mb-2">
+                                        <div class="flex items-center justify-between mb-2">
                                             <label for="calc-bathrooms" class="font-semibold text-gray-700">Bathrooms</label>
-                                            <span id="bathrooms-value" class="font-bold text-primary bg-blue-100 py-1 px-3 rounded-full text-sm">2</span>
+                                            <span id="bathrooms-value" class="px-3 py-1 text-sm font-bold bg-blue-100 rounded-full text-primary">2</span>
                                         </div>
                                         <input type="range" id="calc-bathrooms" min="1" max="4" value="2" class="w-full styled-slider">
                                     </div>
@@ -1065,15 +1065,15 @@
                             <div id="commercial-inputs" class="hidden">
                                 <div class="space-y-6">
                                     <div>
-                                        <div class="flex justify-between items-center mb-2">
+                                        <div class="flex items-center justify-between mb-2">
                                             <label for="calc-sqm" class="font-semibold text-gray-700">Area (m²)</label>
-                                            <span id="sqm-value" class="font-bold text-primary bg-blue-100 py-1 px-3 rounded-full text-sm">100</span>
+                                            <span id="sqm-value" class="px-3 py-1 text-sm font-bold bg-blue-100 rounded-full text-primary">100</span>
                                         </div>
                                         <input type="range" id="calc-sqm" min="20" max="500" value="100" step="10" class="w-full styled-slider">
                                     </div>
                                     <div>
                                          <label for="calc-frequency" class="font-semibold text-gray-700">Cleaning Frequency</label>
-                                         <select id="calc-frequency" class="w-full mt-2 p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                         <select id="calc-frequency" class="w-full p-3 mt-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
                                               <option value="1.0">One Time</option>
                                               <option value="0.85">Weekly</option>
                                               <option value="0.90">Bi-Weekly</option>
@@ -1086,19 +1086,19 @@
                       
                       <div class="mt-8 text-center">
                           <p class="text-2xl font-bold text-gray-800" data-translate="calculatorResultTitle">Estimated Price:</p>
-                          <p id="estimate-result" class="text-4xl font-bold text-secondary mt-2">€250 - €300</p>
-                          <p class="text-sm text-gray-500 mt-2" data-translate="calculatorResultSubtitle">Based on a one-time cleaning</p>
+                          <p id="estimate-result" class="mt-2 text-4xl font-bold text-secondary">€250 - €300</p>
+                          <p class="mt-2 text-sm text-gray-500" data-translate="calculatorResultSubtitle">Based on a one-time cleaning</p>
                       </div>
                  </div>
             </div>
         </section>
         
         <section id="ai-tips" class="py-16 bg-gray-50" aria-labelledby="tip-heading">
-            <div class="container mx-auto px-6">
-                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 text-center max-w-3xl mx-auto">
-                    <h2 id="tip-heading" class="text-3xl font-bold text-primary mb-4 animate-fade-in-up" data-translate="tipTitle">✨ Get a Pro Cleaning Tip</h2>
-                    <p class="text-gray-600 mb-6 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="tipSubtitle">Stuck on a tough cleaning problem? Let our AI expert help you out!</p>
-                    <div class="grid sm:grid-cols-2 gap-4 mb-4 animate-fade-in-up" style="animation-delay: 0.3s;">
+            <div class="container px-6 mx-auto">
+                <div class="max-w-3xl p-8 mx-auto text-center bg-white border border-gray-100 shadow-lg rounded-xl">
+                    <h2 id="tip-heading" class="mb-4 text-3xl font-bold text-primary animate-fade-in-up" data-translate="tipTitle">✨ Get a Pro Cleaning Tip</h2>
+                    <p class="mb-6 text-gray-600 animate-fade-in-up" style="animation-delay: 0.2s;" data-translate="tipSubtitle">Stuck on a tough cleaning problem? Let our AI expert help you out!</p>
+                    <div class="grid gap-4 mb-4 sm:grid-cols-2 animate-fade-in-up" style="animation-delay: 0.3s;">
                         <div>
                             <label for="tip-room" class="sr-only" data-translate="tipRoomLabel">Select a Room</label>
                             <select id="tip-room" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
@@ -1115,9 +1115,9 @@
                             </select>
                         </div>
                     </div>
-                    <button id="generate-tip-btn" class="bg-secondary text-white px-6 py-3 rounded-lg shadow hover:bg-secondary-dark transition-colors duration-300 w-full sm:w-auto animate-fade-in-up" style="animation-delay: 0.4s;" data-translate="tipBtnGenerate">Generate Tip</button>
-                    <div id="tip-result-container" class="mt-6 text-left p-6 bg-blue-50 rounded-lg border border-blue-200 hidden opacity-0 animate-fade-in-up">
-                        <div id="tip-result-loader" class="flex justify-center items-center"><div class="loader"></div></div>
+                    <button id="generate-tip-btn" class="w-full px-6 py-3 text-white transition-colors duration-300 rounded-lg shadow bg-secondary hover:bg-secondary-dark sm:w-auto animate-fade-in-up" style="animation-delay: 0.4s;" data-translate="tipBtnGenerate">Generate Tip</button>
+                    <div id="tip-result-container" class="hidden p-6 mt-6 text-left border border-blue-200 rounded-lg opacity-0 bg-blue-50 animate-fade-in-up">
+                        <div id="tip-result-loader" class="flex items-center justify-center"><div class="loader"></div></div>
                         <p id="tip-result-text" class="text-gray-800"></p>
                     </div>
                 </div>
@@ -1125,37 +1125,37 @@
         </section>
 
         <section id="contact" class="py-16 bg-white" aria-labelledby="contact-heading">
-            <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12">
+            <div class="container grid gap-12 px-6 mx-auto md:grid-cols-2">
                 <div class="animate-fade-in-up">
-                    <h2 id="contact-heading" class="text-3xl font-bold text-primary mb-4" data-translate="contactTitle">Get In Touch</h2>
+                    <h2 id="contact-heading" class="mb-4 text-3xl font-bold text-primary" data-translate="contactTitle">Get In Touch</h2>
                     <p class="mb-6 text-gray-700" data-translate="contactSubtitle">We're here to answer any questions. Reach out for a free, no-obligation quote for your cleaning needs in Bischofsheim.</p>
                     <div class="space-y-3">
-                        <p class="flex items-center"><i class="fas fa-phone text-primary mr-3 w-5" aria-hidden="true"></i> <a href="tel:+4917661852286" class="hover:underline">+49 176 61852286</a></p>
-                        <p class="flex items-center"><i class="fas fa-envelope text-primary mr-3 w-5" aria-hidden="true"></i> <a href="mailto:info@ajkcleaners.de" class="hover:underline">info@ajkcleaners.de</a></p>
-                        <p class="flex items-center"><i class="fas fa-map-marker-alt text-primary mr-3 w-5" aria-hidden="true"></i><a href="https://maps.app.goo.gl/95dKa1nL9D2gZ7947" target="_blank" rel="noopener noreferrer">Bahnhofstraße 5, 65474 Bischofsheim, Germany</a></p>
-                        <p class="flex items-center"><i class="fas fa-clock text-primary mr-3 w-5" aria-hidden="true"></i> <span data-translate="contactHours">Mon - Sat: 8:00am - 6:00pm</span></p>
+                        <p class="flex items-center"><i class="w-5 mr-3 fas fa-phone text-primary" aria-hidden="true"></i> <a href="tel:+4917661852286" class="hover:underline">+49 176 61852286</a></p>
+                        <p class="flex items-center"><i class="w-5 mr-3 fas fa-envelope text-primary" aria-hidden="true"></i> <a href="mailto:info@ajkcleaners.de" class="hover:underline">info@ajkcleaners.de</a></p>
+                        <p class="flex items-center"><i class="w-5 mr-3 fas fa-map-marker-alt text-primary" aria-hidden="true"></i><a href="https://maps.app.goo.gl/95dKa1nL9D2gZ7947" target="_blank" rel="noopener noreferrer">Bahnhofstraße 5, 65474 Bischofsheim, Germany</a></p>
+                        <p class="flex items-center"><i class="w-5 mr-3 fas fa-clock text-primary" aria-hidden="true"></i> <span data-translate="contactHours">Mon - Sat: 8:00am - 6:00pm</span></p>
                     </div>
-                    <div class="mt-6 rounded-lg overflow-hidden border shadow-md">
+                    <div class="mt-6 overflow-hidden border rounded-lg shadow-md">
                         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3333.3437002182854!2d8.356986576530165!3d49.99001767150799!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47bd99f5e82f18e9%3A0x40cfb0ac711244f6!2sAJK%20Cleaning%20Service!5e1!3m2!1sen!2snp!4v1758990313764!5m2!1sen!2snp" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="AJK Cleaning Company Location Map"></iframe>
                     </div>
                 </div>
-                <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 animate-fade-in-up" style="animation-delay: 0.2s;">
-                    <h3 class="text-2xl font-bold text-primary mb-2" data-translate="formTitle">Request Your Free Quote</h3>
-                    <div class="text-sm text-center mb-6 text-secondary font-semibold"><i class="fas fa-fire"></i> Booked 3 times this week!</div>
+                <div class="p-8 bg-white border border-gray-100 shadow-lg rounded-xl animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <h3 class="mb-2 text-2xl font-bold text-primary" data-translate="formTitle">Request Your Free Quote</h3>
+                    <div class="mb-6 text-sm font-semibold text-center text-secondary"><i class="fas fa-fire"></i> Booked 3 times this week!</div>
                     <form id="contact-form" class="space-y-4" novalidate>
-                        <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="grid gap-4 sm:grid-cols-2">
                             <div>
                                 <label for="name" class="sr-only">Name</label>
-                                <input type="text" id="name" name="name" placeholder="Name *" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required aria-required="true" data-translate-placeholder="formName">
+                                <input type="text" id="name" name="name" placeholder="Name *" class="w-full p-3 border rounded-lg form-input focus:ring-2 focus:ring-primary focus:border-transparent" required aria-required="true" data-translate-placeholder="formName">
                             </div>
                              <div>
                                 <label for="phone" class="sr-only">Phone</label>
-                                <input type="tel" id="phone" name="phone" placeholder="Phone *" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required aria-required="true" data-translate-placeholder="formPhone">
+                                <input type="tel" id="phone" name="phone" placeholder="Phone *" class="w-full p-3 border rounded-lg form-input focus:ring-2 focus:ring-primary focus:border-transparent" required aria-required="true" data-translate-placeholder="formPhone">
                             </div>
                         </div>
                         <div>
                             <label for="email" class="sr-only">Email</label>
-                            <input type="email" id="email" name="email" placeholder="Email (Optional)" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" data-translate-placeholder="formEmail">
+                            <input type="email" id="email" name="email" placeholder="Email (Optional)" class="w-full p-3 border rounded-lg form-input focus:ring-2 focus:ring-primary focus:border-transparent" data-translate-placeholder="formEmail">
                         </div>
                         <div>
                             <label for="service" class="sr-only" data-translate="formServiceLabel">Select a Service</label>
@@ -1167,10 +1167,10 @@
                                 <option value="Move-In/Move-Out Cleaning" data-translate="service4Title">Move-In/Move-Out</option>
                             </select>
                         </div>
-                        <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="grid gap-4 sm:grid-cols-2">
                             <div>
                                 <label for="preferred-date" class="sr-only">Preferred Date</label>
-                                <input type="date" id="preferred-date" name="preferred_date" class="form-input w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" aria-label="Preferred Date">
+                                <input type="date" id="preferred-date" name="preferred_date" class="w-full p-3 border rounded-lg form-input focus:ring-2 focus:ring-primary focus:border-transparent" aria-label="Preferred Date">
                             </div>
                              <div>
                                 <label for="preferred-time" class="sr-only">Preferred Time</label>
@@ -1184,16 +1184,16 @@
                             <textarea id="message" name="message" placeholder="Message *" rows="4" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" required aria-required="true" data-translate-placeholder="formMessage" minlength="10" maxlength="1000"></textarea>
                             <div id="char-counter" class="char-counter">0 / 1000</div>
                         </div>
-                        <button type="submit" id="submit-btn" class="bg-secondary text-white px-6 py-3 rounded-lg shadow hover:bg-secondary-dark transition-colors duration-300 w-full font-semibold">
+                        <button type="submit" id="submit-btn" class="w-full px-6 py-3 font-semibold text-white transition-colors duration-300 rounded-lg shadow bg-secondary hover:bg-secondary-dark">
                             <span id="submit-text" data-translate="formBtnSubmit">Submit Request</span>
                             <span id="submit-loading" class="hidden" data-translate="formBtnSending">Sending...</span>
                         </button>
-                        <div id="form-success" class="bg-green-100 text-green-700 p-3 rounded-lg mt-4 hidden" role="alert" data-translate="formSuccess">Thank you! We'll be in touch soon.</div>
-                        <div id="form-error" class="bg-red-100 text-red-700 p-3 rounded-lg mt-4 hidden" role="alert" data-translate="formError">An error occurred. Please try again.</div>
+                        <div id="form-success" class="hidden p-3 mt-4 text-green-700 bg-green-100 rounded-lg" role="alert" data-translate="formSuccess">Thank you! We'll be in touch soon.</div>
+                        <div id="form-error" class="hidden p-3 mt-4 text-red-700 bg-red-100 rounded-lg" role="alert" data-translate="formError">An error occurred. Please try again.</div>
                         
                         <div class="relative flex !my-6 items-center">
                             <div class="flex-grow border-t border-gray-300"></div>
-                            <span class="flex-shrink mx-4 text-gray-500 text-xs uppercase">Or</span>
+                            <span class="flex-shrink mx-4 text-xs text-gray-500 uppercase">Or</span>
                             <div class="flex-grow border-t border-gray-300"></div>
                         </div>
 
@@ -1206,53 +1206,53 @@
         </section>
     </main>
     
-    <footer class="bg-primary text-white py-12" role="contentinfo">
-        <div class="container mx-auto px-6 grid md:grid-cols-4 gap-8">
+    <footer class="py-12 text-white bg-primary" role="contentinfo">
+        <div class="container grid gap-8 px-6 mx-auto md:grid-cols-4">
             <div>
-                <h4 class="font-bold text-xl mb-4" data-translate="companyName">AJK Cleaning Company</h4>
+                <h4 class="mb-4 text-xl font-bold" data-translate="companyName">AJK Cleaning Company</h4>
                 <p class="text-gray-200" data-translate="footerDesc">Premium Cleaning Solutions for Homes and Offices in Bischofsheim</p>
             </div>
             <div>
-                <h4 class="font-bold mb-4 text-lg" data-translate="footerLinksTitle">Quick Links</h4>
+                <h4 class="mb-4 text-lg font-bold" data-translate="footerLinksTitle">Quick Links</h4>
                 <ul class="space-y-2">
-                    <li><a href="#home" class="text-gray-200 hover:text-white transition-colors" data-translate="navHome">Home</a></li>
-                    <li><a href="#services" class="text-gray-200 hover:text-white transition-colors" data-translate="navServices">Services</a></li>
-                    <li><a href="#about" class="text-gray-200 hover:text-white transition-colors" data-translate="navAbout">About</a></li>
-                    <li><a href="#testimonials" class="text-gray-200 hover:text-white transition-colors" data-translate="navTestimonials">Testimonials</a></li>
-                    <li><a href="#faq" class="text-gray-200 hover:text-white transition-colors" data-translate="navFaq">FAQ</a></li>
-                    <li><a href="#contact" class="text-gray-200 hover:text-white transition-colors" data-translate="navContact">Contact</a></li>
+                    <li><a href="#home" class="text-gray-200 transition-colors hover:text-white" data-translate="navHome">Home</a></li>
+                    <li><a href="#services" class="text-gray-200 transition-colors hover:text-white" data-translate="navServices">Services</a></li>
+                    <li><a href="#about" class="text-gray-200 transition-colors hover:text-white" data-translate="navAbout">About</a></li>
+                    <li><a href="#testimonials" class="text-gray-200 transition-colors hover:text-white" data-translate="navTestimonials">Testimonials</a></li>
+                    <li><a href="#faq" class="text-gray-200 transition-colors hover:text-white" data-translate="navFaq">FAQ</a></li>
+                    <li><a href="#contact" class="text-gray-200 transition-colors hover:text-white" data-translate="navContact">Contact</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="font-bold mb-4 text-lg" data-translate="footerServicesTitle">Our Services</h4>
+                <h4 class="mb-4 text-lg font-bold" data-translate="footerServicesTitle">Our Services</h4>
                 <ul class="space-y-2">
-                    <li><a href="#services" class="text-gray-200 hover:text-white transition-colors" data-translate="service1Title">Residential Cleaning</a></li>
-                    <li><a href="#services" class="text-gray-200 hover:text-white transition-colors" data-translate="service2Title">Commercial Cleaning</a></li>
-                    <li><a href="#services" class="text-gray-200 hover:text-white transition-colors" data-translate="service3Title">Deep Cleaning</a></li>
+                    <li><a href="#services" class="text-gray-200 transition-colors hover:text-white" data-translate="service1Title">Residential Cleaning</a></li>
+                    <li><a href="#services" class="text-gray-200 transition-colors hover:text-white" data-translate="service2Title">Commercial Cleaning</a></li>
+                    <li><a href="#services" class="text-gray-200 transition-colors hover:text-white" data-translate="service3Title">Deep Cleaning</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="font-bold mb-4 text-lg" data-translate="footerFollowTitle">Follow Us</h4>
+                <h4 class="mb-4 text-lg font-bold" data-translate="footerFollowTitle">Follow Us</h4>
                 <div class="flex space-x-4">
-                    <a href="https://www.facebook.com/ajkcleaning" class="bg-white/10 hover:bg-white/20 transition-colors w-10 h-10 rounded-full flex items-center justify-center" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com/ajkcleaning" class="bg-white/10 hover:bg-white/20 transition-colors w-10 h-10 rounded-full flex items-center justify-center" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/ajkcleaning" class="flex items-center justify-center w-10 h-10 transition-colors rounded-full bg-white/10 hover:bg-white/20" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/ajkcleaning" class="flex items-center justify-center w-10 h-10 transition-colors rounded-full bg-white/10 hover:bg-white/20" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </div>
-        <div class="text-center mt-8 pt-6 border-t border-gray-600 text-gray-200 text-sm">
+        <div class="pt-6 mt-8 text-sm text-center text-gray-200 border-t border-gray-600">
              <a href="/impressum" class="hover:text-white" data-translate="footerImpressum">Impressum</a> | 
              <a href="/datenschutz" class="hover:text-white" data-translate="footerPrivacy">Data Protection</a>
         </div>
-        <div class="text-center mt-4 pt-4 text-gray-200 text-sm">
+        <div class="pt-4 mt-4 text-sm text-center text-gray-200">
             © <span id="copyright-year">2025</span> <span data-translate="companyName">AJK Cleaning Company</span>. <span data-translate="footerRights">All rights reserved.</span>
         </div>
     </footer>
 
-    <div class="sticky-cta fixed bottom-0 left-0 right-0 bg-white shadow-lg p-3 flex justify-around items-center md:hidden z-50">
-        <a href="tel:+4917661852286" class="flex items-center text-primary font-semibold px-4 py-2 text-center" data-translate="ctaCall">
-            <i class="fas fa-phone mr-2" aria-hidden="true"></i> Call Now
+    <div class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around p-3 bg-white shadow-lg sticky-cta md:hidden">
+        <a href="tel:+4917661852286" class="flex items-center px-4 py-2 font-semibold text-center text-primary" data-translate="ctaCall">
+            <i class="mr-2 fas fa-phone" aria-hidden="true"></i> Call Now
         </a>
-        <a href="#contact" class="bg-secondary text-white px-4 py-2 rounded-lg font-semibold text-center" data-translate="ctaQuote">Get Quote</a>
+        <a href="#contact" class="px-4 py-2 font-semibold text-center text-white rounded-lg bg-secondary" data-translate="ctaQuote">Get Quote</a>
     </div>
     
     <div id="chat-widget-enhanced" class="chat-widget-enhanced">
@@ -1312,7 +1312,7 @@
                 </div>
                 <div class="chat-input-area" id="chat-input-area" style="display: none;">
                     <input type="text" id="chat-input-enhanced" placeholder="Ask Alex a question..." maxlength="500" aria-label="Message input">
-                    <button id="chat-send-enhanced" type="button" aria-label="Send message"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg></button>
+                    <button id="chat-send-enhanced" type="button" aria-label="Send message"><svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" /></svg></button>
                 </div>
             </div>
         </div>
@@ -1320,18 +1320,18 @@
 
     <div id="checklist-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[2000] hidden opacity-0">
         <div id="checklist-modal-content" class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-lg max-h-[90vh] flex flex-col transform scale-95">
-            <div class="flex justify-between items-center border-b pb-3 mb-4">
+            <div class="flex items-center justify-between pb-3 mb-4 border-b">
                 <h2 id="checklist-modal-title" class="text-xl font-bold text-primary">Cleaning Checklist</h2>
-                <button id="checklist-modal-close" class="text-gray-500 hover:text-gray-800 text-2xl">×</button>
+                <button id="checklist-modal-close" class="text-2xl text-gray-500 hover:text-gray-800">×</button>
             </div>
-            <div id="checklist-modal-body" class="overflow-y-auto flex-grow">
-                <div id="checklist-loader" class="flex justify-center items-center py-10"><div class="loader"></div></div>
+            <div id="checklist-modal-body" class="flex-grow overflow-y-auto">
+                <div id="checklist-loader" class="flex items-center justify-center py-10"><div class="loader"></div></div>
                 <div id="checklist-content" class="hidden prose"></div>
-                <div id="checklist-error" class="hidden text-red-600 bg-red-100 p-4 rounded-lg"></div>
+                <div id="checklist-error" class="hidden p-4 text-red-600 bg-red-100 rounded-lg"></div>
             </div>
-            <div class="flex justify-end items-center border-t pt-4 mt-4 space-x-3">
-                <button id="checklist-modal-download" class="bg-secondary text-white font-semibold py-2 px-4 rounded-lg hover:bg-secondary-dark transition-colors hidden" data-translate="modalDownload">Download</button>
-                <button id="checklist-modal-close-bottom" class="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors" data-translate="modalClose">Close</button>
+            <div class="flex items-center justify-end pt-4 mt-4 space-x-3 border-t">
+                <button id="checklist-modal-download" class="hidden px-4 py-2 font-semibold text-white transition-colors rounded-lg bg-secondary hover:bg-secondary-dark" data-translate="modalDownload">Download</button>
+                <button id="checklist-modal-close-bottom" class="px-4 py-2 font-semibold text-gray-800 transition-colors bg-gray-200 rounded-lg hover:bg-gray-300" data-translate="modalClose">Close</button>
             </div>
         </div>
     </div>
@@ -1865,7 +1865,7 @@
                     const faqItem = document.createElement('div');
                     faqItem.className = 'faq-item bg-white p-5 rounded-lg shadow-sm border border-gray-200 animate-fade-in-up';
                     faqItem.style.animationDelay = `${0.3 + index * 0.1}s`;
-                    faqItem.innerHTML = `<div class="faq-question flex justify-between items-center font-semibold text-gray-800"><p>${item.q}</p><i class="fas fa-chevron-down faq-icon text-primary"></i></div><div class="faq-answer text-gray-600 pt-3">${item.a}</div>`;
+                    faqItem.innerHTML = `<div class="flex items-center justify-between font-semibold text-gray-800 faq-question"><p>${item.q}</p><i class="fas fa-chevron-down faq-icon text-primary"></i></div><div class="pt-3 text-gray-600 faq-answer">${item.a}</div>`;
                     faqContainer.appendChild(faqItem);
                 });
             }
