@@ -1318,7 +1318,7 @@
         </div>
     </div>
 
-    <div id="checklist-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[2000] hidden opacity-0">
+    <div id="checklist-modal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center p-4 z-[2000] hidden opacity-0">
         <div id="checklist-modal-content" class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-lg max-h-[90vh] flex flex-col transform scale-95">
             <div class="flex items-center justify-between pb-3 mb-4 border-b">
                 <h2 id="checklist-modal-title" class="text-xl font-bold text-primary">Cleaning Checklist</h2>
@@ -1899,6 +1899,7 @@
             checklistLoader.style.display = 'flex';
             checklistModalDownload.classList.add('hidden');
             checklistModal.classList.remove('hidden');
+            checklistModal.classList.add('flex');
             setTimeout(() => checklistModal.classList.remove('opacity-0'), 10);
             setTimeout(() => checklistModalContent.classList.remove('scale-95'), 10);
             generateChecklist(serviceName);
@@ -1907,7 +1908,7 @@
         const closeChecklistModal = () => {
             checklistModal.classList.add('opacity-0');
             checklistModalContent.classList.add('scale-95');
-            setTimeout(() => checklistModal.classList.add('hidden'), 300);
+            setTimeout(() => { checklistModal.classList.add('hidden'); checklistModal.classList.remove('flex'); }, 300);
         };
 
         const generateChecklist = async (serviceName) => {

@@ -1143,7 +1143,7 @@
 </div>
 
 <!-- Terms Modal -->
-<div id="terms-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+<div id="terms-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
         <div class="p-6 border-b flex justify-between items-center">
             <h3 class="text-xl font-poppins font-bold text-slate-800">Terms of Service</h3>
@@ -1175,7 +1175,7 @@
 </div>
 
 <!-- Privacy Policy Modal -->
-<div id="privacy-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+<div id="privacy-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
         <div class="p-6 border-b flex justify-between items-center">
             <h3 class="text-xl font-poppins font-bold text-slate-800">Privacy Policy</h3>
@@ -1767,14 +1767,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             if(timeBtn) { state.time = timeBtn.dataset.time; renderTimeSlots(); updateUI(); }
         });
 
-        document.querySelectorAll('.terms-link').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); DOM.termsModal.classList.remove('hidden'); }); });
-        const closeModal = () => DOM.termsModal.classList.add('hidden');
+        document.querySelectorAll('.terms-link').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); DOM.termsModal.classList.remove('hidden'); DOM.termsModal.classList.add('flex'); }); });
+        const closeModal = () => { DOM.termsModal.classList.add('hidden'); DOM.termsModal.classList.remove('flex'); };
         DOM.termsModal.addEventListener('click', (e) => { if (e.target === DOM.termsModal) closeModal(); });
         document.getElementById('close-modal-btn').addEventListener('click', closeModal);
         document.getElementById('modal-close-footer').addEventListener('click', closeModal);
 
-        document.querySelectorAll('.privacy-link').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); DOM.privacyModal.classList.remove('hidden'); }); });
-        const closePrivacyModal = () => DOM.privacyModal.classList.add('hidden');
+        document.querySelectorAll('.privacy-link').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); DOM.privacyModal.classList.remove('hidden'); DOM.privacyModal.classList.add('flex'); }); });
+        const closePrivacyModal = () => { DOM.privacyModal.classList.add('hidden'); DOM.privacyModal.classList.remove('flex'); };
         DOM.privacyModal.addEventListener('click', (e) => { if (e.target === DOM.privacyModal) closePrivacyModal(); });
         document.getElementById('close-privacy-modal-btn').addEventListener('click', closePrivacyModal);
         document.getElementById('privacy-modal-close-footer').addEventListener('click', closePrivacyModal);

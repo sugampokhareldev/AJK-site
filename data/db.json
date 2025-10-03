@@ -21,43 +21,27 @@
       "ip": "127.0.0.1"
     },
     {
-      "id": 1759497886902,
+      "id": 1759500387050,
       "name": "sugam pokharel",
-      "email": "pokharels562@gmail.com",
+      "email": "sanudhakal119@gmail.com",
       "phone": "9803462854",
       "service": "Commercial Cleaning",
-      "message": "sssssssssss",
+      "message": "Hello. Testing Of Quote. How are you",
       "preferred_date": "2025-05-05",
-      "preferred_time": "Afternoon (12pm-4pm)",
-      "submitted_at": "2025-10-03T13:24:46.902Z",
-      "ip": "127.0.0.1",
-      "status": "new"
-    },
-    {
-      "id": 1759498350453,
-      "name": "sugam pokharel",
-      "email": "pokharels562@gmail.com",
-      "phone": "9803462854",
-      "service": "Commercial Cleaning",
-      "message": "sssssssssssssssssssss",
-      "preferred_date": "5333-05-05",
-      "preferred_time": "Afternoon (12pm-4pm)",
-      "submitted_at": "2025-10-03T13:32:30.453Z",
-      "ip": "127.0.0.1",
-      "status": "new"
-    },
-    {
-      "id": 1759498987481,
-      "name": "sugam pokharel",
-      "email": "pokharels562@gmail.com",
-      "phone": "9803462854",
-      "service": "Deep Cleaning",
-      "message": "sssssssssssssss",
-      "preferred_date": "",
       "preferred_time": "Morning (8am-12pm)",
-      "submitted_at": "2025-10-03T13:43:07.481Z",
+      "submitted_at": "2025-10-03T14:06:27.050Z",
       "ip": "127.0.0.1",
-      "status": "new"
+      "status": "new",
+      "messageHistory": [
+        {
+          "type": "follow-up",
+          "subject": "Follow-Up mail to your Request",
+          "message": "Hello. This is test message email to the Quote Submission. Hello, Hi How are you. HIIIIIIIIIIIIIIII",
+          "sentAt": "2025-10-03T14:08:34.393Z",
+          "sentBy": "admin"
+        }
+      ],
+      "lastContactedAt": "2025-10-03T14:08:34.393Z"
     }
   ],
   "admin_users": [
