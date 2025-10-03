@@ -61,6 +61,185 @@ emailTransporter.verify((error, success) => {
     }
 });
 
+// Function to send customized quote email to client
+async function sendQuoteEmail(quoteData) {
+    const {
+        customerName,
+        customerEmail,
+        customerPhone,
+        serviceType,
+        propertySize,
+        frequency,
+        specialRequirements,
+        preferredDate,
+        preferredTime,
+        salutation = 'Dear'
+    } = quoteData;
+
+    const quoteHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Quote Request Received - AJK Cleaning</title>
+            <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f4f4f4; }
+                .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+                .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+                .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+                .header p { margin: 10px 0 0 0; font-size: 16px; opacity: 0.9; }
+                .content { padding: 30px; }
+                .quote-details { background: #f8f9fa; border-radius: 8px; padding: 25px; margin: 20px 0; }
+                .detail-row { display: flex; justify-content: space-between; margin: 12px 0; padding: 8px 0; border-bottom: 1px solid #e9ecef; }
+                .detail-row:last-child { border-bottom: none; }
+                .detail-label { font-weight: bold; color: #495057; }
+                .detail-value { color: #212529; }
+                .next-steps { background: #e8f5e8; border-left: 4px solid #28a745; padding: 20px; margin: 20px 0; }
+                .next-steps h3 { color: #155724; margin: 0 0 15px 0; }
+                .step-list { margin: 0; padding-left: 20px; }
+                .step-list li { margin: 8px 0; color: #155724; }
+                .contact-info { background: #e3f2fd; border-left: 4px solid #2196f3; padding: 20px; margin: 20px 0; }
+                .contact-info h3 { color: #1976d2; margin: 0 0 15px 0; }
+                .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #6c757d; border-top: 1px solid #e9ecef; }
+                .highlight { background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 20px; margin: 20px 0; }
+                .highlight h3 { color: #856404; margin: 0 0 10px 0; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>📋 Quote Request Received</h1>
+                    <p>AJK Cleaning Company - Professional Cleaning Services</p>
+                </div>
+                
+                <div class="content">
+                    <div class="highlight">
+                        <h3>✅ Thank You for Your Interest!</h3>
+                        <p>We have received your quote request and our team will prepare a customized proposal for your cleaning needs.</p>
+                    </div>
+
+                    <div class="quote-details">
+                        <h3 style="margin-top: 0; color: #495057;">📋 Your Quote Request Details</h3>
+                        <div class="detail-row">
+                            <span class="detail-label">Service Type:</span>
+                            <span class="detail-value">${serviceType}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Property Size:</span>
+                            <span class="detail-value">${propertySize} sq ft</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Service Frequency:</span>
+                            <span class="detail-value">${frequency}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Preferred Date:</span>
+                            <span class="detail-value">${preferredDate || 'Flexible'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Preferred Time:</span>
+                            <span class="detail-value">${preferredTime || 'Flexible'}</span>
+                        </div>
+                        ${specialRequirements ? `
+                        <div class="detail-row">
+                            <span class="detail-label">Special Requirements:</span>
+                            <span class="detail-value">${specialRequirements}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="next-steps">
+                        <h3>🎯 What Happens Next?</h3>
+                        <ul class="step-list">
+                            <li><strong>Within 2 hours:</strong> Our team will review your requirements</li>
+                            <li><strong>Within 24 hours:</strong> We will call you to discuss your needs</li>
+                            <li><strong>Within 48 hours:</strong> You will receive a detailed, customized quote</li>
+                            <li><strong>If needed:</strong> We can schedule a free on-site visit</li>
+                        </ul>
+                    </div>
+
+                    <div class="contact-info">
+                        <h3>📞 Our Commitment to You</h3>
+                        <p style="margin: 0 0 10px 0;"><strong>Response Time:</strong> We guarantee to contact you within 2 hours</p>
+                        <p style="margin: 0 0 10px 0;"><strong>Free Consultation:</strong> No obligation, completely free</p>
+                        <p style="margin: 0 0 10px 0;"><strong>Transparent Pricing:</strong> No hidden fees, clear breakdown</p>
+                        <p style="margin: 0 0 10px 0;"><strong>Quality Guarantee:</strong> 100% satisfaction or we'll make it right</p>
+                    </div>
+
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <h4 style="margin-top: 0; color: #495057;">📞 Need Immediate Assistance?</h4>
+                        <p style="margin: 5px 0;"><strong>Phone:</strong> +49 176 61852286</p>
+                        <p style="margin: 5px 0;"><strong>Email:</strong> info@ajkcleaners.de</p>
+                        <p style="margin: 5px 0;"><strong>Hours:</strong> Monday - Friday: 8:00 AM - 6:00 PM</p>
+                    </div>
+                </div>
+                
+                <div class="footer">
+                    <p><strong>AJK Cleaning Company</strong> | Professional Cleaning Services</p>
+                    <p>Thank you for choosing us for your cleaning needs!</p>
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
+
+    const quoteText = `
+📋 QUOTE REQUEST RECEIVED - AJK Cleaning Company
+
+Dear ${customerName},
+
+Thank you for your interest in our professional cleaning services!
+
+YOUR QUOTE REQUEST DETAILS:
+Service Type: ${serviceType}
+Property Size: ${propertySize} sq ft
+Service Frequency: ${frequency}
+Preferred Date: ${preferredDate || 'Flexible'}
+Preferred Time: ${preferredTime || 'Flexible'}
+${specialRequirements ? `Special Requirements: ${specialRequirements}` : ''}
+
+WHAT HAPPENS NEXT:
+1. Within 2 hours: Our team will review your requirements
+2. Within 24 hours: We will call you to discuss your needs
+3. Within 48 hours: You will receive a detailed, customized quote
+4. If needed: We can schedule a free on-site visit
+
+OUR COMMITMENT:
+- Response Time: We guarantee to contact you within 2 hours
+- Free Consultation: No obligation, completely free
+- Transparent Pricing: No hidden fees, clear breakdown
+- Quality Guarantee: 100% satisfaction or we'll make it right
+
+CONTACT INFORMATION:
+Phone: +49 176 61852286
+Email: info@ajkcleaners.de
+Hours: Monday - Friday: 8:00 AM - 6:00 PM
+
+Thank you for choosing AJK Cleaning Company!
+
+Best regards,
+The AJK Cleaning Team
+    `;
+
+    const mailOptions = {
+        from: `"AJK Cleaning Company" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
+        to: customerEmail,
+        subject: `📋 Quote Request Received - ${serviceType} Cleaning Service`,
+        html: quoteHtml,
+        text: quoteText
+    };
+
+    try {
+        await emailTransporter.sendMail(mailOptions);
+        console.log(`📧 Quote confirmation email sent to ${customerEmail}`);
+        return true;
+    } catch (error) {
+        console.error(`❌ Failed to send quote email to ${customerEmail}:`, error.message);
+        throw error;
+    }
+}
+
 // Function to send admin notification for any booking
 async function sendAdminNotification(booking) {
     const { details } = booking;
@@ -1472,6 +1651,116 @@ app.post('/api/test-webhook-email', async (req, res) => {
     }
 });
 
+// Quote submission endpoint
+app.post('/api/quote-submit', async (req, res) => {
+    try {
+        const {
+            customerName,
+            customerEmail,
+            customerPhone,
+            serviceType,
+            propertySize,
+            frequency,
+            specialRequirements,
+            preferredDate,
+            preferredTime,
+            salutation
+        } = req.body;
+
+        // Validate required fields
+        if (!customerName || !customerEmail || !serviceType || !propertySize || !frequency) {
+            return res.status(400).json({ 
+                error: 'Missing required fields: customerName, customerEmail, serviceType, propertySize, frequency are required' 
+            });
+        }
+
+        console.log(`[QUOTE] 📋 New quote request from ${customerName} (${customerEmail})`);
+        console.log(`[QUOTE] 📋 Service: ${serviceType}, Size: ${propertySize} sq ft, Frequency: ${frequency}`);
+
+        // Prepare quote data
+        const quoteData = {
+            customerName,
+            customerEmail,
+            customerPhone: customerPhone || 'Not provided',
+            serviceType,
+            propertySize,
+            frequency,
+            specialRequirements: specialRequirements || 'None',
+            preferredDate: preferredDate || 'Flexible',
+            preferredTime: preferredTime || 'Flexible',
+            salutation: salutation || 'Dear'
+        };
+
+        // Send quote confirmation email to customer
+        try {
+            await sendQuoteEmail(quoteData);
+            console.log(`[QUOTE] 📧 Quote confirmation email sent to ${customerEmail}`);
+        } catch (emailError) {
+            console.error(`[QUOTE] ❌ Failed to send quote email to ${customerEmail}:`, emailError.message);
+            // Don't fail the request if email fails
+        }
+
+        // Send admin notification for quote request
+        try {
+            const adminQuoteData = {
+                customerName,
+                customerEmail,
+                customerPhone: customerPhone || 'Not provided',
+                serviceType,
+                propertySize,
+                frequency,
+                specialRequirements: specialRequirements || 'None',
+                preferredDate: preferredDate || 'Flexible',
+                preferredTime: preferredTime || 'Flexible',
+                salutation: salutation || 'Dear'
+            };
+
+            // Create a mock booking object for admin notification
+            const mockBooking = {
+                id: `quote_${Date.now()}`,
+                details: {
+                    customerName,
+                    customerEmail,
+                    customerPhone: customerPhone || 'Not provided',
+                    customerAddress: 'Quote Request',
+                    city: 'Quote Request',
+                    postalCode: '00000',
+                    bookingType: 'quote',
+                    package: serviceType,
+                    date: preferredDate || 'Flexible',
+                    time: preferredTime || 'Flexible',
+                    duration: 0,
+                    cleaners: 0,
+                    propertySize,
+                    specialRequests: specialRequirements || 'None',
+                    salutation: salutation || 'Dear'
+                },
+                amount: 0,
+                status: 'quote_request',
+                paymentIntentId: null,
+                paidAt: null,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+
+            await sendAdminNotification(mockBooking);
+            console.log(`[QUOTE] 📧 Admin notification sent for quote request from ${customerName}`);
+        } catch (adminError) {
+            console.error(`[QUOTE] ❌ Failed to send admin notification for quote:`, adminError.message);
+        }
+
+        res.json({ 
+            success: true, 
+            message: 'Quote request submitted successfully. You will receive a confirmation email shortly.',
+            quoteId: `quote_${Date.now()}`
+        });
+
+    } catch (error) {
+        console.error('❌ Quote submission failed:', error);
+        res.status(500).json({ error: 'Failed to submit quote request: ' + error.message });
+    }
+});
+
 // Test admin notification endpoint
 app.post('/api/test-admin-notification', async (req, res) => {
     try {
@@ -1507,6 +1796,31 @@ app.post('/api/test-admin-notification', async (req, res) => {
     } catch (error) {
         console.error('❌ Admin notification test failed:', error);
         res.status(500).json({ error: 'Failed to send admin notification test: ' + error.message });
+    }
+});
+
+// Test quote email endpoint
+app.post('/api/test-quote-email', async (req, res) => {
+    try {
+        const testQuoteData = {
+            customerName: 'Test Customer',
+            customerEmail: process.env.ADMIN_EMAIL,
+            customerPhone: '+49 123 456789',
+            serviceType: 'Residential Cleaning',
+            propertySize: '1500',
+            frequency: 'Weekly',
+            specialRequirements: 'Test quote email with special requirements',
+            preferredDate: '2025-01-15',
+            preferredTime: 'Morning',
+            salutation: 'Dear'
+        };
+
+        await sendQuoteEmail(testQuoteData);
+        console.log('✅ Quote email test sent successfully');
+        res.json({ success: true, message: 'Quote email test sent successfully' });
+    } catch (error) {
+        console.error('❌ Quote email test failed:', error);
+        res.status(500).json({ error: 'Failed to send quote email test: ' + error.message });
     }
 });
 
