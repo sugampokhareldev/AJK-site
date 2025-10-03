@@ -68,7 +68,14 @@ const emailConfigs = [
 // Function to test email configuration
 async function testEmailConfig(config) {
     try {
-        const transporter = nodemailer.createTransporter(config.config);
+        console.log(`🔧 Testing ${config.name} with:`, {
+            host: config.config.host,
+            port: config.config.port,
+            secure: config.config.secure,
+            user: config.config.auth?.user ? '***@gmail.com' : 'undefined'
+        });
+        
+        const transporter = nodemailer.createTransport(config.config);
         await transporter.verify();
         console.log(`✅ ${config.name} configuration is working`);
         return transporter;

@@ -1119,6 +1119,39 @@ app.post('/api/test-commercial-email', async (req, res) => {
     }
 });
 
+// Simple email test endpoint (bypasses fallback system)
+app.post('/api/test-simple-email', async (req, res) => {
+    try {
+        console.log('🧪 Testing simple email configuration...');
+        console.log('📧 SMTP Config:', {
+            host: process.env.SMTP_HOST,
+            port: process.env.SMTP_PORT,
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS ? '***' + process.env.SMTP_PASS.slice(-4) : 'undefined'
+        });
+        
+        const testEmail = {
+            from: `"AJK Cleaning Company" <${process.env.SMTP_USER}>`,
+            to: process.env.ADMIN_EMAIL,
+            subject: '🧪 Simple Email Test - AJK Cleaning System',
+            html: `
+                <h2>Simple Email Test</h2>
+                <p>This is a simple test email to verify the basic email system is working.</p>
+                <p>Time: ${new Date().toISOString()}</p>
+                <p>Configuration: ${process.env.SMTP_HOST}:${process.env.SMTP_PORT}</p>
+            `,
+            text: 'Simple Email Test - This is a simple test email to verify the basic email system is working.'
+        };
+
+        await emailTransporter.sendMail(testEmail);
+        console.log('✅ Simple test email sent successfully');
+        res.json({ success: true, message: 'Simple test email sent successfully' });
+    } catch (error) {
+        console.error('❌ Simple test email failed:', error);
+        res.status(500).json({ error: 'Failed to send simple test email: ' + error.message });
+    }
+});
+
 // ==================== TEAM MANAGEMENT API ====================
 
 // Get all employees
