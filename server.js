@@ -23,6 +23,8 @@ const helmet = require('helmet');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const nodemailer = require('nodemailer');
 const { sendEmailWithFallback } = require('./utils/emailFallback');
+const { sendEmailWithSendGrid } = require('./utils/sendgridService');
+const { sendEmailViaWebhook } = require('./utils/webhookEmailService');
 
 // Email configuration with timeout and connection settings
 const emailTransporter = nodemailer.createTransport({
@@ -194,17 +196,59 @@ We look forward to serving your commercial cleaning needs!
 
         console.log(`[COMMERCIAL EMAIL] 📤 Attempting to send email... (Attempt ${retryCount + 1}/${maxRetries})`);
         
-        // Try fallback email service first
-        try {
-            await sendEmailWithFallback(mailOptions, 2);
-            console.log(`✅ Commercial booking confirmation sent to ${customerEmail} for request ${booking.id}`);
-            console.log(`📧 Email details: From ${process.env.SMTP_USER || process.env.ADMIN_EMAIL} to ${customerEmail}`);
-            return; // Success - exit the retry loop
-        } catch (fallbackError) {
-            console.log('🔄 Fallback email service failed, trying primary transporter...');
-            // Fallback to primary transporter
-            await emailTransporter.sendMail(mailOptions);
-            console.log(`✅ Commercial booking confirmation sent to ${customerEmail} for request ${booking.id}`);
+        // Try multiple email services in order of preference
+        let emailSent = false;
+        
+        // Try 1: SendGrid (if configured)
+        if (process.env.SENDGRID_API_KEY && !emailSent) {
+            try {
+                console.log('📧 Trying SendGrid...');
+                await sendEmailWithSendGrid(mailOptions);
+                console.log(`✅ Commercial booking confirmation sent via SendGrid to ${customerEmail} for request ${booking.id}`);
+                emailSent = true;
+            } catch (sendGridError) {
+                console.log('❌ SendGrid failed:', sendGridError.message);
+            }
+        }
+        
+        // Try 2: Webhook service (if configured)
+        if (!emailSent && (process.env.EMAILJS_SERVICE_ID || process.env.FORMSPREE_ENDPOINT || process.env.NETLIFY_FORMS_ENDPOINT)) {
+            try {
+                console.log('📧 Trying webhook email service...');
+                await sendEmailViaWebhook(mailOptions);
+                console.log(`✅ Commercial booking confirmation sent via webhook to ${customerEmail} for request ${booking.id}`);
+                emailSent = true;
+            } catch (webhookError) {
+                console.log('❌ Webhook email service failed:', webhookError.message);
+            }
+        }
+        
+        // Try 3: Fallback email service
+        if (!emailSent) {
+            try {
+                console.log('📧 Trying fallback email service...');
+                await sendEmailWithFallback(mailOptions, 2);
+                console.log(`✅ Commercial booking confirmation sent via fallback to ${customerEmail} for request ${booking.id}`);
+                emailSent = true;
+            } catch (fallbackError) {
+                console.log('❌ Fallback email service failed:', fallbackError.message);
+            }
+        }
+        
+        // Try 4: Primary transporter (last resort)
+        if (!emailSent) {
+            try {
+                console.log('📧 Trying primary transporter...');
+                await emailTransporter.sendMail(mailOptions);
+                console.log(`✅ Commercial booking confirmation sent via primary to ${customerEmail} for request ${booking.id}`);
+                emailSent = true;
+            } catch (primaryError) {
+                console.log('❌ Primary transporter failed:', primaryError.message);
+                throw new Error('All email services failed');
+            }
+        }
+        
+        if (emailSent) {
             console.log(`📧 Email details: From ${process.env.SMTP_USER || process.env.ADMIN_EMAIL} to ${customerEmail}`);
             return; // Success - exit the retry loop
         }
@@ -1149,6 +1193,60 @@ app.post('/api/test-simple-email', async (req, res) => {
     } catch (error) {
         console.error('❌ Simple test email failed:', error);
         res.status(500).json({ error: 'Failed to send simple test email: ' + error.message });
+    }
+});
+
+// Test SendGrid email endpoint
+app.post('/api/test-sendgrid-email', async (req, res) => {
+    try {
+        if (!process.env.SENDGRID_API_KEY) {
+            return res.status(400).json({ error: 'SENDGRID_API_KEY not configured' });
+        }
+        
+        const testEmail = {
+            from: `"AJK Cleaning Company" <${process.env.ADMIN_EMAIL}>`,
+            to: process.env.ADMIN_EMAIL,
+            subject: '🧪 SendGrid Test - AJK Cleaning System',
+            html: `
+                <h2>SendGrid Email Test</h2>
+                <p>This is a test email sent via SendGrid to verify the email service is working.</p>
+                <p>Time: ${new Date().toISOString()}</p>
+                <p>Service: SendGrid API</p>
+            `,
+            text: 'SendGrid Email Test - This is a test email sent via SendGrid to verify the email service is working.'
+        };
+
+        await sendEmailWithSendGrid(testEmail);
+        console.log('✅ SendGrid test email sent successfully');
+        res.json({ success: true, message: 'SendGrid test email sent successfully' });
+    } catch (error) {
+        console.error('❌ SendGrid test email failed:', error);
+        res.status(500).json({ error: 'Failed to send SendGrid test email: ' + error.message });
+    }
+});
+
+// Test webhook email endpoint
+app.post('/api/test-webhook-email', async (req, res) => {
+    try {
+        const testEmail = {
+            from: `"AJK Cleaning Company" <${process.env.ADMIN_EMAIL}>`,
+            to: process.env.ADMIN_EMAIL,
+            subject: '🧪 Webhook Test - AJK Cleaning System',
+            html: `
+                <h2>Webhook Email Test</h2>
+                <p>This is a test email sent via webhook service to verify the email service is working.</p>
+                <p>Time: ${new Date().toISOString()}</p>
+                <p>Service: Webhook (EmailJS/Formspree/Netlify)</p>
+            `,
+            text: 'Webhook Email Test - This is a test email sent via webhook service to verify the email service is working.'
+        };
+
+        await sendEmailViaWebhook(testEmail);
+        console.log('✅ Webhook test email sent successfully');
+        res.json({ success: true, message: 'Webhook test email sent successfully' });
+    } catch (error) {
+        console.error('❌ Webhook test email failed:', error);
+        res.status(500).json({ error: 'Failed to send webhook test email: ' + error.message });
     }
 });
 

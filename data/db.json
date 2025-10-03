@@ -1814,6 +1814,39 @@
       "ip": "127.0.0.1",
       "country": "Unknown",
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "90324116-f291-42e9-8e51-2aee304ee33c",
+      "timestamp": 1759486877227,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759486877041_w6wdrk7b7",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "71780456-2309-4693-9247-4f6104707559",
+      "timestamp": 1759487257174,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759487257131_3msfhhopy",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "c605e39d-31d0-4186-9d21-14758d3d351e",
+      "timestamp": 1759487505041,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759487257131_3msfhhopy",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
     }
   ],
   "bookings": [
@@ -2360,6 +2393,31 @@
       "paymentIntentId": "pi_3SE34AHIVAzPWFkU0jOO0HDf",
       "paidAt": "2025-10-03T07:06:38.298Z",
       "createdAt": "2025-10-03T07:06:38.298Z"
+    },
+    {
+      "id": "booking_1759487246715",
+      "details": {
+        "customerName": "sugam pokharel",
+        "customerEmail": "pokharels562@gmail.com",
+        "customerPhone": "9803462854",
+        "customerAddress": "Adarsha Toel",
+        "city": "Itahari",
+        "postalCode": "56705",
+        "bookingType": "subscription",
+        "package": "regular-basic",
+        "date": "2025-10-16",
+        "time": "13:30",
+        "duration": 1,
+        "cleaners": 1,
+        "propertySize": "33",
+        "specialRequests": "",
+        "salutation": "Mr."
+      },
+      "amount": 28,
+      "status": "paid",
+      "paymentIntentId": "pi_3SE6CBHIVAzPWFkU1o0eElyo",
+      "paidAt": "2025-10-03T10:27:26.715Z",
+      "createdAt": "2025-10-03T10:27:26.715Z"
     }
   ],
   "employees": []
