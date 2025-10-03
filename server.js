@@ -265,7 +265,7 @@ async function sendAdminNotification(booking) {
     const adminEmails = process.env.ADMIN_EMAILS ? 
         process.env.ADMIN_EMAILS.split(',').map(email => email.trim()) : 
         [
-            process.env.ADMIN_EMAIL || 'sugampokharel28@gmail.com',
+            process.env.NOTIFICATION_EMAIL || 'sugampokharel28@gmail.com',
             'Sanudhakal119@gmail.com'
         ];
 
@@ -2454,7 +2454,7 @@ AJK Cleaning Company
     // Get admin emails from environment variables
     const adminEmails = process.env.ADMIN_EMAILS ? 
         process.env.ADMIN_EMAILS.split(',').map(email => email.trim()) : 
-        [process.env.ADMIN_EMAIL || 'sugampokharel28@gmail.com'];
+        [process.env.NOTIFICATION_EMAIL || 'sugampokharel28@gmail.com'];
 
     const mailOptions = {
         from: `"AJK Cleaning Company" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,

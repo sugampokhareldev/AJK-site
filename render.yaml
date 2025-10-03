@@ -11,10 +11,11 @@ services:
       - key: SESSION_SECRET
         generateValue: true
       # Required Environment Variables (set these in Render dashboard):
-      # - ADMIN_EMAIL: Your admin email address
+      # - ADMIN_EMAIL: Your admin panel login email (for authentication)
       # - ADMIN_EMAILS: Comma-separated list of admin emails for notifications (optional)
       #   Example: "sugampokharel28@gmail.com,Sanudhakal119@gmail.com"
-      #   If not set, will use ADMIN_EMAIL and default fallback
+      #   If not set, will use NOTIFICATION_EMAIL and default fallback
+      # - NOTIFICATION_EMAIL: Single email for notifications (optional)
       # - ADMIN_PASSWORD: Your admin password
       # - ADMIN_USERNAME: Your admin username (default: admin)
       # - STRIPE_SECRET_KEY: Your Stripe secret key
