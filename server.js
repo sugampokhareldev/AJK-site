@@ -2048,13 +2048,13 @@ app.post('/api/submissions/:id/send-message', requireAuth, async (req, res) => {
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1>📧 Message from AJK Cleaning</h1>
+                        <h1>📧 Response from AJK Cleaning</h1>
                         <p>Professional Cleaning Services</p>
                     </div>
                     
                     <div class="content">
                         <div class="message-content">
-                            <h3 style="margin-top: 0; color: #495057;">💬 Your Message</h3>
+                            <h3 style="margin-top: 0; color: #495057;">💬 Our Response</h3>
                             <div style="white-space: pre-line;">${message}</div>
                         </div>
 
@@ -2102,7 +2102,7 @@ app.post('/api/submissions/:id/send-message', requireAuth, async (req, res) => {
         `;
 
         const customMessageText = `
-📧 MESSAGE FROM AJK CLEANING COMPANY
+📧 RESPONSE FROM AJK CLEANING COMPANY
 
 Dear ${submission.name},
 
