@@ -2200,6 +2200,13 @@ app.post('/api/reviews', async (req, res) => {
             });
         }
 
+        // Validate review text length (max 135 characters including spaces)
+        if (reviewText.trim().length > 135) {
+            return res.status(400).json({ 
+                error: 'Review text must be 135 characters or less (including spaces)' 
+            });
+        }
+
         await db.read();
         if (!db.data.reviews) {
             db.data.reviews = [];
@@ -3968,8 +3975,8 @@ const validateFormSubmission = (req, res, next) => {
       return res.status(400).json({ success: false, error: 'Name must be between 2 and 100 characters' });
     }
     
-    if (message.trim().length < 10 || message.trim().length > 2000) {
-      return res.status(400).json({ success: false, error: 'Message must be between 10 and 2000 characters' });
+    if (message.trim().length < 10 || message.trim().length > 1000) {
+      return res.status(400).json({ success: false, error: 'Message must be between 10 and 1000 characters' });
     }
     
     if (phone && !validatePhone(phone)) {
