@@ -262,12 +262,20 @@ async function sendAdminNotification(booking) {
     } = details;
 
     // Get admin emails from environment variables
-    const adminEmails = process.env.ADMIN_EMAILS ? 
-        process.env.ADMIN_EMAILS.split(',').map(email => email.trim()) : 
-        [
-            process.env.NOTIFICATION_EMAIL || 'sugampokharel28@gmail.com',
-            'Sanudhakal119@gmail.com'
-        ];
+    let adminEmails = [];
+    
+    if (process.env.ADMIN_EMAILS) {
+        // Use ADMIN_EMAILS if set (comma-separated list)
+        adminEmails = process.env.ADMIN_EMAILS.split(',').map(email => email.trim());
+    } else if (process.env.NOTIFICATION_EMAIL) {
+        // Use NOTIFICATION_EMAIL if set (single email)
+        adminEmails = [process.env.NOTIFICATION_EMAIL];
+    } else {
+        // Default fallback
+        adminEmails = ['sugampokharel28@gmail.com'];
+    }
+    
+    console.log('📧 Admin emails configured:', adminEmails);
 
     const adminHtml = `
         <!DOCTYPE html>
@@ -1277,6 +1285,7 @@ function clearCache(key = null) {
 // Stripe Webhook Endpoint - IMPORTANT: This must be before express.json()
 app.post('/stripe-webhook', express.raw({type: 'application/json'}), async (req, res) => {
     console.log('🔔 Webhook received:', req.headers['stripe-signature']);
+    console.log('🔔 Webhook body length:', req.body.length);
     
     const sig = req.headers['stripe-signature'];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -1291,6 +1300,8 @@ app.post('/stripe-webhook', express.raw({type: 'application/json'}), async (req,
     try {
         event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
         console.log('✅ Webhook signature verified, event type:', event.type);
+        console.log('🔔 Event ID:', event.id);
+        console.log('🔔 Event data:', JSON.stringify(event.data.object, null, 2));
     } catch (err) {
         console.error(`❌ Webhook signature verification failed: ${err.message}`);
         return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -1396,7 +1407,8 @@ app.post('/stripe-webhook', express.raw({type: 'application/json'}), async (req,
             break;
 
         default:
-            // console.log(`[STRIPE] Unhandled event type: ${event.type}`); // Optional: for debugging
+            console.log(`[STRIPE] ⚠️ Unhandled event type: ${event.type}`);
+            console.log(`[STRIPE] 📝 Event data:`, JSON.stringify(event.data.object, null, 2));
     }
 
     // Return a 200 response to acknowledge receipt of the event
@@ -2516,9 +2528,20 @@ AJK Cleaning Company
     `;
 
     // Get admin emails from environment variables
-    const adminEmails = process.env.ADMIN_EMAILS ? 
-        process.env.ADMIN_EMAILS.split(',').map(email => email.trim()) : 
-        [process.env.NOTIFICATION_EMAIL || 'sugampokharel28@gmail.com'];
+    let adminEmails = [];
+    
+    if (process.env.ADMIN_EMAILS) {
+        // Use ADMIN_EMAILS if set (comma-separated list)
+        adminEmails = process.env.ADMIN_EMAILS.split(',').map(email => email.trim());
+    } else if (process.env.NOTIFICATION_EMAIL) {
+        // Use NOTIFICATION_EMAIL if set (single email)
+        adminEmails = [process.env.NOTIFICATION_EMAIL];
+    } else {
+        // Default fallback
+        adminEmails = ['sugampokharel28@gmail.com'];
+    }
+    
+    console.log('📧 Admin emails configured for review:', adminEmails);
 
     const mailOptions = {
         from: `"AJK Cleaning Company" <${process.env.SMTP_USER || process.env.ADMIN_EMAIL}>`,
@@ -5014,6 +5037,84 @@ app.post('/api/bookings/create-from-payment', async (req, res) => {
     } catch (error) {
         console.error('Error creating booking from payment:', error);
         res.status(500).json({ error: 'Failed to create booking from payment' });
+    }
+});
+
+// Payment status check endpoint (GET for frontend polling)
+app.get('/api/bookings/check-payment-status/:paymentIntentId', async (req, res) => {
+    try {
+        const { paymentIntentId } = req.params;
+        
+        if (!paymentIntentId) {
+            return res.status(400).json({ error: 'Payment Intent ID is required' });
+        }
+
+        // Check with Stripe if payment was successful
+        try {
+            const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+            console.log('🔍 Payment Intent status:', paymentIntent.status);
+            
+            if (paymentIntent.status === 'succeeded') {
+                // Check if booking already exists
+                await db.read();
+                const bookings = db.data.bookings || [];
+                const existingBooking = bookings.find(b => b.paymentIntentId === paymentIntentId);
+                
+                if (existingBooking) {
+                    return res.json({ 
+                        status: 'paid', 
+                        message: 'Booking already exists and is paid',
+                        booking: existingBooking 
+                    });
+                }
+                
+                // Create booking from payment intent
+                const bookingData = {
+                    id: `booking_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                    paymentIntentId: paymentIntentId,
+                    status: 'paid',
+                    amount: paymentIntent.amount,
+                    currency: paymentIntent.currency,
+                    customerEmail: paymentIntent.receipt_email || 'No email provided',
+                    createdAt: new Date().toISOString(),
+                    paidAt: new Date().toISOString()
+                };
+                
+                bookings.push(bookingData);
+                await db.write();
+                
+                return res.json({ 
+                    status: 'paid', 
+                    message: 'Payment successful and booking created',
+                    booking: bookingData 
+                });
+            } else if (paymentIntent.status === 'requires_payment_method' || paymentIntent.status === 'requires_confirmation') {
+                return res.json({ 
+                    status: 'pending', 
+                    message: `Payment status: ${paymentIntent.status}`,
+                    paymentIntent: paymentIntent 
+                });
+            } else if (paymentIntent.status === 'canceled' || paymentIntent.status === 'payment_failed') {
+                return res.json({ 
+                    status: 'failed', 
+                    message: `Payment failed: ${paymentIntent.status}`,
+                    paymentIntent: paymentIntent 
+                });
+            } else {
+                return res.json({ 
+                    status: 'unknown', 
+                    message: `Payment status: ${paymentIntent.status}`,
+                    paymentIntent: paymentIntent 
+                });
+            }
+        } catch (stripeError) {
+            console.error('Stripe error:', stripeError);
+            return res.status(500).json({ error: 'Failed to check payment status with Stripe' });
+        }
+
+    } catch (error) {
+        console.error('Error checking payment status:', error);
+        res.status(500).json({ error: 'Failed to check payment status' });
     }
 });
 

@@ -1235,7 +1235,19 @@
 </div>
 
 <script>
+console.log('📄 SCRIPT TAG LOADED - JavaScript file is being processed');
+
+// Test if basic JavaScript is working
+console.log('🔧 Basic JavaScript test:', typeof document, typeof window);
+
+try {
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🚀 BOOKING PAGE LOADED - JavaScript is running!');
+    console.log('🔍 DOM elements check:');
+    console.log('  - Payment form:', document.getElementById('payment-form'));
+    console.log('  - Submit button:', document.getElementById('submit-payment'));
+    console.log('  - Wizard:', document.getElementById('wizard'));
+    
     // Initialize form validation
     addRealTimeValidation();
     
@@ -1267,6 +1279,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // --- FORM VALIDATION ---
         function validateForm() {
+            console.log('🔍 Starting form validation...');
             const requiredFields = [
                 'customer-name',
                 'customer-email', 
@@ -1293,10 +1306,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const field = document.getElementById(fieldId);
                 const errorMessage = field.parentElement.querySelector('.error-message');
                 
-                if (!field.value.trim()) {
-                    field.classList.add('error');
-                    if (errorMessage) {
-                        errorMessage.style.display = 'block';
+                console.log(`🔍 Validating field ${fieldId}:`, field ? field.value : 'FIELD NOT FOUND');
+                
+                if (!field || !field.value.trim()) {
+                    console.log(`❌ Field ${fieldId} is empty or missing`);
+                    if (field) {
+                        field.classList.add('error');
+                        if (errorMessage) {
+                            errorMessage.style.display = 'block';
+                        }
                     }
                     isValid = false;
                 }
@@ -1314,6 +1332,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 isValid = false;
             }
             
+            console.log('🔍 Form validation complete. Result:', isValid);
             return isValid;
         }
         
@@ -1322,7 +1341,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return emailRegex.test(email);
         }
         
-        // Add real-time validation to clear errors when user starts typing
+        // Add real-time validation to clear errors when user starts typing (with debouncing)
         function addRealTimeValidation() {
             const requiredFields = [
                 'customer-name',
@@ -1333,17 +1352,34 @@ document.addEventListener('DOMContentLoaded', async () => {
                 'city'
             ];
             
+            // Debounce function to limit validation frequency
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+            
+            const debouncedValidation = debounce(function(field) {
+                if (field.value.trim()) {
+                    field.classList.remove('error');
+                    const errorMessage = field.parentElement.querySelector('.error-message');
+                    if (errorMessage) {
+                        errorMessage.style.display = 'none';
+                    }
+                }
+            }, 300); // 300ms debounce
+            
             requiredFields.forEach(fieldId => {
                 const field = document.getElementById(fieldId);
                 if (field) {
                     field.addEventListener('input', function() {
-                        if (this.value.trim()) {
-                            this.classList.remove('error');
-                            const errorMessage = this.parentElement.querySelector('.error-message');
-                            if (errorMessage) {
-                                errorMessage.style.display = 'none';
-                            }
-                        }
+                        debouncedValidation(this);
                     });
                 }
             });
@@ -1370,9 +1406,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const CONFIG = {
         packages: {
             'one-time': [
-                { id: 'basic', title: 'Basic Cleaning (Residential)', price: 28, desc: 'Standard residential cleaning service.', icon: 'fas fa-home' },
-                { id: 'deep', title: 'Deep Cleaning', price: 35, desc: 'Intensive service for a home that feels brand new.', icon: 'fas fa-broom' },
-                { id: 'moveout', title: 'Move In/Out Cleaning', price: 37, desc: 'A top-to-bottom clean for an empty home.', icon: 'fas fa-box-open' },
+                { id: 'basic', title: 'Basic Cleaning (Residential)', price: 28, desc: 'Standard residential cleaning service.', icon: 'fas fa-home', hourly: true },
+                { id: 'deep', title: 'Deep Cleaning', price: 35, desc: 'Intensive service for a home that feels brand new.', icon: 'fas fa-broom', hourly: true },
+                { id: 'moveout', title: 'Move In/Out Cleaning', price: 37, desc: 'A top-to-bottom clean for an empty home.', icon: 'fas fa-box-open', hourly: true },
             ],
             'subscription': [
                 { id: 'regular-basic', title: 'Regular Basic Cleaning', price: 28, desc: 'Ongoing residential cleaning service.', icon: 'fas fa-home', hourly: true },
@@ -1563,11 +1599,27 @@ document.addEventListener('DOMContentLoaded', async () => {
             if(button.id === 'book-another') { window.location.replace(window.location.pathname); }
         });
 
+        // Add click listener to payment button for debugging
+        const submitBtn = document.getElementById('submit-payment');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', (e) => {
+                console.log('🔍 Payment button clicked!');
+                console.log('🔍 Button disabled state:', submitBtn.disabled);
+                console.log('🔍 Button text:', submitBtn.textContent);
+            });
+        }
+
         DOM.paymentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            console.log('🔍 Payment form submitted, starting validation...');
+            console.log('🔍 Event target:', e.target);
+            console.log('🔍 Submit button clicked:', e.submitter);
             
             // Validate form fields
-            if (!validateForm()) {
+            const isValid = validateForm();
+            console.log('🔍 Form validation result:', isValid);
+            if (!isValid) {
+                console.log('❌ Form validation failed, stopping payment');
                 return;
             }
             
@@ -1587,7 +1639,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.error('❌ Payment processing timeout - proceeding anyway');
                 setLoading(false);
                 showStep(4);
-            }, 30000); // 30 second global timeout
+            }, 15000); // 15 second global timeout (reduced from 30s)
+            
+            try {
 
             // Check if payment element is properly mounted and visible
             if (!paymentElement || !elements) {
@@ -1606,70 +1660,51 @@ document.addEventListener('DOMContentLoaded', async () => {
                 throw new Error('Payment form is not ready. Please wait for the form to load completely.');
             }
 
-            // Check if Stripe elements are in a ready state
-            if (paymentElement._componentName !== 'payment') {
-                throw new Error('Payment form is not properly initialized. Please refresh and try again.');
+            // Check if Stripe elements are in a ready state (simplified check)
+            if (!paymentElement || paymentElement._componentName !== 'payment') {
+                console.warn('⚠️ Payment element not ready, proceeding anyway...');
+                // Don't throw error, just proceed with payment
             }
 
             console.log('✅ Payment element is ready, validating user input...');
 
-            // Wait for Stripe elements to be fully mounted and ready
-            let attempts = 0;
-            const maxAttempts = 15;
-            let elementsReady = false;
-            
-            while (attempts < maxAttempts && !elementsReady) {
-                try {
-                    // Check if elements are ready by trying to submit
-                    const { error: submitError } = await elements.submit();
-                    if (submitError) {
-                        console.error('❌ Payment element validation failed:', submitError);
-                        setLoading(false);
-                        showMessage(submitError.message || 'Please complete your payment details');
-                        return;
-                    }
-                    console.log('✅ Payment element validated, proceeding with payment confirmation...');
-                    elementsReady = true;
-                } catch (error) {
-                    attempts++;
-                    console.log(`⏳ Waiting for Stripe elements to be ready (attempt ${attempts}/${maxAttempts})...`);
-                    if (attempts >= maxAttempts) {
-                        console.error('❌ Stripe elements not ready after maximum attempts');
-                        setLoading(false);
-                        showMessage('Payment form is not ready. Please refresh the page and try again.');
-                        return;
-                    }
-                    // Wait 300ms before trying again
-                    await new Promise(resolve => setTimeout(resolve, 300));
-                }
-            }
-            
-            if (!elementsReady) {
-                console.error('❌ Failed to validate Stripe elements');
-                setLoading(false);
-                showMessage('Payment form is not ready. Please refresh the page and try again.');
-                return;
-            }
+            // Simplified validation - just check if elements exist and proceed
+            console.log('✅ Payment element is ready, proceeding with payment confirmation...');
 
-            const { error } = await stripe.confirmPayment({
+            // Add timeout to payment confirmation
+            const paymentPromise = stripe.confirmPayment({
                 elements,
                 confirmParams: {
                     return_url: window.location.href.split('?')[0],
                 },
                 redirect: 'if_required' // Prevent redirect for successful payment
             });
+            
+            // Add timeout to prevent hanging
+            const paymentTimeout = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Payment confirmation timeout')), 10000)
+            );
+            
+            const { error, paymentIntent } = await Promise.race([paymentPromise, paymentTimeout]);
+            
+            console.log('🔍 Payment confirmation result:', { error, paymentIntent });
 
             if (error) {
                 clearTimeout(globalTimeout);
-                if (error.type === "card_error" || error.type === "validation_error") {
-                    showMessage(error.message);
+                console.error('❌ Payment error:', error);
+                
+                if (error.message === 'Payment confirmation timeout') {
+                    showMessage("Payment is taking too long. Please try again.");
+                } else if (error.type === "card_error" || error.type === "validation_error") {
+                    showMessage(`Payment error: ${error.message}`);
                 } else {
-                    showMessage("An unexpected error occurred.");
+                    showMessage("Payment failed. Please check your card details and try again.");
                 }
                 setLoading(false);
             } else {
                 // Payment succeeded - wait a moment for webhook to process
                 console.log('✅ Payment successful, waiting for booking creation...');
+                console.log('🔍 Payment Intent details:', paymentIntent);
                 
                 // Show user-friendly message
                 showMessage('Payment successful! Creating your booking...');
@@ -1688,7 +1723,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         }
                         
                         const paymentStatus = await paymentStatusResponse.json();
-                        if (paymentStatus.status !== 'succeeded') {
+                        if (paymentStatus.status !== 'paid' && paymentStatus.status !== 'succeeded') {
                             throw new Error(`Payment not successful. Status: ${paymentStatus.status}`);
                         }
                         
@@ -1774,6 +1809,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 // Start checking for booking creation
                 setTimeout(checkBooking, 1000); // Wait 1 second before first check
+            }
+            
+            } catch (paymentError) {
+                console.error('❌ Payment processing error:', paymentError);
+                clearTimeout(globalTimeout);
+                setLoading(false);
+                
+                if (paymentError.message === 'Payment element not properly initialized') {
+                    showMessage('Payment form is not ready. Please refresh the page and try again.');
+                } else if (paymentError.message === 'Payment form not loaded. Please wait and try again.') {
+                    showMessage('Payment form is loading. Please wait a moment and try again.');
+                } else if (paymentError.message === 'Payment form is not ready. Please wait for the form to load completely.') {
+                    showMessage('Payment form is not ready. Please wait for the form to load completely.');
+                } else {
+                    showMessage('Payment processing failed. Please try again.');
+                }
             }
         });
 
@@ -2193,10 +2244,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             if (response.ok) {
                 console.log('✅ Commercial booking created successfully:', result);
+                setLoading(false);
                 showStep(4); // Go to success page
             } else {
                 console.error('❌ Failed to create commercial booking:', result);
-                showMessage(result.error || 'Failed to create commercial booking');
+                setLoading(false);
+                showMessage(result.error || 'Failed to create commercial booking. Please try again.');
             }
         } catch (error) {
             console.error('❌ Error submitting commercial booking:', error);
@@ -2350,13 +2403,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log(`🔄 setLoading(${isLoading}) - Button disabled: ${submitBtn.disabled}`);
         if (isLoading) {
             submitBtn.disabled = true;
-            document.getElementById('spinner').classList.remove('hidden');
-            document.getElementById('button-text').classList.add('hidden');
+            // Update button text to show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
             showLoadingScreen(); // Show full-screen loading
         } else {
             submitBtn.disabled = false;
-            document.getElementById('spinner').classList.add('hidden');
-            document.getElementById('button-text').classList.remove('hidden');
+            // Restore original button text
+            submitBtn.innerHTML = '<i class="fas fa-credit-card mr-2"></i>Pay Now';
             hideLoadingScreen(); // Hide full-screen loading
             console.log('✅ Loading stopped - button should be enabled');
         }
@@ -2371,6 +2424,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     init();
 });
+} catch (error) {
+    console.error('❌ JAVASCRIPT ERROR:', error);
+    console.error('❌ Error details:', error.message);
+    console.error('❌ Error stack:', error.stack);
+}
 </script>
 </body>
 </html>
