@@ -3946,7 +3946,8 @@ async function initializeDB() {
             const hash = await bcrypt.hash(process.env.ADMIN_PASSWORD, 12);
             db.data.admin_users.push({
                 id: Date.now(),
-                username: process.env.ADMIN_USERNAME || 'admin',
+                email: process.env.ADMIN_EMAIL,
+                username: process.env.ADMIN_EMAIL.split('@')[0],
                 password_hash: hash,
                 created_at: new Date().toISOString()
             });
