@@ -110,7 +110,8 @@ async function sendEmailWithFallback(mailOptions, maxRetries = 3) {
     transporter = await getWorkingEmailTransporter();
     
     if (!transporter) {
-        throw new Error('No working email configuration available');
+        console.log('❌ No working email configuration available - skipping email');
+        return false; // Return false instead of throwing error
     }
     
     // Try sending with retry logic
@@ -138,7 +139,8 @@ async function sendEmailWithFallback(mailOptions, maxRetries = 3) {
         }
     }
     
-    throw lastError;
+    console.log('❌ All email attempts failed - continuing without email');
+    return false; // Return false instead of throwing error
 }
 
 module.exports = {

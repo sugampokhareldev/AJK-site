@@ -3141,6 +3141,129 @@
   min-height: 44px;
   }
   }
+  
+  /* Enhanced Mobile Reviews Section */
+  .reviews-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+  
+  .reviews-filters > div {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  
+  .reviews-header > div {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  
+  .reviews-actions {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  
+  .reviews-table-container {
+    overflow-x: auto !important;
+  }
+  
+  .reviews-table th,
+  .reviews-table td {
+    padding: 12px 8px !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .pagination {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  
+  .pagination > div {
+    justify-content: center !important;
+  }
+  
+  @media (max-width: 480px) {
+  .reviews-stats {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .reviews-header {
+    padding: 20px !important;
+  }
+  
+  .reviews-header h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  .stat-card {
+    padding: 16px !important;
+  }
+  
+  .stat-card h3 {
+    font-size: 2rem !important;
+  }
+  }
+  
+  /* Enhanced Table Row Styling */
+  .reviews-table tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  
+  .reviews-table tbody tr:hover {
+    background-color: #f8fafc;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  
+  .reviews-table tbody td {
+    padding: 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  
+  .rating-display {
+    font-size: 1.2rem;
+    color: #fbbf24;
+    font-weight: 600;
+  }
+  
+  .status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .status-approved {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+  
+  .status-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  
+  .status-rejected {
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
+  
+  .btn-sm {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    margin: 2px;
+    transition: all 0.3s;
+  }
+  
+  .btn-sm:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
   </style>
 </head>
 <body>
@@ -3723,110 +3846,142 @@
   </div>
   <!-- Reviews Tab -->
   <div id="reviews-tab" class="tab-content">
-  <div class="reviews-container">
-  <div class="reviews-header">
-  <h2><i class="fas fa-star"></i> Customer Reviews Management</h2>
-  <div class="reviews-actions">
-  <button class="btn btn-primary" id="refresh-reviews">
-  <i class="fas fa-sync-alt"></i> Refresh
-  </button>
-  <button class="btn btn-secondary" id="export-reviews">
-  <i class="fas fa-download"></i> Export
-  </button>
-  </div>
-  </div>
-  <div class="reviews-stats">
-  <div class="stat-card">
-  <div class="stat-icon">
-  <i class="fas fa-star"></i>
-  </div>
-  <div class="stat-content">
-  <h3 id="total-reviews">0</h3>
-  <p>Total Reviews</p>
-  </div>
-  </div>
-  <div class="stat-card">
-  <div class="stat-icon">
-  <i class="fas fa-star-half-alt"></i>
-  </div>
-  <div class="stat-content">
-  <h3 id="average-rating">0.0</h3>
-  <p>Average Rating</p>
-  </div>
-  </div>
-  <div class="stat-card">
-  <div class="stat-icon">
-  <i class="fas fa-clock"></i>
-  </div>
-  <div class="stat-content">
-  <h3 id="pending-reviews">0</h3>
-  <p>Pending Approval</p>
-  </div>
-  </div>
-  <div class="stat-card">
-  <div class="stat-icon">
-  <i class="fas fa-check-circle"></i>
-  </div>
-  <div class="stat-content">
-  <h3 id="approved-reviews">0</h3>
-  <p>Approved</p>
-  </div>
-  </div>
-  </div>
-  <div class="reviews-filters">
-  <div class="filter-group">
-  <label for="review-status-filter">Status:</label>
-  <select id="review-status-filter" class="filter-select">
-  <option value="">All Status</option>
-  <option value="pending_approval">Pending Approval</option>
-  <option value="approved">Approved</option>
-  <option value="rejected">Rejected</option>
-  </select>
-  </div>
-  <div class="filter-group">
-  <label for="review-rating-filter">Rating:</label>
-  <select id="review-rating-filter" class="filter-select">
-  <option value="">All Ratings</option>
-  <option value="5">5 Stars</option>
-  <option value="4">4 Stars</option>
-  <option value="3">3 Stars</option>
-  <option value="2">2 Stars</option>
-  <option value="1">1 Star</option>
-  </select>
-  </div>
-  <div class="filter-group">
-  <label for="review-search">Search:</label>
-  <input type="text" id="review-search" placeholder="Search reviews..." class="filter-input">
-  </div>
-  </div>
-  <div class="reviews-table-container">
-  <table class="reviews-table" id="reviewsTable">
-  <thead>
-  <tr>
-  <th><input type="checkbox" id="select-all-reviews"></th>
-  <th data-sort="customerName">Customer</th>
-  <th data-sort="rating">Rating</th>
-  <th data-sort="serviceType">Service</th>
-  <th data-sort="status">Status</th>
-  <th data-sort="createdAt">Date</th>
-  <th>Actions</th>
-  </tr>
-  </thead>
-  <tbody id="reviewsTableBody">
-  <!-- Reviews will be loaded here -->
-  </tbody>
-  </table>
-  </div>
-  <div class="pagination" id="reviews-pagination">
-  <button id="prev-reviews-page" class="btn btn-secondary">Previous</button>
-  <span id="reviews-page-info">Page 1 of 1</span>
-  <button id="next-reviews-page" class="btn btn-secondary">Next</button>
-  <select id="reviews-page-size">
-  <option value="10">10 per page</option>
-  <option value="20" selected>20 per page</option>
-  <option value="50">50 per page</option>
-  </select>
-  </div>
+  <div class="reviews-container" style="padding: 0; background: transparent;">
+    <!-- Enhanced Header -->
+    <div class="reviews-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 32px; border-radius: 16px; margin-bottom: 32px; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h2 style="margin: 0; font-size: 2rem; font-weight: 700; display: flex; align-items: center; gap: 12px;">
+            <i class="fas fa-star" style="color: #fbbf24; font-size: 1.5rem;"></i>
+            Customer Reviews Management
+          </h2>
+          <p style="margin: 8px 0 0 0; opacity: 0.9; font-size: 1.1rem;">Manage and moderate customer reviews</p>
+        </div>
+        <div class="reviews-actions" style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <button class="btn btn-primary" id="refresh-reviews" style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3); color: white; padding: 12px 20px; border-radius: 10px; font-weight: 600; transition: all 0.3s; backdrop-filter: blur(10px);">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+          <button class="btn btn-secondary" id="export-reviews" style="background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); color: white; padding: 12px 20px; border-radius: 10px; font-weight: 600; transition: all 0.3s; backdrop-filter: blur(10px);">
+            <i class="fas fa-download"></i> Export
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Stats Cards -->
+    <div class="reviews-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 32px;">
+      <div class="stat-card" style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; transition: all 0.3s; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: linear-gradient(135deg, #667eea, #764ba2); opacity: 0.1; border-radius: 0 16px 0 100px;"></div>
+        <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+          <i class="fas fa-star" style="color: white; font-size: 1.5rem;"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="total-reviews" style="margin: 0; font-size: 2.5rem; font-weight: 800; color: #1f2937; line-height: 1;">0</h3>
+          <p style="margin: 8px 0 0 0; color: #6b7280; font-weight: 600; font-size: 1rem;">Total Reviews</p>
+        </div>
+      </div>
+      
+      <div class="stat-card" style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; transition: all 0.3s; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: linear-gradient(135deg, #10b981, #059669); opacity: 0.1; border-radius: 0 16px 0 100px;"></div>
+        <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+          <i class="fas fa-star-half-alt" style="color: white; font-size: 1.5rem;"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="average-rating" style="margin: 0; font-size: 2.5rem; font-weight: 800; color: #1f2937; line-height: 1;">0.0</h3>
+          <p style="margin: 8px 0 0 0; color: #6b7280; font-weight: 600; font-size: 1rem;">Average Rating</p>
+        </div>
+      </div>
+      
+      <div class="stat-card" style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; transition: all 0.3s; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: linear-gradient(135deg, #f59e0b, #d97706); opacity: 0.1; border-radius: 0 16px 0 100px;"></div>
+        <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+          <i class="fas fa-clock" style="color: white; font-size: 1.5rem;"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="pending-reviews" style="margin: 0; font-size: 2.5rem; font-weight: 800; color: #1f2937; line-height: 1;">0</h3>
+          <p style="margin: 8px 0 0 0; color: #6b7280; font-weight: 600; font-size: 1rem;">Pending Approval</p>
+        </div>
+      </div>
+      
+      <div class="stat-card" style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; transition: all 0.3s; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: linear-gradient(135deg, #10b981, #059669); opacity: 0.1; border-radius: 0 16px 0 100px;"></div>
+        <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+          <i class="fas fa-check-circle" style="color: white; font-size: 1.5rem;"></i>
+        </div>
+        <div class="stat-content">
+          <h3 id="approved-reviews" style="margin: 0; font-size: 2.5rem; font-weight: 800; color: #1f2937; line-height: 1;">0</h3>
+          <p style="margin: 8px 0 0 0; color: #6b7280; font-weight: 600; font-size: 1rem;">Approved</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Filters -->
+    <div class="reviews-filters" style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; margin-bottom: 24px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: end;">
+        <div class="filter-group">
+          <label for="review-status-filter" style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Status</label>
+          <select id="review-status-filter" class="filter-select" style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 16px; background-color: white; transition: all 0.3s; box-sizing: border-box;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'">
+            <option value="">All Status</option>
+            <option value="pending_approval">Pending Approval</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="review-rating-filter" style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Rating</label>
+          <select id="review-rating-filter" class="filter-select" style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 16px; background-color: white; transition: all 0.3s; box-sizing: border-box;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'">
+            <option value="">All Ratings</option>
+            <option value="5">5 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="2">2 Stars</option>
+            <option value="1">1 Star</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="review-search" style="display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Search</label>
+          <input type="text" id="review-search" placeholder="Search reviews..." class="filter-input" style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 16px; transition: all 0.3s; box-sizing: border-box;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'">
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Table Container -->
+    <div class="reviews-table-container" style="background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; overflow: hidden;">
+      <div style="overflow-x: auto;">
+        <table class="reviews-table" id="reviewsTable" style="width: 100%; border-collapse: collapse;">
+          <thead style="background: linear-gradient(135deg, #f8fafc, #f1f5f9);">
+            <tr>
+              <th style="padding: 20px 16px; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #e5e7eb; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                <input type="checkbox" id="select-all-reviews" style="transform: scale(1.2);">
+              </th>
+              <th data-sort="customerName" style="padding: 20px 16px; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #e5e7eb; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: color 0.3s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#374151'">Customer</th>
+              <th data-sort="rating" style="padding: 20px 16px; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #e5e7eb; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: color 0.3s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#374151'">Rating</th>
+              <th data-sort="serviceType" style="padding: 20px 16px; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #e5e7eb; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: color 0.3s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#374151'">Service</th>
+              <th data-sort="status" style="padding: 20px 16px; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #e5e7eb; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: color 0.3s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#374151'">Status</th>
+              <th data-sort="createdAt" style="padding: 20px 16px; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #e5e7eb; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: color 0.3s;" onmouseover="this.style.color='#667eea'" onmouseout="this.style.color='#374151'">Date</th>
+              <th style="padding: 20px 16px; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #e5e7eb; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="reviewsTableBody" style="background: white;">
+            <!-- Reviews will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Enhanced Pagination -->
+    <div class="pagination" id="reviews-pagination" style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; margin-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <button id="prev-reviews-page" class="btn btn-secondary" style="padding: 12px 20px; background: #f8fafc; border: 2px solid #e5e7eb; color: #374151; border-radius: 10px; font-weight: 600; transition: all 0.3s; cursor: pointer;" onmouseover="this.style.background='#f1f5f9'; this.style.borderColor='#cbd5e1'" onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#e5e7eb'">Previous</button>
+        <span id="reviews-page-info" style="font-weight: 600; color: #374151; padding: 12px 20px; background: #f8fafc; border-radius: 10px;">Page 1 of 1</span>
+        <button id="next-reviews-page" class="btn btn-secondary" style="padding: 12px 20px; background: #f8fafc; border: 2px solid #e5e7eb; color: #374151; border-radius: 10px; font-weight: 600; transition: all 0.3s; cursor: pointer;" onmouseover="this.style.background='#f1f5f9'; this.style.borderColor='#cbd5e1'" onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#e5e7eb'">Next</button>
+      </div>
+      <select id="reviews-page-size" style="padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 16px; background-color: white; transition: all 0.3s;" onfocus="this.style.borderColor='#667eea'" onblur="this.style.borderColor='#e5e7eb'">
+        <option value="10">10 per page</option>
+        <option value="20" selected>20 per page</option>
+        <option value="50">50 per page</option>
+      </select>
+    </div>
   </div>
   </div>
   <!-- Bookings Tab -->
