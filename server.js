@@ -2617,6 +2617,45 @@ app.post('/api/reviews/test-data', async (req, res) => {
             message: `Added ${sampleReviews.length} sample reviews successfully`,
             reviews: sampleReviews
         });
+    } catch (error) {
+        console.error('❌ Failed to add sample reviews:', error);
+        res.status(500).json({ error: 'Failed to add sample reviews: ' + error.message });
+    }
+});
+
+// Quick test endpoint to add approved reviews
+app.post('/api/reviews/add-approved', async (req, res) => {
+    try {
+        await db.read();
+        if (!db.data.reviews) {
+            db.data.reviews = [];
+        }
+
+        const approvedReview = {
+            id: `review_${Date.now()}_approved`,
+            customerName: 'Test Customer',
+            customerEmail: 'test@example.com',
+            serviceType: 'Residential Cleaning',
+            rating: 5,
+            reviewText: 'This is a test approved review to verify the system is working correctly.',
+            bookingId: null,
+            isPublic: true,
+            status: 'approved',
+            createdAt: new Date().toISOString(),
+            approvedAt: new Date().toISOString(),
+            approvedBy: 'admin'
+        };
+
+        db.data.reviews.push(approvedReview);
+        await db.write();
+
+        console.log(`📝 Added approved test review: ${approvedReview.id}`);
+
+        res.json({ 
+            success: true, 
+            message: 'Added approved test review successfully',
+            review: approvedReview
+        });
 
     } catch (error) {
         console.error('❌ Failed to add sample reviews:', error);
@@ -2625,6 +2664,28 @@ app.post('/api/reviews/test-data', async (req, res) => {
 });
 
 // Debug endpoint to check database contents
+app.get('/api/debug/reviews', async (req, res) => {
+    try {
+        await db.read();
+        console.log('🔍 Debug: Database data keys:', db.data ? Object.keys(db.data) : 'No data');
+        console.log('🔍 Debug: Reviews in database:', db.data.reviews ? db.data.reviews.length : 0);
+        
+        if (db.data.reviews) {
+            console.log('🔍 Debug: All reviews:', JSON.stringify(db.data.reviews, null, 2));
+        }
+        
+        res.json({
+            success: true,
+            databaseKeys: db.data ? Object.keys(db.data) : [],
+            reviewsCount: db.data.reviews ? db.data.reviews.length : 0,
+            reviews: db.data.reviews || []
+        });
+    } catch (error) {
+        console.error('❌ Debug failed:', error);
+        res.status(500).json({ error: 'Debug failed: ' + error.message });
+    }
+});
+
 app.get('/api/debug/database', requireAuth, async (req, res) => {
     try {
         await db.read();
