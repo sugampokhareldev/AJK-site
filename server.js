@@ -637,7 +637,7 @@ We look forward to serving your commercial cleaning needs!
                 emailSent = true;
             } catch (primaryError) {
                 console.log('❌ Primary transporter failed:', primaryError.message);
-                throw new Error('All email services failed');
+                // Don't throw error here - let it fail gracefully
             }
         }
         
@@ -654,6 +654,10 @@ We look forward to serving your commercial cleaning needs!
             }
             
             return; // Success - exit the retry loop
+        } else {
+            // All email services failed - exit gracefully instead of throwing error
+            console.log('❌ All email services failed - booking will continue without email notification');
+            return;
         }
         
     } catch (error) {
@@ -665,8 +669,8 @@ We look forward to serving your commercial cleaning needs!
             console.log(`⏳ Retrying in ${delay/1000} seconds...`);
             await new Promise(resolve => setTimeout(resolve, delay));
         } else {
-            console.error('❌ All retry attempts failed for commercial booking confirmation');
-            throw error;
+            console.error('❌ All retry attempts failed for commercial booking confirmation - continuing without email');
+            return; // Exit gracefully instead of throwing error
         }
     }
     }
