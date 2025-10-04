@@ -1936,6 +1936,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                  setTimeout(() => {
                      initializeStripe();
                  }, 100);
+                 
+                 // Fallback: Enable payment button after a reasonable timeout
+                 setTimeout(() => {
+                     const submitBtn = document.getElementById('submit-payment');
+                     if (submitBtn && submitBtn.disabled) {
+                         console.log('⚠️ Fallback: Enabling payment button after timeout');
+                         submitBtn.disabled = false;
+                         submitBtn.textContent = 'Pay Now';
+                     }
+                 }, 5000); // 5 second fallback
             }
         }
         
@@ -2306,6 +2316,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (e) {
             console.error('❌ Stripe initialization error:', e);
             showMessage("Could not connect to payment server. Please try again later.");
+            
+            // Enable payment button even if Stripe fails (for debugging)
+            const submitBtn = document.getElementById('submit-payment');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Pay Now (Retry)';
+                console.log('⚠️ Payment button enabled despite Stripe error - for debugging');
+            }
         }
     }
     
@@ -2329,6 +2347,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function setLoading(isLoading) {
         const submitBtn = document.getElementById('submit-payment');
+        console.log(`🔄 setLoading(${isLoading}) - Button disabled: ${submitBtn.disabled}`);
         if (isLoading) {
             submitBtn.disabled = true;
             document.getElementById('spinner').classList.remove('hidden');
@@ -2339,6 +2358,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('spinner').classList.add('hidden');
             document.getElementById('button-text').classList.remove('hidden');
             hideLoadingScreen(); // Hide full-screen loading
+            console.log('✅ Loading stopped - button should be enabled');
         }
     }
 

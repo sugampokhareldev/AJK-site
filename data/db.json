@@ -2268,6 +2268,17 @@
       "ip": "127.0.0.1",
       "country": "Unknown",
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "797a475e-852f-49c0-983c-82be3b12c9a4",
+      "timestamp": 1759580700208,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759580700193_uc0659xks",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
     }
   ],
   "bookings": [
