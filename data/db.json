@@ -2235,6 +2235,28 @@
       "ip": "127.0.0.1",
       "country": "Unknown",
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "12a63cb7-b15b-47c0-8498-b4bb6cb5ed43",
+      "timestamp": 1759575425591,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759575425577_6lx0lav2s",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "ee05a053-bb13-4393-bb3e-f59a7abf4250",
+      "timestamp": 1759575428543,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759575428506_kj0vcyytz",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
     }
   ],
   "bookings": [

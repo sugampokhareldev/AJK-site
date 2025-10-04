@@ -1581,10 +1581,32 @@ document.addEventListener('DOMContentLoaded', async () => {
                 showStep(4);
             }, 30000); // 30 second global timeout
 
-            // Check if payment element is properly mounted
+            // Check if payment element is properly mounted and visible
             if (!paymentElement || !elements) {
                 throw new Error('Payment element not properly initialized');
             }
+
+            // Ensure payment element is visible and ready
+            const paymentElementContainer = document.getElementById('payment-element');
+            if (!paymentElementContainer || paymentElementContainer.children.length === 0) {
+                throw new Error('Payment form not loaded. Please wait and try again.');
+            }
+
+            console.log('✅ Payment element is ready, validating user input...');
+
+            // Add a small delay to ensure payment element is fully rendered
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // Validate that payment element is ready and user has entered payment details
+            const { error: submitError } = await elements.submit();
+            if (submitError) {
+                console.error('❌ Payment element validation failed:', submitError);
+                setLoading(false);
+                showMessage(submitError.message || 'Please complete your payment details');
+                return;
+            }
+
+            console.log('✅ Payment element validated, proceeding with payment confirmation...');
 
             const { error } = await stripe.confirmPayment({
                 elements,
