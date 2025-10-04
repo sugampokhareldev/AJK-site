@@ -2158,6 +2158,83 @@
       "ip": "127.0.0.1",
       "country": "Unknown",
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "07bc4040-c5e8-451f-b6fd-7c94dcde4e04",
+      "timestamp": 1759574739223,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759570303914_yas04mfb2",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "bbbd5bb1-0e65-419e-bb3b-392d51b46634",
+      "timestamp": 1759574809170,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759570303914_yas04mfb2",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "5d408fe1-ca70-4c79-b406-b0a6d9600cec",
+      "timestamp": 1759574871886,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759570303914_yas04mfb2",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "692bc4db-2182-4ff3-9560-63b923fa3d3e",
+      "timestamp": 1759574888341,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759570303914_yas04mfb2",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "0db2efb9-2fc3-4a82-9c3d-9e5d3ab365a5",
+      "timestamp": 1759574963036,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759570303914_yas04mfb2",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "e182d6c3-b2d8-4b2d-b64e-4829fbd487dc",
+      "timestamp": 1759574982617,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759570303914_yas04mfb2",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "532eec3e-3af0-428e-a9e1-4c1f6151bf6b",
+      "timestamp": 1759574992740,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759570303914_yas04mfb2",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
     }
   ],
   "bookings": [
@@ -2757,5 +2834,51 @@
     }
   ],
   "employees": [],
-  "reviews": []
+  "reviews": [
+    {
+      "id": "review_1759574782600",
+      "customerName": "Maria",
+      "customerEmail": "marias1999@gmail.com",
+      "serviceType": "Deep Cleaning",
+      "rating": 5,
+      "reviewText": "AJK Cleaning did an amazing job on our move-out clean. The apartment was spotless and we got our full deposit back. Highly recommend!",
+      "bookingId": null,
+      "isPublic": true,
+      "status": "approved",
+      "createdAt": "2025-10-04T10:46:22.600Z",
+      "approvedAt": "2025-10-04T10:46:46.403Z",
+      "approvedBy": "admin",
+      "updatedAt": "2025-10-04T10:46:46.403Z"
+    },
+    {
+      "id": "review_1759574865517",
+      "customerName": "Thomas",
+      "customerEmail": "Thomas1985@gmail.com",
+      "serviceType": "General Cleaning",
+      "rating": 5,
+      "reviewText": "Reliable, professional, and thorough. Our office has never looked better. The team is friendly and always on time. Five stars!",
+      "bookingId": null,
+      "isPublic": true,
+      "status": "approved",
+      "createdAt": "2025-10-04T10:47:45.517Z",
+      "approvedAt": "2025-10-04T10:48:07.388Z",
+      "approvedBy": "admin",
+      "updatedAt": "2025-10-04T10:48:07.388Z"
+    },
+    {
+      "id": "review_1759574956214",
+      "customerName": "Julia",
+      "customerEmail": "juliamanchister@gmail.com",
+      "serviceType": "Deep Cleaning",
+      "rating": 4,
+      "reviewText": "I love coming home after AJK has been there.They pay attention to the little details and use products that are safe for my kids and pet",
+      "bookingId": null,
+      "isPublic": true,
+      "status": "approved",
+      "createdAt": "2025-10-04T10:49:16.214Z",
+      "approvedAt": "2025-10-04T10:49:21.902Z",
+      "approvedBy": "admin",
+      "updatedAt": "2025-10-04T10:49:21.902Z"
+    }
+  ]
 }

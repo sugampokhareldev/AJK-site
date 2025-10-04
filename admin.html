@@ -3221,6 +3221,62 @@
     vertical-align: middle;
     border-bottom: 1px solid #f1f5f9;
   }
+
+  /* Dark Mode Support for Reviews Section */
+  [data-theme="dark"] .reviews-table-container {
+    background: var(--surface) !important;
+    border-color: var(--gray-700) !important;
+  }
+
+  [data-theme="dark"] .reviews-table thead {
+    background: linear-gradient(135deg, var(--gray-800), var(--gray-700)) !important;
+  }
+
+  [data-theme="dark"] .reviews-table th {
+    color: var(--gray-100) !important;
+    border-bottom-color: var(--gray-600) !important;
+  }
+
+  [data-theme="dark"] .reviews-table tbody {
+    background: var(--surface) !important;
+  }
+
+  [data-theme="dark"] .reviews-table tbody tr {
+    border-bottom-color: var(--gray-700) !important;
+  }
+
+  [data-theme="dark"] .reviews-table tbody tr:hover {
+    background-color: var(--gray-800) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+  }
+
+  [data-theme="dark"] .reviews-table tbody td {
+    color: var(--gray-100) !important;
+    border-bottom-color: var(--gray-700) !important;
+  }
+
+  [data-theme="dark"] .reviews-stats {
+    background: var(--surface) !important;
+    border-color: var(--gray-700) !important;
+  }
+
+  [data-theme="dark"] .reviews-filters {
+    background: var(--surface) !important;
+    border-color: var(--gray-700) !important;
+  }
+
+  [data-theme="dark"] .reviews-filters input,
+  [data-theme="dark"] .reviews-filters select {
+    background: var(--gray-800) !important;
+    border-color: var(--gray-600) !important;
+    color: var(--gray-100) !important;
+  }
+
+  [data-theme="dark"] .reviews-filters input:focus,
+  [data-theme="dark"] .reviews-filters select:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+  }
   
   .rating-display {
     font-size: 1.2rem;
@@ -4012,10 +4068,10 @@
     </div>
 
     <!-- Enhanced Table Container -->
-    <div class="reviews-table-container" style="background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; overflow: hidden;">
+    <div class="reviews-table-container" style="background: var(--surface); border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid var(--gray-200); overflow: hidden;">
       <div style="overflow-x: auto;">
         <table class="reviews-table" id="reviewsTable" style="width: 100%; border-collapse: collapse;">
-          <thead style="background: linear-gradient(135deg, #f8fafc, #f1f5f9);">
+          <thead style="background: linear-gradient(135deg, var(--gray-50), var(--gray-100));">
             <tr>
               <th style="padding: 20px 16px; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #e5e7eb; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">
                 <input type="checkbox" id="select-all-reviews" style="transform: scale(1.2);">
@@ -4028,7 +4084,7 @@
               <th style="padding: 20px 16px; text-align: left; font-weight: 700; color: #374151; border-bottom: 2px solid #e5e7eb; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Actions</th>
             </tr>
           </thead>
-          <tbody id="reviewsTableBody" style="background: white;">
+          <tbody id="reviewsTableBody" style="background: var(--surface);">
             <!-- Reviews will be loaded here -->
           </tbody>
         </table>
@@ -5491,27 +5547,250 @@
   if (!review) return;
   const modal = document.createElement('div');
   modal.className = 'modal';
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: modalFadeIn 0.3s ease-out;
+  `;
+  
   modal.innerHTML = `
-  <div class="modal-content">
-  <div class="modal-header">
-  <h3>Review Details</h3>
-  <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+  <div class="modal-content" style="
+    background: var(--surface);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid var(--gray-200);
+    animation: modalSlideIn 0.3s ease-out;
+  ">
+    <div class="modal-header" style="
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 24px 32px;
+      border-radius: 20px 20px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    ">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="
+          width: 48px;
+          height: 48px;
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 20px;
+        ">
+          <i class="fas fa-star"></i>
+        </div>
+        <div>
+          <h3 style="margin: 0; font-size: 1.5rem; font-weight: 700;">Review Details</h3>
+          <p style="margin: 4px 0 0 0; opacity: 0.9; font-size: 0.9rem;">Customer feedback information</p>
+        </div>
+      </div>
+      <button onclick="this.closest('.modal').remove()" style="
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: all 0.2s;
+      " onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body" style="padding: 32px;">
+      <!-- Customer Info Card -->
+      <div style="
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+        border: 1px solid #e2e8f0;
+      ">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+          <div style="
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+          ">
+            ${review.customerName.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <h4 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #1e293b;">${this.escapeHtml(review.customerName)}</h4>
+            <p style="margin: 4px 0 0 0; color: #64748b; font-size: 0.9rem;">${this.escapeHtml(review.customerEmail)}</p>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+          <div style="
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+          ">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <i class="fas fa-broom" style="color: #667eea; font-size: 14px;"></i>
+              <span style="font-weight: 600; color: #374151; font-size: 0.9rem;">SERVICE</span>
+            </div>
+            <p style="margin: 0; color: #64748b; font-size: 0.9rem;">${this.escapeHtml(review.serviceType)}</p>
+          </div>
+          
+          <div style="
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+          ">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <i class="fas fa-calendar" style="color: #667eea; font-size: 14px;"></i>
+              <span style="font-weight: 600; color: #374151; font-size: 0.9rem;">DATE</span>
+            </div>
+            <p style="margin: 0; color: #64748b; font-size: 0.9rem;">${new Date(review.createdAt).toLocaleDateString()}</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Rating Card -->
+      <div style="
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+        border: 1px solid #f59e0b;
+        text-align: center;
+      ">
+        <div style="margin-bottom: 12px;">
+          <span style="font-weight: 600; color: #92400e; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">CUSTOMER RATING</span>
+        </div>
+        <div style="font-size: 2.5rem; margin-bottom: 8px;">
+          ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}
+        </div>
+        <div style="
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: white;
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-weight: 700;
+          color: #92400e;
+          font-size: 1.1rem;
+        ">
+          <span>${review.rating}</span>
+          <span style="color: #64748b;">/ 5</span>
+        </div>
+      </div>
+      
+      <!-- Review Text Card -->
+      <div style="
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+        border: 1px solid #0ea5e9;
+      ">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+          <i class="fas fa-quote-left" style="color: #0ea5e9; font-size: 16px;"></i>
+          <span style="font-weight: 600; color: #0c4a6e; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">CUSTOMER REVIEW</span>
+        </div>
+        <div style="
+          background: white;
+          padding: 20px;
+          border-radius: 12px;
+          border-left: 4px solid #0ea5e9;
+        ">
+          <p style="
+            margin: 0;
+            font-style: italic;
+            line-height: 1.7;
+            color: #1e293b;
+            font-size: 1rem;
+            position: relative;
+          ">
+            "${this.escapeHtml(review.reviewText)}"
+          </p>
+        </div>
+      </div>
+      
+      <!-- Status Card -->
+      <div style="
+        background: ${review.status === 'approved' ? 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)' : 
+                     review.status === 'pending' ? 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)' : 
+                     'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)'};
+        border-radius: 16px;
+        padding: 24px;
+        border: 1px solid ${review.status === 'approved' ? '#10b981' : 
+                          review.status === 'pending' ? '#f59e0b' : '#ef4444'};
+        text-align: center;
+      ">
+        <div style="margin-bottom: 12px;">
+          <span style="font-weight: 600; color: ${review.status === 'approved' ? '#065f46' : 
+                                                   review.status === 'pending' ? '#92400e' : '#991b1b'}; 
+                   font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">REVIEW STATUS</span>
+        </div>
+        <div style="
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: white;
+          padding: 12px 20px;
+          border-radius: 20px;
+          font-weight: 700;
+          color: ${review.status === 'approved' ? '#065f46' : 
+                   review.status === 'pending' ? '#92400e' : '#991b1b'};
+          font-size: 1rem;
+          text-transform: capitalize;
+        ">
+          <i class="fas ${review.status === 'approved' ? 'fa-check-circle' : 
+                        review.status === 'pending' ? 'fa-clock' : 'fa-times-circle'}" 
+             style="font-size: 16px;"></i>
+          <span>${review.status.replace('_', ' ')}</span>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="modal-body">
-  <div class="review-details">
-  <p><strong>Customer:</strong> ${this.escapeHtml(review.customerName)}</p>
-  <p><strong>Email:</strong> ${this.escapeHtml(review.customerEmail)}</p>
-  <p><strong>Service:</strong> ${this.escapeHtml(review.serviceType)}</p>
-  <p><strong>Rating:</strong> ${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)} (${review.rating}/5)</p>
-  <p><strong>Status:</strong> ${review.status.replace('_', ' ')}</p>
-  <p><strong>Date:</strong> ${new Date(review.createdAt).toLocaleString()}</p>
-  </div>
-  <div class="review-text">
-  <h4>Review Text:</h4>
-  <p style="font-style: italic; line-height: 1.6;">"${this.escapeHtml(review.reviewText)}"</p>
-  </div>
-  </div>
-  </div>
+  
+  <style>
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes modalSlideIn {
+      from { transform: translateY(-50px) scale(0.95); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+  </style>
   `;
   document.body.appendChild(modal);
   modal.style.display = 'block';
