@@ -1585,6 +1585,88 @@
         // Fetch CSRF token on page load
         fetchCSRFToken();
         
+        // --- Modern Toast Notifications ---
+        function showToast(message, type = 'info') {
+            // Remove existing toasts
+            const existingToasts = document.querySelectorAll('.toast');
+            existingToasts.forEach(toast => toast.remove());
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 10000;
+                padding: 16px 24px;
+                border-radius: 12px;
+                color: white;
+                font-weight: 600;
+                font-size: 14px;
+                max-width: 400px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                transform: translateX(100%);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255,255,255,0.2);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            `;
+            
+            // Set colors based on type
+            const colors = {
+                success: 'linear-gradient(135deg, #10b981, #059669)',
+                error: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                warning: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                info: 'linear-gradient(135deg, #3b82f6, #2563eb)'
+            };
+            
+            toast.style.background = colors[type] || colors.info;
+            
+            // Add icon
+            const icons = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                warning: 'fas fa-exclamation-triangle',
+                info: 'fas fa-info-circle'
+            };
+            
+            toast.innerHTML = `
+                <i class="${icons[type] || icons.info}" style="font-size: 18px;"></i>
+                <span>${message}</span>
+                <button onclick="this.parentElement.remove()" style="
+                    background: rgba(255,255,255,0.2);
+                    border: none;
+                    color: white;
+                    border-radius: 50%;
+                    width: 24px;
+                    height: 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    margin-left: auto;
+                    font-size: 12px;
+                ">×</button>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.style.transform = 'translateX(0)';
+            }, 10);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 5000);
+        }
+        
         // --- Gemini API Proxy ---
         const callGeminiAPI = async (chatHistory, systemInstruction) => {
             const apiUrl = '/api/gemini';
@@ -1944,6 +2026,8 @@
         async function submitReview() {
             const form = document.getElementById('review-form');
             const formData = new FormData(form);
+            const submitBtn = document.getElementById('submit-review');
+            const originalBtnText = submitBtn.innerHTML;
             
             const reviewData = {
                 customerName: formData.get('customerName'),
@@ -1955,9 +2039,14 @@
             };
 
             if (!reviewData.customerName || !reviewData.customerEmail || !reviewData.rating || !reviewData.reviewText) {
-                alert('Please fill in all required fields');
+                showToast('Please fill in all required fields', 'error');
                 return;
             }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...';
+            submitBtn.style.opacity = '0.7';
 
             try {
                 // Get CSRF token from meta tag
@@ -1991,15 +2080,20 @@
                 });
 
                 if (response.ok) {
-                    alert('Thank you for your review! It will be published after admin approval.');
+                    showToast('Thank you for your review! It will be published after admin approval.', 'success');
                     closeReviewModal();
                 } else {
                     const error = await response.json();
-                    alert('Error submitting review: ' + error.error);
+                    showToast('Error submitting review: ' + error.error, 'error');
                 }
             } catch (error) {
                 console.error('Error submitting review:', error);
-                alert('Error submitting review. Please try again.');
+                showToast('Error submitting review. Please try again.', 'error');
+            } finally {
+                // Restore button state
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.style.opacity = '1';
             }
         }
 

@@ -3264,6 +3264,41 @@
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   }
+  
+  /* Premium Animations for Admin Reviews */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  
+  @keyframes shimmer {
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+  }
+  
+  /* Enhanced hover effects for stat cards */
+  .stat-card:hover .stat-icon {
+    transform: scale(1.1) rotate(5deg);
+  }
+  
+  .stat-card:hover h3 {
+    transform: scale(1.05);
+  }
+  
+  /* Loading animation for buttons */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .fa-spinner {
+    animation: spin 1s linear infinite;
+  }
   </style>
 </head>
 <body>
@@ -3847,70 +3882,101 @@
   <!-- Reviews Tab -->
   <div id="reviews-tab" class="tab-content">
   <div class="reviews-container" style="padding: 0; background: transparent;">
-    <!-- Enhanced Header -->
-    <div class="reviews-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 32px; border-radius: 16px; margin-bottom: 32px; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+    <!-- Enhanced Header with Better Design -->
+    <div class="reviews-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; border-radius: 20px; margin-bottom: 40px; box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4); position: relative; overflow: hidden;">
+      <!-- Background Pattern -->
+      <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; opacity: 0.3;"></div>
+      <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.05); border-radius: 50%; opacity: 0.4;"></div>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; position: relative; z-index: 2;">
         <div>
-          <h2 style="margin: 0; font-size: 2rem; font-weight: 700; display: flex; align-items: center; gap: 12px;">
-            <i class="fas fa-star" style="color: #fbbf24; font-size: 1.5rem;"></i>
+          <h2 style="margin: 0; font-size: 2.5rem; font-weight: 800; display: flex; align-items: center; gap: 16px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+              <i class="fas fa-star" style="color: #fbbf24; font-size: 1.8rem;"></i>
+            </div>
             Customer Reviews Management
           </h2>
-          <p style="margin: 8px 0 0 0; opacity: 0.9; font-size: 1.1rem;">Manage and moderate customer reviews</p>
+          <p style="margin: 12px 0 0 0; opacity: 0.95; font-size: 1.2rem; font-weight: 500;">Manage and moderate customer reviews with advanced filtering</p>
+          <div style="display: flex; gap: 16px; margin-top: 16px;">
+            <div style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; backdrop-filter: blur(10px);">
+              <i class="fas fa-shield-alt" style="color: #10b981;"></i>
+              <span style="font-size: 0.9rem; font-weight: 600;">Secure & Moderated</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; backdrop-filter: blur(10px);">
+              <i class="fas fa-clock" style="color: #f59e0b;"></i>
+              <span style="font-size: 0.9rem; font-weight: 600;">Real-time Updates</span>
+            </div>
+          </div>
         </div>
-        <div class="reviews-actions" style="display: flex; gap: 12px; flex-wrap: wrap;">
-          <button class="btn btn-primary" id="refresh-reviews" style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3); color: white; padding: 12px 20px; border-radius: 10px; font-weight: 600; transition: all 0.3s; backdrop-filter: blur(10px);">
-            <i class="fas fa-sync-alt"></i> Refresh
+        <div class="reviews-actions" style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <button class="btn btn-primary" id="refresh-reviews" style="background: rgba(255,255,255,0.25); border: 2px solid rgba(255,255,255,0.4); color: white; padding: 16px 24px; border-radius: 12px; font-weight: 700; transition: all 0.3s; backdrop-filter: blur(15px); display: flex; align-items: center; gap: 10px; font-size: 1rem;" onmouseover="this.style.background='rgba(255,255,255,0.35)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(0)'">
+            <i class="fas fa-sync-alt"></i> Refresh Data
           </button>
-          <button class="btn btn-secondary" id="export-reviews" style="background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); color: white; padding: 12px 20px; border-radius: 10px; font-weight: 600; transition: all 0.3s; backdrop-filter: blur(10px);">
-            <i class="fas fa-download"></i> Export
+          <button class="btn btn-secondary" id="export-reviews" style="background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3); color: white; padding: 16px 24px; border-radius: 12px; font-weight: 700; transition: all 0.3s; backdrop-filter: blur(15px); display: flex; align-items: center; gap: 10px; font-size: 1rem;" onmouseover="this.style.background='rgba(255,255,255,0.25)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateY(0)'">
+            <i class="fas fa-download"></i> Export Reviews
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Enhanced Stats Cards -->
-    <div class="reviews-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 32px;">
-      <div class="stat-card" style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; transition: all 0.3s; position: relative; overflow: hidden;">
-        <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: linear-gradient(135deg, #667eea, #764ba2); opacity: 0.1; border-radius: 0 16px 0 100px;"></div>
-        <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-          <i class="fas fa-star" style="color: white; font-size: 1.5rem;"></i>
+    <!-- Enhanced Stats Cards with Premium Design -->
+    <div class="reviews-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; margin-bottom: 40px;">
+      <div class="stat-card" style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); padding: 32px; border-radius: 20px; box-shadow: 0 8px 32px rgba(102, 126, 234, 0.12); border: 1px solid rgba(102, 126, 234, 0.1); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 16px 48px rgba(102, 126, 234, 0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(102, 126, 234, 0.12)'">
+        <!-- Animated Background -->
+        <div style="position: absolute; top: -20px; right: -20px; width: 120px; height: 120px; background: linear-gradient(135deg, #667eea, #764ba2); opacity: 0.08; border-radius: 50%; animation: float 6s ease-in-out infinite;"></div>
+        <div style="position: absolute; bottom: -10px; left: -10px; width: 80px; height: 80px; background: linear-gradient(135deg, #667eea, #764ba2); opacity: 0.05; border-radius: 50%; animation: float 8s ease-in-out infinite reverse;"></div>
+        
+        <div class="stat-icon" style="width: 72px; height: 72px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; position: relative; z-index: 2; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);">
+          <i class="fas fa-star" style="color: white; font-size: 1.8rem; animation: pulse 2s infinite;"></i>
         </div>
-        <div class="stat-content">
-          <h3 id="total-reviews" style="margin: 0; font-size: 2.5rem; font-weight: 800; color: #1f2937; line-height: 1;">0</h3>
-          <p style="margin: 8px 0 0 0; color: #6b7280; font-weight: 600; font-size: 1rem;">Total Reviews</p>
-        </div>
-      </div>
-      
-      <div class="stat-card" style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; transition: all 0.3s; position: relative; overflow: hidden;">
-        <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: linear-gradient(135deg, #10b981, #059669); opacity: 0.1; border-radius: 0 16px 0 100px;"></div>
-        <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-          <i class="fas fa-star-half-alt" style="color: white; font-size: 1.5rem;"></i>
-        </div>
-        <div class="stat-content">
-          <h3 id="average-rating" style="margin: 0; font-size: 2.5rem; font-weight: 800; color: #1f2937; line-height: 1;">0.0</h3>
-          <p style="margin: 8px 0 0 0; color: #6b7280; font-weight: 600; font-size: 1rem;">Average Rating</p>
+        <div class="stat-content" style="position: relative; z-index: 2;">
+          <h3 id="total-reviews" style="margin: 0; font-size: 3rem; font-weight: 900; color: #1f2937; line-height: 1; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</h3>
+          <p style="margin: 12px 0 0 0; color: #6b7280; font-weight: 700; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.5px;">Total Reviews</p>
+          <div style="margin-top: 16px; padding: 8px 16px; background: rgba(102, 126, 234, 0.1); border-radius: 12px; display: inline-block;">
+            <span style="font-size: 0.85rem; color: #667eea; font-weight: 600;">📈 All Time</span>
+          </div>
         </div>
       </div>
       
-      <div class="stat-card" style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; transition: all 0.3s; position: relative; overflow: hidden;">
-        <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: linear-gradient(135deg, #f59e0b, #d97706); opacity: 0.1; border-radius: 0 16px 0 100px;"></div>
-        <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-          <i class="fas fa-clock" style="color: white; font-size: 1.5rem;"></i>
+      <div class="stat-card" style="background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); padding: 32px; border-radius: 20px; box-shadow: 0 8px 32px rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.1); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 16px 48px rgba(16, 185, 129, 0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(16, 185, 129, 0.12)'">
+        <div style="position: absolute; top: -20px; right: -20px; width: 120px; height: 120px; background: linear-gradient(135deg, #10b981, #059669); opacity: 0.08; border-radius: 50%; animation: float 7s ease-in-out infinite;"></div>
+        <div class="stat-icon" style="width: 72px; height: 72px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; position: relative; z-index: 2; box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);">
+          <i class="fas fa-star-half-alt" style="color: white; font-size: 1.8rem; animation: pulse 2.5s infinite;"></i>
         </div>
-        <div class="stat-content">
-          <h3 id="pending-reviews" style="margin: 0; font-size: 2.5rem; font-weight: 800; color: #1f2937; line-height: 1;">0</h3>
-          <p style="margin: 8px 0 0 0; color: #6b7280; font-weight: 600; font-size: 1rem;">Pending Approval</p>
+        <div class="stat-content" style="position: relative; z-index: 2;">
+          <h3 id="average-rating" style="margin: 0; font-size: 3rem; font-weight: 900; color: #1f2937; line-height: 1; background: linear-gradient(135deg, #10b981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0.0</h3>
+          <p style="margin: 12px 0 0 0; color: #6b7280; font-weight: 700; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.5px;">Average Rating</p>
+          <div style="margin-top: 16px; padding: 8px 16px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; display: inline-block;">
+            <span style="font-size: 0.85rem; color: #10b981; font-weight: 600;">⭐ Quality Score</span>
+          </div>
         </div>
       </div>
       
-      <div class="stat-card" style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; transition: all 0.3s; position: relative; overflow: hidden;">
-        <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: linear-gradient(135deg, #10b981, #059669); opacity: 0.1; border-radius: 0 16px 0 100px;"></div>
-        <div class="stat-icon" style="width: 60px; height: 60px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-          <i class="fas fa-check-circle" style="color: white; font-size: 1.5rem;"></i>
+      <div class="stat-card" style="background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%); padding: 32px; border-radius: 20px; box-shadow: 0 8px 32px rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.1); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 16px 48px rgba(245, 158, 11, 0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(245, 158, 11, 0.12)'">
+        <div style="position: absolute; top: -20px; right: -20px; width: 120px; height: 120px; background: linear-gradient(135deg, #f59e0b, #d97706); opacity: 0.08; border-radius: 50%; animation: float 6.5s ease-in-out infinite;"></div>
+        <div class="stat-icon" style="width: 72px; height: 72px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; position: relative; z-index: 2; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);">
+          <i class="fas fa-clock" style="color: white; font-size: 1.8rem; animation: pulse 3s infinite;"></i>
         </div>
-        <div class="stat-content">
-          <h3 id="approved-reviews" style="margin: 0; font-size: 2.5rem; font-weight: 800; color: #1f2937; line-height: 1;">0</h3>
-          <p style="margin: 8px 0 0 0; color: #6b7280; font-weight: 600; font-size: 1rem;">Approved</p>
+        <div class="stat-content" style="position: relative; z-index: 2;">
+          <h3 id="pending-reviews" style="margin: 0; font-size: 3rem; font-weight: 900; color: #1f2937; line-height: 1; background: linear-gradient(135deg, #f59e0b, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</h3>
+          <p style="margin: 12px 0 0 0; color: #6b7280; font-weight: 700; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.5px;">Pending Approval</p>
+          <div style="margin-top: 16px; padding: 8px 16px; background: rgba(245, 158, 11, 0.1); border-radius: 12px; display: inline-block;">
+            <span style="font-size: 0.85rem; color: #f59e0b; font-weight: 600;">⏳ Awaiting Review</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="stat-card" style="background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); padding: 32px; border-radius: 20px; box-shadow: 0 8px 32px rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.1); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 16px 48px rgba(16, 185, 129, 0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 32px rgba(16, 185, 129, 0.12)'">
+        <div style="position: absolute; top: -20px; right: -20px; width: 120px; height: 120px; background: linear-gradient(135deg, #10b981, #059669); opacity: 0.08; border-radius: 50%; animation: float 7.5s ease-in-out infinite;"></div>
+        <div class="stat-icon" style="width: 72px; height: 72px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; position: relative; z-index: 2; box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);">
+          <i class="fas fa-check-circle" style="color: white; font-size: 1.8rem; animation: pulse 2.2s infinite;"></i>
+        </div>
+        <div class="stat-content" style="position: relative; z-index: 2;">
+          <h3 id="approved-reviews" style="margin: 0; font-size: 3rem; font-weight: 900; color: #1f2937; line-height: 1; background: linear-gradient(135deg, #10b981, #059669); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">0</h3>
+          <p style="margin: 12px 0 0 0; color: #6b7280; font-weight: 700; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.5px;">Approved</p>
+          <div style="margin-top: 16px; padding: 8px 16px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; display: inline-block;">
+            <span style="font-size: 0.85rem; color: #10b981; font-weight: 600;">✅ Published</span>
+          </div>
         </div>
       </div>
     </div>

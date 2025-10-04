@@ -1971,6 +1971,72 @@
       "ip": "127.0.0.1",
       "country": "Unknown",
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "1cc2d713-f17e-4e13-9551-77bfc40935da",
+      "timestamp": 1759571418434,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759570303914_yas04mfb2",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "790e8996-87f1-40f9-8689-b5b58d8a1fbc",
+      "timestamp": 1759571803834,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759570303914_yas04mfb2",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "cf9d4b39-b801-4275-8529-42282877d0df",
+      "timestamp": 1759571833778,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759570303914_yas04mfb2",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "f457f83b-90b9-4231-8601-d4941fe5724d",
+      "timestamp": 1759571842132,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759570303914_yas04mfb2",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "6f512c32-7b33-4292-91a8-5728c46f1ab5",
+      "timestamp": 1759571848406,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759570303914_yas04mfb2",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
+    },
+    {
+      "id": "f0c4a277-ad14-4bfe-b479-747d65da2c49",
+      "timestamp": 1759571849785,
+      "eventType": "pageview",
+      "path": "&#x2F;",
+      "referrer": "direct",
+      "sessionId": "session_1759570303914_yas04mfb2",
+      "ip": "127.0.0.1",
+      "country": "Unknown",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
     }
   ],
   "bookings": [
@@ -2569,5 +2635,22 @@
       "createdAt": "2025-10-03T14:22:18.960Z"
     }
   ],
-  "employees": []
+  "employees": [],
+  "reviews": [
+    {
+      "id": "review_1759571814357",
+      "customerName": "sugam",
+      "customerEmail": "pokharels562@gmail.com",
+      "serviceType": "Deep Cleaning",
+      "rating": 5,
+      "reviewText": "sssssssssssssssssssss",
+      "bookingId": null,
+      "isPublic": true,
+      "status": "approved",
+      "createdAt": "2025-10-04T09:56:54.357Z",
+      "approvedAt": "2025-10-04T09:57:26.599Z",
+      "approvedBy": "admin",
+      "updatedAt": "2025-10-04T09:57:26.599Z"
+    }
+  ]
 }
