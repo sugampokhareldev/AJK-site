@@ -2244,6 +2244,44 @@ app.post('/api/reviews', async (req, res) => {
     }
 });
 
+// General reviews endpoint with query parameters
+app.get('/api/reviews', async (req, res) => {
+    try {
+        const status = req.query.status || '';
+        const limit = parseInt(req.query.limit) || 20;
+        
+        await db.read();
+        console.log('📋 Fetching reviews with status:', status, 'limit:', limit);
+        
+        let reviews = db.data.reviews || [];
+        
+        // Filter by status if provided
+        if (status) {
+            reviews = reviews.filter(review => review.status === status);
+        }
+        
+        // Filter for public reviews only (for non-admin requests)
+        reviews = reviews.filter(review => review.isPublic);
+        
+        // Sort by creation date (newest first)
+        reviews = reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        // Limit results
+        reviews = reviews.slice(0, limit);
+        
+        console.log('📋 Filtered reviews:', reviews.length);
+        
+        res.json({
+            success: true,
+            reviews: reviews,
+            total: reviews.length
+        });
+    } catch (error) {
+        console.error('Error fetching reviews:', error);
+        res.status(500).json({ error: 'Failed to fetch reviews' });
+    }
+});
+
 // Get public reviews for website display
 app.get('/api/reviews/public', async (req, res) => {
     try {
