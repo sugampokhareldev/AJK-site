@@ -18,6 +18,7 @@
     <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <meta name="description" content="Professioneller Reinigungsservice in Deutschland - AJK Cleaning bietet Wohnungsreinigung, Büroreinigung & Gewerbereinigung in Bischofsheim, Mainz, Wiesbaden. Ökologisch, versichert, zufriedenheitsgarantie. Kostenloses Angebot!">
+    <meta name="csrf-token" content="">
     <meta name="keywords" content="Reinigungsservice Deutschland, Reinigungsservice, Putzservice, Wohnungsreinigung, Büroreinigung, Gewerbereinigung, Reinigungsfirma, Putzfrau, Haushaltshilfe, Büroreinigung Mainz, Reinigung Wiesbaden, Reinigung Bischofsheim, Umzugsreinigung, Grundreinigung, Fensterreinigung, Teppichreinigung, Büroreinigung Frankfurt, Reinigungsservice Hessen, professionelle Reinigung, ökologische Reinigung, Reinigungsunternehmen">
     <meta name="author" content="AJK Cleaning Company">
     <meta name="robots" content="index, follow">
@@ -1565,6 +1566,24 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Fetch CSRF token from server
+        async function fetchCSRFToken() {
+            try {
+                const response = await fetch('/api/csrf-token');
+                if (response.ok) {
+                    const data = await response.json();
+                    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                    if (csrfMeta) {
+                        csrfMeta.setAttribute('content', data.csrfToken);
+                    }
+                }
+            } catch (error) {
+                console.warn('Could not fetch CSRF token:', error);
+            }
+        }
+        
+        // Fetch CSRF token on page load
+        fetchCSRFToken();
         
         // --- Gemini API Proxy ---
         const callGeminiAPI = async (chatHistory, systemInstruction) => {
@@ -1941,10 +1960,32 @@
             }
 
             try {
+                // Get CSRF token from meta tag
+                let csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                
+                // If no CSRF token, fetch it first
+                if (!csrfToken) {
+                    try {
+                        const tokenResponse = await fetch('/api/csrf-token');
+                        if (tokenResponse.ok) {
+                            const tokenData = await tokenResponse.json();
+                            csrfToken = tokenData.csrfToken;
+                            // Update the meta tag for future use
+                            const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                            if (csrfMeta) {
+                                csrfMeta.setAttribute('content', csrfToken);
+                            }
+                        }
+                    } catch (tokenError) {
+                        console.warn('Could not fetch CSRF token:', tokenError);
+                    }
+                }
+                
                 const response = await fetch('/api/reviews', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken || ''
                     },
                     body: JSON.stringify(reviewData)
                 });
