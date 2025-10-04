@@ -620,9 +620,13 @@ We look forward to serving your commercial cleaning needs!
         if (!emailSent) {
             try {
                 console.log('📧 Trying fallback email service...');
-                await sendEmailWithFallback(mailOptions, 2);
-                console.log(`✅ Commercial booking confirmation sent via fallback to ${customerEmail} for request ${booking.id}`);
-                emailSent = true;
+                const fallbackResult = await sendEmailWithFallback(mailOptions, 2);
+                if (fallbackResult) {
+                    console.log(`✅ Commercial booking confirmation sent via fallback to ${customerEmail} for request ${booking.id}`);
+                    emailSent = true;
+                } else {
+                    console.log('❌ Fallback email service failed - no working configuration');
+                }
             } catch (fallbackError) {
                 console.log('❌ Fallback email service failed:', fallbackError.message);
             }
@@ -4692,16 +4696,16 @@ app.post('/api/bookings/commercial-create', async (req, res) => {
         console.log(`[COMMERCIAL] ✅ Created commercial booking ${newBooking.id}`);
         console.log(`[COMMERCIAL] 📊 Total bookings in database:`, db.data.bookings.length);
         
-        // Send commercial booking confirmation email
-        try {
-            console.log(`[COMMERCIAL] 📧 Attempting to send email for booking:`, newBooking.id);
-            console.log(`[COMMERCIAL] 📧 Booking data:`, JSON.stringify(newBooking, null, 2));
-            await sendCommercialBookingConfirmation(newBooking);
-            console.log(`[COMMERCIAL] 📧 Confirmation email sent for booking ${newBooking.id}`);
-        } catch (emailError) {
-            console.error(`[COMMERCIAL] ❌ Failed to send confirmation email for booking ${newBooking.id}:`, emailError.message);
-            console.error(`[COMMERCIAL] ❌ Full error:`, emailError);
-        }
+        // Send commercial booking confirmation email (non-blocking)
+        sendCommercialBookingConfirmation(newBooking)
+            .then(() => {
+                console.log(`[COMMERCIAL] 📧 Confirmation email sent for booking ${newBooking.id}`);
+            })
+            .catch(emailError => {
+                console.error(`[COMMERCIAL] ❌ Failed to send confirmation email for booking ${newBooking.id}:`, emailError.message);
+                console.error(`[COMMERCIAL] ❌ Full error:`, emailError);
+                // Email failure doesn't affect booking completion
+            });
         
         res.json({ 
             status: 'created', 
