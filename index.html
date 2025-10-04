@@ -2101,8 +2101,10 @@
 
         // --- Character Count for Review Text ---
         function updateCharacterCount(textarea) {
+            console.log('updateCharacterCount called with:', textarea.value.length, 'characters');
             const count = textarea.value.length;
             const countElement = document.getElementById('character-count');
+            console.log('Character count element found:', !!countElement);
             if (countElement) {
                 countElement.textContent = `${count}/135 characters`;
                 if (count > 135) {
@@ -2112,8 +2114,22 @@
                 } else {
                     countElement.style.color = '#6b7280';
                 }
+                console.log('Character count updated to:', countElement.textContent);
             }
         }
+
+        // Make function globally accessible
+        window.updateCharacterCount = updateCharacterCount;
+
+        // Add event listener as backup
+        document.addEventListener('DOMContentLoaded', function() {
+            const reviewTextarea = document.getElementById('review-text');
+            if (reviewTextarea) {
+                reviewTextarea.addEventListener('input', function() {
+                    updateCharacterCount(this);
+                });
+            }
+        });
 
         // --- Load and Display Reviews ---
         async function loadReviews() {
