@@ -1594,19 +1594,43 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             console.log('✅ Payment element is ready, validating user input...');
 
-            // Add a small delay to ensure payment element is fully rendered
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            // Validate that payment element is ready and user has entered payment details
-            const { error: submitError } = await elements.submit();
-            if (submitError) {
-                console.error('❌ Payment element validation failed:', submitError);
+            // Wait for Stripe elements to be fully mounted and ready
+            let attempts = 0;
+            const maxAttempts = 15;
+            let elementsReady = false;
+            
+            while (attempts < maxAttempts && !elementsReady) {
+                try {
+                    // Check if elements are ready by trying to submit
+                    const { error: submitError } = await elements.submit();
+                    if (submitError) {
+                        console.error('❌ Payment element validation failed:', submitError);
+                        setLoading(false);
+                        showMessage(submitError.message || 'Please complete your payment details');
+                        return;
+                    }
+                    console.log('✅ Payment element validated, proceeding with payment confirmation...');
+                    elementsReady = true;
+                } catch (error) {
+                    attempts++;
+                    console.log(`⏳ Waiting for Stripe elements to be ready (attempt ${attempts}/${maxAttempts})...`);
+                    if (attempts >= maxAttempts) {
+                        console.error('❌ Stripe elements not ready after maximum attempts');
+                        setLoading(false);
+                        showMessage('Payment form is not ready. Please refresh the page and try again.');
+                        return;
+                    }
+                    // Wait 300ms before trying again
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                }
+            }
+            
+            if (!elementsReady) {
+                console.error('❌ Failed to validate Stripe elements');
                 setLoading(false);
-                showMessage(submitError.message || 'Please complete your payment details');
+                showMessage('Payment form is not ready. Please refresh the page and try again.');
                 return;
             }
-
-            console.log('✅ Payment element validated, proceeding with payment confirmation...');
 
             const { error } = await stripe.confirmPayment({
                 elements,
@@ -2205,8 +2229,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     reject(error);
                 });
                 
+                // Mount the element
                 paymentElement.mount("#payment-element");
             });
+
+            // Additional wait to ensure element is fully mounted and interactive
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            console.log('✅ Payment element fully mounted and ready');
             
             console.log('✅ Payment Element mounted successfully');
             
