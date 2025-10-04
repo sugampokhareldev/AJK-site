@@ -1661,6 +1661,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const checkBooking = async () => {
                     try {
                         console.log(`🔍 Checking for booking creation (attempt ${attempts + 1}/${maxAttempts})...`);
+                        
+                        // First verify payment status
+                        const paymentStatusResponse = await fetch(`/api/bookings/check-payment-status/${state.paymentIntentId}`);
+                        if (!paymentStatusResponse.ok) {
+                            throw new Error('Payment verification failed');
+                        }
+                        
+                        const paymentStatus = await paymentStatusResponse.json();
+                        if (paymentStatus.status !== 'succeeded') {
+                            throw new Error(`Payment not successful. Status: ${paymentStatus.status}`);
+                        }
+                        
                         const response = await fetch(`/api/bookings/by-payment-intent/${state.paymentIntentId}`);
                         
                         if (response.ok) {
@@ -1686,6 +1698,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                             console.log('🔄 Webhook timeout, creating booking manually...');
                             setLoading(true);
                             try {
+                                // First verify payment status with Stripe
+                                console.log('🔍 Verifying payment status before creating booking...');
+                                const paymentStatusResponse = await fetch(`/api/bookings/check-payment-status/${state.paymentIntentId}`);
+                                
+                                if (!paymentStatusResponse.ok) {
+                                    throw new Error('Payment verification failed');
+                                }
+                                
+                                const paymentStatus = await paymentStatusResponse.json();
+                                console.log('📊 Payment status:', paymentStatus);
+                                
+                                if (paymentStatus.status !== 'succeeded') {
+                                    throw new Error(`Payment not successful. Status: ${paymentStatus.status}`);
+                                }
+                                
                                 const createResponse = await fetch('/api/bookings/create-from-payment', {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json' },
@@ -1708,7 +1735,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             } catch (createError) {
                                 console.error('❌ Error creating booking manually:', createError);
                                 clearTimeout(globalTimeout);
-                                showMessage('Payment successful but booking creation failed. Please contact support.');
+                                showMessage('Payment verification failed. Please contact support if you were charged.');
                                 setLoading(false);
                             }
                         }
@@ -1718,10 +1745,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         if (attempts < maxAttempts) {
                             setTimeout(checkBooking, 1500);
                         } else {
-                            console.error('❌ Max attempts reached, proceeding anyway...');
+                            console.error('❌ Max attempts reached, payment verification failed');
                             clearTimeout(globalTimeout);
                             setLoading(false);
-                            showStep(4);
+                            showMessage('Payment verification failed. Please contact support if you were charged.');
                         }
                     }
                 };
