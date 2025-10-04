@@ -1242,6 +1242,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Ensure button starts in correct state (no loading)
     setLoading(false);
     
+    // Disable payment button initially until form is ready
+    const submitBtn = document.getElementById('submit-payment');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Loading Payment Form...';
+        console.log('🔒 Payment button disabled - waiting for form to load');
+    }
+    
     let stripe;
     try {
         const response = await fetch('/api/stripe-key');
@@ -1590,6 +1598,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             const paymentElementContainer = document.getElementById('payment-element');
             if (!paymentElementContainer || paymentElementContainer.children.length === 0) {
                 throw new Error('Payment form not loaded. Please wait and try again.');
+            }
+
+            // Critical: Check if payment form is actually interactive and user has entered data
+            const paymentInputs = paymentElementContainer.querySelectorAll('input, iframe');
+            if (paymentInputs.length === 0) {
+                throw new Error('Payment form is not ready. Please wait for the form to load completely.');
+            }
+
+            // Check if Stripe elements are in a ready state
+            if (paymentElement._componentName !== 'payment') {
+                throw new Error('Payment form is not properly initialized. Please refresh and try again.');
             }
 
             console.log('✅ Payment element is ready, validating user input...');
@@ -2268,6 +2287,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             // Ensure the payment element is visible
             paymentContainer.style.display = 'block';
+            
+            // Enable the payment button only after form is fully loaded
+            const submitBtn = document.getElementById('submit-payment');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Pay Now'; // Reset button text
+                console.log('✅ Payment button enabled - form is ready for user input');
+            }
+            
+            // Hide any loading indicators
+            const paymentMessage = document.getElementById('payment-message');
+            if (paymentMessage) {
+                paymentMessage.classList.add('hidden');
+            }
             paymentContainer.style.visibility = 'visible';
             
         } catch (e) {
