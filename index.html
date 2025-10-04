@@ -1108,6 +1108,14 @@
                         <p class="mt-4 font-semibold text-primary">- Julia R. from Bischofsheim</p>
                     </div>
                 </div>
+                
+                <!-- Submit Review Button -->
+                <div class="mt-12 text-center">
+                    <button id="submit-review-btn" class="btn btn-primary">
+                        <i class="fas fa-star mr-2"></i>
+                        <span data-translate="submitReviewBtn">Submit Your Review</span>
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -1844,9 +1852,68 @@
         
         const chatManager = new ChatManager();
         
+        // --- Reviews System ---
+        function openReviewModal() {
+            document.getElementById('review-modal').style.display = 'block';
+        }
 
+        function closeReviewModal() {
+            document.getElementById('review-modal').style.display = 'none';
+            document.getElementById('review-form').reset();
+        }
 
+        async function submitReview() {
+            const form = document.getElementById('review-form');
+            const formData = new FormData(form);
+            
+            const reviewData = {
+                customerName: formData.get('customerName'),
+                customerEmail: formData.get('customerEmail'),
+                serviceType: formData.get('serviceType'),
+                rating: parseInt(formData.get('rating')),
+                reviewText: formData.get('reviewText'),
+                isPublic: formData.get('isPublic') === 'on'
+            };
 
+            if (!reviewData.customerName || !reviewData.customerEmail || !reviewData.rating || !reviewData.reviewText) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/reviews', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(reviewData)
+                });
+
+                if (response.ok) {
+                    alert('Thank you for your review! It will be published after admin approval.');
+                    closeReviewModal();
+                } else {
+                    const error = await response.json();
+                    alert('Error submitting review: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error submitting review:', error);
+                alert('Error submitting review. Please try again.');
+            }
+        }
+
+        // Event listeners for reviews
+        document.getElementById('submit-review-btn')?.addEventListener('click', openReviewModal);
+        document.getElementById('close-review-modal')?.addEventListener('click', closeReviewModal);
+        document.getElementById('cancel-review')?.addEventListener('click', closeReviewModal);
+        document.getElementById('submit-review')?.addEventListener('click', submitReview);
+
+        // Close modal when clicking outside
+        document.getElementById('review-modal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'review-modal') {
+                closeReviewModal();
+            }
+        });
 
         // --- Multi-Language Support, Modals, Page Interactivity, etc. ---
         const translations = {
@@ -1893,6 +1960,7 @@
                 aboutPoint1: "Fully Insured & Bonded", aboutPoint2: "Eco-Friendly Products", aboutPoint3: "Trained Professionals", aboutPoint4: "Satisfaction Guaranteed",
                 testimonialsTitle: "What Our Customers Say",
                 testimonialsSubtitle: "We're proud of our 5-star reputation. Here's what some of our clients have to say.",
+                submitReviewBtn: "Submit Your Review",
                 faqTitle: "Frequently Asked Questions",
                 faqSubtitle: "Have questions? We have answers. Here are some common queries we receive from our clients in the Bischofsheim area.",
                 faq: [
@@ -1967,6 +2035,7 @@
                 aboutPoint1: "Voll versichert", aboutPoint2: "Umweltfreundliche Produkte", aboutPoint3: "Geschulte Fachkräfte", aboutPoint4: "Zufriedenheitsgarantie",
                 testimonialsTitle: "Was unsere Kunden sagen",
                 testimonialsSubtitle: "Wir sind stolz auf unseren 5-Sterne-Ruf. Das sagen einige unserer Kunden.",
+                submitReviewBtn: "Bewertung abgeben",
                 faqTitle: "Häufig gestellte Fragen",
                 faqSubtitle: "Haben Sie Fragen? Wir haben die Antworten. Hier sind einige häufige Anliegen unserer Kunden aus dem Raum Bischofsheim.",
                  faq: [
