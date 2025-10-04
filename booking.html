@@ -1592,7 +1592,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         DOM.wizard.addEventListener('click', e => {
             const button = e.target.closest('button');
             if (!button) return;
-            if (button.dataset.action === 'next') { if(validateStep(state.activeStep)) { showStep(state.activeStep + 1); } }
+            if (button.dataset.action === 'next') { 
+                if(validateStep(state.activeStep)) { 
+                    // Check if this is commercial booking going from step 2 to step 3
+                    if (state.activeStep === 2) {
+                        const packages = CONFIG.packages[state.bookingType];
+                        const pkg = packages.find(p => p.id === state.package);
+                        const isCommercial = pkg.id === 'commercial' || pkg.flexible;
+                        
+                        if (isCommercial) {
+                            // For commercial bookings, skip payment step and go directly to success
+                            console.log('📞 Commercial booking - skipping payment step, submitting booking');
+                            submitCommercialBooking(); // Submit booking and show success
+                        } else {
+                            showStep(state.activeStep + 1); // Normal flow to payment step
+                        }
+                    } else {
+                        showStep(state.activeStep + 1); // Normal flow for other steps
+                    }
+                } 
+            }
             if (button.dataset.action === 'prev') { showStep(state.activeStep - 1); }
             const editStep = button.dataset.editStep;
             if (editStep) { showStep(parseInt(editStep) - 1); }
@@ -1978,8 +1997,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const isCommercial = pkg.id === 'commercial' || pkg.flexible;
             
             if(isCommercial){
-                 document.getElementById('payment-element').style.display = 'none';
-                 console.log('📞 Commercial booking - payment element hidden');
+                 // For commercial bookings, skip payment step and go directly to success
+                 console.log('📞 Commercial booking - skipping payment, going to success');
+                 // Submit commercial booking first, then show success
+                 submitCommercialBooking();
+                 return;
             } else {
                  document.getElementById('payment-element').style.display = 'block';
                  console.log('💳 Regular booking - showing payment element');
